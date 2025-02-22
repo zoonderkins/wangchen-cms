@@ -390,22 +390,6 @@ router.get('/articles/:id', async (req, res) => {
     }
 });
 
-// Contact form
-router.post('/contact', async (req, res) => {
-    try {
-        const { name, email, message } = req.body;
-
-        // Here you would typically send an email or store the contact form submission
-        // For now, we'll just redirect with a success message
-        req.flash('success_msg', 'Thank you for your message. We will get back to you soon.');
-        res.redirect('/contact');
-    } catch (error) {
-        logger.error('Error processing contact form:', error);
-        req.flash('error_msg', 'Error sending message. Please try again.');
-        res.redirect('/contact');
-    }
-});
-
 // Handle custom URL paths
 router.get('/:path(*)', async (req, res, next) => {
     try {
