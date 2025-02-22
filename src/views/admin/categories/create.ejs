@@ -28,6 +28,30 @@
                     id="description" name="description" rows="3" placeholder="Enter category description"></textarea>
             </div>
 
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="parentId">
+                    Parent Category
+                </label>
+                <select
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="parentId" name="parentId">
+                    <option value="">None (Top Level Category)</option>
+                    <% categories.forEach(function(category) { %>
+                        <option value="<%= category.id %>"><%= category.name %></option>
+                    <% }); %>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="order">
+                    Display Order
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="order" name="order" type="number" value="0" min="0">
+                <p class="text-gray-600 text-xs italic mt-1">Lower numbers appear first</p>
+            </div>
+
             <div class="flex items-center justify-end">
                 <button
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"

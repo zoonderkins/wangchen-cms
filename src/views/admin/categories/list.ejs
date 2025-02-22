@@ -17,10 +17,13 @@
                         Name
                     </th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Slug
+                        Description
                     </th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Articles
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Order
                     </th>
                     <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Actions
@@ -28,36 +31,48 @@
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-                <% categories.forEach(category => { %>
+                <% function renderCategory(category, level = 0) { %>
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm font-medium text-gray-900">
+                            <% if (level > 0) { %>
+                                <span class="text-gray-400"><%= '─'.repeat(level) %></span>
+                            <% } %>
                             <%= category.name %>
                         </div>
-                        <% if (category.description) { %>
-                        <div class="text-sm text-gray-500">
-                            <%= category.description %>
-                        </div>
-                        <% } %>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <%= category.slug %>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500">
+                            <%= category.description || '-' %>
+                        </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                             <%= category._count.articles %> articles
                         </span>
                     </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <%= category.order || 0 %>
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <a href="/admin/categories/edit/<%= category.id %>"
                             class="text-blue-600 hover:text-blue-900 mr-4">Edit</a>
                         <form action="/admin/categories/<%= category.id %>" method="POST" class="inline"
-                            onsubmit="return confirm('Are you sure you want to delete this category?');">
+                            onsubmit="return confirm('Are you sure you want to delete this category? This will also delete all subcategories.');">
                             <input type="hidden" name="_method" value="DELETE">
                             <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
                         </form>
                     </td>
                 </tr>
+                <% if (category.children && category.children.length > 0) { %>
+                    <% category.children.forEach(child => { %>
+                        <%- renderCategory(child, level + 1) %>
+                    <% }); %>
+                <% } %>
+                <% } %>
+
+                <% categories.forEach(category => { %>
+                    <%- renderCategory(category) %>
                 <% }); %>
             </tbody>
         </table>

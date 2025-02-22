@@ -45,27 +45,40 @@ router.use(async (req, res, next) => {
         // Get categories for navigation
         // Get article only if status is 'published'
         const categories = await prisma.category.findMany({
+            where: {
+                parentId: null // Get only top-level categories
+            },
             include: {
+                children: {
+                    include: {
+                        _count: {
+                            select: {
+                                articles: {
+                                    where: { status: 'published' }
+                                }
+                            }
+                        }
+                    }
+                },
                 _count: {
                     select: {
                         articles: {
-                            where: {
-                                status: 'published'
-                            }
+                            where: { status: 'published' }
                         }
                     }
                 }
             },
             orderBy: {
-                name: 'asc'
+                order: 'asc'
             }
         });
+
+        // Make categories available to all views
         res.locals.categories = categories;
         next();
     } catch (error) {
-        logger.error('Error loading common data:', error);
-        res.locals.categories = [];
-        next();
+        logger.error('Error in frontend middleware:', error);
+        next(error);
     }
 });
 
@@ -189,22 +202,31 @@ router.get('/category/:id', async (req, res) => {
         if (!category) {
             return res.status(404).render('frontend/error', {
                 title: 'Category Not Found',
-                message: 'The requested category could not be found',
+                message: 'Category not found',
                 layout: 'layouts/frontend'
             });
         }
 
+        // Process articles to create excerpts
+        const processedArticles = category.articles.map(article => ({
+            ...article,
+            excerpt: createExcerpt(article.content),
+            content: article.content
+        }));
+
         res.render('frontend/category', {
             title: category.name,
-            category,
-            articles: category.articles,
+            category: {
+                ...category,
+                articles: processedArticles
+            },
             layout: 'layouts/frontend'
         });
     } catch (error) {
-        logger.error('Error loading category page:', error);
+        logger.error('Error fetching category:', error);
         res.status(500).render('frontend/error', {
             title: 'Error',
-            message: 'Error loading category page',
+            message: 'An error occurred while fetching the category',
             layout: 'layouts/frontend'
         });
     }

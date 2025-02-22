@@ -9,8 +9,8 @@
     </div>
 
     <div class="grid grid-cols-1 gap-6">
-        <% if (articles && articles.length > 0) { %>
-            <% articles.forEach(article => { %>
+        <% if (category.articles && category.articles.length > 0) { %>
+            <% category.articles.forEach(article => { %>
                 <article class="bg-white shadow rounded-lg p-6">
                     <h2 class="text-2xl font-semibold mb-3">
                         <a href="/article/<%= article.id %>" class="text-blue-600 hover:text-blue-800 hover:underline">
@@ -20,9 +20,9 @@
                     <div class="text-gray-600 text-sm mb-4">
                         <span><%= new Date(article.createdAt).toLocaleDateString() %></span>
                     </div>
-                    <p class="text-gray-700 mb-4">
-                        <%= article.excerpt || article.content.substring(0, 200) + '...' %>
-                    </p>
+                    <div class="text-gray-700 mb-4">
+                        <%= article.excerpt %>
+                    </div>
                     <div>
                         <a href="/article/<%= article.id %>" class="text-blue-600 hover:text-blue-800 hover:underline">
                             Read more →

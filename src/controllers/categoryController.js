@@ -4,7 +4,19 @@ const logger = require('../config/logger');
 exports.listCategories = async (req, res) => {
     try {
         const categories = await prisma.category.findMany({
+            where: {
+                parentId: null // Get only top-level categories
+            },
             include: {
+                children: {
+                    include: {
+                        _count: {
+                            select: {
+                                articles: true
+                            }
+                        }
+                    }
+                },
                 _count: {
                     select: {
                         articles: true
@@ -12,7 +24,7 @@ exports.listCategories = async (req, res) => {
                 }
             },
             orderBy: {
-                name: 'asc'
+                order: 'asc'
             }
         });
 
@@ -28,21 +40,37 @@ exports.listCategories = async (req, res) => {
     }
 };
 
-exports.renderCreateCategory = (req, res) => {
-    res.render('admin/categories/create', {
-        title: 'Create Category',
-        layout: 'layouts/admin'
-    });
+exports.renderCreateCategory = async (req, res) => {
+    try {
+        // Get all categories for parent selection
+        const categories = await prisma.category.findMany({
+            orderBy: {
+                name: 'asc'
+            }
+        });
+
+        res.render('admin/categories/create', {
+            title: 'Create Category',
+            layout: 'layouts/admin',
+            categories
+        });
+    } catch (error) {
+        logger.error('Error loading categories for create form:', error);
+        req.flash('error_msg', 'Error loading category form');
+        res.redirect('/admin/categories');
+    }
 };
 
 exports.createCategory = async (req, res) => {
     try {
-        const { name, description } = req.body;
+        const { name, description, parentId, order } = req.body;
 
         await prisma.category.create({
             data: {
                 name,
-                description
+                description,
+                parentId: parentId ? parseInt(parentId) : null,
+                order: order ? parseInt(order) : 0
             }
         });
 
@@ -57,17 +85,27 @@ exports.createCategory = async (req, res) => {
 
 exports.renderEditCategory = async (req, res) => {
     try {
-        const { id } = req.params;
-        const categoryId = parseInt(id);
-        
-        if (isNaN(categoryId)) {
-            req.flash('error_msg', 'Invalid category ID');
-            return res.redirect('/admin/categories');
-        }
+        const categoryId = parseInt(req.params.id);
 
-        const category = await prisma.category.findUnique({
-            where: { id: categoryId }
-        });
+        const [category, categories] = await Promise.all([
+            prisma.category.findUnique({
+                where: { id: categoryId },
+                include: {
+                    parent: true,
+                    children: true
+                }
+            }),
+            prisma.category.findMany({
+                where: {
+                    NOT: {
+                        id: categoryId // Exclude current category from parent options
+                    }
+                },
+                orderBy: {
+                    name: 'asc'
+                }
+            })
+        ]);
 
         if (!category) {
             req.flash('error_msg', 'Category not found');
@@ -77,10 +115,11 @@ exports.renderEditCategory = async (req, res) => {
         res.render('admin/categories/edit', {
             title: 'Edit Category',
             layout: 'layouts/admin',
-            category
+            category,
+            categories
         });
     } catch (error) {
-        logger.error('Error loading category:', error);
+        logger.error('Error loading category for edit:', error);
         req.flash('error_msg', 'Error loading category');
         res.redirect('/admin/categories');
     }
@@ -88,30 +127,31 @@ exports.renderEditCategory = async (req, res) => {
 
 exports.updateCategory = async (req, res) => {
     try {
-        const { id } = req.params;
-        const { name, description } = req.body;
-        const categoryId = parseInt(id);
+        const categoryId = parseInt(req.params.id);
+        const { name, description, parentId, order } = req.body;
 
-        if (isNaN(categoryId)) {
-            req.flash('error_msg', 'Invalid category ID');
-            return res.redirect('/admin/categories');
+        // Check if trying to set as parent of itself
+        if (parentId && parseInt(parentId) === categoryId) {
+            req.flash('error_msg', 'A category cannot be its own parent');
+            return res.redirect(`/admin/categories/edit/${categoryId}`);
         }
 
-        // Check if category exists
-        const existingCategory = await prisma.category.findUnique({
-            where: { id: categoryId }
-        });
-
-        if (!existingCategory) {
-            req.flash('error_msg', 'Category not found');
-            return res.redirect('/admin/categories');
+        // Check if trying to set as parent one of its descendants
+        if (parentId) {
+            const descendants = await getDescendants(categoryId);
+            if (descendants.includes(parseInt(parentId))) {
+                req.flash('error_msg', 'Cannot set a descendant category as parent');
+                return res.redirect(`/admin/categories/edit/${categoryId}`);
+            }
         }
 
         await prisma.category.update({
             where: { id: categoryId },
             data: {
                 name,
-                description
+                description,
+                parentId: parentId ? parseInt(parentId) : null,
+                order: order ? parseInt(order) : 0
             }
         });
 
@@ -125,24 +165,14 @@ exports.updateCategory = async (req, res) => {
 };
 
 exports.deleteCategory = async (req, res) => {
+    const categoryId = parseInt(req.params.id);
+
     try {
-        const { id } = req.params;
-        const categoryId = parseInt(id);
-
-        if (isNaN(categoryId)) {
-            req.flash('error_msg', 'Invalid category ID');
-            return res.redirect('/admin/categories');
-        }
-
-        // Check if category exists and has no articles
         const category = await prisma.category.findUnique({
             where: { id: categoryId },
             include: {
-                _count: {
-                    select: {
-                        articles: true
-                    }
-                }
+                articles: true,
+                children: true
             }
         });
 
@@ -151,8 +181,13 @@ exports.deleteCategory = async (req, res) => {
             return res.redirect('/admin/categories');
         }
 
-        if (category._count.articles > 0) {
-            req.flash('error_msg', 'Cannot delete category with articles. Please remove or reassign articles first.');
+        if (category.articles.length > 0) {
+            req.flash('error_msg', 'Cannot delete category with articles. Please move or delete the articles first.');
+            return res.redirect('/admin/categories');
+        }
+
+        if (category.children.length > 0) {
+            req.flash('error_msg', 'Cannot delete category with subcategories. Please move or delete the subcategories first.');
             return res.redirect('/admin/categories');
         }
 
@@ -168,3 +203,23 @@ exports.deleteCategory = async (req, res) => {
         res.redirect('/admin/categories');
     }
 };
+
+// Helper function to get all descendant category IDs
+async function getDescendants(categoryId) {
+    const descendants = [];
+    
+    async function collect(parentId) {
+        const children = await prisma.category.findMany({
+            where: { parentId },
+            select: { id: true }
+        });
+        
+        for (const child of children) {
+            descendants.push(child.id);
+            await collect(child.id);
+        }
+    }
+    
+    await collect(categoryId);
+    return descendants;
+}
