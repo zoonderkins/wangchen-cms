@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= typeof title !=='undefined' ? title + ' - ' : '' %>Your Website Name
+    </title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="bg-white">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold">
+                    <a href="/">Your Website</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="text-gray-700 hover:text-gray-900">Home</a>
+                    <% if (categories && categories.length> 0) { %>
+                        <% categories.forEach(function(category) { %>
+                            <a href="/category/<%= category.id %>" class="text-gray-700 hover:text-gray-900">
+                                <%= category.name %>
+                            </a>
+                            <% }); %>
+                                <% } %>
+                                    <a href="/contact" class="text-gray-700 hover:text-gray-900">Contact</a>
+                </div>
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <!-- Mobile Menu -->
+            <div class="md:hidden hidden">
+                <div class="py-2 space-y-2">
+                    <a href="/" class="block text-gray-700 hover:text-gray-900">Home</a>
+                    <% if (categories && categories.length> 0) { %>
+                        <% categories.forEach(function(category) { %>
+                            <a href="/category/<%= category.id %>" class="block text-gray-700 hover:text-gray-900">
+                                <%= category.name %>
+                            </a>
+                            <% }); %>
+                                <% } %>
+                                    <a href="/contact" class="block text-gray-700 hover:text-gray-900">Contact</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        <!-- Flash Messages -->
+        <% if (typeof success_msg !=='undefined' && success_msg.length> 0) { %>
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+                <%= success_msg %>
+            </div>
+            <% } %>
+                <% if (typeof error_msg !=='undefined' && error_msg.length> 0) { %>
+                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+                        <%= error_msg %>
+                    </div>
+                    <% } %>
+
+                        <!-- Page Content -->
+                        <%- body %>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto px-6 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">About Us</h3>
+                    <p class="text-gray-400">
+                        Brief description about your website or company.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/" class="text-gray-400 hover:text-white">Home</a></li>
+                        <li><a href="/contact" class="text-gray-400 hover:text-white">Contact</a></li>
+                        <% if (categories && categories.length> 0) { %>
+                            <% categories.forEach(function(category) { %>
+                                <li>
+                                    <a href="/category/<%= category.id %>" class="text-gray-400 hover:text-white">
+                                        <%= category.name %>
+                                    </a>
+                                </li>
+                                <% }); %>
+                                    <% } %>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Info</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><i class="fas fa-envelope mr-2"></i> email@example.com</li>
+                        <li><i class="fas fa-phone mr-2"></i> +1 234 567 890</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i> Your Address</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; <%= new Date().getFullYear() %> Your Website. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        const menuButton = document.querySelector('button.md\\:hidden');
+        const mobileMenu = document.querySelector('div.md\\:hidden');
+
+        menuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+
+</html>

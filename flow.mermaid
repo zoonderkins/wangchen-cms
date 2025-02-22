@@ -1,0 +1,100 @@
+graph TB
+    %% Main Application Entry
+    APP[app.js] --> ROUTES[Routes]
+    APP --> MIDDLEWARE[Middleware]
+    APP --> CONFIG[Configuration]
+    
+    %% Routes Layer
+    ROUTES --> ADMIN[Admin Routes]
+    ROUTES --> FRONTEND[Frontend Routes]
+    
+    %% Admin Routes
+    ADMIN --> ADMIN_AUTH["admin/auth/*"]
+    ADMIN --> ADMIN_DASHBOARD["admin/dashboard"]
+    ADMIN --> ADMIN_USERS["admin/users/*"]
+    ADMIN --> ADMIN_ARTICLES["admin/articles/*"]
+    ADMIN --> ADMIN_CATEGORIES["admin/categories/*"]
+    ADMIN --> ADMIN_MEDIA["admin/media/*"]
+    
+    %% Frontend Routes
+    FRONTEND --> HOME["/"]
+    FRONTEND --> ARTICLES["/articles"]
+    FRONTEND --> ARTICLE["/article/:id"]
+    FRONTEND --> CATEGORY["/category/:id"]
+    FRONTEND --> CONTACT["/contact"]
+    
+    %% Controllers Layer
+    subgraph Controllers
+        AUTH_CTRL[AuthController]
+        USER_CTRL[UserController]
+        ARTICLE_CTRL[ArticleController]
+        CATEGORY_CTRL[CategoryController]
+        CATPERM_CTRL[CategoryPermissionController]
+        MEDIA_CTRL[MediaController]
+        DASH_CTRL[DashboardController]
+    end
+    
+    %% Models Layer via Prisma
+    subgraph Database Models
+        USER[User]
+        ARTICLE_MODEL[Article]
+        CATEGORY_MODEL[Category]
+        MEDIA_MODEL[Media]
+        CAT_PERM[CategoryPermission]
+    end
+    
+    %% Middleware Components
+    subgraph Middleware
+        AUTH_MID[auth.js]
+        UPLOAD[upload.js]
+        ERROR[error.js]
+    end
+    
+    %% Views Layer
+    subgraph Views
+        direction TB
+        LAYOUTS[Layouts] --> ADMIN_LAYOUT[Admin Layout]
+        LAYOUTS --> FRONTEND_LAYOUT[Frontend Layout]
+        
+        PAGES[Pages] --> ADMIN_VIEWS[Admin Views]
+        PAGES --> FRONTEND_VIEWS[Frontend Views]
+        
+        PARTIALS[Partials] --> NAV[Navigation]
+        PARTIALS --> FORMS[Forms]
+    end
+    
+    %% Relationships
+    ADMIN_AUTH --> AUTH_CTRL
+    ADMIN_USERS --> USER_CTRL
+    ADMIN_ARTICLES --> ARTICLE_CTRL
+    ADMIN_CATEGORIES --> CATEGORY_CTRL
+    ADMIN_MEDIA --> MEDIA_CTRL
+    ADMIN_DASHBOARD --> DASH_CTRL
+    
+    AUTH_CTRL --> USER
+    USER_CTRL --> USER
+    ARTICLE_CTRL --> ARTICLE_MODEL
+    CATEGORY_CTRL --> CATEGORY_MODEL
+    CATPERM_CTRL --> CAT_PERM
+    MEDIA_CTRL --> MEDIA_MODEL
+    
+    %% Database Relationships
+    USER --> ARTICLE_MODEL
+    CATEGORY_MODEL --> ARTICLE_MODEL
+    MEDIA_MODEL --> ARTICLE_MODEL
+    USER --> CAT_PERM
+    CATEGORY_MODEL --> CAT_PERM
+    
+    %% Style Definitions
+    classDef controller fill:#f9f,stroke:#333,stroke-width:2px
+    classDef model fill:#bbf,stroke:#333,stroke-width:2px
+    classDef route fill:#bfb,stroke:#333,stroke-width:2px
+    classDef middleware fill:#fbb,stroke:#333,stroke-width:2px
+    classDef view fill:#ffb,stroke:#333,stroke-width:2px
+    
+    %% Apply Styles
+    class AUTH_CTRL,USER_CTRL,ARTICLE_CTRL,CATEGORY_CTRL,CATPERM_CTRL,MEDIA_CTRL,DASH_CTRL controller
+    class USER,ARTICLE_MODEL,CATEGORY_MODEL,MEDIA_MODEL,CAT_PERM model
+    class ADMIN_AUTH,ADMIN_USERS,ADMIN_ARTICLES,ADMIN_CATEGORIES,ADMIN_MEDIA,HOME,ARTICLES,ARTICLE,CATEGORY route
+    class AUTH_MID,UPLOAD,ERROR middleware
+    class LAYOUTS,PAGES,PARTIALS,ADMIN_VIEWS,FRONTEND_VIEWS view

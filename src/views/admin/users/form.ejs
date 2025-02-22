@@ -1,0 +1,108 @@
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold"><%= user.id ? 'Edit User' : 'Create New User' %></h1>
+        <a href="/admin/users" 
+           class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Users
+        </a>
+    </div>
+
+    <!-- User Form -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <form action="<%= user.id ? `/admin/users/${user.id}?_method=PUT` : '/admin/users' %>" 
+              method="POST" 
+              class="space-y-6">
+            
+            <!-- Username -->
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <div class="mt-1">
+                    <input type="text" 
+                           name="username" 
+                           id="username" 
+                           value="<%= user.username %>"
+                           required
+                           class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <div class="mt-1">
+                    <input type="email" 
+                           name="email" 
+                           id="email" 
+                           value="<%= user.email %>"
+                           required
+                           class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">
+                    <%= user.id ? 'New Password (leave blank to keep current)' : 'Password' %>
+                </label>
+                <div class="mt-1">
+                    <input type="password" 
+                           name="password" 
+                           id="password" 
+                           <%= !user.id ? 'required' : '' %>
+                           class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                </div>
+            </div>
+
+            <!-- Role -->
+            <div>
+                <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+                <div class="mt-1">
+                    <select name="role" 
+                            id="role" 
+                            required
+                            class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                        <option value="user" <%= user.role === 'user' ? 'selected' : '' %>>User</option>
+                        <option value="editor" <%= user.role === 'editor' ? 'selected' : '' %>>Editor</option>
+                        <% if (currentUser.role === 'super_admin') { %>
+                            <option value="super_admin" <%= user.role === 'super_admin' ? 'selected' : '' %>>Super Admin</option>
+                        <% } %>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div>
+                <div class="flex items-center">
+                    <input type="checkbox" 
+                           name="isActive" 
+                           id="isActive" 
+                           <%= user.isActive ? 'checked' : '' %>
+                           class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                    <label for="isActive" class="ml-2 block text-sm text-gray-700">
+                        Active Account
+                    </label>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-5">
+                <div class="flex justify-end">
+                    <button type="submit" 
+                            class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <%= user.id ? 'Update User' : 'Create User' %>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    const password = document.getElementById('password');
+    if (!password.value && !password.hasAttribute('required')) {
+        // Remove empty password field when updating user
+        password.disabled = true;
+    }
+});</script>

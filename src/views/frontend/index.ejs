@@ -1,0 +1,59 @@
+<%- contentFor('body') %>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Categories Section -->
+        <div class="md:col-span-1">
+            <h2 class="text-xl font-bold mb-4">Categories</h2>
+            <ul class="space-y-2">
+                <% categories.forEach(category => { %>
+                    <li>
+                        <a href="/category/<%= category.id %>" 
+                           class="text-blue-600 hover:text-blue-800 hover:underline">
+                            <%= category.name %> (<%= category._count?.articles || 0 %>)
+                        </a>
+                    </li>
+                <% }); %>
+            </ul>
+        </div>
+
+        <!-- Latest Articles Section -->
+        <div class="md:col-span-2">
+            <h2 class="text-2xl font-bold mb-6">Latest Articles</h2>
+            <div class="space-y-6">
+                <% if (articles && articles.length > 0) { %>
+                    <% articles.forEach(article => { %>
+                        <article class="bg-white shadow rounded-lg p-6">
+                            <h3 class="text-xl font-semibold mb-2">
+                                <a href="/articles/<%= article.id %>" class="text-blue-600 hover:text-blue-800 hover:underline">
+                                    <%= article.title %>
+                                </a>
+                            </h3>
+                            <div class="text-gray-600 text-sm mb-4">
+                                <% if (article.category) { %>
+                                    <span>Category: 
+                                        <a href="/category/<%= article.category.id %>" class="text-blue-600 hover:text-blue-800">
+                                            <%= article.category.name %>
+                                        </a>
+                                    </span>
+                                    <span class="mx-2">•</span>
+                                <% } %>
+                                <span><%= new Date(article.createdAt).toLocaleDateString() %></span>
+                            </div>
+                            <p class="text-gray-700"><%= article.excerpt %></p>
+                            <div class="mt-4">
+                                <a href="/articles/<%= article.id %>" class="text-blue-600 hover:text-blue-800 hover:underline">
+                                    Read more →
+                                </a>
+                            </div>
+                        </article>
+                    <% }); %>
+                <% } else { %>
+                    <div class="text-center text-gray-600">
+                        No articles available yet.
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

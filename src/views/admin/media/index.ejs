@@ -1,0 +1,336 @@
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold">Media Library</h1>
+        <button onclick="openUploadModal()" 
+                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+            <i class="fas fa-upload mr-2"></i> Upload Files
+        </button>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white p-4 rounded-lg shadow-sm">
+        <form action="/admin/media" method="GET" class="flex gap-4">
+            <div class="flex-1">
+                <input type="text" 
+                       name="search" 
+                       placeholder="Search media..." 
+                       value="<%= query.search %>"
+                       class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="w-48">
+                <select name="type" 
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">All Types</option>
+                    <option value="image" <%= query.type === 'image' ? 'selected' : '' %>>Images</option>
+                    <option value="video" <%= query.type === 'video' ? 'selected' : '' %>>Videos</option>
+                    <option value="document" <%= query.type === 'document' ? 'selected' : '' %>>Documents</option>
+                    <option value="archive" <%= query.type === 'archive' ? 'selected' : '' %>>Archives</option>
+                </select>
+            </div>
+            <button type="submit" 
+                    class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+                Filter
+            </button>
+        </form>
+    </div>
+
+    <!-- Media Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <% media.forEach(function(item) { %>
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div class="relative aspect-w-1 aspect-h-1">
+                    <% if (item.type === 'image') { %>
+                        <img src="<%= item.path %>" 
+                             alt="<%= item.originalName %>"
+                             class="w-full h-full object-cover">
+                    <% } else if (item.type === 'video') { %>
+                        <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                            <i class="fas fa-video text-4xl text-gray-400"></i>
+                        </div>
+                    <% } else if (item.type === 'document') { %>
+                        <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                            <i class="fas fa-file-alt text-4xl text-gray-400"></i>
+                        </div>
+                    <% } else { %>
+                        <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                            <i class="fas fa-archive text-4xl text-gray-400"></i>
+                        </div>
+                    <% } %>
+                    <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-50 transition-opacity flex items-center justify-center opacity-0 hover:opacity-100">
+                        <div class="flex space-x-2">
+                            <button onclick="viewMediaDetails('<%= item.id %>')"
+                                    class="p-2 bg-white rounded-full text-gray-700 hover:text-blue-500">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="copyMediaUrl('<%= item.path %>')"
+                                    class="p-2 bg-white rounded-full text-gray-700 hover:text-green-500">
+                                <i class="fas fa-link"></i>
+                            </button>
+                            <button onclick="deleteMedia('<%= item.id %>')"
+                                    class="p-2 bg-white rounded-full text-gray-700 hover:text-red-500">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-2">
+                    <p class="text-sm truncate" title="<%= item.originalName %>">
+                        <%= item.originalName %>
+                    </p>
+                    <p class="text-xs text-gray-500">
+                        <%= formatFileSize(item.size) %>
+                    </p>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+
+    <!-- Pagination -->
+    <% if (totalPages > 1) { %>
+        <div class="flex justify-center mt-6">
+            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <% if (currentPage > 1) { %>
+                    <a href="?page=<%= currentPage - 1 %>&type=<%= query.type %>&search=<%= query.search %>" 
+                       class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        Previous
+                    </a>
+                <% } %>
+                
+                <% for(let i = 1; i <= totalPages; i++) { %>
+                    <a href="?page=<%= i %>&type=<%= query.type %>&search=<%= query.search %>" 
+                       class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium <%= currentPage === i ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:bg-gray-50' %>">
+                        <%= i %>
+                    </a>
+                <% } %>
+                
+                <% if (currentPage < totalPages) { %>
+                    <a href="?page=<%= currentPage + 1 %>&type=<%= query.type %>&search=<%= query.search %>" 
+                       class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        Next
+                    </a>
+                <% } %>
+            </nav>
+        </div>
+    <% } %>
+</div>
+
+<!-- Upload Modal -->
+<div id="uploadModal" class="fixed z-10 inset-0 hidden">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="w-full">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Upload Files</h3>
+                        <form id="uploadForm" class="space-y-4">
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center" 
+                                 id="dropZone">
+                                <input type="file" 
+                                       id="fileInput" 
+                                       multiple 
+                                       accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.zip"
+                                       class="hidden">
+                                <div class="space-y-2">
+                                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+                                    <p class="text-gray-600">
+                                        Drag and drop files here or
+                                        <button type="button" 
+                                                onclick="document.getElementById('fileInput').click()"
+                                                class="text-blue-500 hover:text-blue-600">
+                                            browse
+                                        </button>
+                                    </p>
+                                    <p class="text-sm text-gray-500">
+                                        Maximum file size: 50MB
+                                    </p>
+                                </div>
+                            </div>
+                            <div id="uploadProgress" class="hidden">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-medium text-blue-500">Uploading...</span>
+                                    <span class="text-sm font-medium text-blue-500" id="progressText">0%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-500 h-2 rounded-full" id="progressBar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="button" 
+                        onclick="closeUploadModal()"
+                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Media Details Modal -->
+<div id="mediaDetailsModal" class="fixed z-10 inset-0 hidden">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div id="mediaDetailsContent">
+                    <!-- Media details will be loaded here -->
+                </div>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="button" 
+                        onclick="closeMediaDetailsModal()"
+                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function openUploadModal() {
+    document.getElementById('uploadModal').classList.remove('hidden');
+}
+
+function closeUploadModal() {
+    document.getElementById('uploadModal').classList.add('hidden');
+    document.getElementById('uploadProgress').classList.add('hidden');
+    document.getElementById('progressBar').style.width = '0%';
+    document.getElementById('progressText').textContent = '0%';
+}
+
+function viewMediaDetails(id) {
+    fetch(`/admin/media/${id}`)
+        .then(response => response.json())
+        .then(data => {
+            const content = document.getElementById('mediaDetailsContent');
+            content.innerHTML = `
+                <div class="space-y-4">
+                    <div class="text-center">
+                        ${data.type === 'image' 
+                            ? `<img src="${data.path}" alt="${data.originalName}" class="max-h-64 mx-auto">` 
+                            : `<i class="fas fa-${getFileIcon(data.type)} text-6xl text-gray-400"></i>`}
+                    </div>
+                    <div class="space-y-2">
+                        <p><strong>Name:</strong> ${data.originalName}</p>
+                        <p><strong>Type:</strong> ${data.mimeType}</p>
+                        <p><strong>Size:</strong> ${formatFileSize(data.size)}</p>
+                        <p><strong>Uploaded:</strong> ${new Date(data.createdAt).toLocaleString()}</p>
+                        <p><strong>URL:</strong> <a href="${data.path}" target="_blank" class="text-blue-500 hover:text-blue-600">${data.path}</a></p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('mediaDetailsModal').classList.remove('hidden');
+        });
+}
+
+function closeMediaDetailsModal() {
+    document.getElementById('mediaDetailsModal').classList.add('hidden');
+}
+
+function copyMediaUrl(url) {
+    navigator.clipboard.writeText(url).then(() => {
+        // Show toast notification
+        const toast = document.createElement('div');
+        toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg';
+        toast.textContent = 'URL copied to clipboard!';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    });
+}
+
+function deleteMedia(id) {
+    if (confirm('Are you sure you want to delete this file? This action cannot be undone.')) {
+        fetch(`/admin/media/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            }
+        });
+    }
+}
+
+function getFileIcon(type) {
+    switch (type) {
+        case 'video': return 'video';
+        case 'document': return 'file-alt';
+        case 'archive': return 'archive';
+        default: return 'file';
+    }
+}
+
+// File upload handling
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+
+dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('border-blue-500');
+});
+
+dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('border-blue-500');
+});
+
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('border-blue-500');
+    handleFiles(e.dataTransfer.files);
+});
+
+fileInput.addEventListener('change', (e) => {
+    handleFiles(e.target.files);
+});
+
+function handleFiles(files) {
+    const uploadProgress = document.getElementById('uploadProgress');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    
+    uploadProgress.classList.remove('hidden');
+    
+    Array.from(files).forEach(file => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('/admin/media/upload', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                progressBar.style.width = '100%';
+                progressText.textContent = '100%';
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            }
+        })
+        .catch(error => {
+            console.error('Upload error:', error);
+            alert('Error uploading file. Please try again.');
+        });
+    });
+}
+</script>

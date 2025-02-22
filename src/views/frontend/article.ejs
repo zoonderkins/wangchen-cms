@@ -1,0 +1,73 @@
+<%- contentFor('body') %>
+
+<article class="bg-white shadow rounded-lg overflow-hidden">
+    <div class="px-4 py-5 sm:p-6">
+        <%- include('../partials/article-content', { article: article }) %>
+    </div>
+</article>
+
+<!-- Add Tailwind Typography for better content styling -->
+<style>
+    /* Basic styles for content */
+    .prose {
+        max-width: 65ch;
+        color: #374151;
+    }
+    .prose p {
+        margin-top: 1.25em;
+        margin-bottom: 1.25em;
+        line-height: 1.75;
+    }
+    .prose a {
+        color: #2563eb;
+        text-decoration: underline;
+    }
+    .prose strong {
+        font-weight: 600;
+        color: #111827;
+    }
+    .prose ul {
+        margin-top: 1.25em;
+        margin-bottom: 1.25em;
+        padding-left: 1.625em;
+        list-style-type: disc;
+    }
+    .prose ol {
+        margin-top: 1.25em;
+        margin-bottom: 1.25em;
+        padding-left: 1.625em;
+        list-style-type: decimal;
+    }
+    .prose h1 {
+        margin-top: 0;
+        margin-bottom: 0.8888889em;
+        font-size: 2.25em;
+        font-weight: 800;
+        line-height: 1.1111111;
+    }
+    .prose h2 {
+        margin-top: 2em;
+        margin-bottom: 1em;
+        font-size: 1.5em;
+        font-weight: 700;
+        line-height: 1.3333333;
+    }
+    .prose h3 {
+        margin-top: 1.6em;
+        margin-bottom: 0.6em;
+        font-size: 1.25em;
+        font-weight: 600;
+        line-height: 1.6;
+    }
+    .prose img {
+        margin-top: 2em;
+        margin-bottom: 2em;
+    }
+    .prose blockquote {
+        margin-top: 1.6em;
+        margin-bottom: 1.6em;
+        padding-left: 1em;
+        border-left: 0.25em solid #e5e7eb;
+        font-style: italic;
+    }
+</style>

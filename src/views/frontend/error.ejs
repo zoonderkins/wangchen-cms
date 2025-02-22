@@ -1,0 +1,20 @@
+<%- contentFor('body') %>
+
+<div class="min-h-[50vh] flex items-center justify-center px-4 py-12">
+    <div class="max-w-xl w-full space-y-8 text-center">
+        <div>
+            <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
+                Oops! Something went wrong
+            </h2>
+            <p class="mt-2 text-sm text-gray-600">
+                <%= message || 'The page you are looking for could not be found.' %>
+            </p>
+        </div>
+        <div class="mt-8">
+            <a href="/" class="text-blue-600 hover:text-blue-500">
+                <span class="mr-2">←</span>
+                Return to Home
+            </a>
+        </div>
+    </div>
+</div>
