@@ -105,9 +105,20 @@ router.get('/', async (req, res) => {
                 },
                 orderBy: {
                     createdAt: 'desc'
-                }
+                },
+                take: 4 // Limit to 4 banners
             })
         ]);
+
+        // Debug banner information
+        logger.info(`Banners found: ${banners.length}`);
+        if (banners.length > 0) {
+            banners.forEach((banner, index) => {
+                logger.info(`Banner ${index + 1}: ID=${banner.id}, Title=${banner.title}, Media=${banner.mediaPath}, Active=${banner.isActive}, Type=${banner.mediaType}`);
+            });
+        } else {
+            logger.info('No active banners found');
+        }
 
         // Process articles to create excerpts
         const processedArticles = articles.map(article => ({

@@ -29,7 +29,8 @@ app.set('layout extractStyles', true);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.static(path.join(__dirname, '../public')));
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));  // Serve uploaded files
+// Serve files from public/uploads at /uploads URL path
+app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 
 // Method override middleware - must be before route handlers
 app.use(methodOverride('_method'));

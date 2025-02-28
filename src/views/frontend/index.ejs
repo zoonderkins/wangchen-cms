@@ -2,15 +2,21 @@
 
 <% if (banners && banners.length > 0) { %>
 <!-- Banner Carousel -->
-<div class="relative w-full overflow-hidden bg-gray-100 mb-8">
+<div class="relative w-full overflow-hidden bg-gray-100 mb-8" style="height: 400px;">
     <!-- Banner Container -->
-    <div id="banner-carousel" class="relative w-full">
+    <div id="banner-carousel" class="relative w-full h-full">
         <% banners.forEach((banner, index) => { %>
-            <div class="banner-slide absolute w-full transition-opacity duration-500 <%= index === 0 ? 'opacity-100' : 'opacity-0' %>" style="height: 400px;">
+            <div class="banner-slide absolute inset-0 w-full h-full" style="display: <%= index === 0 ? 'block' : 'none' %>;" data-index="<%= index %>">
                 <% if (banner.mediaType === 'image') { %>
-                    <img src="<%= banner.mediaPath %>" alt="<%= banner.title %>" class="w-full h-full object-cover">
+                    <% if (banner.url) { %>
+                        <a href="<%= banner.url %>" target="_blank" rel="noopener noreferrer" class="block w-full h-full">
+                            <img src="<%= banner.mediaPath %>" alt="<%= banner.title %>" class="w-full h-full object-cover">
+                        </a>
+                    <% } else { %>
+                        <img src="<%= banner.mediaPath %>" alt="<%= banner.title %>" class="w-full h-full object-cover">
+                    <% } %>
                 <% } else if (banner.mediaType === 'video') { %>
-                    <video autoplay muted loop class="w-full h-full object-cover">
+                    <video id="video-<%= index %>" autoplay muted loop playsinline class="w-full h-full object-cover">
                         <source src="<%= banner.mediaPath %>" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
@@ -20,106 +26,149 @@
                     <% if (banner.description) { %>
                         <p class="mt-2"><%= banner.description %></p>
                     <% } %>
-                    <% if (banner.url) { %>
-                        <a href="<%= banner.url %>" class="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Learn More</a>
+                    <% if (banner.url && banner.mediaType !== 'image') { %>
+                        <a href="<%= banner.url %>" target="_blank" rel="noopener noreferrer" class="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Learn More</a>
                     <% } %>
                 </div>
             </div>
         <% }); %>
         
+        <% if (banners.length > 1) { %>
         <!-- Navigation Arrows -->
-        <button id="prev-banner" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full">
+        <a href="#" id="prev-banner" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-70 text-white p-3 rounded-full z-20 hover:bg-opacity-90 focus:outline-none cursor-pointer" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
-        </button>
-        <button id="next-banner" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full">
+        </a>
+        <a href="#" id="next-banner" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-70 text-white p-3 rounded-full z-20 hover:bg-opacity-90 focus:outline-none cursor-pointer" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
-        </button>
+        </a>
         
         <!-- Indicators -->
-        <div class="absolute bottom-20 left-0 right-0 flex justify-center space-x-2">
+        <div class="absolute bottom-20 left-0 right-0 flex justify-center space-x-3 z-20">
             <% banners.forEach((_, index) => { %>
-                <button class="banner-indicator h-2 w-2 rounded-full <%= index === 0 ? 'bg-white' : 'bg-gray-400' %>" data-index="<%= index %>"></button>
+                <a href="#" class="banner-indicator h-4 w-4 rounded-full <%= index === 0 ? 'bg-white' : 'bg-gray-400' %> hover:bg-white focus:outline-none cursor-pointer" data-index="<%= index %>"></a>
             <% }); %>
         </div>
+        <% } %>
     </div>
 </div>
 
 <!-- Banner Carousel Script -->
 <script>
+    // Wait for the DOM to be fully loaded
     document.addEventListener('DOMContentLoaded', function() {
-        const slides = document.querySelectorAll('.banner-slide');
-        const indicators = document.querySelectorAll('.banner-indicator');
-        const prevButton = document.getElementById('prev-banner');
-        const nextButton = document.getElementById('next-banner');
-        let currentIndex = 0;
+        // Get all the elements we need
+        var slides = document.querySelectorAll('.banner-slide');
+        var prevButton = document.getElementById('prev-banner');
+        var nextButton = document.getElementById('next-banner');
+        var indicators = document.querySelectorAll('.banner-indicator');
         
+        // Only proceed if we have multiple slides
+        if (slides.length <= 1) return;
+        
+        console.log('Carousel initialized with', slides.length, 'slides');
+        
+        var currentIndex = 0;
+        var interval;
+        
+        // Function to show a specific slide
         function showSlide(index) {
+            console.log('Showing slide', index);
+            
             // Hide all slides
-            slides.forEach(slide => {
-                slide.classList.remove('opacity-100');
-                slide.classList.add('opacity-0');
-            });
+            for (var i = 0; i < slides.length; i++) {
+                slides[i].style.display = 'none';
+            }
+            
+            // Show the selected slide
+            slides[index].style.display = 'block';
             
             // Update indicators
-            indicators.forEach(indicator => {
-                indicator.classList.remove('bg-white');
-                indicator.classList.add('bg-gray-400');
-            });
+            for (var j = 0; j < indicators.length; j++) {
+                indicators[j].classList.remove('bg-white');
+                indicators[j].classList.add('bg-gray-400');
+            }
             
-            // Show current slide
-            slides[index].classList.remove('opacity-0');
-            slides[index].classList.add('opacity-100');
-            
-            // Update current indicator
             indicators[index].classList.remove('bg-gray-400');
             indicators[index].classList.add('bg-white');
+            
+            // Pause all videos
+            var videos = document.querySelectorAll('.banner-slide video');
+            for (var k = 0; k < videos.length; k++) {
+                videos[k].pause();
+            }
+            
+            // Play video if current slide has one
+            var currentVideo = slides[index].querySelector('video');
+            if (currentVideo) {
+                currentVideo.play();
+            }
             
             currentIndex = index;
         }
         
-        // Set up automatic rotation
-        let interval = setInterval(() => {
-            let nextIndex = (currentIndex + 1) % slides.length;
-            showSlide(nextIndex);
-        }, 5000);
-        
-        // Previous button
-        prevButton.addEventListener('click', () => {
+        // Function to show the previous slide
+        function showPrevSlide() {
             clearInterval(interval);
-            let prevIndex = (currentIndex - 1 + slides.length) % slides.length;
+            var prevIndex = (currentIndex - 1 + slides.length) % slides.length;
             showSlide(prevIndex);
-            interval = setInterval(() => {
-                let nextIndex = (currentIndex + 1) % slides.length;
-                showSlide(nextIndex);
-            }, 5000);
-        });
+            startAutoRotation();
+        }
         
-        // Next button
-        nextButton.addEventListener('click', () => {
+        // Function to show the next slide
+        function showNextSlide() {
             clearInterval(interval);
-            let nextIndex = (currentIndex + 1) % slides.length;
+            var nextIndex = (currentIndex + 1) % slides.length;
             showSlide(nextIndex);
-            interval = setInterval(() => {
-                let nextIndex = (currentIndex + 1) % slides.length;
-                showSlide(nextIndex);
-            }, 5000);
-        });
+            startAutoRotation();
+        }
         
-        // Indicator buttons
-        indicators.forEach((indicator, index) => {
-            indicator.addEventListener('click', () => {
-                clearInterval(interval);
-                showSlide(index);
-                interval = setInterval(() => {
-                    let nextIndex = (currentIndex + 1) % slides.length;
-                    showSlide(nextIndex);
-                }, 5000);
+        // Function to start automatic rotation
+        function startAutoRotation() {
+            interval = setInterval(function() {
+                var nextIndex = (currentIndex + 1) % slides.length;
+                showSlide(nextIndex);
+            }, 6000);
+        }
+        
+        // Add event listeners to the previous and next buttons
+        if (prevButton) {
+            prevButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Previous button clicked');
+                showPrevSlide();
+                return false;
             });
-        });
+        }
+        
+        if (nextButton) {
+            nextButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Next button clicked');
+                showNextSlide();
+                return false;
+            });
+        }
+        
+        // Add event listeners to the indicators
+        for (var l = 0; l < indicators.length; l++) {
+            (function(index) {
+                indicators[index].addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Indicator', index, 'clicked');
+                    clearInterval(interval);
+                    showSlide(index);
+                    startAutoRotation();
+                    return false;
+                });
+            })(l);
+        }
+        
+        // Start automatic rotation
+        startAutoRotation();
     });
 </script>
 <% } %>
