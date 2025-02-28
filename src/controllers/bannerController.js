@@ -205,12 +205,21 @@ exports.deleteBanner = async (req, res) => {
 
         // Delete the file
         try {
-            const filePath = path.join(__dirname, '../../public', banner.mediaPath);
+            // Remove the leading slash if it exists
+            const mediaPath = banner.mediaPath.startsWith('/') ? banner.mediaPath.substring(1) : banner.mediaPath;
+            const filePath = path.join(__dirname, '../../public', mediaPath);
+            
+            logger.info(`Attempting to delete file at: ${filePath}`);
+            
             if (fs.existsSync(filePath)) {
                 await unlinkAsync(filePath);
+                logger.info(`Successfully deleted file: ${filePath}`);
+            } else {
+                logger.warn(`File not found for deletion: ${filePath}`);
             }
         } catch (err) {
             logger.error(`Error deleting banner file: ${banner.mediaPath}`, err);
+            // Continue with banner deletion even if file deletion fails
         }
 
         // Delete the banner record
