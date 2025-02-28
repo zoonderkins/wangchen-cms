@@ -128,11 +128,18 @@ exports.updateBanner = async (req, res) => {
 
         // If a new file is uploaded, update the media info
         if (req.file) {
-            // Delete the old file
+            // Delete the old file if it exists
             try {
-                const oldFilePath = path.join(__dirname, '../../public', banner.mediaPath);
+                // The actual physical path on disk
+                const oldFilePath = path.join(process.cwd(), 'public', banner.mediaPath);
+                
+                logger.info(`Attempting to delete old file at: ${oldFilePath}`);
+                
                 if (fs.existsSync(oldFilePath)) {
                     await unlinkAsync(oldFilePath);
+                    logger.info(`Successfully deleted old file: ${oldFilePath}`);
+                } else {
+                    logger.warn(`Old file not found for deletion: ${oldFilePath}`);
                 }
             } catch (err) {
                 logger.error(`Error deleting old banner file: ${banner.mediaPath}`, err);
@@ -205,9 +212,8 @@ exports.deleteBanner = async (req, res) => {
 
         // Delete the file
         try {
-            // Remove the leading slash if it exists
-            const mediaPath = banner.mediaPath.startsWith('/') ? banner.mediaPath.substring(1) : banner.mediaPath;
-            const filePath = path.join(__dirname, '../../public', mediaPath);
+            // The actual physical path on disk
+            const filePath = path.join(process.cwd(), 'public', banner.mediaPath);
             
             logger.info(`Attempting to delete file at: ${filePath}`);
             
