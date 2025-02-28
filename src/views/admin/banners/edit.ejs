@@ -13,10 +13,10 @@
             <h2 class="text-lg font-semibold mb-2">Current Media</h2>
             <div class="border rounded p-4 flex justify-center">
                 <% if (banner.mediaType === 'image') { %>
-                    <img src="<%= banner.mediaPath.replace('public', '') %>" alt="<%= banner.title %>" class="max-h-64 object-contain">
+                    <img src="<%= banner.mediaPath.replace(/^public/, '') %>" alt="<%= banner.title %>" class="max-h-64 object-contain">
                 <% } else { %>
                     <video class="max-h-64" controls>
-                        <source src="<%= banner.mediaPath.replace('public', '') %>" type="video/mp4">
+                        <source src="<%= banner.mediaPath.replace(/^public/, '') %>" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
                 <% } %>

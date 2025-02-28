@@ -54,12 +54,15 @@ exports.createBanner = async (req, res) => {
         // Determine if it's an image or video based on mimetype
         const mediaType = req.file.mimetype.startsWith('image/') ? 'image' : 'video';
         
+        // Store the path relative to the public directory for proper URL generation
+        const relativePath = '/uploads/banners/' + path.basename(req.file.path);
+        
         await prisma.banner.create({
             data: {
                 title,
                 description,
                 url,
-                mediaPath: req.file.path,
+                mediaPath: relativePath,
                 mediaType,
                 isActive: isActive === 'true',
                 userId: req.session.user.id
@@ -127,13 +130,17 @@ exports.updateBanner = async (req, res) => {
         if (req.file) {
             // Delete the old file
             try {
-                await unlinkAsync(banner.mediaPath);
+                const oldFilePath = path.join(__dirname, '../../public', banner.mediaPath);
+                if (fs.existsSync(oldFilePath)) {
+                    await unlinkAsync(oldFilePath);
+                }
             } catch (err) {
                 logger.error(`Error deleting old banner file: ${banner.mediaPath}`, err);
             }
 
             // Update with new file info
-            updateData.mediaPath = req.file.path;
+            const relativePath = '/uploads/banners/' + path.basename(req.file.path);
+            updateData.mediaPath = relativePath;
             updateData.mediaType = req.file.mimetype.startsWith('image/') ? 'image' : 'video';
         }
 
@@ -198,7 +205,10 @@ exports.deleteBanner = async (req, res) => {
 
         // Delete the file
         try {
-            await unlinkAsync(banner.mediaPath);
+            const filePath = path.join(__dirname, '../../public', banner.mediaPath);
+            if (fs.existsSync(filePath)) {
+                await unlinkAsync(filePath);
+            }
         } catch (err) {
             logger.error(`Error deleting banner file: ${banner.mediaPath}`, err);
         }
