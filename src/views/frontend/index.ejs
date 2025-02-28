@@ -1,5 +1,129 @@
 <%- contentFor('body') %>
 
+<% if (banners && banners.length > 0) { %>
+<!-- Banner Carousel -->
+<div class="relative w-full overflow-hidden bg-gray-100 mb-8">
+    <!-- Banner Container -->
+    <div id="banner-carousel" class="relative w-full">
+        <% banners.forEach((banner, index) => { %>
+            <div class="banner-slide absolute w-full transition-opacity duration-500 <%= index === 0 ? 'opacity-100' : 'opacity-0' %>" style="height: 400px;">
+                <% if (banner.mediaType === 'image') { %>
+                    <img src="<%= banner.mediaPath %>" alt="<%= banner.title %>" class="w-full h-full object-cover">
+                <% } else if (banner.mediaType === 'video') { %>
+                    <video autoplay muted loop class="w-full h-full object-cover">
+                        <source src="<%= banner.mediaPath %>" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                <% } %>
+                <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-4">
+                    <h2 class="text-xl font-bold"><%= banner.title %></h2>
+                    <% if (banner.description) { %>
+                        <p class="mt-2"><%= banner.description %></p>
+                    <% } %>
+                    <% if (banner.url) { %>
+                        <a href="<%= banner.url %>" class="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Learn More</a>
+                    <% } %>
+                </div>
+            </div>
+        <% }); %>
+        
+        <!-- Navigation Arrows -->
+        <button id="prev-banner" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+        <button id="next-banner" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+        </button>
+        
+        <!-- Indicators -->
+        <div class="absolute bottom-20 left-0 right-0 flex justify-center space-x-2">
+            <% banners.forEach((_, index) => { %>
+                <button class="banner-indicator h-2 w-2 rounded-full <%= index === 0 ? 'bg-white' : 'bg-gray-400' %>" data-index="<%= index %>"></button>
+            <% }); %>
+        </div>
+    </div>
+</div>
+
+<!-- Banner Carousel Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const slides = document.querySelectorAll('.banner-slide');
+        const indicators = document.querySelectorAll('.banner-indicator');
+        const prevButton = document.getElementById('prev-banner');
+        const nextButton = document.getElementById('next-banner');
+        let currentIndex = 0;
+        
+        function showSlide(index) {
+            // Hide all slides
+            slides.forEach(slide => {
+                slide.classList.remove('opacity-100');
+                slide.classList.add('opacity-0');
+            });
+            
+            // Update indicators
+            indicators.forEach(indicator => {
+                indicator.classList.remove('bg-white');
+                indicator.classList.add('bg-gray-400');
+            });
+            
+            // Show current slide
+            slides[index].classList.remove('opacity-0');
+            slides[index].classList.add('opacity-100');
+            
+            // Update current indicator
+            indicators[index].classList.remove('bg-gray-400');
+            indicators[index].classList.add('bg-white');
+            
+            currentIndex = index;
+        }
+        
+        // Set up automatic rotation
+        let interval = setInterval(() => {
+            let nextIndex = (currentIndex + 1) % slides.length;
+            showSlide(nextIndex);
+        }, 5000);
+        
+        // Previous button
+        prevButton.addEventListener('click', () => {
+            clearInterval(interval);
+            let prevIndex = (currentIndex - 1 + slides.length) % slides.length;
+            showSlide(prevIndex);
+            interval = setInterval(() => {
+                let nextIndex = (currentIndex + 1) % slides.length;
+                showSlide(nextIndex);
+            }, 5000);
+        });
+        
+        // Next button
+        nextButton.addEventListener('click', () => {
+            clearInterval(interval);
+            let nextIndex = (currentIndex + 1) % slides.length;
+            showSlide(nextIndex);
+            interval = setInterval(() => {
+                let nextIndex = (currentIndex + 1) % slides.length;
+                showSlide(nextIndex);
+            }, 5000);
+        });
+        
+        // Indicator buttons
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                clearInterval(interval);
+                showSlide(index);
+                interval = setInterval(() => {
+                    let nextIndex = (currentIndex + 1) % slides.length;
+                    showSlide(nextIndex);
+                }, 5000);
+            });
+        });
+    });
+</script>
+<% } %>
+
 <div class="container mx-auto px-4 py-8">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- Categories Section -->

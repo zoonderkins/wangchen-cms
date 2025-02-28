@@ -15,6 +15,7 @@ graph TB
     ADMIN --> ADMIN_ARTICLES["admin/articles/*"]
     ADMIN --> ADMIN_CATEGORIES["admin/categories/*"]
     ADMIN --> ADMIN_MEDIA["admin/media/*"]
+    ADMIN --> ADMIN_BANNERS["admin/banners/*"]
     
     %% Frontend Routes
     FRONTEND --> HOME["/"]
@@ -32,6 +33,7 @@ graph TB
         CATPERM_CTRL[CategoryPermissionController]
         MEDIA_CTRL[MediaController]
         DASH_CTRL[DashboardController]
+        BANNER_CTRL[BannerController]
     end
     
     %% Models Layer via Prisma
@@ -41,12 +43,14 @@ graph TB
         CATEGORY_MODEL[Category]
         MEDIA_MODEL[Media]
         CAT_PERM[CategoryPermission]
+        BANNER_MODEL[Banner]
     end
     
     %% Middleware Components
     subgraph Middleware
         AUTH_MID[auth.js]
         UPLOAD[upload.js]
+        BANNER_UPLOAD[bannerUpload.js]
         ERROR[error.js]
     end
     
@@ -57,7 +61,9 @@ graph TB
         LAYOUTS --> FRONTEND_LAYOUT[Frontend Layout]
         
         PAGES[Pages] --> ADMIN_VIEWS[Admin Views]
+        ADMIN_VIEWS --> BANNER_VIEWS[Banner Views]
         PAGES --> FRONTEND_VIEWS[Frontend Views]
+        FRONTEND_VIEWS --> BANNER_CAROUSEL[Banner Carousel]
         
         PARTIALS[Partials] --> NAV[Navigation]
         PARTIALS --> FORMS[Forms]
@@ -70,6 +76,7 @@ graph TB
     ADMIN_CATEGORIES --> CATEGORY_CTRL
     ADMIN_MEDIA --> MEDIA_CTRL
     ADMIN_DASHBOARD --> DASH_CTRL
+    ADMIN_BANNERS --> BANNER_CTRL
     
     AUTH_CTRL --> USER
     USER_CTRL --> USER
@@ -77,6 +84,7 @@ graph TB
     CATEGORY_CTRL --> CATEGORY_MODEL
     CATPERM_CTRL --> CAT_PERM
     MEDIA_CTRL --> MEDIA_MODEL
+    BANNER_CTRL --> BANNER_MODEL
     
     %% Database Relationships
     USER --> ARTICLE_MODEL
@@ -84,6 +92,11 @@ graph TB
     MEDIA_MODEL --> ARTICLE_MODEL
     USER --> CAT_PERM
     CATEGORY_MODEL --> CAT_PERM
+    USER --> BANNER_MODEL
+    
+    %% Banner Flow
+    BANNER_CTRL --> BANNER_UPLOAD
+    HOME --> BANNER_CAROUSEL
     
     %% Style Definitions
     classDef controller fill:#f9f,stroke:#333,stroke-width:2px
@@ -93,8 +106,8 @@ graph TB
     classDef view fill:#ffb,stroke:#333,stroke-width:2px
     
     %% Apply Styles
-    class AUTH_CTRL,USER_CTRL,ARTICLE_CTRL,CATEGORY_CTRL,CATPERM_CTRL,MEDIA_CTRL,DASH_CTRL controller
-    class USER,ARTICLE_MODEL,CATEGORY_MODEL,MEDIA_MODEL,CAT_PERM model
-    class ADMIN_AUTH,ADMIN_USERS,ADMIN_ARTICLES,ADMIN_CATEGORIES,ADMIN_MEDIA,HOME,ARTICLES,ARTICLE,CATEGORY route
-    class AUTH_MID,UPLOAD,ERROR middleware
-    class LAYOUTS,PAGES,PARTIALS,ADMIN_VIEWS,FRONTEND_VIEWS view
+    class AUTH_CTRL,USER_CTRL,ARTICLE_CTRL,CATEGORY_CTRL,CATPERM_CTRL,MEDIA_CTRL,DASH_CTRL,BANNER_CTRL controller
+    class USER,ARTICLE_MODEL,CATEGORY_MODEL,MEDIA_MODEL,CAT_PERM,BANNER_MODEL model
+    class ADMIN_AUTH,ADMIN_USERS,ADMIN_ARTICLES,ADMIN_CATEGORIES,ADMIN_MEDIA,ADMIN_BANNERS,HOME,ARTICLES,ARTICLE,CATEGORY route
+    class AUTH_MID,UPLOAD,BANNER_UPLOAD,ERROR middleware
+    class LAYOUTS,PAGES,PARTIALS,ADMIN_VIEWS,FRONTEND_VIEWS,BANNER_VIEWS,BANNER_CAROUSEL view

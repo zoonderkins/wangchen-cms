@@ -1,0 +1,96 @@
+<%- contentFor('body') %>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Edit Banner</h1>
+        <a href="/admin/banners" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Banners
+        </a>
+    </div>
+
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <div class="mb-6">
+            <h2 class="text-lg font-semibold mb-2">Current Media</h2>
+            <div class="border rounded p-4 flex justify-center">
+                <% if (banner.mediaType === 'image') { %>
+                    <img src="<%= banner.mediaPath.replace('public', '') %>" alt="<%= banner.title %>" class="max-h-64 object-contain">
+                <% } else { %>
+                    <video class="max-h-64" controls>
+                        <source src="<%= banner.mediaPath.replace('public', '') %>" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                <% } %>
+            </div>
+        </div>
+
+        <form action="/admin/banners/edit/<%= banner.id %>" method="POST" enctype="multipart/form-data">
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="title">
+                    Title
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="title" name="title" type="text" value="<%= banner.title %>" placeholder="Enter banner title" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
+                    Description
+                </label>
+                <textarea
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="description" name="description" rows="3" placeholder="Enter banner description"><%= banner.description || '' %></textarea>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="url">
+                    URL (Optional)
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="url" name="url" type="url" value="<%= banner.url || '' %>" placeholder="https://example.com">
+                <p class="text-gray-600 text-xs italic mt-1">Link to redirect users when they click on the banner</p>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="media">
+                    Change Media (Image or Video)
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="media" name="media" type="file" accept="image/*,video/mp4">
+                <p class="text-gray-600 text-xs italic mt-1">Upload a new image or MP4 video (max 20MB). Leave empty to keep current media.</p>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2">
+                    Status
+                </label>
+                <div class="flex items-center">
+                    <input type="radio" id="active" name="isActive" value="true" class="mr-2" <%= banner.isActive ? 'checked' : '' %>>
+                    <label for="active" class="mr-4">Active</label>
+                    
+                    <input type="radio" id="inactive" name="isActive" value="false" class="mr-2" <%= !banner.isActive ? 'checked' : '' %>>
+                    <label for="inactive">Inactive</label>
+                </div>
+                <p class="text-gray-600 text-xs italic mt-1">Active banners will be displayed on the homepage</p>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <form action="/admin/banners/<%= banner.id %>" method="POST" class="inline"
+                    onsubmit="return confirm('Are you sure you want to delete this banner?');">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Delete Banner
+                    </button>
+                </form>
+                
+                <button
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    type="submit">
+                    Update Banner
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

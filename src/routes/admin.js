@@ -16,6 +16,7 @@ const mediaController = require('../controllers/mediaController');
 const dashboardController = require('../controllers/dashboardController');
 const categoryController = require('../controllers/categoryController');
 const categoryPermissionController = require('../controllers/categoryPermissionController');
+const bannerController = require('../controllers/bannerController');
 
 // Multer configuration
 const storage = multer.diskStorage({
@@ -158,5 +159,16 @@ router.get('/media/:id',
     hasPermission('manage_media'),
     mediaController.getMediaDetails
 );
+
+// Banner routes
+const bannerUpload = require('../middleware/bannerUpload');
+
+router.get('/banners', hasRole(['super_admin', 'admin', 'editor']), bannerController.listBanners);
+router.get('/banners/create', hasRole(['super_admin', 'admin', 'editor']), bannerController.renderCreateBanner);
+router.post('/banners', hasRole(['super_admin', 'admin', 'editor']), bannerUpload, bannerController.createBanner);
+router.get('/banners/edit/:id', hasRole(['super_admin', 'admin', 'editor']), bannerController.renderEditBanner);
+router.post('/banners/edit/:id', hasRole(['super_admin', 'admin', 'editor']), bannerUpload, bannerController.updateBanner);
+router.post('/banners/toggle/:id', hasRole(['super_admin', 'admin', 'editor']), bannerController.toggleBannerStatus);
+router.delete('/banners/:id', hasRole(['super_admin', 'admin', 'editor']), bannerController.deleteBanner);
 
 module.exports = router;

@@ -85,21 +85,31 @@ router.use(async (req, res, next) => {
 // Home page
 router.get('/', async (req, res) => {
     try {
-        // Get latest articles
-        const articles = await prisma.article.findMany({
-            where: {
-                status: 'published'
-            },
-            orderBy: {
-                createdAt: 'desc'
-            },
-            take: 10,
-            include: {
-                category: true
-            }
-        });
+        // Get latest articles and active banners
+        const [articles, banners] = await Promise.all([
+            prisma.article.findMany({
+                where: {
+                    status: 'published'
+                },
+                orderBy: {
+                    createdAt: 'desc'
+                },
+                take: 10,
+                include: {
+                    category: true
+                }
+            }),
+            prisma.banner.findMany({
+                where: {
+                    isActive: true
+                },
+                orderBy: {
+                    createdAt: 'desc'
+                }
+            })
+        ]);
 
-        // Process articles to create clean excerpts
+        // Process articles to create excerpts
         const processedArticles = articles.map(article => ({
             ...article,
             excerpt: article.excerpt || createExcerpt(article.content)
@@ -108,13 +118,15 @@ router.get('/', async (req, res) => {
         res.render('frontend/index', {
             title: 'Home',
             articles: processedArticles,
+            banners,
             layout: 'layouts/frontend'
         });
     } catch (error) {
-        logger.error('Error loading home page:', error);
-        res.status(500).render('frontend/error', {
-            title: 'Error',
-            message: 'Error loading home page',
+        logger.error('Error loading homepage:', error);
+        res.render('frontend/index', {
+            title: 'Home',
+            articles: [],
+            banners: [],
             layout: 'layouts/frontend'
         });
     }
