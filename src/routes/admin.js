@@ -179,6 +179,7 @@ router.get('/pages', hasRole(['super_admin', 'admin', 'editor']), pageController
 router.get('/pages/create', hasRole(['super_admin', 'admin', 'editor']), pageController.renderCreatePage);
 router.post('/pages', hasRole(['super_admin', 'admin', 'editor']), pageAttachmentUpload, pageController.createPage);
 router.get('/pages/edit/:id', hasRole(['super_admin', 'admin', 'editor']), pageController.renderEditPage);
+router.post('/pages/:id', hasRole(['super_admin', 'admin', 'editor']), pageAttachmentUpload, pageController.updatePage);
 router.put('/pages/:id', hasRole(['super_admin', 'admin', 'editor']), pageAttachmentUpload, pageController.updatePage);
 router.post('/pages/:id/delete', hasRole(['super_admin', 'admin', 'editor']), pageController.deletePage);
 router.delete('/pages/attachment/:attachmentId', hasRole(['super_admin', 'admin', 'editor']), pageController.deleteAttachment);

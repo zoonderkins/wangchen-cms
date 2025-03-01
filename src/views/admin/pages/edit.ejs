@@ -26,7 +26,8 @@
                         <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
                             <form action="/admin/pages/<%= page.id %>" method="POST" enctype="multipart/form-data"
                                 id="pageForm">
-                                <input type="hidden" name="_method" value="PUT">
+                                <!-- We can keep this for API clients, but it's not needed for our POST route now -->
+                                <!-- <input type="hidden" name="_method" value="PUT"> -->
 
                                 <!-- Title -->
                                 <div class="mb-4">
@@ -329,7 +330,7 @@
                             ['bold', 'italic', 'underline', 'strike'],
                             [{ 'color': [] }, { 'background': [] }],
                             [{ 'align': [] }],
-                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
                             ['link', 'image', 'video'],
                             ['clean'],
                             ['code-block']
@@ -341,23 +342,23 @@
                 const quillEditor = document.getElementById('editor');
                 const htmlEditor = document.getElementById('htmlEditor');
                 const editorMode = '<%= page.editorMode %>' || 'editor';
-                
+
                 // Set initial content and editor mode
                 try {
                     const content = document.getElementById('content').value;
-                    
+
                     if (editorMode === 'html') {
                         // Show HTML editor and hide Quill
                         quillEditor.classList.add('hidden');
                         htmlEditor.classList.remove('hidden');
-                        
+
                         // Set the HTML content
                         htmlEditor.value = content;
                     } else {
                         // Show Quill editor and hide HTML
                         quillEditor.classList.remove('hidden');
                         htmlEditor.classList.add('hidden');
-                        
+
                         // Try to parse as JSON (Quill Delta format)
                         if (content) {
                             try {
@@ -375,13 +376,13 @@
 
                 // Handle editor mode toggle
                 const editorModeRadios = document.querySelectorAll('input[name="editorMode"]');
-                
+
                 editorModeRadios.forEach(radio => {
-                    radio.addEventListener('change', function() {
+                    radio.addEventListener('change', function () {
                         if (this.value === 'editor') {
                             quillEditor.classList.remove('hidden');
                             htmlEditor.classList.add('hidden');
-                            
+
                             // Transfer content from HTML to Quill if there's content
                             if (htmlEditor.value.trim()) {
                                 quill.clipboard.dangerouslyPasteHTML(htmlEditor.value);
@@ -389,7 +390,7 @@
                         } else {
                             quillEditor.classList.add('hidden');
                             htmlEditor.classList.remove('hidden');
-                            
+
                             // Transfer content from Quill to HTML
                             const quillHtml = quill.root.innerHTML;
                             htmlEditor.value = quillHtml;
@@ -398,10 +399,10 @@
                 });
 
                 // When form is submitted, update the hidden input with the active editor's contents
-                document.getElementById('pageForm').addEventListener('submit', function() {
+                document.getElementById('pageForm').addEventListener('submit', function () {
                     const content = document.getElementById('content');
                     const activeEditorMode = document.querySelector('input[name="editorMode"]:checked').value;
-                    
+
                     if (activeEditorMode === 'editor') {
                         // Store Quill content as Delta JSON
                         content.value = JSON.stringify(quill.getContents());
