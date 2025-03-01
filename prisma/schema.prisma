@@ -25,6 +25,7 @@ model User {
   uploads   Media[]
   categoryPermissions CategoryPermission[]
   banners   Banner[]
+  pages     Page[]
 
   @@map("Users")
 }
@@ -143,6 +144,48 @@ model Banner {
   userId      Int
 
   @@map("Banners")
+}
+
+model Page {
+  id              Int       @id @default(autoincrement())
+  title           String
+  slug            String    @unique
+  content         String    @db.LongText
+  editorMode      String    @default("editor") // "editor" or "html"
+  status          Status    @default(draft)
+  showInNavigation Boolean  @default(false)
+  navigationOrder Int?
+  metaTitle       String?
+  metaDescription String?   @db.Text
+  metaKeywords    String?
+  publishedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
+  // Relations
+  author         User      @relation(fields: [authorId], references: [id])
+  authorId       Int
+  attachments    PageAttachment[]
+
+  @@map("Pages")
+}
+
+model PageAttachment {
+  id           Int       @id @default(autoincrement())
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  path         String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relations
+  page         Page      @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  pageId       Int
+
+  @@map("PageAttachments")
 }
 
 enum Status {

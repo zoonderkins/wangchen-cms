@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const prisma = require('../lib/prisma');
 const logger = require('../config/logger');
+const QuillDeltaToHtmlConverter = require('quill-delta-to-html').QuillDeltaToHtmlConverter;
 
 // Helper function to create clean excerpts
 function createExcerpt(content, maxLength = 200) {
@@ -73,8 +74,27 @@ router.use(async (req, res, next) => {
             }
         });
 
-        // Make categories available to all views
+        // Get navigation pages
+        const navigationPages = await prisma.page.findMany({
+            where: {
+                status: 'published',
+                showInNavigation: true,
+                deletedAt: null
+            },
+            select: {
+                id: true,
+                title: true,
+                slug: true,
+                navigationOrder: true
+            },
+            orderBy: {
+                navigationOrder: 'asc'
+            }
+        });
+
+        // Make categories and navigation pages available to all views
         res.locals.categories = categories;
+        res.locals.navigationPages = navigationPages;
         next();
     } catch (error) {
         logger.error('Error in frontend middleware:', error);
@@ -430,6 +450,68 @@ router.get('/articles/:id', async (req, res) => {
         res.status(500).render('frontend/error', {
             title: 'Error',
             message: 'Error loading article page',
+            layout: 'layouts/frontend'
+        });
+    }
+});
+
+// Page route
+router.get('/page/:slug', async (req, res) => {
+    try {
+        const { slug } = req.params;
+        
+        // Find the page by slug
+        const page = await prisma.page.findFirst({
+            where: {
+                slug,
+                status: 'published',
+                deletedAt: null
+            },
+            include: {
+                author: {
+                    select: {
+                        username: true
+                    }
+                },
+                attachments: true
+            }
+        });
+        
+        if (!page) {
+            logger.warn(`Page not found: ${slug}`);
+            return res.status(404).render('frontend/404', {
+                title: 'Page Not Found',
+                layout: 'layouts/frontend'
+            });
+        }
+        
+        // Process content if it's in Quill Delta format
+        try {
+            // Check if content is in Quill Delta JSON format
+            const contentObj = JSON.parse(page.content);
+            if (contentObj.ops) {
+                const converter = new QuillDeltaToHtmlConverter(contentObj.ops, {});
+                page.content = converter.convert();
+            }
+        } catch (e) {
+            // If not JSON or conversion fails, use content as is (HTML)
+            logger.debug(`Content for page ${slug} is not in Quill Delta format or couldn't be converted`);
+        }
+        
+        // Render the page
+        res.render('frontend/page', {
+            title: page.metaTitle || page.title,
+            metaDescription: page.metaDescription,
+            metaKeywords: page.metaKeywords,
+            page,
+            layout: 'layouts/frontend'
+        });
+    } catch (error) {
+        logger.error(`Error rendering page ${req.params.slug}:`, error);
+        res.status(500).render('error', {
+            title: 'Error',
+            message: 'An unexpected error occurred',
+            error: process.env.NODE_ENV === 'development' ? error : {},
             layout: 'layouts/frontend'
         });
     }

@@ -17,6 +17,7 @@ const dashboardController = require('../controllers/dashboardController');
 const categoryController = require('../controllers/categoryController');
 const categoryPermissionController = require('../controllers/categoryPermissionController');
 const bannerController = require('../controllers/bannerController');
+const pageController = require('../controllers/pageController');
 
 // Multer configuration
 const storage = multer.diskStorage({
@@ -170,5 +171,16 @@ router.get('/banners/edit/:id', hasRole(['super_admin', 'admin', 'editor']), ban
 router.post('/banners/edit/:id', hasRole(['super_admin', 'admin', 'editor']), bannerUpload, bannerController.updateBanner);
 router.post('/banners/toggle/:id', hasRole(['super_admin', 'admin', 'editor']), bannerController.toggleBannerStatus);
 router.delete('/banners/:id', hasRole(['super_admin', 'admin', 'editor']), bannerController.deleteBanner);
+
+// Page routes
+const pageAttachmentUpload = require('../middleware/pageAttachmentUpload');
+
+router.get('/pages', hasRole(['super_admin', 'admin', 'editor']), pageController.listPages);
+router.get('/pages/create', hasRole(['super_admin', 'admin', 'editor']), pageController.renderCreatePage);
+router.post('/pages', hasRole(['super_admin', 'admin', 'editor']), pageAttachmentUpload, pageController.createPage);
+router.get('/pages/edit/:id', hasRole(['super_admin', 'admin', 'editor']), pageController.renderEditPage);
+router.put('/pages/:id', hasRole(['super_admin', 'admin', 'editor']), pageAttachmentUpload, pageController.updatePage);
+router.post('/pages/:id/delete', hasRole(['super_admin', 'admin', 'editor']), pageController.deletePage);
+router.delete('/pages/attachment/:attachmentId', hasRole(['super_admin', 'admin', 'editor']), pageController.deleteAttachment);
 
 module.exports = router;
