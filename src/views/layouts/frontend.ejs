@@ -30,6 +30,13 @@
                             </a>
                             <% }); %>
                                 <% } %>
+                                    <% if (navigationPages && navigationPages.length> 0) { %>
+                                        <% navigationPages.forEach(function(page) { %>
+                                            <a href="/page/<%= page.slug %>" class="text-gray-700 hover:text-gray-900">
+                                                <%= page.title %>
+                                            </a>
+                                            <% }); %>
+                                                <% } %>
                 </div>
                 <!-- Mobile Menu Button -->
                 <button class="md:hidden">
@@ -47,7 +54,16 @@
                             </a>
                             <% }); %>
                                 <% } %>
-                                    <a href="/contact" class="block text-gray-700 hover:text-gray-900">Contact</a>
+                                    <% if (navigationPages && navigationPages.length> 0) { %>
+                                        <% navigationPages.forEach(function(page) { %>
+                                            <a href="/page/<%= page.slug %>"
+                                                class="block text-gray-700 hover:text-gray-900">
+                                                <%= page.title %>
+                                            </a>
+                                            <% }); %>
+                                                <% } %>
+                                                    <a href="/contact"
+                                                        class="block text-gray-700 hover:text-gray-900">Contact</a>
                 </div>
             </div>
         </nav>
@@ -95,6 +111,16 @@
                                 </li>
                                 <% }); %>
                                     <% } %>
+                                        <% if (navigationPages && navigationPages.length> 0) { %>
+                                            <% navigationPages.forEach(function(page) { %>
+                                                <li>
+                                                    <a href="/page/<%= page.slug %>"
+                                                        class="text-gray-400 hover:text-white">
+                                                        <%= page.title %>
+                                                    </a>
+                                                </li>
+                                                <% }); %>
+                                                    <% } %>
                     </ul>
                 </div>
                 <div>
