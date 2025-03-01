@@ -227,19 +227,25 @@ exports.updatePage = async (req, res) => {
         const { 
             title, content, status, showInNavigation, 
             navigationOrder, metaTitle, metaDescription, metaKeywords,
-            deletedAttachments 
+            deletedAttachments, editorMode
         } = req.body;
 
-        // Convert Quill Delta to HTML
+        // Process content based on editor mode
         let htmlContent = '';
-        try {
-            const delta = JSON.parse(content);
-            const converter = new QuillDeltaToHtmlConverter(delta.ops, {});
-            htmlContent = converter.convert();
-        } catch (e) {
-            // If parsing fails, use content as is (might be HTML already)
+        if (editorMode === 'editor') {
+            // Convert Quill Delta to HTML
+            try {
+                const delta = JSON.parse(content);
+                const converter = new QuillDeltaToHtmlConverter(delta.ops, {});
+                htmlContent = converter.convert();
+            } catch (e) {
+                // If parsing fails, use content as is
+                htmlContent = content;
+                console.error('Error converting Quill content:', e);
+            }
+        } else {
+            // Use raw HTML content
             htmlContent = content;
-            console.error('Error converting Quill content:', e);
         }
 
         // Generate slug from title
@@ -279,6 +285,7 @@ exports.updatePage = async (req, res) => {
             data: {
                 title,
                 content: htmlContent,
+                editorMode: editorMode || 'editor',
                 slug,
                 status,
                 showInNavigation: showInNavigation === 'on',
