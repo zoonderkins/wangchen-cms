@@ -18,6 +18,7 @@ const categoryController = require('../controllers/categoryController');
 const categoryPermissionController = require('../controllers/categoryPermissionController');
 const bannerController = require('../controllers/bannerController');
 const pageController = require('../controllers/pageController');
+const faqController = require('../controllers/faqController');
 
 // Multer configuration
 const storage = multer.diskStorage({
@@ -183,5 +184,21 @@ router.post('/pages/:id', hasRole(['super_admin', 'admin', 'editor']), pageAttac
 router.put('/pages/:id', hasRole(['super_admin', 'admin', 'editor']), pageAttachmentUpload, pageController.updatePage);
 router.post('/pages/:id/delete', hasRole(['super_admin', 'admin', 'editor']), pageController.deletePage);
 router.delete('/pages/attachment/:attachmentId', hasRole(['super_admin', 'admin', 'editor']), pageController.deleteAttachment);
+
+// FAQ Category Routes
+router.get('/faq/categories', hasRole(['super_admin', 'admin', 'editor']), faqController.listCategories);
+router.get('/faq/categories/create', hasRole(['super_admin', 'admin', 'editor']), faqController.renderCreateCategory);
+router.post('/faq/categories', hasRole(['super_admin', 'admin', 'editor']), faqController.createCategory);
+router.get('/faq/categories/edit/:id', hasRole(['super_admin', 'admin', 'editor']), faqController.renderEditCategory);
+router.post('/faq/categories/:id', hasRole(['super_admin', 'admin', 'editor']), faqController.updateCategory);
+router.post('/faq/categories/:id/delete', hasRole(['super_admin', 'admin', 'editor']), faqController.deleteCategory);
+
+// FAQ Item Routes
+router.get('/faq/items', hasRole(['super_admin', 'admin', 'editor']), faqController.listItems);
+router.get('/faq/items/create', hasRole(['super_admin', 'admin', 'editor']), faqController.renderCreateItem);
+router.post('/faq/items', hasRole(['super_admin', 'admin', 'editor']), faqController.createItem);
+router.get('/faq/items/edit/:id', hasRole(['super_admin', 'admin', 'editor']), faqController.renderEditItem);
+router.post('/faq/items/:id', hasRole(['super_admin', 'admin', 'editor']), faqController.updateItem);
+router.post('/faq/items/:id/delete', hasRole(['super_admin', 'admin', 'editor']), faqController.deleteItem);
 
 module.exports = router;

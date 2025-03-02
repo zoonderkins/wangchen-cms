@@ -1,0 +1,133 @@
+<%- contentFor('body') %>
+
+<div class="container px-6 mx-auto grid">
+    <h2 class="my-6 text-2xl font-semibold text-gray-700">
+        Create FAQ Item
+    </h2>
+
+    <!-- Flash Messages -->
+    <% if(typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
+        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+            <%= success_msg %>
+        </div>
+    <% } %>
+    <% if(typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+            <%= error_msg %>
+        </div>
+    <% } %>
+
+    <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
+        <form action="/admin/faq/items" method="POST">
+            <!-- Title -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700" for="title">
+                    Question/Title <span class="text-red-500">*</span>
+                </label>
+                <input
+                    class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                    type="text"
+                    id="title"
+                    name="title"
+                    placeholder="Enter the FAQ question or title"
+                    required
+                />
+            </div>
+            
+            <!-- Category -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700" for="categoryId">
+                    Category <span class="text-red-500">*</span>
+                </label>
+                <select
+                    class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                    id="categoryId"
+                    name="categoryId"
+                    required
+                >
+                    <option value="">Select a category</option>
+                    <% categories.forEach(function(category) { %>
+                        <option value="<%= category.id %>"><%= category.name %></option>
+                    <% }); %>
+                </select>
+            </div>
+            
+            <!-- Content -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700" for="content">
+                    Answer/Content <span class="text-red-500">*</span>
+                </label>
+                <div id="editor-container" class="h-64 mt-1"></div>
+                <input type="hidden" name="content" id="content">
+            </div>
+            
+            <!-- Order -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700" for="order">
+                    Display Order
+                </label>
+                <input
+                    class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                    type="number"
+                    id="order"
+                    name="order"
+                    placeholder="Enter display order (lower numbers appear first)"
+                    value="0"
+                />
+            </div>
+            
+            <!-- Status -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700" for="status">
+                    Status
+                </label>
+                <select
+                    class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                    id="status"
+                    name="status"
+                >
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                </select>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="flex justify-end mt-6">
+                <a href="/admin/faq/items" class="px-4 py-2 mr-2 text-sm font-medium leading-5 text-gray-700 transition-colors duration-150 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline-gray">
+                    Cancel
+                </a>
+                <button type="submit" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue">
+                    Create FAQ Item
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Include Quill.js -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var quill = new Quill('#editor-container', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],
+                    ['link', 'image'],
+                    ['clean']
+                ]
+            },
+            placeholder: 'Enter the answer content here...'
+        });
+        
+        // When form is submitted, update hidden input with Quill content
+        document.querySelector('form').addEventListener('submit', function() {
+            var contentInput = document.querySelector('#content');
+            contentInput.value = JSON.stringify(quill.getContents());
+        });
+    });
+</script>

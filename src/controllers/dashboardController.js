@@ -9,14 +9,23 @@ exports.renderDashboard = async (req, res) => {
             categoryCount,
             userCount,
             pageCount,
+            faqCategoryCount,
+            faqItemCount,
             recentArticles,
-            recentPages
+            recentPages,
+            recentFaqItems
         ] = await Promise.all([
             prisma.article.count(),
             prisma.media.count(),
             prisma.category.count(),
             prisma.user.count(),
             prisma.page.count(),
+            prisma.faqCategory.count({
+                where: { deletedAt: null }
+            }),
+            prisma.faqItem.count({
+                where: { deletedAt: null }
+            }),
             prisma.article.findMany({
                 take: 5,
                 orderBy: { createdAt: 'desc' },
@@ -37,6 +46,19 @@ exports.renderDashboard = async (req, res) => {
                         select: { username: true }
                     }
                 }
+            }),
+            prisma.faqItem.findMany({
+                take: 5,
+                orderBy: { createdAt: 'desc' },
+                where: { deletedAt: null },
+                include: {
+                    category: {
+                        select: { name: true }
+                    },
+                    author: {
+                        select: { username: true }
+                    }
+                }
             })
         ]);
 
@@ -48,10 +70,13 @@ exports.renderDashboard = async (req, res) => {
                 media: mediaCount,
                 categories: categoryCount,
                 users: userCount,
-                pages: pageCount
+                pages: pageCount,
+                faqCategories: faqCategoryCount,
+                faqItems: faqItemCount
             },
             recentArticles,
-            recentPages
+            recentPages,
+            recentFaqItems
         });
     } catch (error) {
         logger.error('Error loading dashboard:', error);

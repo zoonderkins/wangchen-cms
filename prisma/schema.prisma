@@ -26,6 +26,7 @@ model User {
   categoryPermissions CategoryPermission[]
   banners   Banner[]
   pages     Page[]
+  faqItems  FaqItem[]
 
   @@map("Users")
 }
@@ -186,6 +187,41 @@ model PageAttachment {
   pageId       Int
 
   @@map("PageAttachments")
+}
+
+model FaqCategory {
+  id          Int       @id @default(autoincrement())
+  name        String
+  slug        String    @unique
+  description String?   @db.Text
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  // Relations
+  faqItems    FaqItem[]
+
+  @@map("FaqCategories")
+}
+
+model FaqItem {
+  id          Int       @id @default(autoincrement())
+  title       String
+  content     String    @db.LongText
+  order       Int       @default(0)
+  status      Status    @default(draft)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  // Relations
+  category    FaqCategory @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  author      User        @relation(fields: [authorId], references: [id])
+  authorId    Int
+
+  @@map("FaqItems")
 }
 
 enum Status {

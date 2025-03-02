@@ -12,6 +12,16 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
+    <style>
+        .dropdown-menu {
+            display: none;
+            z-index: 50;
+        }
+        .dropdown-menu.show {
+            display: block;
+        }
+    </style>
+
     <!-- Additional Styles -->
     <%- style %>
 </head>
@@ -39,6 +49,17 @@
                                     class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Categories</a>
                                 <a href="/admin/banners"
                                     class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Banners</a>
+                                <div class="relative inline-block text-left dropdown">
+                                    <button type="button" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium dropdown-toggle">
+                                        FAQ <i class="fas fa-chevron-down ml-1"></i>
+                                    </button>
+                                    <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 dropdown-menu">
+                                        <div class="py-1" role="menu" aria-orientation="vertical">
+                                            <a href="/admin/faq/categories" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Categories</a>
+                                            <a href="/admin/faq/items" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">FAQ Items</a>
+                                        </div>
+                                    </div>
+                                </div>
                                 <% if (user.role && user.role==='super_admin' ) { %>
                                     <a href="/admin/users"
                                         class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Users</a>
@@ -88,6 +109,11 @@
                     class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Categories</a>
                 <a href="/admin/banners"
                     class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Banners</a>
+                <div class="border-t border-gray-700 my-1"></div>
+                <a href="/admin/faq/categories"
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">FAQ Categories</a>
+                <a href="/admin/faq/items"
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">FAQ Items</a>
                 <% if (typeof user !=='undefined' && user && user.role && user.role==='super_admin' ) { %>
                     <a href="/admin/users"
                         class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Users</a>
@@ -147,6 +173,23 @@
                                 document.getElementById('mobile-menu-button').addEventListener('click', function() {
                                     const mobileMenu = document.getElementById('mobile-menu');
                                     mobileMenu.classList.toggle('hidden');
+                                });
+
+                                // FAQ dropdown toggle
+                                const dropdownToggle = document.querySelector('.dropdown-toggle');
+                                const dropdownMenu = document.querySelector('.dropdown-menu');
+
+                                dropdownToggle.addEventListener('click', function(e) {
+                                    e.preventDefault();
+                                    dropdownMenu.classList.toggle('show');
+                                });
+                                
+                                // Close dropdown when clicking outside
+                                document.addEventListener('click', function(e) {
+                                    const dropdown = document.querySelector('.dropdown');
+                                    if (!dropdown.contains(e.target)) {
+                                        dropdownMenu.classList.remove('show');
+                                    }
                                 });
                             </script>
 </body>

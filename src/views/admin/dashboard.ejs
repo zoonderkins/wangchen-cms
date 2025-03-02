@@ -4,7 +4,7 @@
     <h1 class="text-3xl font-bold mb-8">Welcome, <%= user.username %></h1>
 
     <!-- Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
         <div class="bg-white rounded-lg shadow p-6">
             <h3 class="text-gray-500 text-sm font-medium">Total Articles</h3>
             <p class="text-3xl font-bold text-gray-900"><%= stats.articles %></p>
@@ -26,6 +26,11 @@
             <a href="/admin/categories" class="mt-2 inline-block text-blue-600 hover:text-blue-800">View all categories →</a>
         </div>
         <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-gray-500 text-sm font-medium">FAQ Items</h3>
+            <p class="text-3xl font-bold text-gray-900"><%= stats.faqItems %></p>
+            <a href="/admin/faq/items" class="mt-2 inline-block text-blue-600 hover:text-blue-800">Manage FAQ items →</a>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
             <h3 class="text-gray-500 text-sm font-medium">Users</h3>
             <p class="text-3xl font-bold text-gray-900"><%= stats.users %></p>
             <% if (user.role === 'super_admin') { %>
@@ -35,7 +40,7 @@
     </div>
 
     <!-- Content Management -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <!-- Recent Articles -->
         <div class="bg-white rounded-lg shadow">
             <div class="px-6 py-4 border-b flex justify-between items-center">
@@ -89,16 +94,46 @@
                                 <span>By <%= page.author ? page.author.username : 'Unknown' %></span>
                                 <span class="mx-2">•</span>
                                 <span><%= new Date(page.createdAt).toLocaleDateString() %></span>
-                                <span class="mx-2">•</span>
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= page.status === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' %>">
-                                    <%= page.status.charAt(0).toUpperCase() + page.status.slice(1) %>
-                                </span>
                             </div>
                         </div>
                     <% }); %>
                 <% } else { %>
                     <div class="px-6 py-4 text-gray-500">
                         No pages yet. <a href="/admin/pages/create" class="text-blue-600 hover:text-blue-800">Create your first page</a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Recent FAQ Items -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b flex justify-between items-center">
+                <h2 class="text-xl font-semibold">Recent FAQ Items</h2>
+                <a href="/admin/faq/items/create" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    <i class="fas fa-plus mr-2"></i> New FAQ
+                </a>
+            </div>
+            <div class="divide-y">
+                <% if (recentFaqItems && recentFaqItems.length > 0) { %>
+                    <% recentFaqItems.forEach(item => { %>
+                        <div class="px-6 py-4">
+                            <a href="/admin/faq/items/edit/<%= item.id %>" class="text-lg font-medium text-blue-600 hover:text-blue-800">
+                                <%= item.title %>
+                            </a>
+                            <div class="mt-1 text-sm text-gray-500">
+                                <span>By <%= item.author ? item.author.username : 'Unknown' %></span>
+                                <% if (item.category) { %>
+                                    <span class="mx-2">•</span>
+                                    <span><%= item.category.name %></span>
+                                <% } %>
+                                <span class="mx-2">•</span>
+                                <span><%= item.status %></span>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="px-6 py-4 text-gray-500">
+                        No FAQ items yet. <a href="/admin/faq/items/create" class="text-blue-600 hover:text-blue-800">Create your first FAQ item</a>
                     </div>
                 <% } %>
             </div>
@@ -120,13 +155,13 @@
                     <h3 class="text-lg font-medium text-gray-900">Create New Page</h3>
                     <p class="mt-1 text-sm text-gray-500">Create a custom page for your website</p>
                 </a>
-                <a href="/admin/media" class="block p-4 border rounded-lg hover:bg-gray-50">
-                    <h3 class="text-lg font-medium text-gray-900">Upload Media</h3>
-                    <p class="mt-1 text-sm text-gray-500">Upload and manage your media files</p>
+                <a href="/admin/faq/categories" class="block p-4 border rounded-lg hover:bg-gray-50">
+                    <h3 class="text-lg font-medium text-gray-900">Manage FAQ Categories</h3>
+                    <p class="mt-1 text-sm text-gray-500">Organize your FAQ content</p>
                 </a>
-                <a href="/admin/categories" class="block p-4 border rounded-lg hover:bg-gray-50">
-                    <h3 class="text-lg font-medium text-gray-900">Manage Categories</h3>
-                    <p class="mt-1 text-sm text-gray-500">Organize your content with categories</p>
+                <a href="/admin/faq/items/create" class="block p-4 border rounded-lg hover:bg-gray-50">
+                    <h3 class="text-lg font-medium text-gray-900">Create New FAQ</h3>
+                    <p class="mt-1 text-sm text-gray-500">Add a new FAQ item to your website</p>
                 </a>
             </div>
         </div>

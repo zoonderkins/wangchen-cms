@@ -517,6 +517,76 @@ router.get('/page/:slug', async (req, res) => {
     }
 });
 
+// FAQ page
+router.get('/faq', async (req, res) => {
+    try {
+        // Get all published FAQ categories with their published items
+        const categories = await prisma.faqCategory.findMany({
+            where: {
+                deletedAt: null
+            },
+            include: {
+                faqItems: {
+                    where: {
+                        status: 'published',
+                        deletedAt: null
+                    },
+                    orderBy: {
+                        order: 'asc'
+                    }
+                }
+            },
+            orderBy: {
+                order: 'asc'
+            }
+        });
+        
+        // Get article categories for navigation (separate from FAQ categories)
+        const articleCategories = await prisma.category.findMany({
+            where: {
+                parentId: null // Get only top-level categories
+            },
+            include: {
+                children: {
+                    include: {
+                        _count: {
+                            select: {
+                                articles: {
+                                    where: { status: 'published' }
+                                }
+                            }
+                        }
+                    }
+                },
+                _count: {
+                    select: {
+                        articles: {
+                            where: { status: 'published' }
+                        }
+                    }
+                }
+            },
+            orderBy: {
+                order: 'asc'
+            }
+        });
+        
+        res.render('frontend/faq', {
+            title: 'Frequently Asked Questions',
+            categories, // These are FAQ categories
+            articleCategories, // Pass article categories separately
+            layout: 'layouts/frontend'
+        });
+    } catch (error) {
+        logger.error('Error rendering FAQ page:', error);
+        res.status(500).render('frontend/error', {
+            title: 'Error',
+            message: 'Failed to load FAQ page',
+            layout: 'layouts/frontend'
+        });
+    }
+});
+
 // Handle custom URL paths
 router.get('/:path(*)', async (req, res, next) => {
     try {
