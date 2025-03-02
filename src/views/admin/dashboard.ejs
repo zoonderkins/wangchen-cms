@@ -164,7 +164,7 @@
                             <% if (download.category) { %>
                                 <div class="mt-1">
                                     <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
-                                        <%= download.category %>
+                                        <%= download.category.name %>
                                     </span>
                                 </div>
                             <% } %>
@@ -172,20 +172,13 @@
                                 <span>By <%= download.author ? download.author.username : 'Unknown' %></span>
                                 <span class="mx-2">•</span>
                                 <span><%= download.status %></span>
-                                <span class="mx-2">•</span>
-                                <span><%= download.downloadCount %> downloads</span>
-                            </div>
-                            <div class="mt-3">
-                                <a href="<%= download.path %>" target="_blank" class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
-                                    <i class="fas fa-download mr-1"></i> Download
-                                </a>
                             </div>
                         </div>
                     <% }); %>
                 </div>
             <% } else { %>
                 <div class="px-6 py-4 text-gray-500">
-                    No downloads yet. <a href="/admin/downloads/create" class="text-blue-600 hover:text-blue-800">Upload your first download</a>
+                    No downloads yet. <a href="/admin/downloads/create" class="text-blue-600 hover:text-blue-800">Create your first download</a>
                 </div>
             <% } %>
         </div>

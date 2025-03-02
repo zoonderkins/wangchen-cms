@@ -588,11 +588,11 @@ router.get('/faq', async (req, res) => {
     }
 });
 
-// Downloads page
+// Downloads list page
 router.get('/downloads', downloadController.listDownloadsForFrontend);
 
 // Download file
-router.get('/downloads/:id/download', downloadController.downloadFile);
+router.get('/downloads/:id', downloadController.downloadFile);
 
 // Handle custom URL paths
 router.get('/:path(*)', async (req, res, next) => {

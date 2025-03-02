@@ -1,315 +1,110 @@
 <%- contentFor('body') %>
 
-    <div class="container mx-auto px-4">
-        <h1 class="text-3xl font-bold mb-4">Downloads</h1>
-        <nav class="mb-4">
-            <ol class="flex text-sm">
-                <li class="mr-2"><a href="/admin/dashboard" class="text-blue-600 hover:text-blue-800">Dashboard</a></li>
-                <li class="mr-2">/</li>
-                <li class="text-gray-700">Downloads</li>
-            </ol>
-        </nav>
-
-        <div class="mb-4">
-            <a href="/admin/downloads/create"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-plus mr-1"></i> Add New Download
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Downloads</h1>
+        <div class="space-x-4">
+            <a href="/admin/downloads/categories" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded">
+                Manage Categories
+            </a>
+            <a href="/admin/downloads/create" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+                Create Download
             </a>
         </div>
-
-        <% if (locals.success_msg) { %>
-            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4">
-                <%= success_msg %>
-            </div>
-            <% } %>
-
-                <% if (locals.error_msg) { %>
-                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
-                        <%= error_msg %>
-                    </div>
-                    <% } %>
-
-                        <!-- Advanced Search Form -->
-                        <div class="bg-white shadow rounded-lg mb-4">
-                            <div class="px-6 py-4 border-b border-gray-200">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-search mr-2"></i>
-                                        <h2 class="text-xl font-semibold">Search Downloads</h2>
-                                    </div>
-                                    <button id="toggleSearchForm" class="text-blue-600 hover:text-blue-800">
-                                        <i class="fas fa-chevron-down"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div id="searchFormContainer"
-                                class="p-6 <%= locals.filters && (filters.search || filters.category || filters.status || filters.dateFrom || filters.dateTo) ? '' : 'hidden' %>">
-                                <form action="/admin/downloads" method="GET">
-                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                                        <div>
-                                            <label for="search"
-                                                class="block text-sm font-medium text-gray-700 mb-1">Search Term</label>
-                                            <input type="text" id="search" name="search"
-                                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                                placeholder="Search title, description, keywords..."
-                                                value="<%= locals.filters ? filters.search : '' %>">
-                                        </div>
-
-                                        <div>
-                                            <label for="category"
-                                                class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                                            <select id="category" name="category"
-                                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                                <option value="">All Categories</option>
-                                                <% if (locals.categories) { %>
-                                                    <% categories.forEach(function(cat) { %>
-                                                        <option value="<%= cat %>" <%=locals.filters &&
-                                                            filters.category===cat ? 'selected' : '' %>><%= cat %>
-                                                        </option>
-                                                        <% }); %>
-                                                            <% } %>
-                                            </select>
-                                        </div>
-
-                                        <div>
-                                            <label for="status"
-                                                class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                                            <select id="status" name="status"
-                                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                                <option value="">All Statuses</option>
-                                                <option value="draft" <%=locals.filters && filters.status==='draft'
-                                                    ? 'selected' : '' %>>Draft</option>
-                                                <option value="published" <%=locals.filters &&
-                                                    filters.status==='published' ? 'selected' : '' %>>Published</option>
-                                                <option value="archived" <%=locals.filters &&
-                                                    filters.status==='archived' ? 'selected' : '' %>>Archived</option>
-                                            </select>
-                                        </div>
-
-                                        <div>
-                                            <label for="dateFrom"
-                                                class="block text-sm font-medium text-gray-700 mb-1">Date From</label>
-                                            <input type="date" id="dateFrom" name="dateFrom"
-                                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                                value="<%= locals.filters ? filters.dateFrom : '' %>">
-                                        </div>
-
-                                        <div>
-                                            <label for="dateTo"
-                                                class="block text-sm font-medium text-gray-700 mb-1">Date To</label>
-                                            <input type="date" id="dateTo" name="dateTo"
-                                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                                value="<%= locals.filters ? filters.dateTo : '' %>">
-                                        </div>
-                                    </div>
-
-                                    <div class="flex justify-between">
-                                        <button type="submit"
-                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                            <i class="fas fa-search mr-1"></i> Search
-                                        </button>
-                                        <a href="/admin/downloads"
-                                            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
-                                            <i class="fas fa-times mr-1"></i> Clear Filters
-                                        </a>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
-                        <div class="bg-white shadow rounded-lg mb-4">
-                            <div class="px-6 py-4 border-b border-gray-200">
-                                <div class="flex items-center">
-                                    <i class="fas fa-file-download mr-2"></i>
-                                    <h2 class="text-xl font-semibold">Download Files</h2>
-                                </div>
-                            </div>
-                            <div class="p-6">
-                                <% if (downloads && downloads.length> 0) { %>
-                                    <div class="overflow-x-auto">
-                                        <table class="min-w-full divide-y divide-gray-200" id="downloadsTable">
-                                            <thead class="bg-gray-50">
-                                                <tr>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Title</th>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        File Type</th>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Size</th>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Category</th>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Status</th>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Downloads</th>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Created</th>
-                                                    <th scope="col"
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="bg-white divide-y divide-gray-200">
-                                                <% downloads.forEach(function(download) { %>
-                                                    <tr>
-                                                        <td
-                                                            class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                            <%= download.title %>
-                                                        </td>
-                                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                            <% let icon='fa-file' ; if
-                                                                (download.mimeType.includes('pdf')) { icon='fa-file-pdf'
-                                                                ; } else if (download.mimeType.includes('word')) {
-                                                                icon='fa-file-word' ; } else if
-                                                                (download.mimeType.includes('excel') ||
-                                                                download.mimeType.includes('spreadsheet')) {
-                                                                icon='fa-file-excel' ; } else if
-                                                                (download.mimeType.includes('image')) {
-                                                                icon='fa-file-image' ; } else if
-                                                                (download.mimeType.includes('zip') ||
-                                                                download.mimeType.includes('rar')) {
-                                                                icon='fa-file-archive' ; } %>
-                                                                <i class="fas <%= icon %> mr-1"></i>
-                                                                <%= download.mimeType %>
-                                                        </td>
-                                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                            <%= (download.size / 1024).toFixed(2) %> KB
-                                                        </td>
-                                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                            <%= download.category || '-' %>
-                                                        </td>
-                                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                            <% if (download.status==='published' ) { %>
-                                                                <span
-                                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Published</span>
-                                                                <% } else if (download.status==='draft' ) { %>
-                                                                    <span
-                                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Draft</span>
-                                                                    <% } else { %>
-                                                                        <span
-                                                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                                                            <%= download.status %>
-                                                                        </span>
-                                                                        <% } %>
-                                                        </td>
-                                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                            <%= download.downloadCount %>
-                                                        </td>
-                                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                            <%= new Date(download.createdAt).toLocaleDateString() %>
-                                                        </td>
-                                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                            <div class="flex space-x-2">
-                                                                <a href="/admin/downloads/edit/<%= download.id %>"
-                                                                    class="text-blue-600 hover:text-blue-900">
-                                                                    <i class="fas fa-edit"></i>
-                                                                </a>
-                                                                <a href="<%= download.path %>" target="_blank"
-                                                                    class="text-blue-600 hover:text-blue-900">
-                                                                    <i class="fas fa-eye"></i>
-                                                                </a>
-                                                                <button type="button"
-                                                                    class="text-red-600 hover:text-red-900"
-                                                                    onclick="showDeleteModal('<%= download.id %>', '<%= download.title %>')">
-                                                                    <i class="fas fa-trash"></i>
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <% }); %>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <% } else { %>
-                                        <div class="bg-blue-50 text-blue-700 p-4 rounded">
-                                            No downloads found. <a href="/admin/downloads/create"
-                                                class="text-blue-600 hover:text-blue-800 underline">Create your first
-                                                download</a>.
-                                        </div>
-                                        <% } %>
-                            </div>
-                        </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
-        <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all max-w-lg w-full">
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div class="sm:flex sm:items-start">
-                    <div
-                        class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                        <i class="fas fa-exclamation-triangle text-red-600"></i>
-                    </div>
-                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                            Confirm Delete
-                        </h3>
-                        <div class="mt-2">
-                            <p class="text-sm text-gray-500">
-                                Are you sure you want to delete "<span id="downloadTitle"></span>"? This action cannot
-                                be undone.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+    <%- include('../../partials/messages') %>
+
+    <!-- Filters -->
+    <div class="bg-white shadow rounded-lg p-6 mb-6">
+        <form action="/admin/downloads" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+                <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                <input type="text" id="search" name="search" value="<%= filters.search %>"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    placeholder="Search downloads...">
             </div>
-            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <form id="deleteForm" method="POST" action="">
-                    <button type="submit"
-                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                        Delete
-                    </button>
-                </form>
-                <button type="button" onclick="hideDeleteModal()"
-                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                    Cancel
+            <div>
+                <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <select id="category" name="category"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                    <option value="">All Categories</option>
+                    <% categories.forEach(category => { %>
+                    <option value="<%= category.id %>" <%= filters.category == category.id ? 'selected' : '' %>><%= category.name %></option>
+                    <% }); %>
+                </select>
+            </div>
+            <div>
+                <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select id="status" name="status"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                    <option value="">All Status</option>
+                    <option value="draft" <%= filters.status === 'draft' ? 'selected' : '' %>>Draft</option>
+                    <option value="published" <%= filters.status === 'published' ? 'selected' : '' %>>Published</option>
+                </select>
+            </div>
+            <div class="flex items-end">
+                <button type="submit"
+                    class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+                    Apply Filters
                 </button>
             </div>
-        </div>
+        </form>
     </div>
 
-    <%- contentFor('script') %>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                // Initialize DataTable
-                if (document.getElementById('downloadsTable')) {
-                    new DataTable('#downloadsTable', {
-                        responsive: true
-                    });
-                }
-
-                // Toggle search form
-                const toggleButton = document.getElementById('toggleSearchForm');
-                const searchForm = document.getElementById('searchFormContainer');
-
-                toggleButton.addEventListener('click', function () {
-                    searchForm.classList.toggle('hidden');
-                    const icon = toggleButton.querySelector('i');
-                    if (searchForm.classList.contains('hidden')) {
-                        icon.classList.remove('fa-chevron-up');
-                        icon.classList.add('fa-chevron-down');
-                    } else {
-                        icon.classList.remove('fa-chevron-down');
-                        icon.classList.add('fa-chevron-up');
-                    }
-                });
-            });
-
-            // Handle delete modal
-            function showDeleteModal(id, title) {
-                document.getElementById('downloadTitle').textContent = title;
-                document.getElementById('deleteForm').action = `/admin/downloads/${id}/delete`;
-                document.getElementById('deleteModal').classList.remove('hidden');
-            }
-
-            function hideDeleteModal() {
-                document.getElementById('deleteModal').classList.add('hidden');
-            }
-        </script>
+    <!-- Downloads List -->
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                <% downloads.forEach(download => { %>
+                <tr>
+                    <td class="px-6 py-4">
+                        <div class="text-sm font-medium text-gray-900"><%= download.title %></div>
+                        <div class="text-sm text-gray-500"><%= download.originalName %></div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm text-gray-900">
+                            <%= download.category ? download.category.name : '-' %>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            <%= download.status === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' %>">
+                            <%= download.status %>
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm text-gray-900"><%= download.author.username %></div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm text-gray-900"><%= new Date(download.createdAt).toLocaleDateString() %></div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <a href="/admin/downloads/edit/<%= download.id %>" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+                        <form action="/admin/downloads/<%= download.id %>/delete" method="POST" class="inline">
+                            <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this download?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }); %>
+                <% if (downloads.length === 0) { %>
+                <tr>
+                    <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
+                        No downloads found
+                    </td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>

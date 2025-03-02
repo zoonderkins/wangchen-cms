@@ -20,6 +20,7 @@ const bannerController = require('../controllers/bannerController');
 const pageController = require('../controllers/pageController');
 const faqController = require('../controllers/faqController');
 const downloadController = require('../controllers/downloadController');
+const downloadCategoryController = require('../controllers/downloadCategoryController');
 
 // Multer configuration
 const storage = multer.diskStorage({
@@ -211,5 +212,13 @@ router.post('/downloads', hasRole(['super_admin', 'admin', 'editor']), downloadF
 router.get('/downloads/edit/:id', hasRole(['super_admin', 'admin', 'editor']), downloadController.renderEditDownload);
 router.post('/downloads/:id', hasRole(['super_admin', 'admin', 'editor']), downloadFileUpload, downloadController.updateDownload);
 router.post('/downloads/:id/delete', hasRole(['super_admin', 'admin', 'editor']), downloadController.deleteDownload);
+
+// Download Category Routes
+router.get('/downloads/categories', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.listCategories);
+router.get('/downloads/categories/create', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.renderCreateCategory);
+router.post('/downloads/categories/create', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.createCategory);
+router.get('/downloads/categories/:id/edit', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.renderEditCategory);
+router.post('/downloads/categories/:id/edit', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.updateCategory);
+router.post('/downloads/categories/:id/delete', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.deleteCategory);
 
 module.exports = router;

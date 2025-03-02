@@ -19,7 +19,7 @@ exports.listDownloads = async (req, res) => {
                     { originalName: { contains: search } }
                 ]
             } : {}),
-            ...(category ? { category } : {}),
+            ...(category ? { categoryId: parseInt(category) } : {}),
             ...(status ? { status } : {})
         };
         
@@ -45,25 +45,22 @@ exports.listDownloads = async (req, res) => {
             include: {
                 author: {
                     select: { username: true }
-                }
+                },
+                category: true
             }
         });
 
-        // Get unique categories for filter dropdown
-        const categories = await prisma.download.findMany({
-            where: {
-                deletedAt: null,
-                category: { not: null }
-            },
-            select: { category: true },
-            distinct: ['category']
+        // Get categories for filter dropdown
+        const categories = await prisma.downloadCategory.findMany({
+            where: { deletedAt: null },
+            orderBy: { order: 'asc' }
         });
 
         res.render('admin/downloads/list', {
             title: 'Downloads',
             layout: 'layouts/admin',
             downloads,
-            categories: categories.map(c => c.category).filter(Boolean),
+            categories,
             filters: {
                 search: search || '',
                 category: category || '',
@@ -80,11 +77,23 @@ exports.listDownloads = async (req, res) => {
 };
 
 // Admin: Render create download form
-exports.renderCreateDownload = (req, res) => {
-    res.render('admin/downloads/create', {
-        title: 'Create Download',
-        layout: 'layouts/admin'
-    });
+exports.renderCreateDownload = async (req, res) => {
+    try {
+        const categories = await prisma.downloadCategory.findMany({
+            where: { deletedAt: null },
+            orderBy: { order: 'asc' }
+        });
+
+        res.render('admin/downloads/create', {
+            title: 'Create Download',
+            layout: 'layouts/admin',
+            categories
+        });
+    } catch (error) {
+        logger.error('Error loading categories:', error);
+        req.flash('error_msg', 'Error loading categories');
+        res.redirect('/admin/downloads');
+    }
 };
 
 // Admin: Create a new download
@@ -95,8 +104,9 @@ exports.createDownload = async (req, res) => {
             return res.redirect('/admin/downloads/create');
         }
 
-        const { title, description, status, keywords, category } = req.body;
+        const { title, description, status, keywords, categoryId } = req.body;
         const { filename, originalname, mimetype, size } = req.file;
+        // Store the path relative to the public directory
         const filePath = `/uploads/downloads/${filename}`;
 
         await prisma.download.create({
@@ -105,7 +115,7 @@ exports.createDownload = async (req, res) => {
                 description,
                 status: status || 'draft',
                 keywords,
-                category,
+                categoryId: categoryId ? parseInt(categoryId) : null,
                 filename,
                 originalName: originalname,
                 mimeType: mimetype,
@@ -128,9 +138,16 @@ exports.createDownload = async (req, res) => {
 exports.renderEditDownload = async (req, res) => {
     try {
         const { id } = req.params;
-        const download = await prisma.download.findUnique({
-            where: { id: parseInt(id) }
-        });
+        const [download, categories] = await Promise.all([
+            prisma.download.findUnique({
+                where: { id: parseInt(id) },
+                include: { category: true }
+            }),
+            prisma.downloadCategory.findMany({
+                where: { deletedAt: null },
+                orderBy: { order: 'asc' }
+            })
+        ]);
 
         if (!download) {
             req.flash('error_msg', 'Download not found');
@@ -140,7 +157,8 @@ exports.renderEditDownload = async (req, res) => {
         res.render('admin/downloads/edit', {
             title: 'Edit Download',
             layout: 'layouts/admin',
-            download
+            download,
+            categories
         });
     } catch (error) {
         logger.error('Error loading download:', error);
@@ -153,7 +171,7 @@ exports.renderEditDownload = async (req, res) => {
 exports.updateDownload = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description, status, keywords, category } = req.body;
+        const { title, description, status, keywords, categoryId } = req.body;
         
         // Find the download to update
         const download = await prisma.download.findUnique({
@@ -171,7 +189,7 @@ exports.updateDownload = async (req, res) => {
             description,
             status,
             keywords,
-            category,
+            categoryId: categoryId ? parseInt(categoryId) : null,
             updatedAt: new Date()
         };
 
@@ -182,13 +200,12 @@ exports.updateDownload = async (req, res) => {
             
             // Delete the old file
             try {
-                const oldFilePath = path.join(process.cwd(), 'public', download.path);
-                await fs.unlink(oldFilePath);
-                logger.info(`Deleted old file: ${oldFilePath}`);
+                await fs.unlink(path.join(__dirname, '../../public', download.path));
             } catch (error) {
-                logger.warn(`Could not delete old file: ${error.message}`);
+                logger.error('Error deleting old file:', error);
+                // Continue even if old file deletion fails
             }
-            
+
             // Update with new file information
             Object.assign(updateData, {
                 filename,
@@ -199,18 +216,18 @@ exports.updateDownload = async (req, res) => {
             });
         }
 
-        // Update the download in the database
+        // Update the download
         await prisma.download.update({
             where: { id: parseInt(id) },
             data: updateData
         });
 
         req.flash('success_msg', 'Download updated successfully');
-        res.redirect('/admin/downloads');
+        return res.redirect('/admin/downloads');
     } catch (error) {
         logger.error('Error updating download:', error);
         req.flash('error_msg', 'Error updating download');
-        res.redirect(`/admin/downloads/edit/${req.params.id}`);
+        return res.redirect(`/admin/downloads/edit/${req.params.id}`);
     }
 };
 
@@ -256,95 +273,77 @@ exports.deleteDownload = async (req, res) => {
 // Frontend: List all downloads
 exports.listDownloadsForFrontend = async (req, res) => {
     try {
-        const query = req.query.search || '';
-        const categoryFilter = req.query.category || '';
-        const sortBy = req.query.sort || 'newest';
-        
-        // Build where conditions
+        const { search, category, page = 1 } = req.query;
+        const perPage = 12;
+        const skip = (page - 1) * perPage;
+
+        // Build filter conditions
         const whereConditions = {
             status: 'published',
             deletedAt: null,
-            ...(categoryFilter ? { category: categoryFilter } : {}),
-            ...(query ? {
+            ...(search ? {
                 OR: [
-                    { title: { contains: query } },
-                    { description: { contains: query } },
-                    { keywords: { contains: query } },
-                    { originalName: { contains: query } }
+                    { title: { contains: search } },
+                    { description: { contains: search } },
+                    { keywords: { contains: search } }
                 ]
-            } : {})
+            } : {}),
+            ...(category ? { categoryId: parseInt(category) } : {})
         };
-        
-        // Determine sort order
-        let orderBy = {};
-        switch (sortBy) {
-            case 'oldest':
-                orderBy = { createdAt: 'asc' };
-                break;
-            case 'a-z':
-                orderBy = { title: 'asc' };
-                break;
-            case 'z-a':
-                orderBy = { title: 'desc' };
-                break;
-            case 'most-downloaded':
-                orderBy = { downloadCount: 'desc' };
-                break;
-            case 'newest':
-            default:
-                orderBy = { createdAt: 'desc' };
-                break;
-        }
-        
-        // Find all published downloads with filters
-        const downloads = await prisma.download.findMany({
-            where: whereConditions,
-            orderBy,
-            include: {
-                author: {
-                    select: { username: true }
+
+        // Get downloads with pagination
+        const [downloads, totalCount] = await Promise.all([
+            prisma.download.findMany({
+                where: whereConditions,
+                orderBy: { createdAt: 'desc' },
+                skip,
+                take: perPage,
+                include: {
+                    category: true
                 }
-            }
+            }),
+            prisma.download.count({
+                where: whereConditions
+            })
+        ]);
+
+        // Get all categories for filter
+        const categories = await prisma.downloadCategory.findMany({
+            where: { deletedAt: null },
+            orderBy: { order: 'asc' }
         });
 
-        // Get unique categories for filter dropdown
-        const categories = await prisma.download.findMany({
-            where: {
-                status: 'published',
-                deletedAt: null,
-                category: { not: null }
-            },
-            select: { category: true },
-            distinct: ['category']
-        });
-
-        // Get total downloads count for stats
-        const totalDownloads = await prisma.download.aggregate({
-            _sum: {
-                downloadCount: true
-            },
-            where: {
-                status: 'published',
-                deletedAt: null
-            }
-        });
+        // Calculate pagination info
+        const totalPages = Math.ceil(totalCount / perPage);
+        const hasNextPage = page < totalPages;
+        const hasPrevPage = page > 1;
 
         res.render('frontend/downloads', {
             title: 'Downloads',
             layout: 'layouts/frontend',
             downloads,
-            categories: categories.map(c => c.category).filter(Boolean),
-            selectedCategory: categoryFilter,
-            searchQuery: query,
-            sortBy,
-            totalDownloadsCount: totalDownloads._sum.downloadCount || 0
+            categories,
+            filters: {
+                search: search || '',
+                category: category || ''
+            },
+            pagination: {
+                current: parseInt(page),
+                perPage,
+                total: totalCount,
+                totalPages,
+                hasNextPage,
+                hasPrevPage
+            },
+            stats: {
+                totalDownloads: totalCount
+            }
         });
     } catch (error) {
         logger.error('Error listing frontend downloads:', error);
-        res.status(500).render('frontend/error', {
-            title: 'Error',
-            message: 'Failed to load downloads',
-            layout: 'layouts/frontend'
+        res.status(500).render('error', {
+            message: 'Error loading downloads',
+            error
         });
     }
 };
@@ -353,6 +352,7 @@ exports.listDownloadsForFrontend = async (req, res) => {
 exports.downloadFile = async (req, res) => {
     try {
         const { id } = req.params;
+        logger.info(`Attempting to download file with ID: ${id}`);
         
         // Find the download
         const download = await prisma.download.findFirst({
@@ -360,10 +360,12 @@ exports.downloadFile = async (req, res) => {
                 id: parseInt(id),
                 status: 'published',
                 deletedAt: null
-            }
+            },
+            include: { category: true }
         });
 
         if (!download) {
+            logger.warn(`Download with ID ${id} not found or not published`);
             return res.status(404).render('frontend/error', {
                 title: 'Not Found',
                 message: 'The requested file was not found',
@@ -371,14 +373,32 @@ exports.downloadFile = async (req, res) => {
             });
         }
 
+        logger.info(`Found download record: ${JSON.stringify(download, null, 2)}`);
+
         // Increment download count
         await prisma.download.update({
             where: { id: parseInt(id) },
             data: { downloadCount: { increment: 1 } }
         });
 
-        // Get the file path
-        const filePath = path.join(process.cwd(), 'public', download.path);
+        // Remove leading slash from path and join with public directory
+        const relativePath = download.path.startsWith('/') ? download.path.slice(1) : download.path;
+        const filePath = path.join(process.cwd(), 'public', relativePath);
+        
+        logger.info(`Attempting to access file at path: ${filePath}`);
+        
+        // Check if file exists
+        try {
+            await fs.access(filePath);
+            logger.info('File exists, proceeding with download');
+        } catch (error) {
+            logger.error(`File not found at path ${filePath}:`, error);
+            return res.status(404).render('frontend/error', {
+                title: 'Not Found',
+                message: 'The requested file was not found',
+                layout: 'layouts/frontend'
+            });
+        }
         
         // Set headers for download
         res.setHeader('Content-Disposition', `attachment; filename="${download.originalName}"`);
@@ -394,6 +414,7 @@ exports.downloadFile = async (req, res) => {
                     layout: 'layouts/frontend'
                 });
             }
+            logger.info(`Successfully initiated download for file: ${download.originalName}`);
         });
     } catch (error) {
         logger.error('Error downloading file:', error);

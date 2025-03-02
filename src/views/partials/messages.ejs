@@ -1,0 +1,9 @@
+<% if (typeof messages !== 'undefined' && messages.length > 0) { %>
+    <div class="mb-6">
+        <% messages.forEach(function(message) { %>
+            <div class="bg-<%= message.type === 'error' ? 'red' : 'green' %>-100 border border-<%= message.type === 'error' ? 'red' : 'green' %>-400 text-<%= message.type === 'error' ? 'red' : 'green' %>-700 px-4 py-3 rounded relative mb-2" role="alert">
+                <span class="block sm:inline"><%= message.text %></span>
+            </div>
+        <% }); %>
+    </div>
+<% } %>

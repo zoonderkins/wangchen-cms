@@ -15,8 +15,7 @@ exports.renderDashboard = async (req, res) => {
             recentArticles,
             recentPages,
             recentFaqItems,
-            recentDownloads,
-            popularDownloads
+            recentDownloads
         ] = await Promise.all([
             prisma.article.count(),
             prisma.media.count(),
@@ -73,36 +72,13 @@ exports.renderDashboard = async (req, res) => {
                 include: {
                     author: {
                         select: { username: true }
-                    }
-                }
-            }),
-            prisma.download.findMany({
-                take: 5,
-                orderBy: { downloadCount: 'desc' },
-                where: { 
-                    deletedAt: null,
-                    status: 'published',
-                    downloadCount: { gt: 0 }
-                },
-                include: {
-                    author: {
-                        select: { username: true }
+                    },
+                    category: {
+                        select: { name: true }
                     }
                 }
             })
         ]);
-
-        // Calculate total downloads across all files
-        const totalDownloadsStats = await prisma.download.aggregate({
-            _sum: {
-                downloadCount: true
-            },
-            where: {
-                deletedAt: null
-            }
-        });
-
-        const totalDownloads = totalDownloadsStats._sum.downloadCount || 0;
 
         res.render('admin/dashboard', {
             title: 'Dashboard',
@@ -115,14 +91,12 @@ exports.renderDashboard = async (req, res) => {
                 pages: pageCount,
                 faqCategories: faqCategoryCount,
                 faqItems: faqItemCount,
-                downloads: downloadCount,
-                totalDownloads: totalDownloads
+                downloads: downloadCount
             },
             recentArticles,
             recentPages,
             recentFaqItems,
-            recentDownloads,
-            popularDownloads
+            recentDownloads
         });
     } catch (error) {
         logger.error('Error loading dashboard:', error);
