@@ -27,6 +27,7 @@ model User {
   banners   Banner[]
   pages     Page[]
   faqItems  FaqItem[]
+  downloads Download[]
 
   @@map("Users")
 }
@@ -222,6 +223,30 @@ model FaqItem {
   authorId    Int
 
   @@map("FaqItems")
+}
+
+model Download {
+  id           Int       @id @default(autoincrement())
+  title        String
+  description  String?   @db.Text
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  path         String
+  status       Status    @default(draft)
+  keywords     String?   @db.Text
+  downloadCount Int      @default(0)
+  category     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  // Relations
+  author      User      @relation(fields: [authorId], references: [id])
+  authorId    Int
+
+  @@map("Downloads")
 }
 
 enum Status {

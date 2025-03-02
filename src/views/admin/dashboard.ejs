@@ -31,6 +31,11 @@
             <a href="/admin/faq/items" class="mt-2 inline-block text-blue-600 hover:text-blue-800">Manage FAQ items →</a>
         </div>
         <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-gray-500 text-sm font-medium">Downloads</h3>
+            <p class="text-3xl font-bold text-gray-900"><%= stats.downloads %></p>
+            <a href="/admin/downloads" class="mt-2 inline-block text-blue-600 hover:text-blue-800">Manage downloads →</a>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
             <h3 class="text-gray-500 text-sm font-medium">Users</h3>
             <p class="text-3xl font-bold text-gray-900"><%= stats.users %></p>
             <% if (user.role === 'super_admin') { %>
@@ -140,6 +145,52 @@
         </div>
     </div>
 
+    <!-- Recent Downloads -->
+    <div class="bg-white rounded-lg shadow mb-8">
+        <div class="px-6 py-4 border-b flex justify-between items-center">
+            <h2 class="text-xl font-semibold">Recent Downloads</h2>
+            <a href="/admin/downloads/create" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <i class="fas fa-plus mr-2"></i> New Download
+            </a>
+        </div>
+        <div class="divide-y">
+            <% if (recentDownloads && recentDownloads.length > 0) { %>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
+                    <% recentDownloads.forEach(download => { %>
+                        <div class="border rounded-lg p-4">
+                            <a href="/admin/downloads/edit/<%= download.id %>" class="text-lg font-medium text-blue-600 hover:text-blue-800">
+                                <%= download.title %>
+                            </a>
+                            <% if (download.category) { %>
+                                <div class="mt-1">
+                                    <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+                                        <%= download.category %>
+                                    </span>
+                                </div>
+                            <% } %>
+                            <div class="mt-2 text-sm text-gray-500">
+                                <span>By <%= download.author ? download.author.username : 'Unknown' %></span>
+                                <span class="mx-2">•</span>
+                                <span><%= download.status %></span>
+                                <span class="mx-2">•</span>
+                                <span><%= download.downloadCount %> downloads</span>
+                            </div>
+                            <div class="mt-3">
+                                <a href="<%= download.path %>" target="_blank" class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-download mr-1"></i> Download
+                                </a>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <div class="px-6 py-4 text-gray-500">
+                    No downloads yet. <a href="/admin/downloads/create" class="text-blue-600 hover:text-blue-800">Upload your first download</a>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
     <!-- Quick Actions -->
     <div class="bg-white rounded-lg shadow">
         <div class="px-6 py-4 border-b">
@@ -162,6 +213,10 @@
                 <a href="/admin/faq/items/create" class="block p-4 border rounded-lg hover:bg-gray-50">
                     <h3 class="text-lg font-medium text-gray-900">Create New FAQ</h3>
                     <p class="mt-1 text-sm text-gray-500">Add a new FAQ item to your website</p>
+                </a>
+                <a href="/admin/downloads/create" class="block p-4 border rounded-lg hover:bg-gray-50">
+                    <h3 class="text-lg font-medium text-gray-900">Upload New Download</h3>
+                    <p class="mt-1 text-sm text-gray-500">Add a new downloadable file</p>
                 </a>
             </div>
         </div>

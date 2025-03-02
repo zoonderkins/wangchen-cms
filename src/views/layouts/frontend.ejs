@@ -46,25 +46,28 @@
                         <% }); %>
                     <% } %>
                     <a href="/faq" class="text-gray-700 hover:text-gray-900">FAQ</a>
+                    <a href="/downloads" class="text-gray-700 hover:text-gray-900">Downloads</a>
                 </div>
                 <!-- Mobile Menu Button -->
                 <button class="md:hidden">
-                    <i class="fas fa-bars"></i>
+                    <svg class="h-6 w-6 fill-current text-gray-700" viewBox="0 0 24 24">
+                        <path d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z" />
+                    </svg>
                 </button>
             </div>
             <!-- Mobile Menu -->
             <div class="md:hidden hidden">
-                <div class="py-2 space-y-2">
-                    <a href="/" class="block text-gray-700 hover:text-gray-900">Home</a>
+                <div class="flex flex-col mt-4 space-y-4">
+                    <a href="/" class="text-gray-700 hover:text-gray-900">Home</a>
                     <% if (typeof articleCategories !== 'undefined' && articleCategories.length > 0) { %>
                         <% articleCategories.forEach(function(category) { %>
-                            <a href="/category/<%= category.id %>" class="block text-gray-700 hover:text-gray-900">
+                            <a href="/category/<%= category.id %>" class="text-gray-700 hover:text-gray-900">
                                 <%= category.name %>
                             </a>
                         <% }); %>
                     <% } else if (typeof categories !== 'undefined' && categories.length > 0) { %>
                         <% categories.forEach(function(category) { %>
-                            <a href="/category/<%= category.id %>" class="block text-gray-700 hover:text-gray-900">
+                            <a href="/category/<%= category.id %>" class="text-gray-700 hover:text-gray-900">
                                 <%= category.name %>
                             </a>
                         <% }); %>
@@ -72,12 +75,13 @@
                     
                     <% if (navigationPages && navigationPages.length > 0) { %>
                         <% navigationPages.forEach(function(page) { %>
-                            <a href="/page/<%= page.slug %>" class="block text-gray-700 hover:text-gray-900">
+                            <a href="/page/<%= page.slug %>" class="text-gray-700 hover:text-gray-900">
                                 <%= page.title %>
                             </a>
                         <% }); %>
                     <% } %>
-                    <a href="/faq" class="block text-gray-700 hover:text-gray-900">FAQ</a>
+                    <a href="/faq" class="text-gray-700 hover:text-gray-900">FAQ</a>
+                    <a href="/downloads" class="text-gray-700 hover:text-gray-900">Downloads</a>
                 </div>
             </div>
         </nav>
@@ -116,7 +120,7 @@
                     <ul class="space-y-2">
                         <li><a href="/" class="text-gray-400 hover:text-white">Home</a></li>
                         <li><a href="/faq" class="text-gray-400 hover:text-white">FAQ</a></li>
-                        <li><a href="/contact" class="text-gray-400 hover:text-white">Contact</a></li>
+                        <li><a href="/downloads" class="text-gray-400 hover:text-white">Downloads</a></li>
                         <% if (typeof articleCategories !== 'undefined' && articleCategories.length > 0) { %>
                             <% articleCategories.forEach(function(category) { %>
                                 <li>

@@ -1,0 +1,130 @@
+<%- contentFor('body') %>
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Create Download</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/admin/downloads">Downloads</a></li>
+        <li class="breadcrumb-item active">Create</li>
+    </ol>
+    
+    <% if (locals.success_msg) { %>
+        <div class="alert alert-success">
+            <%= success_msg %>
+        </div>
+    <% } %>
+    
+    <% if (locals.error_msg) { %>
+        <div class="alert alert-danger">
+            <%= error_msg %>
+        </div>
+    <% } %>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-file-upload me-1"></i>
+            Upload New File
+        </div>
+        <div class="card-body">
+            <form action="/admin/downloads" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="title" name="title" required>
+                    <div class="form-text">Enter a descriptive title for the download</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    <div class="form-text">Provide a brief description of the file (optional)</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="keywords" class="form-label">Keywords</label>
+                    <input type="text" class="form-control" id="keywords" name="keywords">
+                    <div class="form-text">Enter keywords separated by commas to help with search (optional)</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <input type="text" class="form-control" id="category" name="category">
+                    <div class="form-text">Enter a category to help organize downloads (optional)</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                    </select>
+                    <div class="form-text">Only published downloads will be visible on the frontend</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="file" class="form-label">File <span class="text-danger">*</span></label>
+                    <input type="file" class="form-control" id="file" name="file" required>
+                    <div class="form-text">
+                        Allowed file types: PDF, Word documents (.docx), Excel spreadsheets (.xlsx), Images (.jpg, .png), Archives (.zip, .rar)<br>
+                        Maximum file size: 50MB
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <a href="/admin/downloads" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Upload File</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- contentFor('script') %>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form validation
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(event) {
+            const fileInput = document.getElementById('file');
+            const titleInput = document.getElementById('title');
+            
+            if (!titleInput.value.trim()) {
+                alert('Please enter a title for the download');
+                event.preventDefault();
+                return;
+            }
+            
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('Please select a file to upload');
+                event.preventDefault();
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const allowedTypes = [
+                'application/pdf', 
+                'application/msword', 
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/vnd.ms-excel',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'image/jpeg',
+                'image/png',
+                'image/gif',
+                'application/zip',
+                'application/x-rar-compressed'
+            ];
+            
+            if (!allowedTypes.includes(file.type)) {
+                alert('Invalid file type. Please upload a PDF, Word, Excel, image, or archive file.');
+                event.preventDefault();
+                return;
+            }
+            
+            const maxSize = 50 * 1024 * 1024; // 50MB
+            if (file.size > maxSize) {
+                alert('File is too large. Maximum size is 50MB.');
+                event.preventDefault();
+                return;
+            }
+        });
+    });
+</script>

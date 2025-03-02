@@ -3,6 +3,7 @@ const router = express.Router();
 const prisma = require('../lib/prisma');
 const logger = require('../config/logger');
 const QuillDeltaToHtmlConverter = require('quill-delta-to-html').QuillDeltaToHtmlConverter;
+const downloadController = require('../controllers/downloadController');
 
 // Helper function to create clean excerpts
 function createExcerpt(content, maxLength = 200) {
@@ -587,6 +588,12 @@ router.get('/faq', async (req, res) => {
     }
 });
 
+// Downloads page
+router.get('/downloads', downloadController.listDownloadsForFrontend);
+
+// Download file
+router.get('/downloads/:id/download', downloadController.downloadFile);
+
 // Handle custom URL paths
 router.get('/:path(*)', async (req, res, next) => {
     try {
@@ -599,7 +606,7 @@ router.get('/:path(*)', async (req, res, next) => {
         // just pass to the next handler which will show 404
         next();
     } catch (error) {
-        logger.error('Error handling custom path:', error);
+        logger.error('Error in custom path handler:', error);
         next(error);
     }
 });

@@ -11,9 +11,12 @@ exports.renderDashboard = async (req, res) => {
             pageCount,
             faqCategoryCount,
             faqItemCount,
+            downloadCount,
             recentArticles,
             recentPages,
-            recentFaqItems
+            recentFaqItems,
+            recentDownloads,
+            popularDownloads
         ] = await Promise.all([
             prisma.article.count(),
             prisma.media.count(),
@@ -24,6 +27,9 @@ exports.renderDashboard = async (req, res) => {
                 where: { deletedAt: null }
             }),
             prisma.faqItem.count({
+                where: { deletedAt: null }
+            }),
+            prisma.download.count({
                 where: { deletedAt: null }
             }),
             prisma.article.findMany({
@@ -59,8 +65,44 @@ exports.renderDashboard = async (req, res) => {
                         select: { username: true }
                     }
                 }
+            }),
+            prisma.download.findMany({
+                take: 5,
+                orderBy: { createdAt: 'desc' },
+                where: { deletedAt: null },
+                include: {
+                    author: {
+                        select: { username: true }
+                    }
+                }
+            }),
+            prisma.download.findMany({
+                take: 5,
+                orderBy: { downloadCount: 'desc' },
+                where: { 
+                    deletedAt: null,
+                    status: 'published',
+                    downloadCount: { gt: 0 }
+                },
+                include: {
+                    author: {
+                        select: { username: true }
+                    }
+                }
             })
         ]);
+
+        // Calculate total downloads across all files
+        const totalDownloadsStats = await prisma.download.aggregate({
+            _sum: {
+                downloadCount: true
+            },
+            where: {
+                deletedAt: null
+            }
+        });
+
+        const totalDownloads = totalDownloadsStats._sum.downloadCount || 0;
 
         res.render('admin/dashboard', {
             title: 'Dashboard',
@@ -72,11 +114,15 @@ exports.renderDashboard = async (req, res) => {
                 users: userCount,
                 pages: pageCount,
                 faqCategories: faqCategoryCount,
-                faqItems: faqItemCount
+                faqItems: faqItemCount,
+                downloads: downloadCount,
+                totalDownloads: totalDownloads
             },
             recentArticles,
             recentPages,
-            recentFaqItems
+            recentFaqItems,
+            recentDownloads,
+            popularDownloads
         });
     } catch (error) {
         logger.error('Error loading dashboard:', error);
