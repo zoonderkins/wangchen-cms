@@ -51,8 +51,11 @@ exports.listDownloads = async (req, res) => {
         });
 
         // Get categories for filter dropdown
-        const categories = await prisma.downloadCategory.findMany({
-            where: { deletedAt: null },
+        const categories = await prisma.category.findMany({
+            where: { 
+                deletedAt: null,
+                type: 'download'
+            },
             orderBy: { order: 'asc' }
         });
 
@@ -79,8 +82,11 @@ exports.listDownloads = async (req, res) => {
 // Admin: Render create download form
 exports.renderCreateDownload = async (req, res) => {
     try {
-        const categories = await prisma.downloadCategory.findMany({
-            where: { deletedAt: null },
+        const categories = await prisma.category.findMany({
+            where: { 
+                deletedAt: null,
+                type: 'download'
+            },
             orderBy: { order: 'asc' }
         });
 
@@ -143,8 +149,11 @@ exports.renderEditDownload = async (req, res) => {
                 where: { id: parseInt(id) },
                 include: { category: true }
             }),
-            prisma.downloadCategory.findMany({
-                where: { deletedAt: null },
+            prisma.category.findMany({
+                where: { 
+                    deletedAt: null,
+                    type: 'download'
+                },
                 orderBy: { order: 'asc' }
             })
         ]);
@@ -308,8 +317,11 @@ exports.listDownloadsForFrontend = async (req, res) => {
         ]);
 
         // Get all categories for filter
-        const categories = await prisma.downloadCategory.findMany({
-            where: { deletedAt: null },
+        const categories = await prisma.category.findMany({
+            where: { 
+                deletedAt: null,
+                type: 'download'
+            },
             orderBy: { order: 'asc' }
         });
 

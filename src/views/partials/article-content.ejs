@@ -11,7 +11,7 @@
     <% } %>
 
         <div class="mt-6 prose prose-blue prose-lg max-w-none article-content">
-            <%- article.content %>
+            <%- article.contentHtml || article.content %>
         </div>
 
         <div class="mt-6 border-t pt-6">

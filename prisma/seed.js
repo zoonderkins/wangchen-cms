@@ -84,11 +84,17 @@ async function main() {
 
         // Create default category
         const defaultCategory = await prisma.category.upsert({
-            where: { slug: 'uncategorized' },
+            where: { 
+                slug_type: {
+                    slug: 'uncategorized',
+                    type: 'article'  // lowercase enum value
+                }
+            },
             update: {},
             create: {
                 name: 'Uncategorized',
                 slug: 'uncategorized',
+                type: 'article',  // lowercase enum value
                 description: 'Default category for uncategorized content'
             }
         });

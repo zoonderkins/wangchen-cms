@@ -47,7 +47,9 @@
                 >
                     <option value="">Select a category</option>
                     <% categories.forEach(function(category) { %>
-                        <option value="<%= category.id %>"><%= category.name %></option>
+                        <% if (category.type === 'faq') { %>
+                            <option value="<%= category.id %>"><%= category.name %></option>
+                        <% } %>
                     <% }); %>
                 </select>
             </div>

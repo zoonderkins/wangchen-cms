@@ -49,7 +49,9 @@
                     id="categoryId" name="categoryId">
                     <option value="">Select a category</option>
                     <% categories.forEach(category => { %>
-                    <option value="<%= category.id %>"><%= category.name %></option>
+                        <% if (category.type === 'download') { %>
+                            <option value="<%= category.id %>"><%= category.name %></option>
+                        <% } %>
                     <% }); %>
                 </select>
                 <p class="mt-1 text-xs text-gray-500">Select a category to help organize downloads (optional)</p>

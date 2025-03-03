@@ -131,7 +131,7 @@ exports.updateBanner = async (req, res) => {
             // Delete the old file if it exists
             try {
                 // The actual physical path on disk
-                const oldFilePath = path.join(process.cwd(), 'public', banner.mediaPath);
+                const oldFilePath = path.join(process.cwd(), banner.mediaPath.substring(1));
                 
                 logger.info(`Attempting to delete old file at: ${oldFilePath}`);
                 
@@ -213,7 +213,7 @@ exports.deleteBanner = async (req, res) => {
         // Delete the file
         try {
             // The actual physical path on disk
-            const filePath = path.join(process.cwd(), 'public', banner.mediaPath);
+            const filePath = path.join(process.cwd(), banner.mediaPath.substring(1));
             
             logger.info(`Attempting to delete file at: ${filePath}`);
             

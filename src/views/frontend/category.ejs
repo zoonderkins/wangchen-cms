@@ -1,43 +1,147 @@
 <%- contentFor('body') %>
 
 <div class="container mx-auto px-4 py-8">
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold mb-2"><%= category.name %></h1>
-        <% if (category.description) { %>
-            <p class="text-gray-600"><%= category.description %></p>
-        <% } %>
-    </div>
+    <div class="max-w-4xl mx-auto">
+        <nav class="flex mb-8" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="/" class="text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-home mr-2"></i>Home
+                    </a>
+                </li>
+                <li>
+                    <div class="flex items-center">
+                        <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                        <% if (category.type === 'article') { %>
+                            <a href="/articles" class="text-gray-700 hover:text-blue-600">Articles</a>
+                        <% } else if (category.type === 'download') { %>
+                            <a href="/downloads" class="text-gray-700 hover:text-blue-600">Downloads</a>
+                        <% } else if (category.type === 'faq') { %>
+                            <a href="/faqs" class="text-gray-700 hover:text-blue-600">FAQs</a>
+                        <% } %>
+                    </div>
+                </li>
+                <% if (category.parent) { %>
+                    <li>
+                        <div class="flex items-center">
+                            <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                            <a href="/category/<%= category.parent.slug %>" class="text-gray-700 hover:text-blue-600">
+                                <%= category.parent.name %>
+                            </a>
+                        </div>
+                    </li>
+                <% } %>
+                <li>
+                    <div class="flex items-center">
+                        <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                        <span class="text-gray-500"><%= category.name %></span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
 
-    <div class="grid grid-cols-1 gap-6">
-        <% if (category.articles && category.articles.length > 0) { %>
-            <% category.articles.forEach(article => { %>
-                <article class="bg-white shadow rounded-lg p-6">
-                    <h2 class="text-2xl font-semibold mb-3">
-                        <a href="/article/<%= article.id %>" class="text-blue-600 hover:text-blue-800 hover:underline">
-                            <%= article.title %>
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold mb-2"><%= category.name %></h1>
+            <% if (category.description) { %>
+                <p class="text-gray-600"><%= category.description %></p>
+            <% } %>
+        </header>
+
+        <% if (category.children && category.children.length > 0) { %>
+            <section class="mb-12">
+                <h2 class="text-2xl font-semibold mb-4">Subcategories</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <% category.children.forEach(function(child) { %>
+                        <a href="/category/<%= child.slug %>" 
+                           class="block p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                            <h3 class="text-xl font-semibold mb-2"><%= child.name %></h3>
+                            <% if (child.description) { %>
+                                <p class="text-gray-600 mb-4"><%= child.description %></p>
+                            <% } %>
+                            <div class="text-sm text-gray-500">
+                                <% if (category.type === 'article') { %>
+                                    <%= child._count.articles %> articles
+                                <% } else if (category.type === 'download') { %>
+                                    <%= child._count.downloads %> downloads
+                                <% } else if (category.type === 'faq') { %>
+                                    <%= child._count.faqItems %> FAQs
+                                <% } %>
+                            </div>
                         </a>
-                    </h2>
-                    <div class="text-gray-600 text-sm mb-4">
-                        <span><%= new Date(article.createdAt).toLocaleDateString() %></span>
-                    </div>
-                    <div class="text-gray-700 mb-4">
-                        <%= article.excerpt %>
-                    </div>
-                    <div>
-                        <a href="/article/<%= article.id %>" class="text-blue-600 hover:text-blue-800 hover:underline">
-                            Read more →
-                        </a>
-                    </div>
-                </article>
-            <% }); %>
-        <% } else { %>
-            <div class="bg-white shadow rounded-lg p-6 text-center text-gray-600">
-                No articles found in this category.
+                    <% }); %>
+                </div>
+            </section>
+        <% } %>
+
+        <section>
+            <% if (category.type === 'article' && articles.length > 0) { %>
+                <h2 class="text-2xl font-semibold mb-6">Articles in this category</h2>
+                <div class="space-y-8">
+                    <% articles.forEach(function(article) { %>
+                        <article class="bg-white rounded-lg shadow-md p-6">
+                            <h3 class="text-xl font-semibold mb-2">
+                                <a href="/articles/<%= article.id %>" class="hover:text-blue-600">
+                                    <%= article.title %>
+                                </a>
+                            </h3>
+                            <p class="text-gray-600 mb-4"><%= article.excerpt %></p>
+                            <div class="flex items-center text-sm text-gray-500">
+                                <span><i class="far fa-calendar mr-2"></i><%= formatDate(article.publishedAt) %></span>
+                                <span class="mx-4">•</span>
+                                <span><i class="far fa-user mr-2"></i><%= article.author ? article.author.username : 'Unknown' %></span>
+                                <% if (article.readingTime) { %>
+                                <span class="mx-4">•</span>
+                                <span><i class="far fa-clock mr-2"></i><%= article.readingTime %> min read</span>
+                                <% } %>
+                            </div>
+                        </article>
+                    <% }); %>
+                </div>
+            <% } else if (category.type === 'download' && downloads.length > 0) { %>
+                <h2 class="text-2xl font-semibold mb-6">Downloads in this category</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <% downloads.forEach(function(download) { %>
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <h3 class="text-xl font-semibold mb-2">
+                                <a href="/download/<%= download.slug %>" class="hover:text-blue-600">
+                                    <%= download.title %>
+                                </a>
+                            </h3>
+                            <p class="text-gray-600 mb-4"><%= download.description %></p>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-500">
+                                    <i class="fas fa-download mr-2"></i><%= download.downloadCount %> downloads
+                                </span>
+                                <span class="text-gray-500">
+                                    <i class="far fa-file mr-2"></i><%= formatFileSize(download.fileSize) %>
+                                </span>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } else if (category.type === 'faq' && faqs.length > 0) { %>
+                <h2 class="text-2xl font-semibold mb-6">FAQs in this category</h2>
+                <div class="space-y-4">
+                    <% faqs.forEach(function(faq) { %>
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <h3 class="text-xl font-semibold mb-4"><%= faq.question %></h3>
+                            <div class="prose max-w-none text-gray-600">
+                                <%- faq.answer %>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <div class="text-center py-12">
+                    <p class="text-gray-600">No items found in this category.</p>
+                </div>
+            <% } %>
+        </section>
+
+        <% if (locals.pagination) { %>
+            <div class="mt-8">
+                <%- include('../partials/pagination', { pagination: pagination }) %>
             </div>
         <% } %>
-    </div>
-
-    <div class="mt-8">
-        <a href="/" class="text-blue-600 hover:text-blue-800 hover:underline">← Back to Home</a>
     </div>
 </div>

@@ -39,10 +39,10 @@
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex-shrink-0 h-20 w-32 overflow-hidden">
                             <% if (banner.mediaType === 'image') { %>
-                                <img src="<%= banner.mediaPath.replace(/^public/, '') %>" alt="<%= banner.title %>" class="h-20 w-32 object-cover">
+                                <img src="<%= banner.mediaPath %>" alt="<%= banner.title %>" class="h-20 w-32 object-cover">
                             <% } else { %>
                                 <video class="h-20 w-32 object-cover" controls>
-                                    <source src="<%= banner.mediaPath.replace(/^public/, '') %>" type="video/mp4">
+                                    <source src="<%= banner.mediaPath %>" type="video/mp4">
                                     Your browser does not support the video tag.
                                 </video>
                             <% } %>

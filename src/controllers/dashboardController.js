@@ -17,13 +17,26 @@ exports.renderDashboard = async (req, res) => {
             recentFaqItems,
             recentDownloads
         ] = await Promise.all([
-            prisma.article.count(),
-            prisma.media.count(),
-            prisma.category.count(),
-            prisma.user.count(),
-            prisma.page.count(),
-            prisma.faqCategory.count({
+            prisma.article.count({
                 where: { deletedAt: null }
+            }),
+            prisma.media.count({
+                where: { deletedAt: null }
+            }),
+            prisma.category.count({
+                where: { deletedAt: null }
+            }),
+            prisma.user.count({
+                where: { isActive: true }
+            }),
+            prisma.page.count({
+                where: { deletedAt: null }
+            }),
+            prisma.category.count({
+                where: { 
+                    type: 'faq',
+                    deletedAt: null 
+                }
             }),
             prisma.faqItem.count({
                 where: { deletedAt: null }
@@ -33,6 +46,7 @@ exports.renderDashboard = async (req, res) => {
             }),
             prisma.article.findMany({
                 take: 5,
+                where: { deletedAt: null },
                 orderBy: { createdAt: 'desc' },
                 include: {
                     author: {
@@ -45,6 +59,7 @@ exports.renderDashboard = async (req, res) => {
             }),
             prisma.page.findMany({
                 take: 5,
+                where: { deletedAt: null },
                 orderBy: { createdAt: 'desc' },
                 include: {
                     author: {
@@ -54,8 +69,8 @@ exports.renderDashboard = async (req, res) => {
             }),
             prisma.faqItem.findMany({
                 take: 5,
-                orderBy: { createdAt: 'desc' },
                 where: { deletedAt: null },
+                orderBy: { createdAt: 'desc' },
                 include: {
                     category: {
                         select: { name: true }
@@ -67,8 +82,8 @@ exports.renderDashboard = async (req, res) => {
             }),
             prisma.download.findMany({
                 take: 5,
-                orderBy: { createdAt: 'desc' },
                 where: { deletedAt: null },
+                orderBy: { createdAt: 'desc' },
                 include: {
                     author: {
                         select: { username: true }

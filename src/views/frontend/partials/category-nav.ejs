@@ -1,0 +1,38 @@
+<%# Shared category navigation partial %>
+<div class="bg-white rounded-lg shadow-md p-6">
+    <h3 class="text-xl font-semibold mb-4">Categories</h3>
+    <nav>
+        <ul class="space-y-2">
+            <% categories.forEach(function(category) { %>
+                <li>
+                    <a href="/category/<%= category.slug %>" 
+                       class="<%= currentCategory && currentCategory.id === category.id ? 'text-blue-600 font-semibold' : 'text-gray-700 hover:text-blue-600' %>">
+                        <%= category.name %>
+                        <% if (showCounts) { %>
+                            <span class="text-gray-500 text-sm">
+                                (<%= category._count[contentType] %>)
+                            </span>
+                        <% } %>
+                    </a>
+                    <% if (category.children && category.children.length > 0) { %>
+                        <ul class="pl-4 mt-2 space-y-2">
+                            <% category.children.forEach(function(child) { %>
+                                <li>
+                                    <a href="/category/<%= child.slug %>"
+                                       class="<%= currentCategory && currentCategory.id === child.id ? 'text-blue-600 font-semibold' : 'text-gray-700 hover:text-blue-600' %>">
+                                        <%= child.name %>
+                                        <% if (showCounts) { %>
+                                            <span class="text-gray-500 text-sm">
+                                                (<%= child._count[contentType] %>)
+                                            </span>
+                                        <% } %>
+                                    </a>
+                                </li>
+                            <% }); %>
+                        </ul>
+                    <% } %>
+                </li>
+            <% }); %>
+        </ul>
+    </nav>
+</div>

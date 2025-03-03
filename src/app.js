@@ -12,6 +12,7 @@ const { setLocals } = require('./middleware/viewMiddleware');
 // Import routes
 const frontendRoutes = require('./routes/frontend');
 const adminRoutes = require('./routes/admin');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 
@@ -31,6 +32,8 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Serve static files - keep only one static file serving configuration
 app.use(express.static(path.join(__dirname, '../public')));
+// Serve uploaded files
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Method override middleware - must be before route handlers
 app.use(methodOverride('_method'));
@@ -74,6 +77,7 @@ app.use((req, res, next) => {
 });
 
 // Routes
+app.use('/admin', authRoutes); 
 app.use('/admin', adminRoutes);
 app.use('/', frontendRoutes);
 

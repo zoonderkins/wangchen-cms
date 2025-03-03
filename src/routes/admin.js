@@ -1,224 +1,116 @@
 const express = require('express');
 const router = express.Router();
+const { isAuthenticated, hasPermission } = require('../middleware/auth');
+const prisma = require('../lib/prisma');
 const multer = require('multer');
 const path = require('path');
-const { body } = require('express-validator');
-const { isAuthenticated, hasRole, hasPermission, isOwnerOrHasPermission } = require('../middleware/auth');
-const { handleUploadError } = require('../middleware/uploadMiddleware');
-const prisma = require('../lib/prisma');
-const logger = require('../config/logger');
 
 // Controllers
-const authController = require('../controllers/authController');
-const userController = require('../controllers/userController');
-const articleController = require('../controllers/articleController');
-const mediaController = require('../controllers/mediaController');
-const dashboardController = require('../controllers/dashboardController');
 const categoryController = require('../controllers/categoryController');
-const categoryPermissionController = require('../controllers/categoryPermissionController');
-const bannerController = require('../controllers/bannerController');
-const pageController = require('../controllers/pageController');
-const faqController = require('../controllers/faqController');
+const articleController = require('../controllers/articleController');
 const downloadController = require('../controllers/downloadController');
-const downloadCategoryController = require('../controllers/downloadCategoryController');
+const faqController = require('../controllers/faqController');
+const pageController = require('../controllers/pageController');
+const userController = require('../controllers/userController');
+const mediaController = require('../controllers/mediaController');
+const bannerController = require('../controllers/bannerController');
+const dashboardController = require('../controllers/dashboardController');
 
-// Multer configuration
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
-    }
-});
-
-const upload = multer({
-    storage,
-    limits: {
-        fileSize: process.env.MAX_FILE_SIZE || 5 * 1024 * 1024 // 5MB default
-    },
-    fileFilter: (req, file, cb) => {
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
-        if (allowedTypes.includes(file.mimetype)) {
-            cb(null, true);
-        } else {
-            cb(new Error('Invalid file type'));
-        }
-    }
-});
-
-// Public routes (no auth required)
-router.get('/login', authController.renderLoginForm);
-router.post('/login', authController.login);
-router.get('/logout', authController.logout);
-
-// Protected routes
+// Apply authentication middleware to all admin routes
 router.use(isAuthenticated);
 
-// Add path to res.locals for active menu highlighting
-router.use((req, res, next) => {
-    res.locals.path = req.path;
-    next();
-});
-
-// Root admin route - redirect to dashboard
-router.get('/', (req, res) => {
-    res.redirect('/admin/dashboard');
-});
-
 // Dashboard
-router.get('/dashboard', hasPermission('access:dashboard'), dashboardController.renderDashboard);
+router.get('/dashboard', hasPermission('dashboard:view'), dashboardController.renderDashboard);
 
-// Article routes
-router.get('/articles', hasPermission('article:list'), articleController.listArticles);
-router.get('/articles/create', hasPermission('article:create'), articleController.renderCreateForm);
-router.post('/articles', hasPermission('article:create'), articleController.createArticle);
-
-// Article edit routes with ownership check
-router.get('/articles/edit/:id', 
-    isOwnerOrHasPermission('article:edit_all', async (req) => {
-        const article = await prisma.article.findUnique({
-            where: { id: parseInt(req.params.id) }
-        });
-        return article ? article.authorId : null;
-    }), 
-    articleController.renderEditForm
-);
-
-router.post('/articles/edit/:id', 
-    isOwnerOrHasPermission('article:edit_all', async (req) => {
-        const article = await prisma.article.findUnique({
-            where: { id: parseInt(req.params.id) }
-        });
-        return article ? article.authorId : null;
-    }), 
-    articleController.updateArticle
-);
-
-router.post('/articles/delete/:id', 
-    isOwnerOrHasPermission('article:delete_all', async (req) => {
-        const article = await prisma.article.findUnique({
-            where: { id: parseInt(req.params.id) }
-        });
-        return article ? article.authorId : null;
-    }), 
-    articleController.deleteArticle
-);
-
-// Category management routes
-router.get('/categories', hasPermission('category:list'), categoryController.listCategories);
+// Categories - Unified Category Management
+router.get('/categories', hasPermission('category:view'), categoryController.listCategories);
 router.get('/categories/create', hasPermission('category:create'), categoryController.renderCreateCategory);
 router.post('/categories', hasPermission('category:create'), categoryController.createCategory);
 router.get('/categories/edit/:id', hasPermission('category:edit'), categoryController.renderEditCategory);
 router.post('/categories/edit/:id', hasPermission('category:edit'), categoryController.updateCategory);
 router.post('/categories/:id/delete', hasPermission('category:delete'), categoryController.deleteCategory);
 
-// User management routes
-router.get('/users', hasRole(['super_admin']), userController.listUsers);
-router.get('/users/create', hasRole(['super_admin']), userController.renderCreateUser);
-router.post('/users', 
-    hasRole(['super_admin']),
-    [
-        body('username').trim().isLength({ min: 3 }).escape(),
-        body('email').isEmail().normalizeEmail(),
-        body('password').isLength({ min: 6 })
-    ],
-    userController.createUser
-);
-router.get('/users/edit/:id', hasRole(['super_admin']), userController.renderEditUser);
-router.post('/users/edit/:id', 
-    hasRole(['super_admin']),
-    userController.updateUser
-);
-router.post('/users/delete/:id', hasRole(['super_admin']), userController.deleteUser);
+// Articles
+router.get('/articles', hasPermission('article:view'), articleController.listArticles);
+router.get('/articles/create', hasPermission('article:create'), articleController.renderCreateForm);
+router.post('/articles', hasPermission('article:create'), articleController.createArticle);
+router.get('/articles/edit/:id', hasPermission('article:edit'), articleController.renderEditForm);
+router.post('/articles/edit/:id', hasPermission('article:edit'), articleController.updateArticle);
+router.post('/articles/:id/delete', hasPermission('article:delete'), articleController.deleteArticle);
 
-// Category permission routes
-router.get('/users/:userId/category-permissions', 
-    hasPermission('category:manage_permissions'),
-    categoryPermissionController.getCategoryPermissions
+// Downloads
+router.get('/downloads', hasPermission('download:view'), downloadController.listDownloads);
+router.get('/downloads/create', hasPermission('download:create'), downloadController.renderCreateDownload);
+router.post('/downloads', 
+    hasPermission('download:create'),
+    multer({ dest: path.join(process.cwd(), 'uploads/downloads/') }).single('file'),
+    downloadController.createDownload
 );
-
-router.post('/users/:userId/category-permissions',
-    hasPermission('category:manage_permissions'),
-    categoryPermissionController.assignCategoryPermissions
+router.get('/downloads/edit/:id', hasPermission('download:edit'), downloadController.renderEditDownload);
+router.post('/downloads/edit/:id', 
+    hasPermission('download:edit'),
+    multer({ dest: path.join(process.cwd(), 'uploads/downloads/') }).single('file'),
+    downloadController.updateDownload
 );
+router.post('/downloads/:id/delete', hasPermission('download:delete'), downloadController.deleteDownload);
 
-// Media routes
-router.get('/media', hasPermission('manage_media'), mediaController.listMedia);
+// FAQ Items
+router.get('/faq/items', hasPermission('faq:view'), faqController.listItems);
+router.get('/faq/items/create', hasPermission('faq:create'), faqController.renderCreateItem);
+router.post('/faq/items', hasPermission('faq:create'), faqController.createItem);
+router.get('/faq/items/edit/:id', hasPermission('faq:edit'), faqController.renderEditItem);
+router.post('/faq/items/edit/:id', hasPermission('faq:edit'), faqController.updateItem);
+router.post('/faq/items/:id/delete', hasPermission('faq:delete'), faqController.deleteItem);
 
-router.post('/media/upload',
-    hasPermission('manage_media'),
-    upload.single('file'),
-    handleUploadError,
+// FAQ Categories
+router.get('/faq/categories', hasPermission('faq:view'), faqController.listCategories);
+router.get('/faq/categories/create', hasPermission('faq:create'), faqController.renderCreateCategory);
+router.post('/faq/categories', hasPermission('faq:create'), faqController.createCategory);
+router.get('/faq/categories/edit/:id', hasPermission('faq:edit'), faqController.renderEditCategory);
+router.post('/faq/categories/edit/:id', hasPermission('faq:edit'), faqController.updateCategory);
+router.post('/faq/categories/:id/delete', hasPermission('faq:delete'), faqController.deleteCategory);
+
+// Pages
+router.get('/pages', hasPermission('page:view'), pageController.listPages);
+router.get('/pages/create', hasPermission('page:create'), pageController.renderCreatePage);
+router.post('/pages', hasPermission('page:create'), pageController.createPage);
+router.get('/pages/edit/:id', hasPermission('page:edit'), pageController.renderEditPage);
+router.post('/pages/:id', hasPermission('page:edit'), pageController.updatePage);
+router.post('/pages/:id/delete', hasPermission('page:delete'), pageController.deletePage);
+
+// Media Management
+router.get('/media', hasPermission('media:view'), mediaController.listMedia);
+router.get('/media/upload', hasPermission('media:create'), mediaController.renderUploadForm);
+router.post('/media/upload', 
+    hasPermission('media:create'),
+    multer({ dest: path.join(process.cwd(), 'uploads/media/') }).single('file'),
     mediaController.uploadMedia
 );
+router.get('/media/:id', hasPermission('media:view'), mediaController.getMediaDetails);
+router.post('/media/:id/delete', hasPermission('media:delete'), mediaController.deleteMedia);
 
-router.post('/media/:id/delete',
-    hasPermission('manage_media'),
-    mediaController.deleteMedia
+// Banners
+router.get('/banners', hasPermission('banner:view'), bannerController.listBanners);
+router.get('/banners/create', hasPermission('banner:create'), bannerController.renderCreateBanner);
+router.post('/banners',
+    hasPermission('banner:create'),
+    multer({ dest: path.join(process.cwd(), 'uploads/banners/') }).single('media'),
+    bannerController.createBanner
 );
-
-router.get('/media/:id',
-    hasPermission('manage_media'),
-    mediaController.getMediaDetails
+router.get('/banners/edit/:id', hasPermission('banner:edit'), bannerController.renderEditBanner);
+router.post('/banners/edit/:id',
+    hasPermission('banner:edit'),
+    multer({ dest: path.join(process.cwd(), 'uploads/banners/') }).single('media'),
+    bannerController.updateBanner
 );
+router.post('/banners/:id/delete', hasPermission('banner:delete'), bannerController.deleteBanner);
 
-// Banner routes
-const bannerUpload = require('../middleware/bannerUpload');
-
-router.get('/banners', hasRole(['super_admin', 'admin', 'editor']), bannerController.listBanners);
-router.get('/banners/create', hasRole(['super_admin', 'admin', 'editor']), bannerController.renderCreateBanner);
-router.post('/banners', hasRole(['super_admin', 'admin', 'editor']), bannerUpload, bannerController.createBanner);
-router.get('/banners/edit/:id', hasRole(['super_admin', 'admin', 'editor']), bannerController.renderEditBanner);
-router.post('/banners/edit/:id', hasRole(['super_admin', 'admin', 'editor']), bannerUpload, bannerController.updateBanner);
-router.post('/banners/toggle/:id', hasRole(['super_admin', 'admin', 'editor']), bannerController.toggleBannerStatus);
-router.delete('/banners/:id', hasRole(['super_admin', 'admin', 'editor']), bannerController.deleteBanner);
-
-// Page routes
-const pageAttachmentUpload = require('../middleware/pageAttachmentUpload');
-
-router.get('/pages', hasRole(['super_admin', 'admin', 'editor']), pageController.listPages);
-router.get('/pages/create', hasRole(['super_admin', 'admin', 'editor']), pageController.renderCreatePage);
-router.post('/pages', hasRole(['super_admin', 'admin', 'editor']), pageAttachmentUpload, pageController.createPage);
-router.get('/pages/edit/:id', hasRole(['super_admin', 'admin', 'editor']), pageController.renderEditPage);
-router.post('/pages/:id', hasRole(['super_admin', 'admin', 'editor']), pageAttachmentUpload, pageController.updatePage);
-router.put('/pages/:id', hasRole(['super_admin', 'admin', 'editor']), pageAttachmentUpload, pageController.updatePage);
-router.post('/pages/:id/delete', hasRole(['super_admin', 'admin', 'editor']), pageController.deletePage);
-router.delete('/pages/attachment/:attachmentId', hasRole(['super_admin', 'admin', 'editor']), pageController.deleteAttachment);
-
-// FAQ Category Routes
-router.get('/faq/categories', hasRole(['super_admin', 'admin', 'editor']), faqController.listCategories);
-router.get('/faq/categories/create', hasRole(['super_admin', 'admin', 'editor']), faqController.renderCreateCategory);
-router.post('/faq/categories', hasRole(['super_admin', 'admin', 'editor']), faqController.createCategory);
-router.get('/faq/categories/edit/:id', hasRole(['super_admin', 'admin', 'editor']), faqController.renderEditCategory);
-router.post('/faq/categories/:id', hasRole(['super_admin', 'admin', 'editor']), faqController.updateCategory);
-router.post('/faq/categories/:id/delete', hasRole(['super_admin', 'admin', 'editor']), faqController.deleteCategory);
-
-// FAQ Item Routes
-router.get('/faq/items', hasRole(['super_admin', 'admin', 'editor']), faqController.listItems);
-router.get('/faq/items/create', hasRole(['super_admin', 'admin', 'editor']), faqController.renderCreateItem);
-router.post('/faq/items', hasRole(['super_admin', 'admin', 'editor']), faqController.createItem);
-router.get('/faq/items/edit/:id', hasRole(['super_admin', 'admin', 'editor']), faqController.renderEditItem);
-router.post('/faq/items/:id', hasRole(['super_admin', 'admin', 'editor']), faqController.updateItem);
-router.post('/faq/items/:id/delete', hasRole(['super_admin', 'admin', 'editor']), faqController.deleteItem);
-
-// Download Routes
-const downloadFileUpload = require('../middleware/downloadFileUpload');
-
-router.get('/downloads', hasRole(['super_admin', 'admin', 'editor']), downloadController.listDownloads);
-router.get('/downloads/create', hasRole(['super_admin', 'admin', 'editor']), downloadController.renderCreateDownload);
-router.post('/downloads', hasRole(['super_admin', 'admin', 'editor']), downloadFileUpload, downloadController.createDownload);
-router.get('/downloads/edit/:id', hasRole(['super_admin', 'admin', 'editor']), downloadController.renderEditDownload);
-router.post('/downloads/:id', hasRole(['super_admin', 'admin', 'editor']), downloadFileUpload, downloadController.updateDownload);
-router.post('/downloads/:id/delete', hasRole(['super_admin', 'admin', 'editor']), downloadController.deleteDownload);
-
-// Download Category Routes
-router.get('/downloads/categories', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.listCategories);
-router.get('/downloads/categories/create', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.renderCreateCategory);
-router.post('/downloads/categories/create', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.createCategory);
-router.get('/downloads/categories/:id/edit', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.renderEditCategory);
-router.post('/downloads/categories/:id/edit', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.updateCategory);
-router.post('/downloads/categories/:id/delete', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.deleteCategory);
+// User Management
+router.get('/users', hasPermission('user:view'), userController.listUsers);
+router.get('/users/create', hasPermission('user:create'), userController.renderCreateUser);
+router.post('/users', hasPermission('user:create'), userController.createUser);
+router.get('/users/edit/:id', hasPermission('user:edit'), userController.renderEditUser);
+router.post('/users/edit/:id', hasPermission('user:edit'), userController.updateUser);
+router.post('/users/:id/delete', hasPermission('user:delete'), userController.deleteUser);
 
 module.exports = router;

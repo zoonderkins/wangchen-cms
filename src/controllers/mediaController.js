@@ -41,7 +41,7 @@ exports.uploadMedia = async (req, res) => {
         }
 
         const { filename, originalname, mimetype, size } = req.file;
-        const uploadPath = `/uploads/${filename}`; // Use absolute URL path
+        const uploadPath = `/uploads/media/${filename}`; // Use absolute URL path with correct subfolder
 
         await prisma.media.create({
             data: {

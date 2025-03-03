@@ -5,9 +5,10 @@ const slugify = require('slugify');
 // List all FAQ categories
 exports.listCategories = async (req, res) => {
     try {
-        const categories = await prisma.faqCategory.findMany({
+        const categories = await prisma.category.findMany({
             where: {
-                deletedAt: null
+                deletedAt: null,
+                type: 'faq'
             },
             include: {
                 _count: {
@@ -55,8 +56,8 @@ exports.createCategory = async (req, res) => {
         });
         
         // Check if slug already exists
-        const existingCategory = await prisma.faqCategory.findUnique({
-            where: { slug }
+        const existingCategory = await prisma.category.findUnique({
+            where: { slug, type: 'faq' }
         });
         
         if (existingCategory) {
@@ -65,12 +66,13 @@ exports.createCategory = async (req, res) => {
         }
         
         // Create the category
-        await prisma.faqCategory.create({
+        await prisma.category.create({
             data: {
                 name,
                 slug,
                 description,
-                order: order ? parseInt(order) : 0
+                order: order ? parseInt(order) : 0,
+                type: 'faq'
             }
         });
         
@@ -88,8 +90,8 @@ exports.renderEditCategory = async (req, res) => {
     try {
         const { id } = req.params;
         
-        const category = await prisma.faqCategory.findUnique({
-            where: { id: parseInt(id) }
+        const category = await prisma.category.findUnique({
+            where: { id: parseInt(id), type: 'faq' }
         });
         
         if (!category) {
@@ -121,12 +123,13 @@ exports.updateCategory = async (req, res) => {
         });
         
         // Check if slug already exists on a different category
-        const existingCategory = await prisma.faqCategory.findFirst({
+        const existingCategory = await prisma.category.findFirst({
             where: {
                 slug,
                 id: {
                     not: parseInt(id)
-                }
+                },
+                type: 'faq'
             }
         });
         
@@ -136,8 +139,8 @@ exports.updateCategory = async (req, res) => {
         }
         
         // Update the category
-        await prisma.faqCategory.update({
-            where: { id: parseInt(id) },
+        await prisma.category.update({
+            where: { id: parseInt(id), type: 'faq' },
             data: {
                 name,
                 slug,
@@ -162,8 +165,8 @@ exports.deleteCategory = async (req, res) => {
         const { id } = req.params;
         
         // Soft delete the category
-        await prisma.faqCategory.update({
-            where: { id: parseInt(id) },
+        await prisma.category.update({
+            where: { id: parseInt(id), type: 'faq' },
             data: {
                 deletedAt: new Date()
             }
@@ -225,9 +228,10 @@ exports.listItems = async (req, res) => {
 // Render create FAQ item form
 exports.renderCreateItem = async (req, res) => {
     try {
-        const categories = await prisma.faqCategory.findMany({
+        const categories = await prisma.category.findMany({
             where: {
-                deletedAt: null
+                deletedAt: null,
+                type: 'faq'
             },
             orderBy: {
                 name: 'asc'
@@ -299,9 +303,10 @@ exports.renderEditItem = async (req, res) => {
                     category: true
                 }
             }),
-            prisma.faqCategory.findMany({
+            prisma.category.findMany({
                 where: {
-                    deletedAt: null
+                    deletedAt: null,
+                    type: 'faq'
                 },
                 orderBy: {
                     name: 'asc'

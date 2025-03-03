@@ -32,6 +32,10 @@ exports.listArticles = async (req, res) => {
 exports.renderCreateForm = async (req, res) => {
     try {
         const categories = await prisma.category.findMany({
+            where: {
+                type: 'article',
+                deletedAt: null
+            },
             orderBy: { name: 'asc' }
         });
 
@@ -74,6 +78,20 @@ exports.createArticle = async (req, res) => {
 
         if (!req.session.user?.id) {
             throw new Error('User not authenticated');
+        }
+
+        // Verify category exists and is of type 'article'
+        if (categoryId) {
+            const category = await prisma.category.findFirst({
+                where: {
+                    id: parseInt(categoryId),
+                    type: 'article',
+                    deletedAt: null
+                }
+            });
+            if (!category) {
+                throw new Error('Invalid category selected');
+            }
         }
 
         const article = await prisma.article.create({
@@ -130,6 +148,10 @@ exports.renderEditForm = async (req, res) => {
         }
 
         const categories = await prisma.category.findMany({
+            where: {
+                type: 'article',
+                deletedAt: null
+            },
             orderBy: { name: 'asc' }
         });
 
@@ -179,6 +201,20 @@ exports.updateArticle = async (req, res) => {
 
         if (!req.session.user?.id) {
             throw new Error('User not authenticated');
+        }
+
+        // Verify category exists and is of type 'article'
+        if (categoryId) {
+            const category = await prisma.category.findFirst({
+                where: {
+                    id: parseInt(categoryId),
+                    type: 'article',
+                    deletedAt: null
+                }
+            });
+            if (!category) {
+                throw new Error('Invalid category selected');
+            }
         }
 
         const article = await prisma.article.update({

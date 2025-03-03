@@ -3,78 +3,11 @@ const router = express.Router();
 const prisma = require('../lib/prisma');
 const logger = require('../config/logger');
 const QuillDeltaToHtmlConverter = require('quill-delta-to-html').QuillDeltaToHtmlConverter;
-const downloadController = require('../controllers/downloadController');
+const path = require('path');
 
-// Helper function to create clean excerpts
-function createExcerpt(content, maxLength = 200) {
-    // First try to parse as JSON (Quill format)
-    try {
-        const contentObj = JSON.parse(content);
-        if (contentObj.ops) {
-            content = contentObj.ops.map(op => {
-                if (typeof op.insert === 'string') {
-                    return op.insert;
-                }
-                return '';
-            }).join('');
-        }
-    } catch (e) {
-        // If not JSON, assume it's HTML
-        // Remove HTML tags
-        content = content.replace(/<[^>]*>/g, ' ');
-    }
-
-    // Clean up whitespace
-    content = content.replace(/\s+/g, ' ').trim();
-    
-    // Truncate to maxLength
-    if (content.length > maxLength) {
-        // Try to cut at a word boundary
-        content = content.substr(0, maxLength);
-        const lastSpace = content.lastIndexOf(' ');
-        if (lastSpace > maxLength * 0.8) { // Only cut at space if it's not too far back
-            content = content.substr(0, lastSpace);
-        }
-        content += '...';
-    }
-    
-    return content;
-}
-
-// Common middleware for frontend routes
+// Common middleware to load navigation data
 router.use(async (req, res, next) => {
     try {
-        // Get categories for navigation
-        // Get article only if status is 'published'
-        const categories = await prisma.category.findMany({
-            where: {
-                parentId: null // Get only top-level categories
-            },
-            include: {
-                children: {
-                    include: {
-                        _count: {
-                            select: {
-                                articles: {
-                                    where: { status: 'published' }
-                                }
-                            }
-                        }
-                    }
-                },
-                _count: {
-                    select: {
-                        articles: {
-                            where: { status: 'published' }
-                        }
-                    }
-                }
-            },
-            orderBy: {
-                order: 'asc'
-            }
-        });
-
         // Get navigation pages
         const navigationPages = await prisma.page.findMany({
             where: {
@@ -93,8 +26,7 @@ router.use(async (req, res, next) => {
             }
         });
 
-        // Make categories and navigation pages available to all views
-        res.locals.categories = categories;
+        // Make navigation data available to all views
         res.locals.navigationPages = navigationPages;
         next();
     } catch (error) {
@@ -106,81 +38,11 @@ router.use(async (req, res, next) => {
 // Home page
 router.get('/', async (req, res) => {
     try {
-        // Get latest articles and active banners
-        const [articles, banners] = await Promise.all([
+        const [latestArticles, featuredDownloads, activeBanners, categories] = await Promise.all([
             prisma.article.findMany({
-                where: {
-                    status: 'published'
-                },
-                orderBy: {
-                    createdAt: 'desc'
-                },
-                take: 10,
-                include: {
-                    category: true
-                }
-            }),
-            prisma.banner.findMany({
-                where: {
-                    isActive: true
-                },
-                orderBy: {
-                    createdAt: 'desc'
-                },
-                take: 4 // Limit to 4 banners
-            })
-        ]);
-
-        // Debug banner information
-        logger.info(`Banners found: ${banners.length}`);
-        if (banners.length > 0) {
-            banners.forEach((banner, index) => {
-                logger.info(`Banner ${index + 1}: ID=${banner.id}, Title=${banner.title}, Media=${banner.mediaPath}, Active=${banner.isActive}, Type=${banner.mediaType}`);
-            });
-        } else {
-            logger.info('No active banners found');
-        }
-
-        // Process articles to create excerpts
-        const processedArticles = articles.map(article => ({
-            ...article,
-            excerpt: article.excerpt || createExcerpt(article.content)
-        }));
-
-        res.render('frontend/index', {
-            title: 'Home',
-            articles: processedArticles,
-            banners,
-            layout: 'layouts/frontend'
-        });
-    } catch (error) {
-        logger.error('Error loading homepage:', error);
-        res.render('frontend/index', {
-            title: 'Home',
-            articles: [],
-            banners: [],
-            layout: 'layouts/frontend'
-        });
-    }
-});
-
-// Articles list page with pagination
-router.get('/articles', async (req, res) => {
-    try {
-        const page = parseInt(req.query.page) || 1;
-        const perPage = 12;
-        const skip = (page - 1) * perPage;
-
-        const [articles, total] = await Promise.all([
-            prisma.article.findMany({
-                where: {
-                    status: 'published'
-                },
-                orderBy: {
-                    createdAt: 'desc'
-                },
-                skip,
-                take: perPage,
+                where: { status: 'published', deletedAt: null },
+                take: 6,
+                orderBy: { publishedAt: 'desc' },
                 include: {
                     category: true,
                     author: {
@@ -188,436 +50,501 @@ router.get('/articles', async (req, res) => {
                     }
                 }
             }),
-            prisma.article.count({
-                where: {
-                    status: 'published'
+            prisma.download.findMany({
+                where: { status: 'published', deletedAt: null },
+                take: 6,
+                orderBy: { createdAt: 'desc' },
+                include: {
+                    category: true
+                }
+            }),
+            prisma.banner.findMany({
+                where: { 
+                    isActive: true
+                },
+                orderBy: { 
+                    createdAt: 'desc' 
+                }
+            }),
+            prisma.category.findMany({
+                where: { 
+                    type: 'article',
+                    deletedAt: null
+                },
+                include: {
+                    _count: {
+                        select: {
+                            articles: {
+                                where: { status: 'published', deletedAt: null }
+                            }
+                        }
+                    }
                 }
             })
         ]);
 
-        const totalPages = Math.ceil(total / perPage);
+        res.render('frontend/index', {
+            title: 'Home',
+            articles: latestArticles,
+            featuredDownloads,
+            banners: activeBanners,
+            categories
+        });
+    } catch (error) {
+        logger.error('Home page error:', error);
+        res.status(500).render('error', { error: 'Failed to load home page' });
+    }
+});
+
+// Article detail page
+router.get('/articles/:id', async (req, res, next) => {
+    try {
+        const articleId = parseInt(req.params.id);
+        if (isNaN(articleId)) {
+            return next();
+        }
+
+        const article = await prisma.article.findUnique({
+            where: {
+                id: articleId,
+                status: 'published',
+                deletedAt: null
+            },
+            include: {
+                category: true,
+                author: {
+                    select: { username: true }
+                }
+            }
+        });
+
+        if (!article) {
+            return next();
+        }
+
+        // Convert Quill Delta to HTML if needed
+        let contentHtml = article.content;
+        if (article.content && article.content.startsWith('{')) {
+            try {
+                const delta = JSON.parse(article.content);
+                if (delta.ops) {
+                    const converter = new QuillDeltaToHtmlConverter(delta.ops, {});
+                    contentHtml = converter.convert();
+                }
+            } catch (e) {
+                logger.error('Error converting article content:', e);
+            }
+        }
+
+        res.render('frontend/article', {
+            title: article.title,
+            article: { ...article, contentHtml }
+        });
+    } catch (error) {
+        logger.error('Article detail page error:', error);
+        res.status(500).render('error', { error: 'Failed to load article' });
+    }
+});
+
+// Articles section
+router.get('/articles', async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const perPage = 12;
+
+        const [articles, categories, total] = await Promise.all([
+            prisma.article.findMany({
+                where: { status: 'published', deletedAt: null },
+                skip: (page - 1) * perPage,
+                take: perPage,
+                orderBy: { publishedAt: 'desc' },
+                include: {
+                    category: true,
+                    author: {
+                        select: { username: true }
+                    }
+                }
+            }),
+            prisma.category.findMany({
+                where: { type: 'article', deletedAt: null },
+                include: {
+                    _count: {
+                        select: {
+                            articles: {
+                                where: { status: 'published', deletedAt: null }
+                            }
+                        }
+                    }
+                }
+            }),
+            prisma.article.count({
+                where: { status: 'published', deletedAt: null }
+            })
+        ]);
 
         res.render('frontend/articles', {
             title: 'Articles',
             articles,
-            currentPage: page,
-            totalPages,
-            layout: 'layouts/frontend'
+            categories,
+            pagination: {
+                current: page,
+                perPage,
+                total,
+                pages: Math.ceil(total / perPage)
+            }
         });
     } catch (error) {
-        logger.error('Error fetching articles:', error);
-        res.render('frontend/articles', {
-            title: 'Articles',
-            articles: [],
-            currentPage: 1,
-            totalPages: 1,
-            layout: 'layouts/frontend'
-        });
+        logger.error('Articles page error:', error);
+        res.status(500).render('error', { error: 'Failed to load articles' });
     }
 });
 
-// Category page
-router.get('/category/:id', async (req, res) => {
+// Single article
+router.get('/article/:slug', async (req, res, next) => {
+    try {
+        const article = await prisma.article.findFirst({
+            where: {
+                slug: req.params.slug,
+                status: 'published',
+                deletedAt: null
+            },
+            include: {
+                category: true,
+                author: {
+                    select: { name: true }
+                }
+            }
+        });
+
+        if (!article) {
+            return next();
+        }
+
+        // Convert Quill Delta to HTML
+        const converter = new QuillDeltaToHtmlConverter(JSON.parse(article.content).ops, {});
+        const contentHtml = converter.convert();
+
+        res.render('frontend/article', {
+            title: article.title,
+            article: { ...article, contentHtml }
+        });
+    } catch (error) {
+        logger.error('Article page error:', error);
+        res.status(500).render('error', { error: 'Failed to load article' });
+    }
+});
+
+// Downloads section
+router.get('/downloads', async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const perPage = 12;
+
+        const [downloads, categories, total] = await Promise.all([
+            prisma.download.findMany({
+                where: { status: 'published', deletedAt: null },
+                skip: (page - 1) * perPage,
+                take: perPage,
+                orderBy: { createdAt: 'desc' },
+                include: {
+                    category: true
+                }
+            }),
+            prisma.category.findMany({
+                where: { type: 'download', deletedAt: null },
+                include: {
+                    _count: {
+                        select: {
+                            downloads: {
+                                where: { status: 'published', deletedAt: null }
+                            }
+                        }
+                    }
+                }
+            }),
+            prisma.download.count({
+                where: { status: 'published', deletedAt: null }
+            })
+        ]);
+
+        res.render('frontend/downloads', {
+            title: 'Downloads',
+            downloads,
+            categories,
+            pagination: {
+                current: page,
+                perPage,
+                total,
+                pages: Math.ceil(total / perPage)
+            }
+        });
+    } catch (error) {
+        logger.error('Downloads page error:', error);
+        res.status(500).render('error', { error: 'Failed to load downloads' });
+    }
+});
+
+// Download file
+router.get('/download/:slug', async (req, res, next) => {
+    try {
+        const download = await prisma.download.findFirst({
+            where: {
+                slug: req.params.slug,
+                status: 'published',
+                deletedAt: null
+            }
+        });
+
+        if (!download) {
+            return next();
+        }
+
+        // Update download count
+        await prisma.download.update({
+            where: { id: download.id },
+            data: { downloadCount: { increment: 1 } }
+        });
+
+        // Send file
+        res.download(download.filePath, download.fileName, (err) => {
+            if (err) {
+                logger.error('Download error:', err);
+                res.status(500).render('error', { error: 'Failed to download file' });
+            }
+        });
+    } catch (error) {
+        logger.error('Download error:', error);
+        res.status(500).render('error', { error: 'Failed to process download' });
+    }
+});
+
+// FAQ section
+router.get('/faqs', async (req, res) => {
+    try {
+        const categories = await prisma.category.findMany({
+            where: { 
+                type: 'faq', 
+                deletedAt: null 
+            },
+            include: {
+                faqItems: {
+                    where: { 
+                        status: 'published', 
+                        deletedAt: null 
+                    },
+                    orderBy: [
+                        { order: 'asc' },
+                        { createdAt: 'desc' }
+                    ]
+                }
+            }
+        });
+
+        // Convert Quill Delta to HTML for each FAQ
+        categories.forEach(category => {
+            category.faqItems.forEach(faq => {
+                const converter = new QuillDeltaToHtmlConverter(JSON.parse(faq.answer).ops, {});
+                faq.answerHtml = converter.convert();
+            });
+        });
+
+        res.render('frontend/faq', {
+            title: 'FAQs',
+            categories
+        });
+    } catch (error) {
+        logger.error('FAQ page error:', error);
+        res.status(500).render('error', { error: 'Failed to load FAQs' });
+    }
+});
+
+// Category pages
+router.get('/category/:id', async (req, res, next) => {
     try {
         const categoryId = parseInt(req.params.id);
-        
         if (isNaN(categoryId)) {
-            return res.status(404).render('frontend/error', {
-                title: 'Category Not Found',
-                message: 'Invalid category ID',
-                layout: 'layouts/frontend'
-            });
+            return next();
         }
 
         const category = await prisma.category.findUnique({
-            where: { id: categoryId },
+            where: {
+                id: categoryId,
+                deletedAt: null
+            },
             include: {
-                articles: {
-                    where: {
-                        status: 'published'
-                    },
-                    orderBy: {
-                        createdAt: 'desc'
+                parent: true,
+                children: {
+                    where: { deletedAt: null },
+                    include: {
+                        _count: {
+                            select: {
+                                articles: {
+                                    where: { status: 'published', deletedAt: null }
+                                },
+                                downloads: {
+                                    where: { status: 'published', deletedAt: null }
+                                },
+                                faqItems: {
+                                    where: { status: 'published', deletedAt: null }
+                                }
+                            }
+                        }
                     }
                 }
             }
         });
 
         if (!category) {
-            return res.status(404).render('frontend/error', {
-                title: 'Category Not Found',
-                message: 'Category not found',
-                layout: 'layouts/frontend'
-            });
+            return next();
         }
 
-        // Process articles to create excerpts
-        const processedArticles = category.articles.map(article => ({
-            ...article,
-            excerpt: createExcerpt(article.content),
-            content: article.content
-        }));
+        const page = parseInt(req.query.page) || 1;
+        const perPage = 12;
+
+        // Get content based on category type
+        let content = [];
+        let total = 0;
+
+        switch (category.type) {
+            case 'article':
+                [content, total] = await Promise.all([
+                    prisma.article.findMany({
+                        where: {
+                            categoryId: category.id,
+                            status: 'published',
+                            deletedAt: null
+                        },
+                        skip: (page - 1) * perPage,
+                        take: perPage,
+                        orderBy: { publishedAt: 'desc' },
+                        include: {
+                            author: {
+                                select: { username: true }
+                            }
+                        }
+                    }),
+                    prisma.article.count({
+                        where: {
+                            categoryId: category.id,
+                            status: 'published',
+                            deletedAt: null
+                        }
+                    })
+                ]);
+                break;
+
+            case 'download':
+                [content, total] = await Promise.all([
+                    prisma.download.findMany({
+                        where: {
+                            categoryId: category.id,
+                            status: 'published',
+                            deletedAt: null
+                        },
+                        skip: (page - 1) * perPage,
+                        take: perPage,
+                        orderBy: { createdAt: 'desc' }
+                    }),
+                    prisma.download.count({
+                        where: {
+                            categoryId: category.id,
+                            status: 'published',
+                            deletedAt: null
+                        }
+                    })
+                ]);
+                break;
+
+            case 'faq':
+                [content, total] = await Promise.all([
+                    prisma.faqItem.findMany({
+                        where: {
+                            categoryId: category.id,
+                            status: 'published',
+                            deletedAt: null
+                        },
+                        skip: (page - 1) * perPage,
+                        take: perPage,
+                        orderBy: [
+                            { order: 'asc' },
+                            { createdAt: 'desc' }
+                        ]
+                    }),
+                    prisma.faqItem.count({
+                        where: {
+                            categoryId: category.id,
+                            status: 'published',
+                            deletedAt: null
+                        }
+                    })
+                ]);
+
+                // Convert Quill Delta to HTML for FAQs
+                content.forEach(faq => {
+                    const converter = new QuillDeltaToHtmlConverter(JSON.parse(faq.answer).ops, {});
+                    faq.answerHtml = converter.convert();
+                });
+                break;
+        }
+
+        // Helper function for date formatting
+        const formatDate = (date) => {
+            return new Date(date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        };
 
         res.render('frontend/category', {
             title: category.name,
-            category: {
-                ...category,
-                articles: processedArticles
+            category,
+            [category.type === 'article' ? 'articles' : 
+              category.type === 'download' ? 'downloads' : 'faqs']: content,
+            pagination: {
+                current: page,
+                perPage,
+                total,
+                pages: Math.ceil(total / perPage)
             },
-            layout: 'layouts/frontend'
+            formatDate
         });
     } catch (error) {
-        logger.error('Error fetching category:', error);
-        res.status(500).render('frontend/error', {
-            title: 'Error',
-            message: 'An error occurred while fetching the category',
-            layout: 'layouts/frontend'
-        });
+        logger.error('Category page error:', error);
+        res.status(500).render('error', { error: 'Failed to load category' });
     }
 });
 
-// Add single article route
-router.get('/article/:id', async (req, res) => {
+// Pages
+router.get('/:slug', async (req, res, next) => {
     try {
-        const articleId = parseInt(req.params.id);
-        logger.info(`Looking for article with id: ${articleId}`);
-        
-        if (isNaN(articleId)) {
-            logger.warn(`Invalid article ID: ${req.params.id}`);
-            return res.status(404).render('frontend/error', {
-                title: 'Article Not Found',
-                message: 'Invalid article ID',
-                layout: 'layouts/frontend'
-            });
-        }
-
-        const article = await prisma.article.findFirst({
-            where: { 
-                id: articleId,
-                status: 'published'
-            },
-            include: {
-                author: {
-                    select: { username: true }
-                },
-                category: true,
-                featured: true,
-                media: true
-            }
-        });
-
-        logger.info('Found article:', article ? { id: article.id, title: article.title, status: article.status } : 'null');
-
-        if (!article) {
-            return res.status(404).render('frontend/error', {
-                title: 'Article Not Found',
-                message: 'The requested article could not be found',
-                layout: 'layouts/frontend'
-            });
-        }
-
-        // Process the content - handle both Quill.js JSON and HTML formats
-        if (article.content) {
-            try {
-                // Try to parse as JSON (Quill.js format)
-                const contentObj = JSON.parse(article.content);
-                if (contentObj.ops) {
-                    // Convert Quill.js delta to HTML
-                    article.content = contentObj.ops.map(op => {
-                        if (typeof op.insert === 'string') {
-                            let text = op.insert;
-                            
-                            // Apply basic formatting based on attributes
-                            if (op.attributes) {
-                                if (op.attributes.bold) text = `<strong>${text}</strong>`;
-                                if (op.attributes.italic) text = `<em>${text}</em>`;
-                                if (op.attributes.underline) text = `<u>${text}</u>`;
-                                if (op.attributes.link) text = `<a href="${op.attributes.link}">${text}</a>`;
-                                if (op.attributes.header) text = `<h${op.attributes.header}>${text}</h${op.attributes.header}>`;
-                            }
-                            
-                            return text;
-                        } else if (op.insert && op.insert.image) {
-                            return `<img src="${op.insert.image}" alt="Article image">`;
-                        }
-                        return '';
-                    }).join('');
-                }
-            } catch (e) {
-                logger.info('Content appears to be HTML, skipping JSON parsing');
-                // If parsing fails, assume it's already HTML content
-                // No need to modify the content
-            }
-        }
-
-        logger.info('Rendering article template');
-        res.render('frontend/article', {
-            title: article.title,
-            article,
-            layout: 'layouts/frontend'
-        });
-    } catch (error) {
-        logger.error('Error loading article page:', error);
-        res.status(500).render('frontend/error', {
-            title: 'Error',
-            message: 'Error loading article page',
-            layout: 'layouts/frontend'
-        });
-    }
-});
-
-// Handle article routes
-router.get('/articles/:id', async (req, res) => {
-    try {
-        const articleId = parseInt(req.params.id);
-        logger.info(`Looking for article with id: ${articleId}`);
-        
-        if (isNaN(articleId)) {
-            logger.warn(`Invalid article ID: ${req.params.id}`);
-            return res.status(404).render('frontend/error', {
-                title: 'Article Not Found',
-                message: 'Invalid article ID',
-                layout: 'layouts/frontend'
-            });
-        }
-
-        const article = await prisma.article.findFirst({
-            where: { 
-                id: articleId,
-                status: 'published'
-            },
-            include: {
-                author: {
-                    select: { username: true }
-                },
-                category: true,
-                featured: true,
-                media: true
-            }
-        });
-
-        logger.info('Found article:', article ? { id: article.id, title: article.title, status: article.status } : 'null');
-
-        if (!article) {
-            return res.status(404).render('frontend/error', {
-                title: 'Article Not Found',
-                message: 'The requested article could not be found',
-                layout: 'layouts/frontend'
-            });
-        }
-
-        // Process the content - handle both Quill.js JSON and HTML formats
-        if (article.content) {
-            try {
-                // Try to parse as JSON (Quill.js format)
-                const contentObj = JSON.parse(article.content);
-                if (contentObj.ops) {
-                    // Convert Quill.js delta to HTML
-                    article.content = contentObj.ops.map(op => {
-                        if (typeof op.insert === 'string') {
-                            let text = op.insert;
-                            
-                            // Apply basic formatting based on attributes
-                            if (op.attributes) {
-                                if (op.attributes.bold) text = `<strong>${text}</strong>`;
-                                if (op.attributes.italic) text = `<em>${text}</em>`;
-                                if (op.attributes.underline) text = `<u>${text}</u>`;
-                                if (op.attributes.link) text = `<a href="${op.attributes.link}">${text}</a>`;
-                                if (op.attributes.header) text = `<h${op.attributes.header}>${text}</h${op.attributes.header}>`;
-                            }
-                            
-                            return text;
-                        } else if (op.insert && op.insert.image) {
-                            return `<img src="${op.insert.image}" alt="Article image">`;
-                        }
-                        return '';
-                    }).join('');
-                }
-            } catch (e) {
-                logger.info('Content appears to be HTML, skipping JSON parsing');
-                // If parsing fails, assume it's already HTML content
-                // No need to modify the content
-            }
-        }
-
-        logger.info('Rendering article template');
-        res.render('frontend/article', {
-            title: article.title,
-            article,
-            layout: 'layouts/frontend'
-        });
-    } catch (error) {
-        logger.error('Error loading article page:', error);
-        res.status(500).render('frontend/error', {
-            title: 'Error',
-            message: 'Error loading article page',
-            layout: 'layouts/frontend'
-        });
-    }
-});
-
-// Page route
-router.get('/page/:slug', async (req, res) => {
-    try {
-        const { slug } = req.params;
-        
-        // Find the page by slug
         const page = await prisma.page.findFirst({
             where: {
-                slug,
+                slug: req.params.slug,
                 status: 'published',
                 deletedAt: null
             },
             include: {
-                author: {
-                    select: {
-                        username: true
-                    }
-                },
                 attachments: true
             }
         });
-        
+
         if (!page) {
-            logger.warn(`Page not found: ${slug}`);
-            return res.status(404).render('frontend/404', {
-                title: 'Page Not Found',
-                layout: 'layouts/frontend'
-            });
-        }
-        
-        // Process content if it's in Quill Delta format
-        try {
-            // Check if content is in Quill Delta JSON format
-            const contentObj = JSON.parse(page.content);
-            if (contentObj.ops) {
-                const converter = new QuillDeltaToHtmlConverter(contentObj.ops, {});
-                page.content = converter.convert();
-            }
-        } catch (e) {
-            // If not JSON or conversion fails, use content as is (HTML)
-            logger.debug(`Content for page ${slug} is not in Quill Delta format or couldn't be converted`);
-        }
-        
-        // Render the page
-        res.render('frontend/page', {
-            title: page.metaTitle || page.title,
-            metaDescription: page.metaDescription,
-            metaKeywords: page.metaKeywords,
-            page,
-            layout: 'layouts/frontend'
-        });
-    } catch (error) {
-        logger.error(`Error rendering page ${req.params.slug}:`, error);
-        res.status(500).render('error', {
-            title: 'Error',
-            message: 'An unexpected error occurred',
-            error: process.env.NODE_ENV === 'development' ? error : {},
-            layout: 'layouts/frontend'
-        });
-    }
-});
-
-// FAQ page
-router.get('/faq', async (req, res) => {
-    try {
-        // Get all published FAQ categories with their published items
-        const categories = await prisma.faqCategory.findMany({
-            where: {
-                deletedAt: null
-            },
-            include: {
-                faqItems: {
-                    where: {
-                        status: 'published',
-                        deletedAt: null
-                    },
-                    orderBy: {
-                        order: 'asc'
-                    }
-                }
-            },
-            orderBy: {
-                order: 'asc'
-            }
-        });
-        
-        // Get article categories for navigation (separate from FAQ categories)
-        const articleCategories = await prisma.category.findMany({
-            where: {
-                parentId: null // Get only top-level categories
-            },
-            include: {
-                children: {
-                    include: {
-                        _count: {
-                            select: {
-                                articles: {
-                                    where: { status: 'published' }
-                                }
-                            }
-                        }
-                    }
-                },
-                _count: {
-                    select: {
-                        articles: {
-                            where: { status: 'published' }
-                        }
-                    }
-                }
-            },
-            orderBy: {
-                order: 'asc'
-            }
-        });
-        
-        res.render('frontend/faq', {
-            title: 'Frequently Asked Questions',
-            categories, // These are FAQ categories
-            articleCategories, // Pass article categories separately
-            layout: 'layouts/frontend'
-        });
-    } catch (error) {
-        logger.error('Error rendering FAQ page:', error);
-        res.status(500).render('frontend/error', {
-            title: 'Error',
-            message: 'Failed to load FAQ page',
-            layout: 'layouts/frontend'
-        });
-    }
-});
-
-// Downloads list page
-router.get('/downloads', downloadController.listDownloadsForFrontend);
-
-// Download file
-router.get('/downloads/:id', downloadController.downloadFile);
-
-// Handle custom URL paths
-router.get('/:path(*)', async (req, res, next) => {
-    try {
-        // Skip admin routes
-        if (req.params.path.startsWith('admin/')) {
             return next();
         }
 
-        // Since we don't have custom paths for articles yet,
-        // just pass to the next handler which will show 404
-        next();
-    } catch (error) {
-        logger.error('Error in custom path handler:', error);
-        next(error);
-    }
-});
+        // Convert Quill Delta to HTML
+        const converter = new QuillDeltaToHtmlConverter(JSON.parse(page.content).ops, {});
+        const contentHtml = converter.convert();
 
-// 404 handler
-router.use((req, res) => {
-    res.status(404).render('frontend/error', {
-        title: 'Page Not Found',
-        message: 'The page you are looking for could not be found.',
-        layout: 'layouts/frontend'
-    });
+        res.render('frontend/page', {
+            title: page.title,
+            page: { ...page, contentHtml }
+        });
+    } catch (error) {
+        logger.error('Page error:', error);
+        res.status(500).render('error', { error: 'Failed to load page' });
+    }
 });
 
 module.exports = router;
