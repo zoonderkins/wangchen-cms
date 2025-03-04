@@ -83,15 +83,20 @@ async function main() {
         });
 
         // Create default category
-        const defaultCategory = await prisma.category.upsert({
-            where: { slug: 'uncategorized' },
-            update: {},
-            create: {
-                name: 'Uncategorized',
-                slug: 'uncategorized',
-                description: 'Default category for uncategorized content'
-            }
+        // First check if the category exists
+        let defaultCategory = await prisma.category.findFirst({
+            where: { name: 'Uncategorized' }
         });
+        
+        // If it doesn't exist, create it
+        if (!defaultCategory) {
+            defaultCategory = await prisma.category.create({
+                data: {
+                    name: 'Uncategorized',
+                    description: 'Default category for uncategorized content'
+                }
+            });
+        }
 
         logger.info('Database seeded successfully');
         console.log({ superAdminRole, adminRole, editorRole, superAdminUser, defaultCategory });

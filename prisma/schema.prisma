@@ -195,6 +195,7 @@ model FaqCategory {
   name        String
   slug        String    @unique
   description String?   @db.Text
+  description_cn String?   @db.Text
   order       Int       @default(0)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

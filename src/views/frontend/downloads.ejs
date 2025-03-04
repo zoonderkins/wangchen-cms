@@ -1,191 +1,201 @@
 <%- contentFor('body') %>
 
-<div class="bg-gradient-to-b from-gray-50 to-white min-h-screen py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Header with animation -->
-        <div class="text-center mb-12 animate-fade-in">
-            <h1 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 mb-4">下載專區</h1>
-            <p class="text-lg text-gray-600">Browse and download our resources</p>
-        </div>
+    <div class="bg-gradient-to-b from-gray-50 to-white min-h-screen py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Header with animation -->
+            <div class="text-center mb-12 animate-fade-in">
+                <h1
+                    class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 mb-4">
+                    下載專區</h1>
+                <p class="text-lg text-gray-600">Browse and download our resources</p>
+            </div>
 
-        <!-- Search and Filter Section -->
-        <div class="bg-white rounded-xl shadow-sm p-6 mb-8 backdrop-blur-sm bg-white/80">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- Search with improved styling -->
-                <div class="md:col-span-2">
-                    <form action="/downloads" method="GET" class="flex gap-2">
-                        <div class="flex-1 relative">
-                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                            <input type="text" name="search" 
-                                class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150" 
-                                placeholder="搜尋下載項目..." 
-                                value="<%= filters.search %>">
+            <!-- Search and Filter Section -->
+            <div class="bg-white rounded-xl shadow-sm p-6 mb-8 backdrop-blur-sm bg-white/80">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Search with improved styling -->
+                    <div class="md:col-span-2">
+                        <form action="/downloads" method="GET" class="flex gap-2">
+                            <div class="flex-1 relative">
+                                <i
+                                    class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <input type="text" name="search"
+                                    class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
+                                    placeholder="搜尋下載項目..." value="<%= filters.search %>">
+                            </div>
+                            <button type="submit"
+                                class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150">
+                                搜尋
+                            </button>
+                        </form>
+                    </div>
+                    <!-- Category Filter with improved dropdown -->
+                    <% if (locals.categories && categories.length> 0) { %>
+                        <div class="md:col-span-1">
+                            <form action="/downloads" method="GET" class="flex gap-2">
+                                <div class="flex-1 relative">
+                                    <i
+                                        class="fas fa-folder absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                    <select name="category"
+                                        class="w-full appearance-none pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
+                                        onchange="this.form.submit()">
+                                        <option value="">全部分類</option>
+                                        <% categories.forEach(function(category) { %>
+                                            <option value="<%= category.id %>"
+                                                <%=filters.category===category.id.toString() ? 'selected' : '' %>>
+                                                <%= category.name %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                    <i
+                                        class="fas fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                                </div>
+                                <% if (filters.category) { %>
+                                    <a href="/downloads"
+                                        class="px-4 py-2.5 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-150">
+                                        清除
+                                    </a>
+                                    <% } %>
+                            </form>
                         </div>
-                        <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150">
-                            搜尋
-                        </button>
-                    </form>
-                </div>
-                <!-- Category Filter with improved dropdown -->
-                <% if (locals.categories && categories.length > 0) { %>
-                <div class="md:col-span-1">
-                    <form action="/downloads" method="GET" class="flex gap-2">
-                        <div class="flex-1 relative">
-                            <i class="fas fa-folder absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                            <select name="category" 
-                                class="w-full appearance-none pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
-                                onchange="this.form.submit()">
-                                <option value="">全部分類</option>
-                                <% categories.forEach(function(category) { %>
-                                <option value="<%= category.id %>" <%= filters.category === category.id.toString() ? 'selected' : '' %>>
-                                    <%= category.name %>
-                                </option>
-                                <% }); %>
-                            </select>
-                            <i class="fas fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-                        </div>
-                        <% if (filters.category) { %>
-                        <a href="/downloads" 
-                            class="px-4 py-2.5 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-150">
-                            清除
-                        </a>
                         <% } %>
-                    </form>
                 </div>
-                <% } %>
             </div>
-        </div>
 
-        <% if (locals.downloads && downloads.length > 0) { %>
-        <!-- Downloads Grid with hover effects -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <% downloads.forEach(function(download) { %>
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-                <div class="p-6">
-                    <div class="flex items-start justify-between">
-                        <div class="flex-1">
-                            <h3 class="text-xl font-semibold text-gray-900 mb-2"><%= download.title %></h3>
-                            <% if (download.category) { %>
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-50 text-blue-700">
-                                <i class="fas fa-folder-open mr-1.5 text-blue-500"></i>
-                                <%= download.category.name %>
-                            </span>
+            <% if (locals.downloads && downloads.length> 0) { %>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <% downloads.forEach(function(download) { %>
+                        <div
+                            class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="p-6">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1">
+                                        <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                                            <%= download.title %>
+                                        </h3>
+                                        <% if (download.category) { %>
+                                            <span
+                                                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-50 text-blue-700">
+                                                <i class="fas fa-folder-open mr-1.5 text-blue-500"></i>
+                                                <%= download.category.name %>
+                                            </span>
+                                            <% } %>
+                                    </div>
+                                    <% let icon='fa-file' ; let iconColor='text-gray-500' ; if
+                                        (download.mimeType.includes('pdf')) { icon='fa-file-pdf' ;
+                                        iconColor='text-red-500' ; } else if (download.mimeType.includes('word')) {
+                                        icon='fa-file-word' ; iconColor='text-blue-500' ; } else if
+                                        (download.mimeType.includes('excel') ||
+                                        download.mimeType.includes('spreadsheet')) { icon='fa-file-excel' ;
+                                        iconColor='text-green-500' ; } else if (download.mimeType.includes('image')) {
+                                        icon='fa-file-image' ; iconColor='text-purple-500' ; } else if
+                                        (download.mimeType.includes('zip') || download.mimeType.includes('rar')) {
+                                        icon='fa-file-archive' ; iconColor='text-yellow-500' ; } %>
+                                        <div class="p-3 bg-gray-50 rounded-lg">
+                                            <i class="fas <%= icon %> <%= iconColor %> text-3xl"></i>
+                                        </div>
+                                </div>
+
+                                <% if (download.description) { %>
+                                    <p class="mt-4 text-gray-600 line-clamp-2">
+                                        本推動方案將建設數位基礎環境，提供大南方產業生態系所需的高品質與高安全運算資源與協作環境，並提供運算資源挹注新創與企業。本中心規劃引進高速運算主機，滿足AI運算對資料與算力的高度需求，並打造新世代智慧節能IDC機房。機房採用綠能設施，如燃氣發電機、釩液流儲能系統與太陽能發電系統，建構智慧防災微電網，進一步降低PUE能耗，以實現節能減碳與淨零排放的永續發展目標。AI運算資料中心將成為國內AI發展的重要基礎設施，推動產業創新與科技應用，加速智慧化時代的來臨。
+                                    </p>
+                                    <% } %>
+
+                                        <div class="mt-6 flex items-center justify-between">
+                                            <div class="text-sm text-gray-500">
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-file-alt mr-2"></i>
+                                                    <%= download.originalName %>
+                                                </div>
+                                                <div class="flex items-center mt-1">
+                                                    <i class="fas fa-weight mr-2"></i>
+                                                    <%= (download.size / 1024).toFixed(2) %> KB
+                                                </div>
+                                            </div>
+                                            <a href="/downloads/<%= download.id %>"
+                                                class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105">
+                                                <i class="fas fa-download mr-2"></i>
+                                                下載
+                                            </a>
+                                        </div>
+                            </div>
+                        </div>
+                        <% }); %>
+                </div>
+
+                <% if (pagination.totalPages> 1) { %>
+                    <div class="mt-8">
+                        <nav class="flex justify-center" aria-label="Pagination">
+                            <ul class="inline-flex items-center -space-x-px">
+                                <% if (pagination.hasPrevPage) { %>
+                                    <li>
+                                        <a href="/downloads?page=<%= pagination.current - 1 %><%= filters.search ? '&search=' + filters.search : '' %><%= filters.category ? '&category=' + filters.category : '' %>"
+                                            class="px-4 py-2 rounded-l-lg text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition duration-150">
+                                            <i class="fas fa-chevron-left mr-1"></i>
+                                            上一頁
+                                        </a>
+                                    </li>
+                                    <% } %>
+
+                                        <% for(let i=1; i <=pagination.totalPages; i++) { %>
+                                            <li>
+                                                <a href="/downloads?page=<%= i %><%= filters.search ? '&search=' + filters.search : '' %><%= filters.category ? '&category=' + filters.category : '' %>"
+                                                    class="px-4 py-2 text-sm font-medium <%= pagination.current === i ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-600' : 'text-gray-700 bg-white border-gray-300 hover:bg-gray-50' %> border transition duration-150">
+                                                    <%= i %>
+                                                </a>
+                                            </li>
+                                            <% } %>
+
+                                                <% if (pagination.hasNextPage) { %>
+                                                    <li>
+                                                        <a href="/downloads?page=<%= pagination.current + 1 %><%= filters.search ? '&search=' + filters.search : '' %><%= filters.category ? '&category=' + filters.category : '' %>"
+                                                            class="px-4 py-2 rounded-r-lg text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition duration-150">
+                                                            下一頁
+                                                            <i class="fas fa-chevron-right ml-1"></i>
+                                                        </a>
+                                                    </li>
+                                                    <% } %>
+                            </ul>
+                        </nav>
+                    </div>
+                    <% } %>
+
+                        <% } else { %>
+                            <!-- Empty State with improved styling -->
+                            <div class="text-center py-16">
+                                <div
+                                    class="rounded-full bg-gradient-to-br from-gray-100 to-gray-50 p-8 mx-auto w-24 h-24 flex items-center justify-center mb-6 shadow-inner">
+                                    <i class="fas fa-inbox text-4xl text-gray-400"></i>
+                                </div>
+                                <h3 class="text-xl font-medium text-gray-900 mb-3">沒有找到下載項目</h3>
+                                <p class="text-gray-600 max-w-md mx-auto">
+                                    <% if (filters.search || filters.category) { %>
+                                        沒有符合搜尋條件的下載項目。<a href="/downloads"
+                                            class="text-blue-600 hover:text-blue-800 font-medium transition duration-150">查看所有下載</a>
+                                        <% } else { %>
+                                            目前沒有可供下載的項目。
+                                            <% } %>
+                                </p>
+                            </div>
                             <% } %>
-                        </div>
-                        <% 
-                        let icon = 'fa-file';
-                        let iconColor = 'text-gray-500';
-                        if (download.mimeType.includes('pdf')) {
-                            icon = 'fa-file-pdf';
-                            iconColor = 'text-red-500';
-                        } else if (download.mimeType.includes('word')) {
-                            icon = 'fa-file-word';
-                            iconColor = 'text-blue-500';
-                        } else if (download.mimeType.includes('excel') || download.mimeType.includes('spreadsheet')) {
-                            icon = 'fa-file-excel';
-                            iconColor = 'text-green-500';
-                        } else if (download.mimeType.includes('image')) {
-                            icon = 'fa-file-image';
-                            iconColor = 'text-purple-500';
-                        } else if (download.mimeType.includes('zip') || download.mimeType.includes('rar')) {
-                            icon = 'fa-file-archive';
-                            iconColor = 'text-yellow-500';
-                        }
-                        %>
-                        <div class="p-3 bg-gray-50 rounded-lg">
-                            <i class="fas <%= icon %> <%= iconColor %> text-3xl"></i>
-                        </div>
-                    </div>
-                    
-                    <% if (download.description) { %>
-                    <p class="mt-4 text-gray-600 line-clamp-2"><%= download.description %></p>
-                    <% } %>
-                    
-                    <div class="mt-6 flex items-center justify-between">
-                        <div class="text-sm text-gray-500">
-                            <div class="flex items-center">
-                                <i class="fas fa-file-alt mr-2"></i>
-                                <%= download.originalName %>
-                            </div>
-                            <div class="flex items-center mt-1">
-                                <i class="fas fa-weight mr-2"></i>
-                                <%= (download.size / 1024).toFixed(2) %> KB
-                            </div>
-                        </div>
-                        <a href="/downloads/<%= download.id %>" 
-                            class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105">
-                            <i class="fas fa-download mr-2"></i>
-                            下載
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <% }); %>
         </div>
-
-        <!-- Pagination with improved styling -->
-        <% if (pagination.totalPages > 1) { %>
-        <div class="mt-8">
-            <nav class="flex justify-center" aria-label="Pagination">
-                <ul class="inline-flex items-center -space-x-px">
-                    <% if (pagination.hasPrevPage) { %>
-                    <li>
-                        <a href="/downloads?page=<%= pagination.current - 1 %><%= filters.search ? '&search=' + filters.search : '' %><%= filters.category ? '&category=' + filters.category : '' %>"
-                            class="px-4 py-2 rounded-l-lg text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition duration-150">
-                            <i class="fas fa-chevron-left mr-1"></i>
-                            上一頁
-                        </a>
-                    </li>
-                    <% } %>
-                    
-                    <% for(let i = 1; i <= pagination.totalPages; i++) { %>
-                    <li>
-                        <a href="/downloads?page=<%= i %><%= filters.search ? '&search=' + filters.search : '' %><%= filters.category ? '&category=' + filters.category : '' %>"
-                            class="px-4 py-2 text-sm font-medium <%= pagination.current === i ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-600' : 'text-gray-700 bg-white border-gray-300 hover:bg-gray-50' %> border transition duration-150">
-                            <%= i %>
-                        </a>
-                    </li>
-                    <% } %>
-                    
-                    <% if (pagination.hasNextPage) { %>
-                    <li>
-                        <a href="/downloads?page=<%= pagination.current + 1 %><%= filters.search ? '&search=' + filters.search : '' %><%= filters.category ? '&category=' + filters.category : '' %>"
-                            class="px-4 py-2 rounded-r-lg text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition duration-150">
-                            下一頁
-                            <i class="fas fa-chevron-right ml-1"></i>
-                        </a>
-                    </li>
-                    <% } %>
-                </ul>
-            </nav>
-        </div>
-        <% } %>
-        
-        <% } else { %>
-        <!-- Empty State with improved styling -->
-        <div class="text-center py-16">
-            <div class="rounded-full bg-gradient-to-br from-gray-100 to-gray-50 p-8 mx-auto w-24 h-24 flex items-center justify-center mb-6 shadow-inner">
-                <i class="fas fa-inbox text-4xl text-gray-400"></i>
-            </div>
-            <h3 class="text-xl font-medium text-gray-900 mb-3">沒有找到下載項目</h3>
-            <p class="text-gray-600 max-w-md mx-auto">
-                <% if (filters.search || filters.category) { %>
-                沒有符合搜尋條件的下載項目。<a href="/downloads" class="text-blue-600 hover:text-blue-800 font-medium transition duration-150">查看所有下載</a>
-                <% } else { %>
-                目前沒有可供下載的項目。
-                <% } %>
-            </p>
-        </div>
-        <% } %>
     </div>
-</div>
 
-<style>
-@keyframes fade-in {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-.animate-fade-in {
-    animation: fade-in 0.6s ease-out;
-}
-</style>
+    <style>
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.6s ease-out;
+        }
+    </style>
