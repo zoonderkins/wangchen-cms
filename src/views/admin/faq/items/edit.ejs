@@ -2,7 +2,7 @@
 
 <div class="container px-6 mx-auto grid">
     <h2 class="my-6 text-2xl font-semibold text-gray-700">
-        Edit FAQ Item: <%= item.title %>
+        Edit FAQ Item: <%= item.title_en %>
     </h2>
 
     <!-- Flash Messages -->
@@ -19,20 +19,48 @@
     <% } %>
 
     <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
+        <!-- Language Switcher -->
+        <div class="mb-4">
+            <div class="flex border-b border-gray-200">
+                <button type="button" class="py-2 px-4 text-center border-b-2 border-blue-500 text-blue-500 font-medium text-sm leading-5 focus:outline-none language-tab active" data-language="en">
+                    English
+                </button>
+                <button type="button" class="py-2 px-4 text-center border-b-2 border-transparent text-gray-500 font-medium text-sm leading-5 hover:text-gray-700 hover:border-gray-300 focus:outline-none language-tab" data-language="tw">
+                    Traditional Chinese
+                </button>
+            </div>
+        </div>
+        
         <form action="/admin/faq/items/<%= item.id %>" method="POST">
-            <!-- Title -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700" for="title">
-                    Question/Title <span class="text-red-500">*</span>
+            <!-- Title - English -->
+            <div class="mb-4 language-content en">
+                <label class="block text-sm font-medium text-gray-700" for="title_en">
+                    Question/Title (English) <span class="text-red-500">*</span>
                 </label>
                 <input
                     class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                     type="text"
-                    id="title"
-                    name="title"
-                    placeholder="Enter the FAQ question or title"
+                    id="title_en"
+                    name="title_en"
+                    placeholder="Enter the FAQ question or title in English"
                     required
-                    value="<%= item.title %>"
+                    value="<%= item.title_en %>"
+                />
+            </div>
+            
+            <!-- Title - Traditional Chinese -->
+            <div class="mb-4 language-content tw hidden">
+                <label class="block text-sm font-medium text-gray-700" for="title_tw">
+                    Question/Title (Traditional Chinese) <span class="text-red-500">*</span>
+                </label>
+                <input
+                    class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                    type="text"
+                    id="title_tw"
+                    name="title_tw"
+                    placeholder="Enter the FAQ question or title in Traditional Chinese"
+                    required
+                    value="<%= item.title_tw %>"
                 />
             </div>
             
@@ -49,18 +77,27 @@
                 >
                     <option value="">Select a category</option>
                     <% categories.forEach(function(category) { %>
-                        <option value="<%= category.id %>" <%= item.categoryId === category.id ? 'selected' : '' %>><%= category.name %></option>
+                        <option value="<%= category.id %>" <%= item.categoryId === category.id ? 'selected' : '' %>><%= category.name_en %></option>
                     <% }); %>
                 </select>
             </div>
             
-            <!-- Content -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700" for="content">
-                    Answer/Content <span class="text-red-500">*</span>
+            <!-- Content - English -->
+            <div class="mb-4 language-content en">
+                <label class="block text-sm font-medium text-gray-700" for="content_en">
+                    Answer/Content (English) <span class="text-red-500">*</span>
                 </label>
-                <div id="editor-container" class="h-64 mt-1"></div>
-                <input type="hidden" name="content" id="content" value="<%= item.content %>">
+                <div id="editor-container-en" class="h-64 mt-1"></div>
+                <input type="hidden" name="content_en" id="content_en" value="<%= item.content_en %>">
+            </div>
+            
+            <!-- Content - Traditional Chinese -->
+            <div class="mb-4 language-content tw hidden">
+                <label class="block text-sm font-medium text-gray-700" for="content_tw">
+                    Answer/Content (Traditional Chinese) <span class="text-red-500">*</span>
+                </label>
+                <div id="editor-container-tw" class="h-64 mt-1"></div>
+                <input type="hidden" name="content_tw" id="content_tw" value="<%= item.content_tw %>">
             </div>
             
             <!-- Order -->
@@ -111,43 +148,102 @@
 <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialize Quill editor
-        var quill = new Quill('#editor-container', {
+        // Initialize Quill editors for both languages
+        const toolbarOptions = [
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'indent': '-1'}, { 'indent': '+1' }],
+            ['link', 'image'],
+            ['clean']
+        ];
+        
+        // English Quill editor
+        var quillEn = new Quill('#editor-container-en', {
             theme: 'snow',
             modules: {
-                toolbar: [
-                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    [{ 'indent': '-1'}, { 'indent': '+1' }],
-                    ['link', 'image'],
-                    ['clean']
-                ]
+                toolbar: toolbarOptions
             },
-            placeholder: 'Enter the answer content here...'
+            placeholder: 'Enter the answer content in English here...'
         });
         
-        // Try to load existing content
+        // Traditional Chinese Quill editor
+        var quillTw = new Quill('#editor-container-tw', {
+            theme: 'snow',
+            modules: {
+                toolbar: toolbarOptions
+            },
+            placeholder: 'Enter the answer content in Traditional Chinese here...'
+        });
+        
+        // Try to load existing English content
         try {
-            const contentInput = document.querySelector('#content');
-            if (contentInput.value) {
+            const contentEnInput = document.querySelector('#content_en');
+            if (contentEnInput.value) {
                 // Check if it's already in Delta format
                 try {
-                    const delta = JSON.parse(contentInput.value);
-                    quill.setContents(delta);
+                    const deltaEn = JSON.parse(contentEnInput.value);
+                    quillEn.setContents(deltaEn);
                 } catch (e) {
                     // If not in Delta format, set as HTML
-                    quill.root.innerHTML = contentInput.value;
+                    quillEn.root.innerHTML = contentEnInput.value;
                 }
             }
         } catch (error) {
-            console.error('Error loading content:', error);
+            console.error('Error loading English content:', error);
         }
         
-        // When form is submitted, update hidden input with Quill content
+        // Try to load existing Traditional Chinese content
+        try {
+            const contentTwInput = document.querySelector('#content_tw');
+            if (contentTwInput.value) {
+                // Check if it's already in Delta format
+                try {
+                    const deltaTw = JSON.parse(contentTwInput.value);
+                    quillTw.setContents(deltaTw);
+                } catch (e) {
+                    // If not in Delta format, set as HTML
+                    quillTw.root.innerHTML = contentTwInput.value;
+                }
+            }
+        } catch (error) {
+            console.error('Error loading Traditional Chinese content:', error);
+        }
+        
+        // When form is submitted, update hidden inputs with Quill content
         document.querySelector('form').addEventListener('submit', function() {
-            var contentInput = document.querySelector('#content');
-            contentInput.value = JSON.stringify(quill.getContents());
+            var contentEnInput = document.querySelector('#content_en');
+            contentEnInput.value = JSON.stringify(quillEn.getContents());
+            
+            var contentTwInput = document.querySelector('#content_tw');
+            contentTwInput.value = JSON.stringify(quillTw.getContents());
+        });
+        
+        // Language switcher functionality
+        const languageTabs = document.querySelectorAll('.language-tab');
+        const languageContents = document.querySelectorAll('.language-content');
+        
+        languageTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const language = this.getAttribute('data-language');
+                
+                // Update active tab
+                languageTabs.forEach(t => {
+                    t.classList.remove('border-blue-500', 'text-blue-500');
+                    t.classList.add('border-transparent', 'text-gray-500');
+                });
+                this.classList.remove('border-transparent', 'text-gray-500');
+                this.classList.add('border-blue-500', 'text-blue-500');
+                
+                // Show/hide content sections
+                languageContents.forEach(content => {
+                    if (content.classList.contains(language)) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+            });
         });
     });
 </script>

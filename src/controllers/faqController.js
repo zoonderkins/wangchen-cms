@@ -46,10 +46,10 @@ exports.renderCreateCategory = (req, res) => {
 // Create a new FAQ category
 exports.createCategory = async (req, res) => {
     try {
-        const { name, description, order } = req.body;
+        const { name_en, name_tw, description_en, description_tw, order } = req.body;
         
-        // Generate slug from name
-        const slug = slugify(name, {
+        // Generate slug from English name
+        const slug = slugify(name_en, {
             lower: true,
             strict: true
         });
@@ -67,9 +67,11 @@ exports.createCategory = async (req, res) => {
         // Create the category
         await prisma.faqCategory.create({
             data: {
-                name,
+                name_en,
+                name_tw,
                 slug,
-                description,
+                description_en,
+                description_tw,
                 order: order ? parseInt(order) : 0
             }
         });
@@ -98,7 +100,7 @@ exports.renderEditCategory = async (req, res) => {
         }
         
         res.render('admin/faq/categories/edit', {
-            title: `Edit FAQ Category: ${category.name}`,
+            title: `Edit FAQ Category: ${category.name_en}`,
             category
         });
     } catch (error) {
@@ -112,10 +114,10 @@ exports.renderEditCategory = async (req, res) => {
 exports.updateCategory = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, order } = req.body;
+        const { name_en, name_tw, description_en, description_tw, order } = req.body;
         
-        // Generate slug from name
-        const slug = slugify(name, {
+        // Generate slug from English name
+        const slug = slugify(name_en, {
             lower: true,
             strict: true
         });
@@ -139,9 +141,11 @@ exports.updateCategory = async (req, res) => {
         await prisma.faqCategory.update({
             where: { id: parseInt(id) },
             data: {
-                name,
+                name_en,
+                name_tw,
                 slug,
-                description,
+                description_en,
+                description_tw,
                 order: order ? parseInt(order) : 0,
                 updatedAt: new Date()
             }
@@ -248,25 +252,39 @@ exports.renderCreateItem = async (req, res) => {
 // Create a new FAQ item
 exports.createItem = async (req, res) => {
     try {
-        const { title, content, categoryId, order, status } = req.body;
+        const { title_en, title_tw, content_en, content_tw, categoryId, order, status } = req.body;
         
-        // Parse the Quill Delta JSON if it exists
-        let processedContent = content;
+        // Parse the Quill Delta JSON for English content
+        let processedContentEn = content_en;
         try {
             // Check if the content is a valid Quill Delta JSON
-            const deltaObj = JSON.parse(content);
+            const deltaObjEn = JSON.parse(content_en);
             // Store the Delta JSON as is - we'll render it properly on the frontend
-            processedContent = content;
+            processedContentEn = content_en;
         } catch (e) {
             // If parsing fails, it's not JSON, so use as is
-            processedContent = content;
+            processedContentEn = content_en;
+        }
+        
+        // Parse the Quill Delta JSON for Traditional Chinese content
+        let processedContentTw = content_tw;
+        try {
+            // Check if the content is a valid Quill Delta JSON
+            const deltaObjTw = JSON.parse(content_tw);
+            // Store the Delta JSON as is - we'll render it properly on the frontend
+            processedContentTw = content_tw;
+        } catch (e) {
+            // If parsing fails, it's not JSON, so use as is
+            processedContentTw = content_tw;
         }
         
         // Create the item
         await prisma.faqItem.create({
             data: {
-                title,
-                content: processedContent,
+                title_en,
+                title_tw,
+                content_en: processedContentEn,
+                content_tw: processedContentTw,
                 order: order ? parseInt(order) : 0,
                 status: status || 'draft',
                 category: {
@@ -315,7 +333,7 @@ exports.renderEditItem = async (req, res) => {
         }
         
         res.render('admin/faq/items/edit', {
-            title: `Edit FAQ Item: ${item.title}`,
+            title: `Edit FAQ Item: ${item.title_en}`,
             item,
             categories
         });
@@ -330,19 +348,32 @@ exports.renderEditItem = async (req, res) => {
 exports.updateItem = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, content, categoryId, order, status } = req.body;
+        const { title_en, title_tw, content_en, content_tw, categoryId, order, status } = req.body;
         
-        // Parse the Quill Delta JSON if it exists
-        let processedContent = content;
+        // Parse the Quill Delta JSON for English content
+        let processedContentEn = content_en;
         try {
             // Check if the content is a valid Quill Delta JSON
-            const deltaObj = JSON.parse(content);
+            const deltaObjEn = JSON.parse(content_en);
             // Store the Delta JSON as is - we'll render it properly on the frontend
-            processedContent = content;
+            processedContentEn = content_en;
         } catch (e) {
             // If parsing fails, it's not JSON, so use as is
-            processedContent = content;
-            logger.info('Content is not in Delta JSON format:', e.message);
+            processedContentEn = content_en;
+            logger.info('English content is not in Delta JSON format:', e.message);
+        }
+        
+        // Parse the Quill Delta JSON for Traditional Chinese content
+        let processedContentTw = content_tw;
+        try {
+            // Check if the content is a valid Quill Delta JSON
+            const deltaObjTw = JSON.parse(content_tw);
+            // Store the Delta JSON as is - we'll render it properly on the frontend
+            processedContentTw = content_tw;
+        } catch (e) {
+            // If parsing fails, it's not JSON, so use as is
+            processedContentTw = content_tw;
+            logger.info('Traditional Chinese content is not in Delta JSON format:', e.message);
         }
         
         // Validate the status value
@@ -355,8 +386,10 @@ exports.updateItem = async (req, res) => {
         await prisma.faqItem.update({
             where: { id: parseInt(id) },
             data: {
-                title,
-                content: processedContent,
+                title_en,
+                title_tw,
+                content_en: processedContentEn,
+                content_tw: processedContentTw,
                 order: order ? parseInt(order) : 0,
                 status,
                 categoryId: parseInt(categoryId),

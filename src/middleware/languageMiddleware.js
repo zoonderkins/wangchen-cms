@@ -6,7 +6,7 @@ const logger = require('../config/logger');
 
 // Available languages
 const AVAILABLE_LANGUAGES = ['en', 'tw'];
-const DEFAULT_LANGUAGE = 'en';
+const DEFAULT_LANGUAGE = 'tw';
 
 /**
  * Middleware to handle language selection

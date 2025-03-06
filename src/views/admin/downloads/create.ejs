@@ -20,28 +20,63 @@
             </div>
         </div>
         <form action="/admin/downloads" method="POST" enctype="multipart/form-data">
-            <div class="mb-4">
-                <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
-                    Title <span class="text-red-500">*</span>
-                </label>
-                <input type="text" class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
-                    id="title" name="title" required>
-                <p class="mt-1 text-xs text-gray-500">Enter a descriptive title for the download</p>
+            <!-- Language Tabs -->
+            <%- include('../../partials/admin-language-switcher', { title: 'Content Language', activeTab: 'en' }) %>
+
+            <!-- English Content -->
+            <div class="language-content language-content-en">
+                <div class="mb-4">
+                    <label for="title_en" class="block text-sm font-medium text-gray-700 mb-2">
+                        Title (English) <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
+                        id="title_en" name="title_en" required>
+                    <p class="mt-1 text-xs text-gray-500">Enter a descriptive title for the download in English</p>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="description_en" class="block text-sm font-medium text-gray-700 mb-2">Description (English)</label>
+                    <textarea class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
+                        id="description_en" name="description_en" rows="3"></textarea>
+                    <p class="mt-1 text-xs text-gray-500">Provide a brief description of the file in English (optional)</p>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="keywords_en" class="block text-sm font-medium text-gray-700 mb-2">Keywords (English)</label>
+                    <input type="text" class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
+                        id="keywords_en" name="keywords_en">
+                    <p class="mt-1 text-xs text-gray-500">Enter keywords separated by commas to help with search in English (optional)</p>
+                </div>
             </div>
-            
-            <div class="mb-4">
-                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                <textarea class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
-                    id="description" name="description" rows="3"></textarea>
-                <p class="mt-1 text-xs text-gray-500">Provide a brief description of the file (optional)</p>
+
+            <!-- Traditional Chinese Content -->
+            <div class="language-content language-content-tw hidden">
+                <div class="mb-4">
+                    <label for="title_tw" class="block text-sm font-medium text-gray-700 mb-2">
+                        標題 (中文) <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
+                        id="title_tw" name="title_tw" required>
+                    <p class="mt-1 text-xs text-gray-500">請輸入下載檔案的中文標題</p>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="description_tw" class="block text-sm font-medium text-gray-700 mb-2">描述 (中文)</label>
+                    <textarea class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
+                        id="description_tw" name="description_tw" rows="3"></textarea>
+                    <p class="mt-1 text-xs text-gray-500">請提供檔案的中文簡短描述（選填）</p>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="keywords_tw" class="block text-sm font-medium text-gray-700 mb-2">關鍵字 (中文)</label>
+                    <input type="text" class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
+                        id="keywords_tw" name="keywords_tw">
+                    <p class="mt-1 text-xs text-gray-500">請輸入以逗號分隔的中文關鍵字，以幫助搜尋（選填）</p>
+                </div>
             </div>
-            
-            <div class="mb-4">
-                <label for="keywords" class="block text-sm font-medium text-gray-700 mb-2">Keywords</label>
-                <input type="text" class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
-                    id="keywords" name="keywords">
-                <p class="mt-1 text-xs text-gray-500">Enter keywords separated by commas to help with search (optional)</p>
-            </div>
+
+            <!-- Common Fields -->
+            <div class="border-t pt-4 mt-4">
             
             <div class="mb-4">
                 <label for="categoryId" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
@@ -49,7 +84,7 @@
                     id="categoryId" name="categoryId">
                     <option value="">Select a category</option>
                     <% categories.forEach(category => { %>
-                    <option value="<%= category.id %>"><%= category.name %></option>
+                    <option value="<%= category.id %>"><%= category.name_en %></option>
                     <% }); %>
                 </select>
                 <p class="mt-1 text-xs text-gray-500">Select a category to help organize downloads (optional)</p>
@@ -106,6 +141,29 @@
 <%- contentFor('script') %>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Language switcher functionality
+        const languageTabs = document.querySelectorAll('.language-tab');
+        const languageContents = document.querySelectorAll('.language-content');
+        
+        languageTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const lang = this.getAttribute('data-lang');
+                
+                // Update active tab
+                languageTabs.forEach(t => t.classList.remove('active-tab'));
+                this.classList.add('active-tab');
+                
+                // Show selected language content
+                languageContents.forEach(content => {
+                    if (content.classList.contains(`language-content-${lang}`)) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+            });
+        });
+        
         // File upload preview and drag-drop functionality
         const dropZone = document.querySelector('.border-dashed');
         const fileInput = document.getElementById('file');

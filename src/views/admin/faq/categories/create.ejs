@@ -20,62 +20,103 @@
     <!-- Category Form -->
     <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
         <form action="/admin/faq/categories" method="POST">
-            <!-- Name -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700" for="name">
-                    Category Name <span class="text-red-500">*</span>
-                </label>
-                <input
-                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
-                    type="text"
-                    id="name"
-                    name="name"
-                    required
-                    placeholder="e.g., Frequently Asked Questions"
-                />
+            <!-- Language Tabs -->
+            <%- include('../../../partials/admin-language-switcher', { title: 'Content Language', activeTab: 'en' }) %>
+
+            <!-- English Content -->
+            <div class="language-content language-content-en">
+                <!-- Name (English) -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="name_en">
+                        Category Name (English) <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
+                        type="text"
+                        id="name_en"
+                        name="name_en"
+                        required
+                        placeholder="e.g., Frequently Asked Questions"
+                    />
+                </div>
+
+                <!-- Description (English) -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="description_en">
+                        Description (English)
+                    </label>
+                    <textarea
+                        class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-textarea"
+                        id="description_en"
+                        name="description_en"
+                        rows="3"
+                        placeholder="Brief description of this category"
+                    ></textarea>
+                </div>
             </div>
 
-            <!-- Description -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700" for="description">
-                    Description
-                </label>
-                <textarea
-                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-textarea"
-                    id="description"
-                    name="description"
-                    rows="3"
-                    placeholder="Brief description of this category"
-                ></textarea>
+            <!-- Traditional Chinese Content -->
+            <div class="language-content language-content-tw hidden">
+                <!-- Name (Traditional Chinese) -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="name_tw">
+                        類別名稱 (中文) <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
+                        type="text"
+                        id="name_tw"
+                        name="name_tw"
+                        required
+                        placeholder="例如：常見問題"
+                    />
+                </div>
+
+                <!-- Description (Traditional Chinese) -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="description_tw">
+                        描述 (中文)
+                    </label>
+                    <textarea
+                        class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-textarea"
+                        id="description_tw"
+                        name="description_tw"
+                        rows="3"
+                        placeholder="此類別的簡短描述"
+                    ></textarea>
+                </div>
             </div>
 
-            <!-- Order -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700" for="order">
-                    Display Order
-                </label>
-                <input
-                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
-                    type="number"
-                    id="order"
-                    name="order"
-                    min="0"
-                    value="0"
-                />
-                <p class="text-xs text-gray-500 mt-1">Categories with lower order values will be displayed first.</p>
-            </div>
+            <!-- Common Fields -->
+            <div class="border-t pt-4 mt-4">
+                <!-- Order -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="order">
+                        Display Order
+                    </label>
+                    <input
+                        class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
+                        type="number"
+                        id="order"
+                        name="order"
+                        min="0"
+                        value="0"
+                    />
+                    <p class="text-xs text-gray-500 mt-1">Categories with lower order values will be displayed first.</p>
+                </div>
 
-            <!-- Submit Button -->
-            <div class="flex justify-end mt-6">
-                <a href="/admin/faq/categories" class="px-4 py-2 mr-3 text-sm font-medium leading-5 text-gray-700 transition-colors duration-150 border border-gray-300 rounded-lg active:bg-gray-100 hover:bg-gray-50 focus:outline-none focus:shadow-outline-gray">
-                    Cancel
-                </a>
-                <button
-                    type="submit"
-                    class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-                >
-                    Create Category
-                </button>
+                <!-- Submit Button -->
+                <div class="flex justify-end mt-6">
+                    <a href="/admin/faq/categories" class="px-4 py-2 mr-3 text-sm font-medium leading-5 text-gray-700 transition-colors duration-150 border border-gray-300 rounded-lg active:bg-gray-100 hover:bg-gray-50 focus:outline-none focus:shadow-outline-gray">
+                        Cancel
+                    </a>
+                    <button
+                        type="submit"
+                        class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                    >
+                        Create Category
+                    </button>
+                </div>
             </div>
         </form>
     </div>

@@ -32,12 +32,14 @@ exports.renderCreateCategory = (req, res) => {
 // Create a new category
 exports.createCategory = async (req, res) => {
     try {
-        const { name, description, order } = req.body;
+        const { name_en, name_tw, description_en, description_tw, order } = req.body;
 
         await prisma.downloadCategory.create({
             data: {
-                name,
-                description,
+                name_en,
+                name_tw,
+                description_en,
+                description_tw,
                 order: order ? parseInt(order) : 0
             }
         });
@@ -80,13 +82,15 @@ exports.renderEditCategory = async (req, res) => {
 exports.updateCategory = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, order } = req.body;
+        const { name_en, name_tw, description_en, description_tw, order } = req.body;
 
         await prisma.downloadCategory.update({
             where: { id: parseInt(id) },
             data: {
-                name,
-                description,
+                name_en,
+                name_tw,
+                description_en,
+                description_tw,
                 order: order ? parseInt(order) : 0,
                 updatedAt: new Date()
             }

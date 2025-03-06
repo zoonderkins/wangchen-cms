@@ -48,12 +48,13 @@
                                 <td class="px-4 py-3">
                                     <div class="flex items-center text-sm">
                                         <div>
-                                            <p class="font-semibold"><%= item.title %></p>
+                                            <p class="font-semibold"><%= item.title_en %></p>
+                                            <p class="text-xs text-gray-500"><%= item.title_tw %></p>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-4 py-3 text-sm">
-                                    <%= item.category.name %>
+                                    <%= item.category.name_en %>
                                 </td>
                                 <td class="px-4 py-3 text-sm">
                                     <% if (item.status === 'published') { %>

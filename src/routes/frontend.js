@@ -42,10 +42,98 @@ function createExcerpt(content, maxLength = 200) {
     return content;
 }
 
-// Redirect root to language-specific path
+// Redirect root to Traditional Chinese (tw) by default
 router.get('/', (req, res) => {
-    const language = res.locals.currentLanguage || DEFAULT_LANGUAGE;
-    res.redirect(`/${language}`);
+    // Always redirect to Traditional Chinese version
+    res.redirect('/tw');
+});
+
+// Prevent redirect loops for language routes
+router.get('/:language', async (req, res, next) => {
+    try {
+        const language = req.params.language;
+        
+        // Skip processing if not a valid language code
+        if (!AVAILABLE_LANGUAGES.includes(language)) {
+            return next();
+        }
+        
+        // Get latest articles and active banners
+        const [articles, banners] = await Promise.all([
+            prisma.article.findMany({
+                where: {
+                    status: 'published'
+                },
+                orderBy: {
+                    createdAt: 'desc'
+                },
+                take: 10,
+                include: {
+                    category: true
+                }
+            }),
+            prisma.banner.findMany({
+                where: {
+                    isActive: true
+                },
+                orderBy: {
+                    createdAt: 'desc'
+                },
+                take: 4 // Limit to 4 banners
+            })
+        ]);
+
+        // Debug banner information
+        logger.info(`Banners found: ${banners.length}`);
+        if (banners.length > 0) {
+            banners.forEach((banner, index) => {
+                logger.info(`Banner ${index + 1}: ID=${banner.id}, Title=${banner.title}, Media=${banner.mediaPath}, Active=${banner.isActive}, Type=${banner.mediaType}`);
+            });
+        } else {
+            logger.info('No active banners found');
+        }
+
+        // Process articles to create excerpts and handle multilingual content
+        const processedArticles = articles.map(article => {
+            const titleField = `title_${language}`;
+            const contentField = `content_${language}`;
+            const excerptField = `excerpt_${language}`;
+            
+            return {
+                ...article,
+                title: article[titleField] || article.title_en, // Fallback to English
+                content: article[contentField] || article.content_en,
+                excerpt: article[excerptField] || createExcerpt(article[contentField] || article.content_en)
+            };
+        });
+        
+        // Process banners for multilingual content
+        const processedBanners = banners.map(banner => {
+            const titleField = `title_${language}`;
+            const descriptionField = `description_${language}`;
+            
+            return {
+                ...banner,
+                title: banner[titleField] || banner.title_en,
+                description: banner[descriptionField] || banner.description_en
+            };
+        });
+
+        res.render('frontend/index', {
+            title: 'Home',
+            articles: processedArticles,
+            banners: processedBanners,
+            layout: 'layouts/frontend'
+        });
+    } catch (error) {
+        logger.error('Error loading homepage:', error);
+        res.render('frontend/index', {
+            title: 'Home',
+            articles: [],
+            banners: [],
+            layout: 'layouts/frontend'
+        });
+    }
 });
 
 // Common middleware for frontend routes

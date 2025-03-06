@@ -13,9 +13,12 @@ exports.listDownloads = async (req, res) => {
             deletedAt: null,
             ...(search ? {
                 OR: [
-                    { title: { contains: search } },
-                    { description: { contains: search } },
-                    { keywords: { contains: search } },
+                    { title_en: { contains: search } },
+                    { title_tw: { contains: search } },
+                    { description_en: { contains: search } },
+                    { description_tw: { contains: search } },
+                    { keywords_en: { contains: search } },
+                    { keywords_tw: { contains: search } },
                     { originalName: { contains: search } }
                 ]
             } : {}),
@@ -104,17 +107,26 @@ exports.createDownload = async (req, res) => {
             return res.redirect('/admin/downloads/create');
         }
 
-        const { title, description, status, keywords, categoryId } = req.body;
+        const { 
+            title_en, title_tw, 
+            description_en, description_tw, 
+            status, 
+            keywords_en, keywords_tw, 
+            categoryId 
+        } = req.body;
         const { filename, originalname, mimetype, size } = req.file;
         // Store the path relative to the public directory
         const filePath = `/uploads/downloads/${filename}`;
 
         await prisma.download.create({
             data: {
-                title,
-                description,
+                title_en,
+                title_tw,
+                description_en,
+                description_tw,
                 status: status || 'draft',
-                keywords,
+                keywords_en,
+                keywords_tw,
                 categoryId: categoryId ? parseInt(categoryId) : null,
                 filename,
                 originalName: originalname,
@@ -171,7 +183,13 @@ exports.renderEditDownload = async (req, res) => {
 exports.updateDownload = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description, status, keywords, categoryId } = req.body;
+        const { 
+            title_en, title_tw, 
+            description_en, description_tw, 
+            status, 
+            keywords_en, keywords_tw, 
+            categoryId 
+        } = req.body;
         
         // Find the download to update
         const download = await prisma.download.findUnique({
@@ -185,10 +203,13 @@ exports.updateDownload = async (req, res) => {
 
         // Prepare update data
         const updateData = {
-            title,
-            description,
+            title_en,
+            title_tw,
+            description_en,
+            description_tw,
             status,
-            keywords,
+            keywords_en,
+            keywords_tw,
             categoryId: categoryId ? parseInt(categoryId) : null,
             updatedAt: new Date()
         };
@@ -283,9 +304,12 @@ exports.listDownloadsForFrontend = async (req, res) => {
             deletedAt: null,
             ...(search ? {
                 OR: [
-                    { title: { contains: search } },
-                    { description: { contains: search } },
-                    { keywords: { contains: search } }
+                    { title_en: { contains: search } },
+                    { title_tw: { contains: search } },
+                    { description_en: { contains: search } },
+                    { description_tw: { contains: search } },
+                    { keywords_en: { contains: search } },
+                    { keywords_tw: { contains: search } }
                 ]
             } : {}),
             ...(category ? { categoryId: parseInt(category) } : {})

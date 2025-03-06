@@ -18,87 +18,123 @@
     <% } %>
 
     <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
-        <form action="/admin/faq/items" method="POST">
-            <!-- Title -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700" for="title">
-                    Question/Title <span class="text-red-500">*</span>
-                </label>
-                <input
-                    class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                    type="text"
-                    id="title"
-                    name="title"
-                    placeholder="Enter the FAQ question or title"
-                    required
-                />
+        <form action="/admin/faq/items" method="POST" id="faqForm">
+            <!-- Language Tabs -->
+            <%- include('../../../partials/admin-language-switcher', { title: 'Content Language', activeTab: 'en' }) %>
+
+            <!-- English Content -->
+            <div class="language-content language-content-en">
+                <!-- Title (English) -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="title_en">
+                        Question/Title (English) <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                        type="text"
+                        id="title_en"
+                        name="title_en"
+                        placeholder="Enter the FAQ question or title in English"
+                        required
+                    />
+                </div>
+                
+                <!-- Content (English) -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="editor_en">
+                        Answer/Content (English) <span class="text-red-500">*</span>
+                    </label>
+                    <div id="editor_en" class="h-64 mt-1"></div>
+                    <input type="hidden" name="content_en" id="content_en">
+                </div>
             </div>
-            
-            <!-- Category -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700" for="categoryId">
-                    Category <span class="text-red-500">*</span>
-                </label>
-                <select
-                    class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                    id="categoryId"
-                    name="categoryId"
-                    required
-                >
-                    <option value="">Select a category</option>
-                    <% categories.forEach(function(category) { %>
-                        <option value="<%= category.id %>"><%= category.name %></option>
-                    <% }); %>
-                </select>
+
+            <!-- Traditional Chinese Content -->
+            <div class="language-content language-content-tw hidden">
+                <!-- Title (Traditional Chinese) -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="title_tw">
+                        問題/標題 (中文) <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                        type="text"
+                        id="title_tw"
+                        name="title_tw"
+                        placeholder="請輸入常見問題的問題或標題（中文）"
+                        required
+                    />
+                </div>
+                
+                <!-- Content (Traditional Chinese) -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="editor_tw">
+                        答案/內容 (中文) <span class="text-red-500">*</span>
+                    </label>
+                    <div id="editor_tw" class="h-64 mt-1"></div>
+                    <input type="hidden" name="content_tw" id="content_tw">
+                </div>
             </div>
-            
-            <!-- Content -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700" for="content">
-                    Answer/Content <span class="text-red-500">*</span>
-                </label>
-                <div id="editor-container" class="h-64 mt-1"></div>
-                <input type="hidden" name="content" id="content">
-            </div>
-            
-            <!-- Order -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700" for="order">
-                    Display Order
-                </label>
-                <input
-                    class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                    type="number"
-                    id="order"
-                    name="order"
-                    placeholder="Enter display order (lower numbers appear first)"
-                    value="0"
-                />
-            </div>
-            
-            <!-- Status -->
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700" for="status">
-                    Status
-                </label>
-                <select
-                    class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                    id="status"
-                    name="status"
-                >
-                    <option value="draft">Draft</option>
-                    <option value="published">Published</option>
-                </select>
-            </div>
-            
-            <!-- Submit Button -->
-            <div class="flex justify-end mt-6">
-                <a href="/admin/faq/items" class="px-4 py-2 mr-2 text-sm font-medium leading-5 text-gray-700 transition-colors duration-150 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline-gray">
-                    Cancel
-                </a>
-                <button type="submit" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue">
-                    Create FAQ Item
-                </button>
+
+            <!-- Common Fields -->
+            <div class="border-t pt-4 mt-4">
+                <!-- Category -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="categoryId">
+                        Category <span class="text-red-500">*</span>
+                    </label>
+                    <select
+                        class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                        id="categoryId"
+                        name="categoryId"
+                        required
+                    >
+                        <option value="">Select a category</option>
+                        <% categories.forEach(function(category) { %>
+                            <option value="<%= category.id %>"><%= category.name_en %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                
+                <!-- Order -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="order">
+                        Display Order
+                    </label>
+                    <input
+                        class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                        type="number"
+                        id="order"
+                        name="order"
+                        placeholder="Enter display order (lower numbers appear first)"
+                        value="0"
+                    />
+                </div>
+                
+                <!-- Status -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="status">
+                        Status
+                    </label>
+                    <select
+                        class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                        id="status"
+                        name="status"
+                    >
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                    </select>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="flex justify-end mt-6">
+                    <a href="/admin/faq/items" class="px-4 py-2 mr-2 text-sm font-medium leading-5 text-gray-700 transition-colors duration-150 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline-gray">
+                        Cancel
+                    </a>
+                    <button type="submit" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue">
+                        Create FAQ Item
+                    </button>
+                </div>
             </div>
         </form>
     </div>
@@ -109,7 +145,8 @@
 <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var quill = new Quill('#editor-container', {
+        // Initialize English editor
+        var quillEn = new Quill('#editor_en', {
             theme: 'snow',
             modules: {
                 toolbar: [
@@ -121,13 +158,29 @@
                     ['clean']
                 ]
             },
-            placeholder: 'Enter the answer content here...'
+            placeholder: 'Enter the answer content in English...'
         });
         
-        // When form is submitted, update hidden input with Quill content
-        document.querySelector('form').addEventListener('submit', function() {
-            var contentInput = document.querySelector('#content');
-            contentInput.value = JSON.stringify(quill.getContents());
+        // Initialize Traditional Chinese editor
+        var quillTw = new Quill('#editor_tw', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],
+                    ['link', 'image'],
+                    ['clean']
+                ]
+            },
+            placeholder: '請輸入答案內容（中文）...'
+        });
+        
+        // When form is submitted, update hidden inputs with Quill content
+        document.querySelector('#faqForm').addEventListener('submit', function() {
+            document.querySelector('#content_en').value = JSON.stringify(quillEn.getContents());
+            document.querySelector('#content_tw').value = JSON.stringify(quillTw.getContents());
         });
     });
 </script>

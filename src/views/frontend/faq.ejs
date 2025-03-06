@@ -2,13 +2,53 @@
     <!-- Include Quill.js (core only for rendering) -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.core.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    
+    <style>
+        /* Language switcher styles */
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .language-switcher label {
+            margin-right: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .language-switcher select {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            border: 1px solid #e2e8f0;
+        }
+    </style>
 
     <%- contentFor('body') %>
 
         <div class="container mx-auto px-4 py-8">
             <div class="max-w-4xl mx-auto">
-                <h1 class="text-3xl font-bold mb-6">Frequently Asked Questions</h1>
+                <h1 class="text-3xl font-bold mb-6">
+                    <span class="lang-en">Frequently Asked Questions</span>
+                    <span class="lang-tw hidden">常見問題</span>
+                </h1>
+                
+                <!-- Language Switcher -->
+                <div class="language-switcher mb-6">
+                    <label for="language-select" class="lang-en">Language:</label>
+                    <label for="language-select" class="lang-tw hidden">語言：</label>
+                    <select id="language-select" class="bg-white border border-gray-300 rounded px-3 py-1">
+                        <option value="en">English</option>
+                        <option value="tw">繁體中文</option>
+                    </select>
+                </div>
+                
                 <div id="debug-info" class="mb-4 p-2 bg-gray-100 text-xs hidden"></div>
+                
+                <!-- Language indicator -->
+                <div class="language-indicator mb-4 text-sm text-gray-600">
+                    <span class="lang-en">Currently viewing in: <strong>English</strong></span>
+                    <span class="lang-tw hidden">目前使用語言：<strong>繁體中文</strong></span>
+                </div>
 
                 <% if (categories && categories.length> 0) { %>
                     <div class="mb-8">
@@ -45,7 +85,8 @@
                                     }
                                     return false;
                                 }).call(this, event)">
-                                        <%= category.name %>
+                                        <span class="category-name-en lang-en"><%= category.name_en %></span>
+                                        <span class="category-name-tw lang-tw hidden"><%= category.name_tw %></span>
                                     </button>
                                     <% }); %>
                             </div>
@@ -55,9 +96,10 @@
                         <% categories.forEach(function(category, index) { %>
                             <div id="<%= category.slug %>"
                                 class="category-content <%= index === 0 ? 'block' : 'hidden' %>">
-                                <% if (category.description) { %>
+                                <% if (category.description_en || category.description_tw) { %>
                                     <div class="mb-6 text-gray-600">
-                                        <%= category.description %>
+                                        <div class="category-desc-en lang-en"><%= category.description_en %></div>
+                                        <div class="category-desc-tw lang-tw hidden"><%= category.description_tw %></div>
                                     </div>
                                     <% } %>
 
@@ -91,7 +133,8 @@
                                                 return false;
                                             }).call(this)">
                                                             <h3 class="text-lg font-medium text-gray-900">
-                                                                <%= item.title %>
+                                                                <span class="item-title-en lang-en"><%= item.title_en %></span>
+                                                                <span class="item-title-tw lang-tw hidden"><%= item.title_tw %></span>
                                                             </h3>
                                                             <svg class="faq-arrow w-5 h-5 text-gray-500 transform transition-transform duration-200"
                                                                 fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -102,8 +145,13 @@
                                                         </button>
                                                         <div
                                                             class="faq-answer bg-gray-50 p-6 border-t border-gray-200 hidden">
-                                                            <div class="prose max-w-none quill-content"
-                                                                data-content="<%= encodeURIComponent(item.content) %>">
+                                                            <div class="prose max-w-none">
+                                                                <div class="quill-content item-content-en lang-en"
+                                                                    data-content="<%= encodeURIComponent(item.content_en) %>">
+                                                                </div>
+                                                                <div class="quill-content item-content-tw lang-tw hidden"
+                                                                    data-content="<%= encodeURIComponent(item.content_tw) %>">
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -112,7 +160,8 @@
                                             <% } else { %>
                                                 <div
                                                     class="bg-white shadow-md rounded-lg p-8 text-center text-gray-500">
-                                                    No items found in this category.
+                                                    <span class="lang-en">No items found in this category.</span>
+                                                    <span class="lang-tw hidden">此類別中沒有項目。</span>
                                                 </div>
                                                 <% } %>
                             </div>
@@ -120,7 +169,8 @@
                     </div>
                     <% } else { %>
                         <div class="bg-white shadow-md rounded-lg p-8 text-center text-gray-500">
-                            No FAQ categories found.
+                            <span class="lang-en">No FAQ categories found.</span>
+                            <span class="lang-tw hidden">找不到常見問題類別。</span>
                         </div>
                         <% } %>
             </div>
@@ -163,6 +213,7 @@
                 padding-left: 1.625em;
                 list-style-type: decimal;
             }
+        </style>
 
             .prose h1 {
                 margin-top: 0;
@@ -225,19 +276,95 @@
 
         <%- contentFor('scripts') %>
             <script>
-                try {
+                document.addEventListener('DOMContentLoaded', function() {
+                    console.log('FAQ page loaded');
+                    initFAQPage();
+                });
+                
+                function initFAQPage() {
+                    // Initialize Quill content
+                    document.querySelectorAll('.quill-content').forEach(function(container) {
+                        try {
+                            const contentData = decodeURIComponent(container.getAttribute('data-content'));
+                            if (contentData) {
+                                try {
+                                    // Try to parse as Delta JSON
+                                    const delta = JSON.parse(contentData);
+                                    const tempContainer = document.createElement('div');
+                                    const tempQuill = new Quill(tempContainer);
+                                    tempQuill.setContents(delta);
+                                    container.innerHTML = tempContainer.querySelector('.ql-editor').innerHTML;
+                                } catch (e) {
+                                    // If not Delta JSON, use as HTML
+                                    container.innerHTML = contentData;
+                                }
+                            }
+                        } catch (error) {
+                            console.error('Error rendering Quill content:', error);
+                        }
+                    });
+                    
+                    // Language switcher functionality
+                    const languageSelect = document.getElementById('language-select');
+                    if (languageSelect) {
+                        // Check for saved language preference
+                        const savedLanguage = localStorage.getItem('preferred_language');
+                        if (savedLanguage) {
+                            languageSelect.value = savedLanguage;
+                            switchLanguage(savedLanguage);
+                        }
+                        
+                        // Add change event listener
+                        languageSelect.addEventListener('change', function() {
+                            const language = this.value;
+                            switchLanguage(language);
+                        });
+                    }
+                    
+                    // Function to switch language display
+                    function switchLanguage(language) {
+                        // Hide all language elements
+                        document.querySelectorAll('.lang-en, .lang-tw').forEach(el => {
+                            el.classList.add('hidden');
+                        });
+                        
+                        // Show elements for the selected language
+                        document.querySelectorAll(`.lang-${language}`).forEach(el => {
+                            el.classList.remove('hidden');
+                        });
+                        
+                        // Save language preference to local storage
+                        localStorage.setItem('preferred_language', language);
+                        
+                        // Update language indicator text
+                        const langIndicator = document.querySelector('.language-indicator');
+                        if (langIndicator) {
+                            langIndicator.querySelectorAll('.lang-en, .lang-tw').forEach(el => {
+                                el.classList.add('hidden');
+                            });
+                            const currentLangIndicator = langIndicator.querySelector(`.lang-${language}`);
+                            if (currentLangIndicator) {
+                                currentLangIndicator.classList.remove('hidden');
+                            }
+                        }
+                        
+                        // Update debug info
+                        const debugInfo = document.getElementById('debug-info');
+                        if (debugInfo) {
+                            debugInfo.textContent = `Language switched to: ${language === 'en' ? 'English' : 'Traditional Chinese'}`;
+                        }
+                        
+                        console.log(`Language switched to: ${language}`);
+                    }
+                }
+                    
                     // Basic console log to check if script tag is being executed
                     console.log('FAQ script tag executed');
 
-                    // Initialize FAQ functionality when the page loads
-                    document.addEventListener('DOMContentLoaded', function () {
-                        try {
-                            console.log('FAQ DOMContentLoaded event fired');
-
-                            // Show debug info in development
-                            const debugInfo = document.getElementById('debug-info');
-                            if (debugInfo) {
-                                console.log('Debug info element found');
+                    // Show debug info in development
+                    const debugInfo = document.getElementById('debug-info');
+                    if (debugInfo) {
+                        console.log('Debug info element found');
                                 debugInfo.classList.remove('hidden');
                                 debugInfo.textContent = 'Script loaded. Initializing FAQ functionality...';
                             } else {
