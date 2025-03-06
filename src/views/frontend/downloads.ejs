@@ -6,8 +6,8 @@
             <div class="text-center mb-12 animate-fade-in">
                 <h1
                     class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 mb-4">
-                    下載專區</h1>
-                <p class="text-lg text-gray-600">Browse and download our resources</p>
+                    <%= language === 'tw' ? '下載專區' : 'Downloads' %></h1>
+                <p class="text-lg text-gray-600"><%= language === 'tw' ? '瀏覽並下載我們的資源' : 'Browse and download our resources' %></p>
             </div>
 
             <!-- Search and Filter Section -->
@@ -21,25 +21,25 @@
                                     class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                                 <input type="text" name="search"
                                     class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
-                                    placeholder="搜尋下載項目..." value="<%= filters.search %>">
+                                    placeholder="<%= language === 'tw' ? '搜尋下載項目...' : 'Search downloads...' %>" value="<%= filters.search %>">
                             </div>
                             <button type="submit"
                                 class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150">
-                                搜尋
+                                <%= language === 'tw' ? '搜尋' : 'Search' %>
                             </button>
                         </form>
                     </div>
                     <!-- Category Filter with improved dropdown -->
                     <% if (locals.categories && categories.length> 0) { %>
                         <div class="md:col-span-1">
-                            <form action="/downloads" method="GET" class="flex gap-2">
+                            <form action="/<%= language %>/downloads" method="GET" class="flex gap-2">
                                 <div class="flex-1 relative">
                                     <i
                                         class="fas fa-folder absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                                     <select name="category"
                                         class="w-full appearance-none pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
                                         onchange="this.form.submit()">
-                                        <option value="">全部分類</option>
+                                        <option value=""><%= language === 'tw' ? '全部分類' : 'All Categories' %></option>
                                         <% categories.forEach(function(category) { %>
                                             <option value="<%= category.id %>"
                                                 <%=filters.category===category.id.toString() ? 'selected' : '' %>>
@@ -51,9 +51,9 @@
                                         class="fas fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
                                 </div>
                                 <% if (filters.category) { %>
-                                    <a href="/downloads"
+                                    <a href="/<%= language %>/downloads"
                                         class="px-4 py-2.5 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-150">
-                                        清除
+                                        <%= language === 'tw' ? '清除' : 'Clear' %>
                                     </a>
                                     <% } %>
                             </form>
@@ -98,7 +98,7 @@
 
                                 <% if (download.description) { %>
                                     <p class="mt-4 text-gray-600 line-clamp-2">
-                                        本推動方案將建設數位基礎環境，提供大南方產業生態系所需的高品質與高安全運算資源與協作環境，並提供運算資源挹注新創與企業。本中心規劃引進高速運算主機，滿足AI運算對資料與算力的高度需求，並打造新世代智慧節能IDC機房。機房採用綠能設施，如燃氣發電機、釩液流儲能系統與太陽能發電系統，建構智慧防災微電網，進一步降低PUE能耗，以實現節能減碳與淨零排放的永續發展目標。AI運算資料中心將成為國內AI發展的重要基礎設施，推動產業創新與科技應用，加速智慧化時代的來臨。
+                                        <%= download.description %>
                                     </p>
                                     <% } %>
 
@@ -113,10 +113,10 @@
                                                     <%= (download.size / 1024).toFixed(2) %> KB
                                                 </div>
                                             </div>
-                                            <a href="/downloads/<%= download.id %>"
+                                            <a href="/<%= language %>/downloads/<%= download.id %>"
                                                 class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105">
                                                 <i class="fas fa-download mr-2"></i>
-                                                下載
+                                                <%= language === 'tw' ? '下載' : 'Download' %>
                                             </a>
                                         </div>
                             </div>
@@ -130,17 +130,17 @@
                             <ul class="inline-flex items-center -space-x-px">
                                 <% if (pagination.hasPrevPage) { %>
                                     <li>
-                                        <a href="/downloads?page=<%= pagination.current - 1 %><%= filters.search ? '&search=' + filters.search : '' %><%= filters.category ? '&category=' + filters.category : '' %>"
+                                        <a href="/<%= language %>/downloads?page=<%= pagination.current - 1 %><%= filters.search ? '&search=' + filters.search : '' %><%= filters.category ? '&category=' + filters.category : '' %>"
                                             class="px-4 py-2 rounded-l-lg text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition duration-150">
                                             <i class="fas fa-chevron-left mr-1"></i>
-                                            上一頁
+                                            <%= language === 'tw' ? '上一頁' : 'Previous' %>
                                         </a>
                                     </li>
                                     <% } %>
 
                                         <% for(let i=1; i <=pagination.totalPages; i++) { %>
                                             <li>
-                                                <a href="/downloads?page=<%= i %><%= filters.search ? '&search=' + filters.search : '' %><%= filters.category ? '&category=' + filters.category : '' %>"
+                                                <a href="/<%= language %>/downloads?page=<%= i %><%= filters.search ? '&search=' + filters.search : '' %><%= filters.category ? '&category=' + filters.category : '' %>"
                                                     class="px-4 py-2 text-sm font-medium <%= pagination.current === i ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-600' : 'text-gray-700 bg-white border-gray-300 hover:bg-gray-50' %> border transition duration-150">
                                                     <%= i %>
                                                 </a>
@@ -149,9 +149,9 @@
 
                                                 <% if (pagination.hasNextPage) { %>
                                                     <li>
-                                                        <a href="/downloads?page=<%= pagination.current + 1 %><%= filters.search ? '&search=' + filters.search : '' %><%= filters.category ? '&category=' + filters.category : '' %>"
+                                                        <a href="/<%= language %>/downloads?page=<%= pagination.current + 1 %><%= filters.search ? '&search=' + filters.search : '' %><%= filters.category ? '&category=' + filters.category : '' %>"
                                                             class="px-4 py-2 rounded-r-lg text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition duration-150">
-                                                            下一頁
+                                                            <%= language === 'tw' ? '下一頁' : 'Next' %>
                                                             <i class="fas fa-chevron-right ml-1"></i>
                                                         </a>
                                                     </li>
@@ -168,13 +168,13 @@
                                     class="rounded-full bg-gradient-to-br from-gray-100 to-gray-50 p-8 mx-auto w-24 h-24 flex items-center justify-center mb-6 shadow-inner">
                                     <i class="fas fa-inbox text-4xl text-gray-400"></i>
                                 </div>
-                                <h3 class="text-xl font-medium text-gray-900 mb-3">沒有找到下載項目</h3>
+                                <h3 class="text-xl font-medium text-gray-900 mb-3"><%= language === 'tw' ? '沒有找到下載項目' : 'No downloads found' %></h3>
                                 <p class="text-gray-600 max-w-md mx-auto">
                                     <% if (filters.search || filters.category) { %>
-                                        沒有符合搜尋條件的下載項目。<a href="/downloads"
-                                            class="text-blue-600 hover:text-blue-800 font-medium transition duration-150">查看所有下載</a>
+                                        <%= language === 'tw' ? '沒有符合搜尋條件的下載項目。' : 'No downloads match your search criteria.' %><a href="/<%= language %>/downloads"
+                                            class="text-blue-600 hover:text-blue-800 font-medium transition duration-150"><%= language === 'tw' ? '查看所有下載' : 'View all downloads' %></a>
                                         <% } else { %>
-                                            目前沒有可供下載的項目。
+                                            <%= language === 'tw' ? '目前沒有可供下載的項目。' : 'There are currently no downloads available.' %>
                                             <% } %>
                                 </p>
                             </div>

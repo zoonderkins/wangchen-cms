@@ -295,6 +295,7 @@ exports.deleteDownload = async (req, res) => {
 exports.listDownloadsForFrontend = async (req, res) => {
     try {
         const { search, category, page = 1 } = req.query;
+        const language = req.params.language || 'en'; // Get language from route params
         const perPage = 12;
         const skip = (page - 1) * perPage;
 
@@ -337,16 +338,43 @@ exports.listDownloadsForFrontend = async (req, res) => {
             orderBy: { order: 'asc' }
         });
 
+        // Process downloads to use the appropriate language content
+        const processedDownloads = downloads.map(download => {
+            const titleField = `title_${language}`;
+            const descriptionField = `description_${language}`;
+            const keywordsField = `keywords_${language}`;
+            
+            return {
+                ...download,
+                title: download[titleField] || download.title_en, // Fallback to English
+                description: download[descriptionField] || download.description_en,
+                keywords: download[keywordsField] || download.keywords_en
+            };
+        });
+
+        // Process categories to use the appropriate language content
+        const processedCategories = categories.map(category => {
+            const nameField = `name_${language}`;
+            const descriptionField = `description_${language}`;
+            
+            return {
+                ...category,
+                name: category[nameField] || category.name_en, // Fallback to English
+                description: category[descriptionField] || category.description_en
+            };
+        });
+
         // Calculate pagination info
         const totalPages = Math.ceil(totalCount / perPage);
         const hasNextPage = page < totalPages;
         const hasPrevPage = page > 1;
 
         res.render('frontend/downloads', {
-            title: 'Downloads',
+            title: language === 'tw' ? '下載專區' : 'Downloads',
             layout: 'layouts/frontend',
-            downloads,
-            categories,
+            downloads: processedDownloads,
+            categories: processedCategories,
+            language,
             filters: {
                 search: search || '',
                 category: category || ''
@@ -365,9 +393,10 @@ exports.listDownloadsForFrontend = async (req, res) => {
         });
     } catch (error) {
         logger.error('Error listing frontend downloads:', error);
-        res.status(500).render('error', {
+        res.status(500).render('frontend/error', {
+            title: 'Error',
             message: 'Error loading downloads',
-            error
+            layout: 'layouts/frontend'
         });
     }
 };
@@ -376,7 +405,8 @@ exports.listDownloadsForFrontend = async (req, res) => {
 exports.downloadFile = async (req, res) => {
     try {
         const { id } = req.params;
-        logger.info(`Attempting to download file with ID: ${id}`);
+        const language = req.params.language || 'en'; // Get language from route params
+        logger.info(`Attempting to download file with ID: ${id} in language: ${language}`);
         
         // Find the download
         const download = await prisma.download.findFirst({
@@ -391,13 +421,20 @@ exports.downloadFile = async (req, res) => {
         if (!download) {
             logger.warn(`Download with ID ${id} not found or not published`);
             return res.status(404).render('frontend/error', {
-                title: 'Not Found',
-                message: 'The requested file was not found',
+                title: language === 'tw' ? '找不到檔案' : 'Not Found',
+                message: language === 'tw' ? '找不到您要求的檔案' : 'The requested file was not found',
                 layout: 'layouts/frontend'
             });
         }
 
-        logger.info(`Found download record: ${JSON.stringify(download, null, 2)}`);
+        // Process download to use the appropriate language content
+        const titleField = `title_${language}`;
+        const processedDownload = {
+            ...download,
+            title: download[titleField] || download.title_en // Fallback to English
+        };
+
+        logger.info(`Found download record: ${JSON.stringify(processedDownload, null, 2)}`);
 
         // Increment download count
         await prisma.download.update({
@@ -443,8 +480,8 @@ exports.downloadFile = async (req, res) => {
     } catch (error) {
         logger.error('Error downloading file:', error);
         res.status(500).render('frontend/error', {
-            title: 'Error',
-            message: 'Failed to download file',
+            title: language === 'tw' ? '錯誤' : 'Error',
+            message: language === 'tw' ? '下載檔案失敗' : 'Failed to download file',
             layout: 'layouts/frontend'
         });
     }
