@@ -10,6 +10,11 @@ const { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE } = require('./languageMiddleware'
  * This middleware should be applied before the route handlers
  */
 exports.languageRouteMiddleware = (req, res, next) => {
+    // Skip processing for the root URL to avoid redirect loops
+    if (req.path === '/' && req.originalUrl === '/') {
+        return next();
+    }
+    
     // Check if the URL starts with a language code
     const urlParts = req.path.split('/').filter(Boolean);
     
@@ -17,17 +22,13 @@ exports.languageRouteMiddleware = (req, res, next) => {
         // Extract the language from the URL
         const language = urlParts[0];
         
-        // Remove the language part from the URL
-        req.url = req.url.replace(`/${language}`, '');
-        if (req.url === '') req.url = '/';
-        
         // Set the language in the session and locals
         req.session.language = language;
         res.locals.currentLanguage = language;
         res.locals.isEnglish = language === 'en';
         res.locals.isChinese = language === 'tw';
         
-        logger.debug(`Language from URL: ${language}, new URL: ${req.url}`);
+        logger.debug(`Language from URL: ${language}, URL: ${req.url}`);
     }
     
     next();

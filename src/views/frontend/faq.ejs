@@ -2,53 +2,14 @@
     <!-- Include Quill.js (core only for rendering) -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.core.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-    
-    <style>
-        /* Language switcher styles */
-        .language-switcher {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        
-        .language-switcher label {
-            margin-right: 0.5rem;
-            font-weight: 500;
-        }
-        
-        .language-switcher select {
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            border: 1px solid #e2e8f0;
-        }
-    </style>
 
     <%- contentFor('body') %>
 
         <div class="container mx-auto px-4 py-8">
             <div class="max-w-4xl mx-auto">
                 <h1 class="text-3xl font-bold mb-6">
-                    <span class="lang-en">Frequently Asked Questions</span>
-                    <span class="lang-tw hidden">常見問題</span>
+                    <%= currentLanguage==='en' ? 'Frequently Asked Questions' : '常見問題' %>
                 </h1>
-                
-                <!-- Language Switcher -->
-                <div class="language-switcher mb-6">
-                    <label for="language-select" class="lang-en">Language:</label>
-                    <label for="language-select" class="lang-tw hidden">語言：</label>
-                    <select id="language-select" class="bg-white border border-gray-300 rounded px-3 py-1">
-                        <option value="en">English</option>
-                        <option value="tw">繁體中文</option>
-                    </select>
-                </div>
-                
-                <div id="debug-info" class="mb-4 p-2 bg-gray-100 text-xs hidden"></div>
-                
-                <!-- Language indicator -->
-                <div class="language-indicator mb-4 text-sm text-gray-600">
-                    <span class="lang-en">Currently viewing in: <strong>English</strong></span>
-                    <span class="lang-tw hidden">目前使用語言：<strong>繁體中文</strong></span>
-                </div>
 
                 <% if (categories && categories.length> 0) { %>
                     <div class="mb-8">
@@ -58,35 +19,9 @@
                                 <% categories.forEach(function(category, index) { %>
                                     <button type="button"
                                         class="category-tab mr-2 py-2 px-4 text-center border-b-2 <%= index === 0 ? 'border-blue-500 text-blue-600 font-medium' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' %>"
-                                        data-category="<%= category.slug %>" onclick="(function(e){
-                                    e.preventDefault();
-                                    const categoryId = this.getAttribute('data-category');
-                                    if (categoryId) {
-                                        // Hide all category contents
-                                        document.querySelectorAll('.category-content').forEach(content => {
-                                            content.classList.add('hidden');
-                                        });
-                                        
-                                        // Show the selected category content
-                                        const selectedContent = document.getElementById(categoryId);
-                                        if (selectedContent) {
-                                            selectedContent.classList.remove('hidden');
-                                        }
-                                        
-                                        // Update tab styles
-                                        document.querySelectorAll('.category-tab').forEach(t => {
-                                            t.classList.remove('border-blue-500', 'text-blue-600', 'font-medium');
-                                            t.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-                                        });
-                                        
-                                        // Highlight the clicked tab
-                                        this.classList.add('border-blue-500', 'text-blue-600', 'font-medium');
-                                        this.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-                                    }
-                                    return false;
-                                }).call(this, event)">
-                                        <span class="category-name-en lang-en"><%= category.name_en %></span>
-                                        <span class="category-name-tw lang-tw hidden"><%= category.name_tw %></span>
+                                        data-category="<%= category.slug %>"
+                                        onclick="switchCategory(this, '<%= category.slug %>')">
+                                        <%= currentLanguage==='en' ? category.name_en : category.name_tw %>
                                     </button>
                                     <% }); %>
                             </div>
@@ -96,10 +31,11 @@
                         <% categories.forEach(function(category, index) { %>
                             <div id="<%= category.slug %>"
                                 class="category-content <%= index === 0 ? 'block' : 'hidden' %>">
-                                <% if (category.description_en || category.description_tw) { %>
+                                <% if ((currentLanguage==='en' && category.description_en) || (currentLanguage==='tw' &&
+                                    category.description_tw)) { %>
                                     <div class="mb-6 text-gray-600">
-                                        <div class="category-desc-en lang-en"><%= category.description_en %></div>
-                                        <div class="category-desc-tw lang-tw hidden"><%= category.description_tw %></div>
+                                        <%= currentLanguage==='en' ? category.description_en : category.description_tw
+                                            %>
                                     </div>
                                     <% } %>
 
@@ -110,31 +46,10 @@
                                                         class="border-b border-gray-200 <%= itemIndex === category.faqItems.length - 1 ? 'border-b-0' : '' %>">
                                                         <button type="button"
                                                             class="faq-question w-full flex justify-between items-center p-4 bg-white hover:bg-gray-50 focus:outline-none text-left"
-                                                            onclick="(function(){
-                                                const answer = this.nextElementSibling;
-                                                const arrow = this.querySelector('.faq-arrow');
-                                                console.log('Inline click handler fired');
-                                                
-                                                // Force display style instead of using classList
-                                                if(answer) {
-                                                    if(answer.style.display === 'none' || answer.classList.contains('hidden')) {
-                                                        answer.style.display = 'block';
-                                                        answer.classList.remove('hidden');
-                                                        if(arrow) arrow.classList.add('rotate-180');
-                                                        console.log('Showing answer');
-                                                    } else {
-                                                        answer.style.display = 'none';
-                                                        answer.classList.add('hidden');
-                                                        if(arrow) arrow.classList.remove('rotate-180');
-                                                        console.log('Hiding answer');
-                                                    }
-                                                }
-                                                
-                                                return false;
-                                            }).call(this)">
+                                                            onclick="toggleAnswer(this)">
                                                             <h3 class="text-lg font-medium text-gray-900">
-                                                                <span class="item-title-en lang-en"><%= item.title_en %></span>
-                                                                <span class="item-title-tw lang-tw hidden"><%= item.title_tw %></span>
+                                                                <%= currentLanguage==='en' ? item.title_en :
+                                                                    item.title_tw %>
                                                             </h3>
                                                             <svg class="faq-arrow w-5 h-5 text-gray-500 transform transition-transform duration-200"
                                                                 fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -146,11 +61,8 @@
                                                         <div
                                                             class="faq-answer bg-gray-50 p-6 border-t border-gray-200 hidden">
                                                             <div class="prose max-w-none">
-                                                                <div class="quill-content item-content-en lang-en"
-                                                                    data-content="<%= encodeURIComponent(item.content_en) %>">
-                                                                </div>
-                                                                <div class="quill-content item-content-tw lang-tw hidden"
-                                                                    data-content="<%= encodeURIComponent(item.content_tw) %>">
+                                                                <div class="quill-content"
+                                                                    data-content="<%= encodeURIComponent(currentLanguage === 'en' ? item.content_en : item.content_tw) %>">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -160,8 +72,8 @@
                                             <% } else { %>
                                                 <div
                                                     class="bg-white shadow-md rounded-lg p-8 text-center text-gray-500">
-                                                    <span class="lang-en">No items found in this category.</span>
-                                                    <span class="lang-tw hidden">此類別中沒有項目。</span>
+                                                    <%= currentLanguage==='en' ? 'No items found in this category.'
+                                                        : '此類別中沒有項目。' %>
                                                 </div>
                                                 <% } %>
                             </div>
@@ -169,8 +81,7 @@
                     </div>
                     <% } else { %>
                         <div class="bg-white shadow-md rounded-lg p-8 text-center text-gray-500">
-                            <span class="lang-en">No FAQ categories found.</span>
-                            <span class="lang-tw hidden">找不到常見問題類別。</span>
+                            <%= currentLanguage==='en' ? 'No FAQ categories found.' : '找不到常見問題類別。' %>
                         </div>
                         <% } %>
             </div>
@@ -213,7 +124,6 @@
                 padding-left: 1.625em;
                 list-style-type: decimal;
             }
-        </style>
 
             .prose h1 {
                 margin-top: 0;
@@ -274,16 +184,16 @@
             }
         </style>
 
-        <%- contentFor('scripts') %>
+        <%- contentFor('script') %>
             <script>
-                document.addEventListener('DOMContentLoaded', function() {
+                document.addEventListener('DOMContentLoaded', function () {
                     console.log('FAQ page loaded');
                     initFAQPage();
                 });
-                
+
                 function initFAQPage() {
                     // Initialize Quill content
-                    document.querySelectorAll('.quill-content').forEach(function(container) {
+                    document.querySelectorAll('.quill-content').forEach(function (container) {
                         try {
                             const contentData = decodeURIComponent(container.getAttribute('data-content'));
                             if (contentData) {
@@ -301,408 +211,47 @@
                             }
                         } catch (error) {
                             console.error('Error rendering Quill content:', error);
+                            // Fallback for error cases
+                            container.innerHTML = '<p>Content could not be displayed</p>';
                         }
                     });
-                    
-                    // Language switcher functionality
-                    const languageSelect = document.getElementById('language-select');
-                    if (languageSelect) {
-                        // Check for saved language preference
-                        const savedLanguage = localStorage.getItem('preferred_language');
-                        if (savedLanguage) {
-                            languageSelect.value = savedLanguage;
-                            switchLanguage(savedLanguage);
-                        }
-                        
-                        // Add change event listener
-                        languageSelect.addEventListener('change', function() {
-                            const language = this.value;
-                            switchLanguage(language);
-                        });
-                    }
-                    
-                    // Function to switch language display
-                    function switchLanguage(language) {
-                        // Hide all language elements
-                        document.querySelectorAll('.lang-en, .lang-tw').forEach(el => {
-                            el.classList.add('hidden');
-                        });
-                        
-                        // Show elements for the selected language
-                        document.querySelectorAll(`.lang-${language}`).forEach(el => {
-                            el.classList.remove('hidden');
-                        });
-                        
-                        // Save language preference to local storage
-                        localStorage.setItem('preferred_language', language);
-                        
-                        // Update language indicator text
-                        const langIndicator = document.querySelector('.language-indicator');
-                        if (langIndicator) {
-                            langIndicator.querySelectorAll('.lang-en, .lang-tw').forEach(el => {
-                                el.classList.add('hidden');
-                            });
-                            const currentLangIndicator = langIndicator.querySelector(`.lang-${language}`);
-                            if (currentLangIndicator) {
-                                currentLangIndicator.classList.remove('hidden');
-                            }
-                        }
-                        
-                        // Update debug info
-                        const debugInfo = document.getElementById('debug-info');
-                        if (debugInfo) {
-                            debugInfo.textContent = `Language switched to: ${language === 'en' ? 'English' : 'Traditional Chinese'}`;
-                        }
-                        
-                        console.log(`Language switched to: ${language}`);
+                }
+
+                // Function to toggle FAQ answers
+                function toggleAnswer(button) {
+                    const answer = button.nextElementSibling;
+                    const arrow = button.querySelector('.faq-arrow');
+
+                    if (answer.classList.contains('hidden')) {
+                        answer.classList.remove('hidden');
+                        if (arrow) arrow.classList.add('rotate-180');
+                    } else {
+                        answer.classList.add('hidden');
+                        if (arrow) arrow.classList.remove('rotate-180');
                     }
                 }
-                    
-                    // Basic console log to check if script tag is being executed
-                    console.log('FAQ script tag executed');
 
-                    // Show debug info in development
-                    const debugInfo = document.getElementById('debug-info');
-                    if (debugInfo) {
-                        console.log('Debug info element found');
-                                debugInfo.classList.remove('hidden');
-                                debugInfo.textContent = 'Script loaded. Initializing FAQ functionality...';
-                            } else {
-                                console.error('Debug info element not found');
-                            }
-
-                            // Add manual click handler to each FAQ question button
-                            const faqQuestions = document.querySelectorAll('.faq-question');
-                            console.log('FAQ questions found:', faqQuestions.length);
-                            if (debugInfo) {
-                                debugInfo.textContent += ` Found ${faqQuestions.length} FAQ questions.`;
-                            }
-
-                            if (faqQuestions.length > 0) {
-                                faqQuestions.forEach((question, index) => {
-                                    try {
-                                        console.log(`Setting up question ${index + 1}`);
-                                        // Remove any existing click handlers
-                                        const newQuestion = question.cloneNode(true);
-                                        question.parentNode.replaceChild(newQuestion, question);
-
-                                        // Add new click handler
-                                        newQuestion.addEventListener('click', function (e) {
-                                            try {
-                                                console.log(`Question ${index + 1} clicked`);
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                if (debugInfo) {
-                                                    debugInfo.textContent = `Question ${index + 1} clicked`;
-                                                }
-
-                                                const answer = this.nextElementSibling;
-                                                const arrow = this.querySelector('.faq-arrow');
-
-                                                if (answer) {
-                                                    console.log('Answer hidden before:', answer.classList.contains('hidden'));
-
-                                                    // Use explicit show/hide instead of toggle
-                                                    if (answer.classList.contains('hidden')) {
-                                                        answer.classList.remove('hidden');
-                                                        if (arrow) arrow.classList.add('rotate-180');
-                                                        console.log('Showing answer');
-
-                                                        if (debugInfo) {
-                                                            debugInfo.textContent += ` - Answer shown`;
-                                                        }
-                                                    } else {
-                                                        answer.classList.add('hidden');
-                                                        if (arrow) arrow.classList.remove('rotate-180');
-                                                        console.log('Hiding answer');
-
-                                                        if (debugInfo) {
-                                                            debugInfo.textContent += ` - Answer hidden`;
-                                                        }
-                                                    }
-
-                                                    console.log('Answer hidden after:', answer.classList.contains('hidden'));
-                                                } else {
-                                                    console.error('Answer element not found');
-                                                    if (debugInfo) {
-                                                        debugInfo.textContent += ' - ERROR: Answer not found';
-                                                    }
-                                                }
-                                            } catch (clickError) {
-                                                console.error('Error in click handler:', clickError);
-                                            }
-                                        });
-
-                                        // Add visual indicator that JS is attached
-                                        newQuestion.classList.add('js-enabled');
-                                        newQuestion.style.position = 'relative';
-
-                                        // Add a small indicator dot to show JS is attached
-                                        const indicator = document.createElement('span');
-                                        indicator.style.position = 'absolute';
-                                        indicator.style.top = '4px';
-                                        indicator.style.right = '4px';
-                                        indicator.style.width = '6px';
-                                        indicator.style.height = '6px';
-                                        indicator.style.borderRadius = '50%';
-                                        indicator.style.backgroundColor = '#22c55e';
-                                        indicator.style.display = 'block';
-                                        newQuestion.appendChild(indicator);
-                                    } catch (questionError) {
-                                        console.error(`Error setting up question ${index + 1}:`, questionError);
-                                    }
-                                });
-
-                                if (debugInfo) {
-                                    debugInfo.textContent += ' Event listeners attached.';
-                                }
-                            }
-
-                            // Add manual click handler to each category tab
-                            const categoryTabs = document.querySelectorAll('.category-tab');
-                            console.log('Category tabs found:', categoryTabs.length);
-                            if (debugInfo) {
-                                debugInfo.textContent += ` Found ${categoryTabs.length} category tabs.`;
-                            }
-
-                            if (categoryTabs.length > 0) {
-                                categoryTabs.forEach((tab, index) => {
-                                    try {
-                                        console.log(`Setting up tab ${index + 1}`);
-                                        // Remove any existing click handlers
-                                        const newTab = tab.cloneNode(true);
-                                        tab.parentNode.replaceChild(newTab, tab);
-
-                                        // Add new click handler
-                                        newTab.addEventListener('click', function (e) {
-                                            try {
-                                                console.log(`Tab ${index + 1} clicked`);
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                const categoryId = this.getAttribute('data-category');
-                                                if (debugInfo) {
-                                                    debugInfo.textContent = `Tab ${index + 1} clicked for category: ${categoryId}`;
-                                                }
-                                                console.log('Tab clicked for category:', categoryId);
-
-                                                if (categoryId) {
-                                                    // Hide all category contents
-                                                    document.querySelectorAll('.category-content').forEach(content => {
-                                                        content.classList.add('hidden');
-                                                    });
-
-                                                    // Show the selected category content
-                                                    const selectedContent = document.getElementById(categoryId);
-                                                    if (selectedContent) {
-                                                        selectedContent.classList.remove('hidden');
-                                                        if (debugInfo) {
-                                                            debugInfo.textContent += ` - Category content shown`;
-                                                        }
-                                                    } else {
-                                                        console.error('Category content not found:', categoryId);
-                                                        if (debugInfo) {
-                                                            debugInfo.textContent += ` - ERROR: Category content not found`;
-                                                        }
-                                                    }
-
-                                                    // Update tab styles
-                                                    document.querySelectorAll('.category-tab').forEach(t => {
-                                                        t.classList.remove('border-blue-500', 'text-blue-600', 'font-medium');
-                                                        t.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-                                                    });
-
-                                                    // Highlight the clicked tab
-                                                    this.classList.add('border-blue-500', 'text-blue-600', 'font-medium');
-                                                    this.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-                                                }
-                                            } catch (tabError) {
-                                                console.error('Error in tab click handler:', tabError);
-                                            }
-                                        });
-                                    } catch (tabError) {
-                                        console.error(`Error setting up tab ${index + 1}:`, tabError);
-                                    }
-                                });
-
-                                if (debugInfo) {
-                                    debugInfo.textContent += ' Tab event listeners attached.';
-                                }
-                            }
-
-                            // Render Quill content
-                            const quillContainers = document.querySelectorAll('.quill-content');
-                            console.log('Quill content containers found:', quillContainers.length);
-                            if (debugInfo) {
-                                debugInfo.textContent += ` Found ${quillContainers.length} Quill content containers.`;
-                            }
-
-                            if (quillContainers.length > 0) {
-                                quillContainers.forEach(container => {
-                                    try {
-                                        const contentData = container.getAttribute('data-content');
-                                        if (contentData) {
-                                            // Decode the content
-                                            const decodedContent = decodeURIComponent(contentData);
-
-                                            // Try to parse as Delta JSON
-                                            try {
-                                                const delta = JSON.parse(decodedContent);
-                                                if (delta && delta.ops) {
-                                                    // Create a temporary div with Quill
-                                                    const tempContainer = document.createElement('div');
-                                                    const quill = new Quill(tempContainer);
-                                                    quill.setContents(delta);
-                                                    // Get the HTML and set it to our container
-                                                    container.innerHTML = tempContainer.querySelector('.ql-editor').innerHTML;
-                                                } else {
-                                                    // Not a valid delta object
-                                                    container.innerHTML = decodedContent;
-                                                }
-                                            } catch (e) {
-                                                console.warn('JSON parse error:', e);
-                                                // If not Delta JSON, just use as HTML
-                                                container.innerHTML = decodedContent;
-                                            }
-                                        } else {
-                                            console.warn('No content data found for container');
-                                        }
-                                    } catch (quillError) {
-                                        console.error('Error rendering Quill content:', quillError);
-                                        // Fallback to showing raw content
-                                        container.innerHTML = container.getAttribute('data-content') || 'Error displaying content';
-                                    }
-                                });
-
-                                if (debugInfo) {
-                                    debugInfo.textContent += ' Quill content rendered.';
-                                }
-                            }
-
-                            // Final initialization message
-                            if (debugInfo) {
-                                debugInfo.textContent += ' Initialization complete.';
-                            }
-                        } catch (domError) {
-                            console.error('Error in DOMContentLoaded event:', domError);
-                            alert('There was an error initializing the FAQ functionality. Please check the console for details.');
-                        }
+                // Function to switch category tabs
+                function switchCategory(tab, categoryId) {
+                    // Hide all category contents
+                    document.querySelectorAll('.category-content').forEach(content => {
+                        content.classList.add('hidden');
                     });
 
-                    // Additional check outside of DOMContentLoaded
-                    window.onload = function () {
-                        console.log('Window onload event fired');
+                    // Show the selected category content
+                    const selectedContent = document.getElementById(categoryId);
+                    if (selectedContent) {
+                        selectedContent.classList.remove('hidden');
+                    }
 
-                        // Fallback initialization if DOMContentLoaded didn't work
-                        if (!window.faqInitialized) {
-                            console.log('Fallback initialization triggered');
-
-                            // Direct click handlers without cloning
-                            document.querySelectorAll('.faq-question').forEach(function (question) {
-                                question.onclick = function () {
-                                    console.log('Fallback click handler fired');
-                                    const answer = this.nextElementSibling;
-                                    const arrow = this.querySelector('.faq-arrow');
-
-                                    console.log('Answer element:', answer);
-                                    console.log('Arrow element:', arrow);
-                                    console.log('Answer hidden before:', answer.classList.contains('hidden'));
-
-                                    if (answer.classList.contains('hidden')) {
-                                        answer.classList.remove('hidden');
-                                        if (arrow) arrow.classList.add('rotate-180');
-                                        console.log('Showing answer');
-                                    } else {
-                                        answer.classList.add('hidden');
-                                        if (arrow) arrow.classList.remove('rotate-180');
-                                        console.log('Hiding answer');
-                                    }
-
-                                    console.log('Answer hidden after:', answer.classList.contains('hidden'));
-                                    return false;
-                                };
-                            });
-                        }
-                    };
-
-                    // Global flag to track initialization
-                    window.faqInitialized = true;
-
-                    // Debug tools functionality
-                    document.addEventListener('DOMContentLoaded', function () {
-                        const debugToggle = document.getElementById('debug-toggle');
-                        const debugTools = document.getElementById('debug-tools');
-                        const debugCheckQuestions = document.getElementById('debug-check-questions');
-                        const debugToggleFirst = document.getElementById('debug-toggle-first');
-                        const debugOutput = document.getElementById('debug-output');
-
-                        if (debugToggle && debugTools) {
-                            debugToggle.addEventListener('click', function () {
-                                if (debugTools.classList.contains('hidden')) {
-                                    debugTools.classList.remove('hidden');
-                                    debugToggle.textContent = 'Hide Debug Tools';
-                                } else {
-                                    debugTools.classList.add('hidden');
-                                    debugToggle.textContent = 'Show Debug Tools';
-                                }
-                            });
-                        }
-
-                        if (debugCheckQuestions && debugOutput) {
-                            debugCheckQuestions.addEventListener('click', function () {
-                                const questions = document.querySelectorAll('.faq-question');
-                                let output = `Found ${questions.length} FAQ questions:<br>`;
-
-                                questions.forEach((q, i) => {
-                                    const answer = q.nextElementSibling;
-                                    output += `<br>Question ${i + 1}:<br>`;
-                                    output += `- Has click handler: ${typeof q.onclick === 'function'}<br>`;
-                                    output += `- Answer element exists: ${answer !== null}<br>`;
-                                    if (answer) {
-                                        output += `- Answer is hidden: ${answer.classList.contains('hidden')}<br>`;
-                                    }
-                                });
-
-                                debugOutput.innerHTML = output;
-                            });
-                        }
-
-                        if (debugToggleFirst && debugOutput) {
-                            debugToggleFirst.addEventListener('click', function () {
-                                const firstQuestion = document.querySelector('.faq-question');
-                                if (firstQuestion) {
-                                    const answer = firstQuestion.nextElementSibling;
-                                    const arrow = firstQuestion.querySelector('.faq-arrow');
-
-                                    let output = 'Toggling first FAQ:<br>';
-                                    output += `- Answer element exists: ${answer !== null}<br>`;
-
-                                    if (answer) {
-                                        output += `- Answer hidden before: ${answer.classList.contains('hidden')}<br>`;
-
-                                        if (answer.classList.contains('hidden')) {
-                                            answer.classList.remove('hidden');
-                                            if (arrow) arrow.classList.add('rotate-180');
-                                            output += '- Action: Showing answer<br>';
-                                        } else {
-                                            answer.classList.add('hidden');
-                                            if (arrow) arrow.classList.remove('rotate-180');
-                                            output += '- Action: Hiding answer<br>';
-                                        }
-
-                                        output += `- Answer hidden after: ${answer.classList.contains('hidden')}<br>`;
-                                    } else {
-                                        output += '- ERROR: Answer element not found<br>';
-                                    }
-
-                                    debugOutput.innerHTML = output;
-                                } else {
-                                    debugOutput.innerHTML = 'No FAQ questions found';
-                                }
-                            });
-                        }
+                    // Update tab styles
+                    document.querySelectorAll('.category-tab').forEach(t => {
+                        t.classList.remove('border-blue-500', 'text-blue-600', 'font-medium');
+                        t.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
                     });
 
-                } catch (globalError) {
-                    console.error('Global script error:', globalError);
+                    // Highlight the clicked tab
+                    tab.classList.add('border-blue-500', 'text-blue-600', 'font-medium');
+                    tab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
                 }
             </script>

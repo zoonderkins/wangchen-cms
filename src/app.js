@@ -82,6 +82,9 @@ app.use((req, res, next) => {
     // Set admin layout for admin routes
     if (req.path.startsWith('/admin')) {
         res.locals.layout = 'layouts/admin';
+    } else {
+        // Set frontend layout for all other routes
+        res.locals.layout = 'layouts/frontend';
     }
     next();
 });
@@ -92,19 +95,29 @@ app.use('/', frontendRoutes);
 
 // 404 handler
 app.use((req, res) => {
+    // Set the layout based on the route
+    const layout = req.path.startsWith('/admin') ? 'layouts/admin' : 'layouts/frontend';
+    res.locals.layout = layout;
+    
     res.status(404).render('frontend/404', {
         title: '404 Not Found',
-        layout: 'frontend/layout'
+        layout: layout
     });
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
     logger.error('Unhandled error:', err);
+    
+    // Set the layout based on the route
+    const layout = req.path.startsWith('/admin') ? 'layouts/admin' : 'layouts/frontend';
+    res.locals.layout = layout;
+    
     res.status(500).render('error', {
         title: 'Error',
         message: 'An unexpected error occurred',
-        error: process.env.NODE_ENV === 'development' ? err : {}
+        error: process.env.NODE_ENV === 'development' ? err : {},
+        layout: layout
     });
 });
 

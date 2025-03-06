@@ -249,4 +249,32 @@ router.get('/news/items/edit/:id', hasRole(['super_admin', 'admin', 'editor']), 
 router.post('/news/items/:id', hasRole(['super_admin', 'admin', 'editor']), newsImageUpload, newsController.updateItem);
 router.post('/news/items/:id/delete', hasRole(['super_admin', 'admin', 'editor']), newsController.deleteItem);
 
+// Promotions Dashboard
+const promotionController = require('../controllers/promotionController');
+const promotionImageUpload = require('../middleware/promotionImageUpload');
+
+router.get('/promotions', hasRole(['super_admin', 'admin', 'editor']), (req, res) => {
+    res.render('admin/promotions/index', {
+        title: 'Promotion Management',
+        success_msg: req.flash('success_msg'),
+        error_msg: req.flash('error_msg')
+    });
+});
+
+// Promotion Category Routes
+router.get('/promotions/categories', hasRole(['super_admin', 'admin', 'editor']), promotionController.listCategories);
+router.get('/promotions/categories/create', hasRole(['super_admin', 'admin', 'editor']), promotionController.renderCreateCategory);
+router.post('/promotions/categories', hasRole(['super_admin', 'admin', 'editor']), promotionController.createCategory);
+router.get('/promotions/categories/edit/:id', hasRole(['super_admin', 'admin', 'editor']), promotionController.renderEditCategory);
+router.post('/promotions/categories/:id', hasRole(['super_admin', 'admin', 'editor']), promotionController.updateCategory);
+router.post('/promotions/categories/:id/delete', hasRole(['super_admin', 'admin', 'editor']), promotionController.deleteCategory);
+
+// Promotion Item Routes
+router.get('/promotions/items', hasRole(['super_admin', 'admin', 'editor']), promotionController.listItems);
+router.get('/promotions/items/create', hasRole(['super_admin', 'admin', 'editor']), promotionController.renderCreateItem);
+router.post('/promotions/items', hasRole(['super_admin', 'admin', 'editor']), promotionImageUpload, promotionController.createItem);
+router.get('/promotions/items/edit/:id', hasRole(['super_admin', 'admin', 'editor']), promotionController.renderEditItem);
+router.post('/promotions/items/:id', hasRole(['super_admin', 'admin', 'editor']), promotionImageUpload, promotionController.updateItem);
+router.post('/promotions/items/:id/delete', hasRole(['super_admin', 'admin', 'editor']), promotionController.deleteItem);
+
 module.exports = router;

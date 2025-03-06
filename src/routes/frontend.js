@@ -44,9 +44,16 @@ function createExcerpt(content, maxLength = 200) {
 }
 
 // Redirect root to Traditional Chinese (tw) by default
-router.get('/', (req, res) => {
-    // Always redirect to Traditional Chinese version
-    res.redirect('/tw');
+router.get('/', (req, res, next) => {
+    // Only redirect if this is a direct request to the root URL
+    if (req.originalUrl === '/') {
+        // Redirect to the default language
+        return res.redirect(`/${DEFAULT_LANGUAGE}`);
+    }
+    
+    // If we get here, it means we're already processing a language route
+    // or some other middleware has modified the URL
+    next();
 });
 
 // Prevent redirect loops for language routes
@@ -59,20 +66,17 @@ router.get('/:language', async (req, res, next) => {
             return next();
         }
         
-        // Get latest articles and active banners
-        const [articles, banners] = await Promise.all([
-            prisma.article.findMany({
-                where: {
-                    status: 'published'
-                },
-                orderBy: {
-                    createdAt: 'desc'
-                },
-                take: 10,
-                include: {
-                    category: true
-                }
-            }),
+        // Skip processing if the original URL contains a path after the language
+        // This allows routes like /:language/promotions to be handled by their specific handlers
+        const originalPath = req.originalUrl;
+        const pathParts = originalPath.split('/').filter(Boolean);
+        if (pathParts.length > 1) {
+            return next();
+        }
+        
+        // Get active banners and navigation pages
+        const currentLanguage = req.params.language || 'en';
+        const [banners, navigationPages] = await Promise.all([
             prisma.banner.findMany({
                 where: {
                     isActive: true
@@ -81,6 +85,15 @@ router.get('/:language', async (req, res, next) => {
                     createdAt: 'desc'
                 },
                 take: 4 // Limit to 4 banners
+            }),
+            prisma.page.findMany({
+                where: {
+                    status: 'published',
+                    showInNavigation: true
+                },
+                orderBy: {
+                    navigationOrder: 'asc'
+                }
             })
         ]);
 
@@ -94,24 +107,10 @@ router.get('/:language', async (req, res, next) => {
             logger.info('No active banners found');
         }
 
-        // Process articles to create excerpts and handle multilingual content
-        const processedArticles = articles.map(article => {
-            const titleField = `title_${language}`;
-            const contentField = `content_${language}`;
-            const excerptField = `excerpt_${language}`;
-            
-            return {
-                ...article,
-                title: article[titleField] || article.title_en, // Fallback to English
-                content: article[contentField] || article.content_en,
-                excerpt: article[excerptField] || createExcerpt(article[contentField] || article.content_en)
-            };
-        });
-        
         // Process banners for multilingual content
         const processedBanners = banners.map(banner => {
-            const titleField = `title_${language}`;
-            const descriptionField = `description_${language}`;
+            const titleField = `title_${currentLanguage}`;
+            const descriptionField = `description_${currentLanguage}`;
             
             return {
                 ...banner,
@@ -120,18 +119,31 @@ router.get('/:language', async (req, res, next) => {
             };
         });
 
+        // Add helper function for getting content in the current language
+        const getContent = (item, field) => {
+            const langField = `${field}_${currentLanguage}`;
+            return item[langField] || item[`${field}_en`] || '';
+        };
+
         res.render('frontend/index', {
             title: 'Home',
-            articles: processedArticles,
             banners: processedBanners,
+            navigationPages: navigationPages,
+            currentLanguage: currentLanguage,
+            getContent: getContent,
             layout: 'layouts/frontend'
         });
     } catch (error) {
         logger.error('Error loading homepage:', error);
+        // Store the language from params to avoid reference error
+        const currentLanguage = req.params.language || 'en';
+        
         res.render('frontend/index', {
             title: 'Home',
-            articles: [],
             banners: [],
+            navigationPages: [],
+            currentLanguage: currentLanguage,
+            getContent: (item, field) => '',
             layout: 'layouts/frontend'
         });
     }
@@ -190,8 +202,7 @@ router.use(async (req, res, next) => {
             }
         });
 
-        // Make categories and navigation pages available to all views
-        res.locals.categories = categories;
+        // Make navigation pages available to all views
         res.locals.navigationPages = navigationPages;
         next();
     } catch (error) {
@@ -660,7 +671,7 @@ router.get('/:language/faq', async (req, res) => {
         });
         
         res.render('frontend/faq', {
-            title: 'Frequently Asked Questions',
+            title: language === 'en' ? 'Frequently Asked Questions' : '常見問題',
             categories, // These are FAQ categories
             articleCategories, // Pass article categories separately
             layout: 'layouts/frontend'
@@ -684,6 +695,11 @@ router.get('/:language/downloads/:id', downloadController.downloadFile);
 // News routes
 router.get('/:language/news', newsController.listNewsForFrontend);
 router.get('/:language/news/:id', newsController.getNewsItemForFrontend);
+
+// Promotion routes
+const promotionController = require('../controllers/promotionController');
+router.get('/:language/promotions', promotionController.listPromotionsForFrontend);
+router.get('/:language/promotions/:id', promotionController.getPromotionItemForFrontend);
 
 // Handle custom URL paths
 router.get('/:language/:path(*)', async (req, res, next) => {

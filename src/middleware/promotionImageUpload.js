@@ -4,13 +4,13 @@ const fs = require('fs');
 const logger = require('../config/logger');
 
 // Create uploads directory if it doesn't exist
-const uploadDir = path.join(__dirname, '../../public/uploads/promotion');
+const uploadDir = path.join(__dirname, '../../public/uploads/promotions');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 // Define the URL path for serving the images (without 'public' prefix)
-const urlPath = 'uploads/promotion';
+const urlPath = 'uploads/promotions';
 
 // Configure storage
 const storage = multer.diskStorage({
@@ -70,8 +70,8 @@ const promotionImageUpload = (req, res, next) => {
             
             // Determine where to redirect based on the route
             const redirectPath = req.path.includes('/edit/') 
-                ? `/admin/promotion/items/edit/${req.params.id}` 
-                : '/admin/promotion/items/create';
+                ? `/admin/promotions/items/edit/${req.params.id}` 
+                : '/admin/promotions/items/create';
             
             return res.redirect(redirectPath);
         }

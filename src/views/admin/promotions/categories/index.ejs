@@ -1,0 +1,108 @@
+<%- contentFor('body') %>
+
+  <div class="container px-6 mx-auto grid">
+    <h2 class="my-6 text-2xl font-semibold text-gray-700">
+      Promotion Categories
+    </h2>
+
+    <!-- CTA -->
+    <div
+      class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-purple-100 bg-purple-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple">
+      <div class="flex items-center">
+        <span>Manage promotion categories with multilingual support.</span>
+      </div>
+      <a href="/admin/promotions/categories/create"
+        class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green">
+        Add New Category
+      </a>
+    </div>
+
+    <!-- Flash Messages -->
+    <% if(typeof success_msg !=='undefined' && success_msg.length> 0) { %>
+      <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+        <%= success_msg %>
+      </div>
+      <% } %>
+        <% if(typeof error_msg !=='undefined' && error_msg.length> 0) { %>
+          <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+            <%= error_msg %>
+          </div>
+          <% } %>
+
+            <!-- Categories Table -->
+            <div class="w-full overflow-hidden rounded-lg shadow-xs">
+              <div class="w-full overflow-x-auto">
+                <table class="w-full whitespace-no-wrap">
+                  <thead>
+                    <tr
+                      class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b bg-gray-50">
+                      <th class="px-4 py-3">Name (English)</th>
+                      <th class="px-4 py-3">Name (Chinese)</th>
+                      <th class="px-4 py-3">Slug</th>
+                      <th class="px-4 py-3">Order</th>
+                      <th class="px-4 py-3">Items</th>
+                      <th class="px-4 py-3">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y">
+                    <% if (categories && categories.length> 0) { %>
+                      <% categories.forEach(category=> { %>
+                        <tr class="text-gray-700">
+                          <td class="px-4 py-3">
+                            <%= category.name_en %>
+                          </td>
+                          <td class="px-4 py-3">
+                            <%= category.name_tw %>
+                          </td>
+                          <td class="px-4 py-3 text-sm">
+                            <%= category.slug %>
+                          </td>
+                          <td class="px-4 py-3 text-sm">
+                            <%= category.order %>
+                          </td>
+                          <td class="px-4 py-3 text-sm">
+                            <%= category._count.promotionItems %>
+                          </td>
+                          <td class="px-4 py-3 text-sm">
+                            <div class="flex items-center space-x-2">
+                              <a href="/admin/promotions/categories/edit/<%= category.id %>"
+                                class="px-2 py-1 text-xs font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-md active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue">
+                                Edit
+                              </a>
+                              <form action="/admin/promotions/categories/<%= category.id %>/delete" method="POST"
+                                onsubmit="return confirm('Are you sure you want to delete this category? This will also delete all promotion items in this category.');">
+                                <button type="submit"
+                                  class="px-2 py-1 text-xs font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-md active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red">
+                                  Delete
+                                </button>
+                              </form>
+                            </div>
+                          </td>
+                        </tr>
+                        <% }); %>
+                          <% } else { %>
+                            <tr class="text-gray-700">
+                              <td colspan="6" class="px-4 py-3 text-center">
+                                No categories found. <a href="/admin/promotions/categories/create"
+                                  class="text-purple-600 hover:underline">Create your first category</a>.
+                              </td>
+                            </tr>
+                            <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Back to Promotion Management -->
+            <div class="mt-6">
+              <a href="/admin/promotions"
+                class="flex items-center justify-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                  </path>
+                </svg>
+                Back to Promotion Management
+              </a>
+            </div>
+  </div>

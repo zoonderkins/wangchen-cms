@@ -683,7 +683,7 @@ exports.listNewsForFrontend = async (req, res) => {
         });
         
         // Set page title based on language
-        const pageTitle = language === 'tw' ? '新聞' : 'News';
+        const pageTitle = language === 'tw' ? '最新消息' : 'News';
         
         res.render('frontend/news', {
             title: pageTitle,
@@ -698,7 +698,7 @@ exports.listNewsForFrontend = async (req, res) => {
         logger.error('Error loading news for frontend:', error);
         res.status(500).render('frontend/error', {
             title: 'Error',
-            message: language === 'en' ? 'Failed to load news' : '載入新聞失敗',
+            message: language === 'en' ? 'Failed to load news' : '載入最新消息失敗',
             layout: 'layouts/frontend'
         });
     }
@@ -732,7 +732,7 @@ exports.listNewsByCategoryForFrontend = async (req, res) => {
         if (!category) {
             return res.status(404).render('frontend/error', {
                 title: language === 'en' ? 'Category Not Found' : '找不到分類',
-                message: language === 'en' ? 'The requested news category does not exist' : '請求的新聞分類不存在',
+                message: language === 'en' ? 'The requested news category does not exist' : '請求的最新消息分類不存在',
                 layout: 'layouts/frontend'
             });
         }
@@ -793,7 +793,7 @@ exports.listNewsByCategoryForFrontend = async (req, res) => {
         const categoryName = category[`name_${language}`] || category.name_en;
         
         // Set page title based on language and category
-        const pageTitle = language === 'tw' ? `${categoryName} - 新聞` : `${categoryName} - News`;
+        const pageTitle = language === 'tw' ? `${categoryName} - 最新消息` : `${categoryName} - News`;
         
         res.render('frontend/news-category', {
             title: pageTitle,
@@ -812,7 +812,7 @@ exports.listNewsByCategoryForFrontend = async (req, res) => {
         logger.error('Error loading news category for frontend:', error);
         res.status(500).render('frontend/error', {
             title: 'Error',
-            message: language === 'en' ? 'Failed to load news category' : '載入新聞分類失敗',
+            message: language === 'en' ? 'Failed to load news category' : '載入最新消息分類失敗',
             layout: 'layouts/frontend'
         });
     }
@@ -826,8 +826,8 @@ exports.getNewsItemForFrontend = async (req, res) => {
         
         if (!slug) {
             return res.status(404).render('frontend/error', {
-                title: language === 'en' ? 'News Not Found' : '找不到新聞',
-                message: language === 'en' ? 'Invalid news slug' : '無效的新聞網址',
+                title: language === 'en' ? 'News Not Found' : '找不到最新消息',
+                message: language === 'en' ? 'Invalid news slug' : '無效的最新消息網址',
                 layout: 'layouts/frontend'
             });
         }
@@ -849,8 +849,8 @@ exports.getNewsItemForFrontend = async (req, res) => {
         
         if (!newsItem) {
             return res.status(404).render('frontend/error', {
-                title: language === 'en' ? 'News Not Found' : '找不到新聞',
-                message: language === 'en' ? 'The requested news item does not exist' : '請求的新聞不存在',
+                title: language === 'en' ? 'News Not Found' : '找不到最新消息',
+                message: language === 'en' ? 'The requested news item does not exist' : '請求的最新消息不存在',
                 layout: 'layouts/frontend'
             });
         }
@@ -911,7 +911,7 @@ exports.getNewsItemForFrontend = async (req, res) => {
         logger.error('Error loading news item for frontend:', error);
         res.status(500).render('frontend/error', {
             title: 'Error',
-            message: req.params.language === 'en' ? 'Failed to load news item' : '載入新聞項目失敗',
+            message: req.params.language === 'en' ? 'Failed to load news item' : '載入最新消息項目失敗',
             layout: 'layouts/frontend'
         });
     }
