@@ -1,0 +1,32 @@
+<%- contentFor('body') %>
+
+  <div class="container mx-auto px-4 py-16">
+    <div class="max-w-2xl mx-auto text-center">
+      <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <div class="text-green-500 mb-4">
+          <svg class="h-16 w-16 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+              clip-rule="evenodd"></path>
+          </svg>
+        </div>
+
+        <h1 class="text-2xl font-bold mb-4">
+          <%= currentLanguage==='en' ? 'Thank You!' : '謝謝您！' %>
+        </h1>
+
+        <p class="text-gray-700 mb-6">
+          <%= currentLanguage==='en'
+            ? 'Your message has been sent successfully. We will get back to you as soon as possible.'
+            : '您的訊息已成功送出。我們會盡快回覆您。' %>
+        </p>
+
+        <div>
+          <a href="/<%= currentLanguage %>"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            <%= currentLanguage==='en' ? 'Return to Home' : '返回首頁' %>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>

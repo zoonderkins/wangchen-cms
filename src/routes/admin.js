@@ -23,6 +23,8 @@ const downloadController = require('../controllers/downloadController');
 const downloadCategoryController = require('../controllers/downloadCategoryController');
 const newsController = require('../controllers/newsController');
 const aboutController = require('../controllers/aboutController');
+const contactCategoryController = require('../controllers/contactCategoryController');
+const contactController = require('../controllers/contactController');
 
 // Multer configuration
 const storage = multer.diskStorage({
@@ -285,5 +287,19 @@ router.post('/about/create', hasRole(['super_admin', 'admin', 'editor']), aboutC
 router.get('/about/edit/:id', hasRole(['super_admin', 'admin', 'editor']), aboutController.renderEditItem);
 router.post('/about/edit/:id', hasRole(['super_admin', 'admin', 'editor']), aboutController.upload, aboutController.updateItem);
 router.post('/about/delete/:id', hasRole(['super_admin', 'admin']), aboutController.deleteItem);
+
+// Contact Category Routes
+router.get('/contact/categories', hasRole(['super_admin', 'admin', 'editor']), contactCategoryController.listCategories);
+router.get('/contact/categories/create', hasRole(['super_admin', 'admin', 'editor']), contactCategoryController.renderCreateCategory);
+router.post('/contact/categories', hasRole(['super_admin', 'admin', 'editor']), contactCategoryController.createCategory);
+router.get('/contact/categories/edit/:id', hasRole(['super_admin', 'admin', 'editor']), contactCategoryController.renderEditCategory);
+router.post('/contact/categories/:id', hasRole(['super_admin', 'admin', 'editor']), contactCategoryController.updateCategory);
+router.post('/contact/categories/:id/delete', hasRole(['super_admin', 'admin']), contactCategoryController.deleteCategory);
+
+// Contact Submissions Routes
+router.get('/contact', hasRole(['super_admin', 'admin', 'editor']), contactController.listContacts);
+router.get('/contact/view/:id', hasRole(['super_admin', 'admin', 'editor']), contactController.viewContact);
+router.post('/contact/:id/status', hasRole(['super_admin', 'admin', 'editor']), contactController.updateContactStatus);
+router.post('/contact/:id/delete', hasRole(['super_admin', 'admin']), contactController.deleteContact);
 
 module.exports = router;

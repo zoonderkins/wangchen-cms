@@ -405,3 +405,37 @@ model AboutItem {
   @@index([authorId], map: "AboutItems_authorId_fkey")
   @@map("AboutItems")
 }
+
+// Contact categories
+model ContactCategory {
+  id          Int       @id @default(autoincrement())
+  name_en     String
+  name_tw     String
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  contacts    Contact[]
+
+  @@map("ContactCategories")
+}
+
+// Contact submissions
+model Contact {
+  id           Int             @id @default(autoincrement())
+  name         String
+  email        String
+  company      String?
+  phone        String?
+  message      String          @db.Text
+  categoryId   Int?
+  category     ContactCategory? @relation(fields: [categoryId], references: [id])
+  agreeTerms   Boolean         @default(false)
+  status       String          @default("pending") // pending, processed, archived
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  deletedAt    DateTime?
+
+  @@index([categoryId], map: "Contacts_categoryId_fkey")
+  @@map("Contacts")
+}

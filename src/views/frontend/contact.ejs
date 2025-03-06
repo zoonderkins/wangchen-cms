@@ -1,0 +1,111 @@
+<%- contentFor('body') %>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl font-bold mb-6 text-center">
+        <%= currentLanguage==='en' ? 'Contact Us' : '聯絡我們' %>
+      </h1>
+
+      <% if (typeof error !=='undefined' && error && error.length> 0) { %>
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
+          <span class="block sm:inline">
+            <%= error %>
+          </span>
+        </div>
+        <% } %>
+
+          <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <form action="/<%= currentLanguage %>/contact" method="POST">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+                    <%= currentLanguage==='en' ? 'Name' : '姓名' %> <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="name" name="name" type="text"
+                    value="<%= typeof formData !== 'undefined' ? formData.name || '' : '' %>" required>
+                </div>
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                    <%= currentLanguage==='en' ? 'Email' : '電子郵件' %> <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="email" name="email" type="email"
+                    value="<%= typeof formData !== 'undefined' ? formData.email || '' : '' %>" required>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="company">
+                    <%= currentLanguage==='en' ? 'Company' : '公司' %>
+                  </label>
+                  <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="company" name="company" type="text"
+                    value="<%= typeof formData !== 'undefined' ? formData.company || '' : '' %>">
+                </div>
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">
+                    <%= currentLanguage==='en' ? 'Phone' : '電話' %>
+                  </label>
+                  <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="phone" name="phone" type="tel"
+                    value="<%= typeof formData !== 'undefined' ? formData.phone || '' : '' %>">
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="categoryId">
+                  <%= currentLanguage==='en' ? 'Category' : '類別' %>
+                </label>
+                <select
+                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="categoryId" name="categoryId">
+                  <option value="">
+                    <%= currentLanguage==='en' ? '-- Select Category --' : '-- 選擇類別 --' %>
+                  </option>
+                  <% categories.forEach(function(category) { %>
+                    <option value="<%= category.id %>" <%=typeof formData !=='undefined' &&
+                      formData.categoryId==category.id ? 'selected' : '' %>>
+                      <%= currentLanguage==='en' ? category.name_en : category.name_tw %>
+                    </option>
+                    <% }); %>
+                </select>
+              </div>
+
+              <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="message">
+                  <%= currentLanguage==='en' ? 'Message' : '訊息' %> <span class="text-red-500">*</span>
+                </label>
+                <textarea
+                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="message" name="message" rows="6"
+                  required><%= typeof formData !== 'undefined' ? formData.message || '' : '' %></textarea>
+              </div>
+
+              <div class="mb-6">
+                <div class="flex items-center">
+                  <input type="checkbox" id="agreeTerms" name="agreeTerms" class="mr-2" required>
+                  <label for="agreeTerms" class="text-gray-700 text-sm">
+                    <%= currentLanguage==='en' ? 'I agree to the terms and conditions and privacy policy' : '我同意條款和隱私政策'
+                      %>
+                      <span class="text-red-500">*</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-center">
+                <button
+                  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline"
+                  type="submit">
+                  <%= currentLanguage==='en' ? 'Submit' : '提交' %>
+                </button>
+              </div>
+            </form>
+          </div>
+    </div>
+  </div>

@@ -1,0 +1,104 @@
+<%- contentFor('body') %>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">Contact Categories</h1>
+      <a href="/admin/contact/categories/create"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        <i class="fas fa-plus mr-2"></i> Add New Category
+      </a>
+    </div>
+
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <% if (categories && categories.length> 0) { %>
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white" id="dataTable">
+            <thead>
+              <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
+                <th class="py-3 px-6 text-left">Order</th>
+                <th class="py-3 px-6 text-left">Name (EN)</th>
+                <th class="py-3 px-6 text-left">Name (TW)</th>
+                <th class="py-3 px-6 text-left">Created</th>
+                <th class="py-3 px-6 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-600 text-sm">
+              <% categories.forEach(function(category) { %>
+                <tr class="border-b border-gray-200 hover:bg-gray-50">
+                  <td class="py-3 px-6 text-left">
+                    <%= category.order %>
+                  </td>
+                  <td class="py-3 px-6 text-left">
+                    <%= category.name_en %>
+                  </td>
+                  <td class="py-3 px-6 text-left">
+                    <%= category.name_tw %>
+                  </td>
+                  <td class="py-3 px-6 text-left">
+                    <%= new Date(category.createdAt).toLocaleDateString() %>
+                  </td>
+                  <td class="py-3 px-6 text-center">
+                    <div class="flex item-center justify-center">
+                      <a href="/admin/contact/categories/edit/<%= category.id %>"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded mr-2">
+                        <i class="fas fa-edit"></i> Edit
+                      </a>
+                      <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
+                        onclick="document.getElementById('deleteModal<%= category.id %>').classList.remove('hidden')">
+                        <i class="fas fa-trash"></i> Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Delete Modal -->
+                <div id="deleteModal<%= category.id %>"
+                  class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+                  <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                    <div class="mt-3 text-center">
+                      <h3 class="text-lg leading-6 font-medium text-gray-900">Confirm Delete</h3>
+                      <div class="mt-2 px-7 py-3">
+                        <p class="text-sm text-gray-500">
+                          Are you sure you want to delete the category "<%= category.name_en %>"?
+                        </p>
+                      </div>
+                      <div class="flex justify-center mt-4 px-4 py-3">
+                        <button type="button"
+                          class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2"
+                          onclick="document.getElementById('deleteModal<%= category.id %>').classList.add('hidden')">
+                          Cancel
+                        </button>
+                        <form action="/admin/contact/categories/<%= category.id %>/delete" method="POST">
+                          <button type="submit"
+                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                            Delete
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <% }); %>
+            </tbody>
+          </table>
+        </div>
+        <% } else { %>
+          <div class="text-center py-8">
+            <p class="text-gray-500 mb-4">No contact categories found.</p>
+            <a href="/admin/contact/categories/create"
+              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              <i class="fas fa-plus mr-2"></i> Add First Category
+            </a>
+          </div>
+          <% } %>
+    </div>
+  </div>
+
+  <%- contentFor('script') %>
+    <script>
+      $(document).ready(function () {
+        $('#dataTable').DataTable({
+          "order": [[0, "asc"]]
+        });
+      });
+    </script>

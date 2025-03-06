@@ -75,6 +75,23 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="relative inline-block text-left dropdown">
+                                    <button type="button"
+                                        class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium dropdown-toggle">
+                                        Contact <i class="fas fa-chevron-down ml-1"></i>
+                                    </button>
+                                    <div
+                                        class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 dropdown-menu">
+                                        <div class="py-1" role="menu" aria-orientation="vertical">
+                                            <a href="/admin/contact"
+                                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                role="menuitem">Submissions</a>
+                                            <a href="/admin/contact/categories"
+                                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                role="menuitem">Categories</a>
+                                        </div>
+                                    </div>
+                                </div>
                                 <% if (user.role && user.role==='super_admin' ) { %>
                                     <a href="/admin/users"
                                         class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Users</a>
@@ -139,6 +156,13 @@
                 <a href="/admin/faq/items"
                     class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">FAQ
                     Items</a>
+                <div class="border-t border-gray-700 my-1"></div>
+                <a href="/admin/contact"
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Contact
+                    Submissions</a>
+                <a href="/admin/contact/categories"
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Contact
+                    Categories</a>
                 <% if (typeof user !=='undefined' && user && user.role && user.role==='super_admin' ) { %>
                     <a href="/admin/users"
                         class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Users</a>
@@ -203,20 +227,40 @@
                                         mobileMenu.classList.toggle('hidden');
                                     });
 
-                                    // FAQ dropdown toggle
-                                    const dropdownToggle = document.querySelector('.dropdown-toggle');
-                                    const dropdownMenu = document.querySelector('.dropdown-menu');
+                                    // Dropdown toggles
+                                    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+                                    const dropdownMenus = document.querySelectorAll('.dropdown-menu');
 
-                                    dropdownToggle.addEventListener('click', function (e) {
-                                        e.preventDefault();
-                                        dropdownMenu.classList.toggle('show');
+                                    // Add click event to each dropdown toggle
+                                    dropdownToggles.forEach(function (toggle, index) {
+                                        toggle.addEventListener('click', function (e) {
+                                            e.preventDefault();
+                                            // Close all other dropdowns
+                                            dropdownMenus.forEach(function (menu, menuIndex) {
+                                                if (menuIndex !== index) {
+                                                    menu.classList.remove('show');
+                                                }
+                                            });
+                                            // Toggle current dropdown
+                                            dropdownMenus[index].classList.toggle('show');
+                                        });
                                     });
 
-                                    // Close dropdown when clicking outside
+                                    // Close dropdowns when clicking outside
                                     document.addEventListener('click', function (e) {
-                                        const dropdown = document.querySelector('.dropdown');
-                                        if (!dropdown.contains(e.target)) {
-                                            dropdownMenu.classList.remove('show');
+                                        const dropdowns = document.querySelectorAll('.dropdown');
+                                        let clickedInside = false;
+
+                                        dropdowns.forEach(function (dropdown) {
+                                            if (dropdown.contains(e.target)) {
+                                                clickedInside = true;
+                                            }
+                                        });
+
+                                        if (!clickedInside) {
+                                            dropdownMenus.forEach(function (menu) {
+                                                menu.classList.remove('show');
+                                            });
                                         }
                                     });
                                 </script>

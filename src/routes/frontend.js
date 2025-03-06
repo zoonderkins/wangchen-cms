@@ -705,6 +705,11 @@ router.get('/:language/promotions/:id', promotionController.getPromotionItemForF
 const aboutController = require('../controllers/aboutController');
 router.get('/:language/about', aboutController.showAboutPage);
 
+// Contact page routes
+const contactController = require('../controllers/contactController');
+router.get('/:language/contact', contactController.showContactForm);
+router.post('/:language/contact', contactController.submitContactForm);
+
 // Handle custom URL paths
 router.get('/:language/:path(*)', async (req, res, next) => {
     try {

@@ -1,0 +1,51 @@
+<%- contentFor('body') %>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">Edit Contact Category</h1>
+      <a href="/admin/contact/categories" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+        <i class="fas fa-arrow-left mr-2"></i> Back to List
+      </a>
+    </div>
+
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <form action="/admin/contact/categories/<%= category.id %>" method="POST">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="name_en">
+              Name (English) <span class="text-red-500">*</span>
+            </label>
+            <input
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="name_en" name="name_en" type="text" value="<%= category.name_en %>" required>
+          </div>
+          <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="name_tw">
+              Name (Chinese) <span class="text-red-500">*</span>
+            </label>
+            <input
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="name_tw" name="name_tw" type="text" value="<%= category.name_tw %>" required>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="order">
+            Display Order
+          </label>
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="order" name="order" type="number" value="<%= category.order %>" min="0">
+          <p class="text-gray-600 text-xs italic mt-1">Categories are displayed in ascending order (0, 1, 2, ...).</p>
+        </div>
+
+        <div class="flex items-center justify-end">
+          <button
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit">
+            Update Category
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
