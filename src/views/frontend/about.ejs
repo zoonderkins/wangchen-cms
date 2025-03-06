@@ -1,0 +1,71 @@
+<%- contentFor('body') %>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl font-bold mb-8 text-center">
+        <%= currentLanguage==='en' ? 'About Us' : '關於我們' %>
+      </h1>
+
+      <% if (items && items.length> 0) { %>
+        <div class="space-y-12">
+          <% items.forEach(function(item) { %>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+              <div class="p-6">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">
+                  <%= currentLanguage==='en' ? item.title_en : item.title_tw %>
+                </h2>
+
+                <% if (item.type==='plain_text' ) { %>
+                  <div class="prose max-w-none">
+                    <p class="text-gray-700 whitespace-pre-line">
+                      <%= currentLanguage==='en' ? item.content_en : item.content_tw %>
+                    </p>
+                  </div>
+                  <% } else if (item.type==='image' ) { %>
+                    <% if (item.imagePath) { %>
+                      <div class="mt-4 flex justify-center">
+                        <img src="<%= item.imagePath %>"
+                          alt="<%= currentLanguage === 'en' ? item.title_en : item.title_tw %>"
+                          class="max-w-full h-auto rounded-lg shadow-sm">
+                      </div>
+                      <div class="mt-4 text-center text-gray-700">
+                        <p class="whitespace-pre-line">
+                          <%= currentLanguage==='en' ? item.content_en : item.content_tw %>
+                        </p>
+                      </div>
+                      <% } else { %>
+                        <div class="bg-gray-100 p-4 rounded-lg text-center text-gray-500">
+                          <%= currentLanguage==='en' ? 'Image not available' : '圖片不可用' %>
+                        </div>
+                        <% } %>
+                          <% } else if (item.type==='bullet_points' ) { %>
+                            <div class="mt-4">
+                              <ul class="list-disc pl-6 space-y-2">
+                                <% const points=currentLanguage==='en' ? item.content_en : item.content_tw; %>
+                                  <% if (Array.isArray(points) && points.length> 0) { %>
+                                    <% points.forEach(function(point) { %>
+                                      <li class="text-gray-700">
+                                        <%= point %>
+                                      </li>
+                                      <% }); %>
+                                        <% } else { %>
+                                          <li class="text-gray-500">
+                                            <%= currentLanguage==='en' ? 'No points available' : '沒有可用的要點' %>
+                                          </li>
+                                          <% } %>
+                              </ul>
+                            </div>
+                            <% } %>
+              </div>
+            </div>
+            <% }); %>
+        </div>
+        <% } else { %>
+          <div class="bg-white rounded-lg shadow-md p-8 text-center">
+            <p class="text-gray-500">
+              <%= currentLanguage==='en' ? 'No about content available yet.' : '尚無關於我們的內容。' %>
+            </p>
+          </div>
+          <% } %>
+    </div>
+  </div>

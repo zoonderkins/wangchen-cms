@@ -35,6 +35,9 @@
                             </a>
                             <% }); %>
                                 <% } %>
+                                    <a href="/<%= currentLanguage %>/about" class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'About Us' : '關於我們' %>
+                                    </a>
                                     <a href="/<%= currentLanguage %>/news" class="text-gray-700 hover:text-gray-900">
                                         <%= currentLanguage==='en' ? 'News' : '最新消息' %>
                                     </a>
@@ -76,6 +79,9 @@
                             </a>
                             <% }); %>
                                 <% } %>
+                                    <a href="/<%= currentLanguage %>/about" class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'About Us' : '關於我們' %>
+                                    </a>
                                     <a href="/<%= currentLanguage %>/news" class="text-gray-700 hover:text-gray-900">
                                         <%= currentLanguage==='en' ? 'News' : '最新消息' %>
                                     </a>
@@ -137,6 +143,9 @@
                         <li><a href="/<%= currentLanguage %>" class="text-gray-400 hover:text-white">
                                 <%= currentLanguage==='en' ? 'Home' : '首頁' %>
                             </a></li>
+                        <li><a href="/<%= currentLanguage %>/about" class="text-gray-400 hover:text-white">
+                                <%= currentLanguage==='en' ? 'About Us' : '關於我們' %>
+                            </a></li>
                         <li><a href="/<%= currentLanguage %>/news" class="text-gray-400 hover:text-white">
                                 <%= currentLanguage==='en' ? 'News' : '最新消息' %>
                             </a></li>
@@ -160,6 +169,14 @@
                                 </li>
                                 <% }); %>
                                     <% } %>
+                                        <li><a href="/<%= currentLanguage %>/about"
+                                                class="text-gray-400 hover:text-white">
+                                                <%= currentLanguage==='en' ? 'About Us' : '關於我們' %>
+                                            </a></li>
+                                        <li><a href="/<%= currentLanguage %>/news"
+                                                class="text-gray-400 hover:text-white">
+                                                <%= currentLanguage==='en' ? 'News' : '最新消息' %>
+                                            </a></li>
                     </ul>
                 </div>
                 <div>

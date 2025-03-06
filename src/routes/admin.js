@@ -22,6 +22,7 @@ const faqController = require('../controllers/faqController');
 const downloadController = require('../controllers/downloadController');
 const downloadCategoryController = require('../controllers/downloadCategoryController');
 const newsController = require('../controllers/newsController');
+const aboutController = require('../controllers/aboutController');
 
 // Multer configuration
 const storage = multer.diskStorage({
@@ -276,5 +277,13 @@ router.post('/promotions/items', hasRole(['super_admin', 'admin', 'editor']), pr
 router.get('/promotions/items/edit/:id', hasRole(['super_admin', 'admin', 'editor']), promotionController.renderEditItem);
 router.post('/promotions/items/:id', hasRole(['super_admin', 'admin', 'editor']), promotionImageUpload, promotionController.updateItem);
 router.post('/promotions/items/:id/delete', hasRole(['super_admin', 'admin', 'editor']), promotionController.deleteItem);
+
+// About page routes
+router.get('/about', hasRole(['super_admin', 'admin', 'editor']), aboutController.listItems);
+router.get('/about/create', hasRole(['super_admin', 'admin', 'editor']), aboutController.renderCreateItem);
+router.post('/about/create', hasRole(['super_admin', 'admin', 'editor']), aboutController.upload, aboutController.createItem);
+router.get('/about/edit/:id', hasRole(['super_admin', 'admin', 'editor']), aboutController.renderEditItem);
+router.post('/about/edit/:id', hasRole(['super_admin', 'admin', 'editor']), aboutController.upload, aboutController.updateItem);
+router.post('/about/delete/:id', hasRole(['super_admin', 'admin']), aboutController.deleteItem);
 
 module.exports = router;

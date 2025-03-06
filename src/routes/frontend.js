@@ -701,6 +701,10 @@ const promotionController = require('../controllers/promotionController');
 router.get('/:language/promotions', promotionController.listPromotionsForFrontend);
 router.get('/:language/promotions/:id', promotionController.getPromotionItemForFrontend);
 
+// About page route
+const aboutController = require('../controllers/aboutController');
+router.get('/:language/about', aboutController.showAboutPage);
+
 // Handle custom URL paths
 router.get('/:language/:path(*)', async (req, res, next) => {
     try {

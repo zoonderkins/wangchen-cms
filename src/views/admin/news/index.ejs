@@ -1,108 +1,88 @@
 <%- contentFor('body') %>
 
-<div class="container px-6 mx-auto grid">
-    <h2 class="my-6 text-2xl font-semibold text-gray-700">
-        News Management
-    </h2>
+    <div class="container px-6 mx-auto grid">
+        <h2 class="my-6 text-2xl font-semibold text-gray-700">
+            News Management
+        </h2>
 
-    <!-- CTA -->
-    <div class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-purple-100 bg-purple-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple">
-        <div class="flex items-center">
-            <span>Manage news content for your website with multilingual support.</span>
-        </div>
-    </div>
-
-    <!-- Flash Messages -->
-    <% if(typeof success_msg !== 'undefined' && success_msg.length > 0) { %>
-        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
-            <%= success_msg %>
-        </div>
-    <% } %>
-    <% if(typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
-        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
-            <%= error_msg %>
-        </div>
-    <% } %>
-
-    <!-- News Management Cards -->
-    <div class="grid gap-6 mb-8 md:grid-cols-2">
-        <!-- News Items Card -->
-        <div class="min-w-0 p-4 bg-white rounded-lg shadow-xs">
-            <h4 class="mb-4 font-semibold text-gray-800">News Items</h4>
-            <p class="text-gray-600 mb-4">
-                Create and manage news items with multilingual support for English and Traditional Chinese.
-            </p>
-            <div class="flex mt-4 space-x-3">
-                <a href="/admin/news/items" class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                    <span>View All News Items</span>
-                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                </a>
-                <a href="/admin/news/items/create" class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green">
-                    <span>Add New Item</span>
-                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                </a>
+        <!-- CTA -->
+        <div
+            class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-purple-100 bg-purple-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple">
+            <div class="flex items-center">
+                <span>Manage news content for your website with multilingual support.</span>
             </div>
         </div>
 
-        <!-- News Categories Card -->
-        <div class="min-w-0 p-4 bg-white rounded-lg shadow-xs">
-            <h4 class="mb-4 font-semibold text-gray-800">News Categories</h4>
-            <p class="text-gray-600 mb-4">
-                Organize your news items into categories with multilingual support.
-            </p>
-            <div class="flex mt-4 space-x-3">
-                <a href="/admin/news/categories" class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                    <span>View All Categories</span>
-                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                </a>
-                <a href="/admin/news/categories/create" class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green">
-                    <span>Add New Category</span>
-                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                </a>
+        <!-- Flash Messages -->
+        <% if(typeof success_msg !=='undefined' && success_msg.length> 0) { %>
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+                <%= success_msg %>
             </div>
-        </div>
-    </div>
+            <% } %>
+                <% if(typeof error_msg !=='undefined' && error_msg.length> 0) { %>
+                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+                        <%= error_msg %>
+                    </div>
+                    <% } %>
 
-    <!-- News Management Guide -->
-    <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
-        <h4 class="mb-4 font-semibold text-gray-800">News Management Guide</h4>
-        
-        <div class="mb-4">
-            <h5 class="text-md font-medium text-gray-700 mb-2">Creating News Items</h5>
-            <ul class="list-disc pl-5 text-gray-600">
-                <li>Create news items with titles and content in both English and Traditional Chinese</li>
-                <li>Upload featured images to make your news items more engaging</li>
-                <li>Assign categories to organize your news content</li>
-                <li>Set publication status (draft, published, archived)</li>
-                <li>Add external URLs for news items that link to external sources</li>
-            </ul>
-        </div>
-        
-        <div class="mb-4">
-            <h5 class="text-md font-medium text-gray-700 mb-2">Managing Categories</h5>
-            <ul class="list-disc pl-5 text-gray-600">
-                <li>Create categories with names and descriptions in both English and Traditional Chinese</li>
-                <li>Set display order to control how categories appear on the frontend</li>
-                <li>Use slugs for SEO-friendly URLs</li>
-            </ul>
-        </div>
-        
-        <div>
-            <h5 class="text-md font-medium text-gray-700 mb-2">Frontend Display</h5>
-            <ul class="list-disc pl-5 text-gray-600">
-                <li>News items are displayed on the frontend at <code>/en/news</code> and <code>/tw/news</code></li>
-                <li>Users can search for news items by title</li>
-                <li>Pagination is available for browsing through multiple news items</li>
-                <li>Language fallback ensures content is always displayed even if a translation is missing</li>
-            </ul>
-        </div>
+                        <!-- News Management Cards -->
+                        <div class="grid gap-6 mb-8 md:grid-cols-2">
+                            <!-- News Items Card -->
+                            <div class="min-w-0 p-4 bg-white rounded-lg shadow-xs">
+                                <h4 class="mb-4 font-semibold text-gray-800">News Items</h4>
+                                <p class="text-gray-600 mb-4">
+                                    Create and manage news items with multilingual support for English and Traditional
+                                    Chinese.
+                                </p>
+                                <div class="flex mt-4 space-x-3">
+                                    <a href="/admin/news/items"
+                                        class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                                        <span>View All News Items</span>
+                                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                    </a>
+                                    <a href="/admin/news/items/create"
+                                        class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green">
+                                        <span>Add New Item</span>
+                                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- News Categories Card -->
+                            <div class="min-w-0 p-4 bg-white rounded-lg shadow-xs">
+                                <h4 class="mb-4 font-semibold text-gray-800">News Categories</h4>
+                                <p class="text-gray-600 mb-4">
+                                    Organize your news items into categories with multilingual support.
+                                </p>
+                                <div class="flex mt-4 space-x-3">
+                                    <a href="/admin/news/categories"
+                                        class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                                        <span>View All Categories</span>
+                                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                    </a>
+                                    <a href="/admin/news/categories/create"
+                                        class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green">
+                                        <span>Add New Category</span>
+                                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
     </div>
-</div>
