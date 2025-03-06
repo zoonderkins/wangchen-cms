@@ -21,6 +21,7 @@ const pageController = require('../controllers/pageController');
 const faqController = require('../controllers/faqController');
 const downloadController = require('../controllers/downloadController');
 const downloadCategoryController = require('../controllers/downloadCategoryController');
+const newsController = require('../controllers/newsController');
 
 // Multer configuration
 const storage = multer.diskStorage({
@@ -220,5 +221,32 @@ router.post('/downloads/categories/create', hasRole(['super_admin', 'admin', 'ed
 router.get('/downloads/categories/:id/edit', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.renderEditCategory);
 router.post('/downloads/categories/:id/edit', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.updateCategory);
 router.post('/downloads/categories/:id/delete', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.deleteCategory);
+
+// News Dashboard
+router.get('/news', hasRole(['super_admin', 'admin', 'editor']), (req, res) => {
+    res.render('admin/news/index', {
+        title: 'News Management',
+        success_msg: req.flash('success_msg'),
+        error_msg: req.flash('error_msg')
+    });
+});
+
+// News Category Routes
+router.get('/news/categories', hasRole(['super_admin', 'admin', 'editor']), newsController.listCategories);
+router.get('/news/categories/create', hasRole(['super_admin', 'admin', 'editor']), newsController.renderCreateCategory);
+router.post('/news/categories', hasRole(['super_admin', 'admin', 'editor']), newsController.createCategory);
+router.get('/news/categories/edit/:id', hasRole(['super_admin', 'admin', 'editor']), newsController.renderEditCategory);
+router.post('/news/categories/:id', hasRole(['super_admin', 'admin', 'editor']), newsController.updateCategory);
+router.post('/news/categories/:id/delete', hasRole(['super_admin', 'admin', 'editor']), newsController.deleteCategory);
+
+// News Item Routes
+const newsImageUpload = require('../middleware/newsImageUpload');
+
+router.get('/news/items', hasRole(['super_admin', 'admin', 'editor']), newsController.listItems);
+router.get('/news/items/create', hasRole(['super_admin', 'admin', 'editor']), newsController.renderCreateItem);
+router.post('/news/items', hasRole(['super_admin', 'admin', 'editor']), newsImageUpload, newsController.createItem);
+router.get('/news/items/edit/:id', hasRole(['super_admin', 'admin', 'editor']), newsController.renderEditItem);
+router.post('/news/items/:id', hasRole(['super_admin', 'admin', 'editor']), newsImageUpload, newsController.updateItem);
+router.post('/news/items/:id/delete', hasRole(['super_admin', 'admin', 'editor']), newsController.deleteItem);
 
 module.exports = router;

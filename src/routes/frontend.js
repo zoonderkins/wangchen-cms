@@ -4,6 +4,7 @@ const prisma = require('../lib/prisma');
 const logger = require('../config/logger');
 const QuillDeltaToHtmlConverter = require('quill-delta-to-html').QuillDeltaToHtmlConverter;
 const downloadController = require('../controllers/downloadController');
+const newsController = require('../controllers/newsController');
 const { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE } = require('../middleware/languageMiddleware');
 
 // Helper function to create clean excerpts
@@ -679,6 +680,10 @@ router.get('/:language/downloads', downloadController.listDownloadsForFrontend);
 
 // Download file
 router.get('/:language/downloads/:id', downloadController.downloadFile);
+
+// News routes
+router.get('/:language/news', newsController.listNewsForFrontend);
+router.get('/:language/news/:id', newsController.getNewsItemForFrontend);
 
 // Handle custom URL paths
 router.get('/:language/:path(*)', async (req, res, next) => {

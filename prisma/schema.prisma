@@ -28,6 +28,8 @@ model User {
   pages     Page[]
   faqItems  FaqItem[]
   downloads Download[]
+  newsItems NewsItem[]
+  promotionItems PromotionItem[]
 
   @@map("Users")
 }
@@ -295,4 +297,89 @@ enum Status {
   draft
   published
   archived
+}
+
+model NewsCategory {
+  id             Int       @id @default(autoincrement())
+  name_en        String    // English name
+  name_tw        String    // Traditional Chinese name
+  slug           String    @unique
+  description_en String?   @db.Text // English description
+  description_tw String?   @db.Text // Traditional Chinese description
+  order          Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  // Relations
+  newsItems    NewsItem[]
+
+  @@map("NewsCategories")
+}
+
+model NewsItem {
+  id              Int       @id @default(autoincrement())
+  title_en        String    // English title
+  title_tw        String    // Traditional Chinese title
+  // content fields removed as they are no longer needed
+  summary_en      String?   @db.Text // English summary
+  summary_tw      String?   @db.Text // Traditional Chinese summary
+  slug            String    @unique  // URL-friendly identifier
+  url             String?   // External URL if applicable
+  imagePath       String?   // Path to the uploaded image
+  publishedDate   DateTime  // Custom published date
+  status          Status    @default(draft)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
+  // Relations
+  category    NewsCategory @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  author      User        @relation(fields: [authorId], references: [id])
+  authorId    Int
+
+  @@map("NewsItems")
+}
+
+model PromotionCategory {
+  id             Int       @id @default(autoincrement())
+  name_en        String    // English name
+  name_tw        String    // Traditional Chinese name
+  slug           String    @unique
+  description_en String?   @db.Text // English description
+  description_tw String?   @db.Text // Traditional Chinese description
+  order          Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  // Relations
+  promotionItems    PromotionItem[]
+
+  @@map("PromotionCategories")
+}
+
+model PromotionItem {
+  id              Int       @id @default(autoincrement())
+  title_en        String    // English title
+  title_tw        String    // Traditional Chinese title
+  content_en      String    @db.LongText // English content
+  content_tw      String    @db.LongText // Traditional Chinese content
+  slug            String    @unique  // URL-friendly identifier
+  url             String?   // External URL if applicable
+  imagePath       String?   // Path to the uploaded image
+  publishedDate   DateTime  // Custom published date
+  status          Status    @default(draft)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
+  // Relations
+  category    PromotionCategory @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  author      User        @relation(fields: [authorId], references: [id])
+  authorId    Int
+
+  @@map("PromotionItems")
 }
