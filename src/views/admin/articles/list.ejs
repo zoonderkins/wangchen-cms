@@ -12,9 +12,10 @@
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title (EN/TW)</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
@@ -23,20 +24,41 @@
                 <% if (articles && articles.length > 0) { %>
                     <% articles.forEach(function(article) { %>
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4">
+                                <div class="text-sm font-medium text-gray-900 mb-1">
+                                    <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 rounded mr-2">EN</span>
+                                    <%= article.title_en %>
+                                </div>
                                 <div class="text-sm font-medium text-gray-900">
-                                    <%= article.title %>
+                                    <span class="inline-block bg-red-100 text-red-800 text-xs px-2 rounded mr-2">TW</span>
+                                    <%= article.title_tw %>
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-500">
-                                    <%= article.category ? article.category.name : 'Uncategorized' %>
+                                    <% if (article.category) { %>
+                                        <div><span class="text-xs text-blue-600">EN:</span> <%= article.category.name_en %></div>
+                                        <div><span class="text-xs text-red-600">TW:</span> <%= article.category.name_tw %></div>
+                                    <% } else { %>
+                                        Uncategorized
+                                    <% } %>
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-500">
                                     <%= article.author ? article.author.username : 'Unknown' %>
                                 </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <% if (article.status === 'published') { %>
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        Published
+                                    </span>
+                                <% } else { %>
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                        Draft
+                                    </span>
+                                <% } %>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-500">
@@ -47,7 +69,7 @@
                                 <a href="/admin/articles/edit/<%= article.id %>" class="text-blue-600 hover:text-blue-900 mr-3">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="/admin/articles/<%= article.id %>/delete" method="POST" class="inline">
+                                <form action="/admin/articles/delete/<%= article.id %>" method="POST" class="inline">
                                     <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this article?')">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -57,7 +79,7 @@
                     <% }); %>
                 <% } else { %>
                     <tr>
-                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
                             No articles found.
                         </td>
                     </tr>

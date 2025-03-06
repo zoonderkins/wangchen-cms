@@ -104,19 +104,34 @@ exports.renderCreatePage = async (req, res) => {
 exports.createPage = async (req, res) => {
     try {
         const { 
-            title, content, status, showInNavigation, 
-            navigationOrder, metaTitle, metaDescription, metaKeywords,
+            title_en, title_tw, 
+            content_en, content_tw, 
+            status, showInNavigation, 
+            navigationOrder, 
+            metaTitle_en, metaTitle_tw, 
+            metaDescription_en, metaDescription_tw, 
+            metaKeywords_en, metaKeywords_tw,
             editorMode
         } = req.body;
 
         // Process content based on editor mode
-        let htmlContent = '';
+        let htmlContent_en = '';
+        let htmlContent_tw = '';
+        
         if (editorMode === 'editor') {
             // Convert Quill Delta to HTML
             try {
-                const delta = JSON.parse(content);
-                const converter = new QuillDeltaToHtmlConverter(delta.ops, {});
-                htmlContent = converter.convert();
+                if (content_en) {
+                    const delta_en = JSON.parse(content_en);
+                    const converter_en = new QuillDeltaToHtmlConverter(delta_en.ops, {});
+                    htmlContent_en = converter_en.convert();
+                }
+                
+                if (content_tw) {
+                    const delta_tw = JSON.parse(content_tw);
+                    const converter_tw = new QuillDeltaToHtmlConverter(delta_tw.ops, {});
+                    htmlContent_tw = converter_tw.convert();
+                }
             } catch (e) {
                 logger.error('Error converting Quill content:', e);
                 req.flash('error_msg', 'Error processing editor content');
@@ -124,11 +139,12 @@ exports.createPage = async (req, res) => {
             }
         } else {
             // Use raw HTML content
-            htmlContent = content;
+            htmlContent_en = content_en;
+            htmlContent_tw = content_tw;
         }
 
-        // Generate slug from title
-        const slug = slugify(title, {
+        // Generate slug from English title
+        const slug = slugify(title_en, {
             lower: true,
             strict: true
         });
@@ -146,16 +162,21 @@ exports.createPage = async (req, res) => {
         // Create page
         const page = await prisma.page.create({
             data: {
-                title,
-                content: htmlContent,
+                title_en,
+                title_tw,
+                content_en: htmlContent_en,
+                content_tw: htmlContent_tw,
                 editorMode: editorMode || 'editor',
                 slug,
                 status: status || 'draft',
                 showInNavigation: showInNavigation === 'on',
                 navigationOrder: navigationOrder ? parseInt(navigationOrder) : null,
-                metaTitle: metaTitle || title,
-                metaDescription,
-                metaKeywords,
+                metaTitle_en: metaTitle_en || title_en,
+                metaTitle_tw: metaTitle_tw || title_tw,
+                metaDescription_en,
+                metaDescription_tw,
+                metaKeywords_en,
+                metaKeywords_tw,
                 author: {
                     connect: { id: req.session.user.id }
                 }
@@ -203,19 +224,19 @@ exports.renderEditPage = async (req, res) => {
                 attachments: true
             }
         });
-        
+
         if (!page) {
             req.flash('error_msg', 'Page not found');
             return res.redirect('/admin/pages');
         }
-        
+
         res.render('admin/pages/edit', {
-            title: `Edit Page: ${page.title}`,
+            title: 'Edit Page',
             page
         });
     } catch (error) {
-        logger.error('Error rendering edit page form:', error);
-        req.flash('error_msg', 'Failed to load page');
+        logger.error('Error rendering edit page:', error);
+        req.flash('error_msg', 'Error loading page');
         res.redirect('/admin/pages');
     }
 };
@@ -223,117 +244,108 @@ exports.renderEditPage = async (req, res) => {
 // Update a page
 exports.updatePage = async (req, res) => {
     try {
-        const { id } = req.params;
+        const pageId = parseInt(req.params.id);
+        
         const { 
-            title, content, status, showInNavigation, 
-            navigationOrder, metaTitle, metaDescription, metaKeywords,
-            deletedAttachments, editorMode
+            title_en, title_tw, 
+            content_en, content_tw, 
+            status, showInNavigation, 
+            navigationOrder, 
+            metaTitle_en, metaTitle_tw, 
+            metaDescription_en, metaDescription_tw, 
+            metaKeywords_en, metaKeywords_tw,
+            editorMode
         } = req.body;
 
-        // Process content based on editor mode
-        let htmlContent = '';
-        if (editorMode === 'editor') {
-            // Convert Quill Delta to HTML
-            try {
-                const delta = JSON.parse(content);
-                const converter = new QuillDeltaToHtmlConverter(delta.ops, {});
-                htmlContent = converter.convert();
-            } catch (e) {
-                // If parsing fails, use content as is
-                htmlContent = content;
-                console.error('Error converting Quill content:', e);
-            }
-        } else {
-            // Use raw HTML content
-            htmlContent = content;
-        }
-
-        // Generate slug from title
-        const slug = slugify(title, {
-            lower: true,
-            strict: true
+        // Get existing page
+        const existingPage = await prisma.page.findUnique({
+            where: { id: pageId }
         });
 
-        // Check if slug already exists on a different page
-        const existingPage = await prisma.page.findFirst({
-            where: {
-                slug,
-                id: {
-                    not: parseInt(id)
-                }
-            }
-        });
-
-        if (existingPage) {
-            req.flash('error_msg', 'A page with this title already exists. Please choose a different title.');
-            return res.redirect(`/admin/pages/edit/${id}`);
-        }
-
-        // Get the existing page
-        const existingPageData = await prisma.page.findUnique({
-            where: { id: parseInt(id) }
-        });
-        
-        if (!existingPageData) {
+        if (!existingPage) {
             req.flash('error_msg', 'Page not found');
             return res.redirect('/admin/pages');
         }
+
+        // Process content based on editor mode
+        let htmlContent_en = '';
+        let htmlContent_tw = '';
         
-        // Update the page
+        if (editorMode === 'editor') {
+            // Convert Quill Delta to HTML
+            try {
+                if (content_en) {
+                    const delta_en = JSON.parse(content_en);
+                    const converter_en = new QuillDeltaToHtmlConverter(delta_en.ops, {});
+                    htmlContent_en = converter_en.convert();
+                }
+                
+                if (content_tw) {
+                    const delta_tw = JSON.parse(content_tw);
+                    const converter_tw = new QuillDeltaToHtmlConverter(delta_tw.ops, {});
+                    htmlContent_tw = converter_tw.convert();
+                }
+            } catch (e) {
+                logger.error('Error converting Quill content:', e);
+                req.flash('error_msg', 'Error processing editor content');
+                return res.redirect(`/admin/pages/edit/${pageId}`);
+            }
+        } else {
+            // Use raw HTML content
+            htmlContent_en = content_en;
+            htmlContent_tw = content_tw;
+        }
+
+        // Generate new slug if title changed
+        let slug = existingPage.slug;
+        if (title_en !== existingPage.title_en) {
+            slug = slugify(title_en, {
+                lower: true,
+                strict: true
+            });
+
+            // Check if new slug already exists (excluding current page)
+            const slugExists = await prisma.page.findFirst({
+                where: {
+                    slug,
+                    id: {
+                        not: pageId
+                    }
+                }
+            });
+
+            if (slugExists) {
+                req.flash('error_msg', 'A page with this title already exists. Please choose a different title.');
+                return res.redirect(`/admin/pages/edit/${pageId}`);
+            }
+        }
+
+        // Update page
         await prisma.page.update({
-            where: { id: parseInt(id) },
+            where: { id: pageId },
             data: {
-                title,
-                content: htmlContent,
-                editorMode: editorMode || 'editor',
+                title_en,
+                title_tw,
+                content_en: htmlContent_en,
+                content_tw: htmlContent_tw,
+                editorMode,
                 slug,
                 status,
                 showInNavigation: showInNavigation === 'on',
                 navigationOrder: navigationOrder ? parseInt(navigationOrder) : null,
-                metaTitle: metaTitle || title,
-                metaDescription,
-                metaKeywords,
-                publishedAt: status === 'published' && !existingPageData.publishedAt ? new Date() : existingPageData.publishedAt,
+                metaTitle_en: metaTitle_en || title_en,
+                metaTitle_tw: metaTitle_tw || title_tw,
+                metaDescription_en,
+                metaDescription_tw,
+                metaKeywords_en,
+                metaKeywords_tw,
                 updatedAt: new Date()
             }
         });
-        
-        // Handle deleted attachments
-        if (deletedAttachments) {
-            const attachmentIds = Array.isArray(deletedAttachments) 
-                ? deletedAttachments.map(id => parseInt(id))
-                : [parseInt(deletedAttachments)];
-            
-            // Get attachments to delete
-            const attachmentsToDelete = await prisma.pageAttachment.findMany({
-                where: {
-                    id: { in: attachmentIds },
-                    pageId: parseInt(id)
-                }
-            });
-            
-            // Delete attachment files
-            for (const attachment of attachmentsToDelete) {
-                try {
-                    await unlinkAsync(path.join(__dirname, '../../public', attachment.path));
-                } catch (err) {
-                    logger.error(`Error deleting attachment file ${attachment.path}:`, err);
-                    // Continue even if file deletion fails
-                }
-            }
-            
-            // Delete attachments from database
-            await prisma.pageAttachment.deleteMany({
-                where: {
-                    id: { in: attachmentIds },
-                    pageId: parseInt(id)
-                }
-            });
-        }
-        
-        // Handle new file uploads
+
+        // Handle file uploads if any
         if (req.files && req.files.length > 0) {
-            const pageDir = await ensurePageUploadDir(parseInt(id));
+            const pageDir = await ensurePageUploadDir(pageId);
             
             for (const file of req.files) {
                 // Create attachment record
@@ -343,20 +355,20 @@ exports.updatePage = async (req, res) => {
                         originalName: file.originalname,
                         mimeType: file.mimetype,
                         size: file.size,
-                        path: `/uploads/page/${parseInt(id)}/${file.filename}`,
+                        path: `/uploads/page/${pageId}/${file.filename}`,
                         page: {
-                            connect: { id: parseInt(id) }
+                            connect: { id: pageId }
                         }
                     }
                 });
             }
         }
-        
+
         req.flash('success_msg', 'Page updated successfully');
         res.redirect('/admin/pages');
     } catch (error) {
         logger.error('Error updating page:', error);
-        req.flash('error_msg', 'Failed to update page');
+        req.flash('error_msg', 'Error updating page');
         res.redirect(`/admin/pages/edit/${req.params.id}`);
     }
 };
@@ -366,7 +378,7 @@ exports.deletePage = async (req, res) => {
     try {
         const pageId = parseInt(req.params.id);
         
-        // Delete all attachments first
+        // Delete attachments first
         await deletePageAttachments(pageId);
         
         // Delete the page
@@ -378,7 +390,7 @@ exports.deletePage = async (req, res) => {
         res.redirect('/admin/pages');
     } catch (error) {
         logger.error('Error deleting page:', error);
-        req.flash('error_msg', 'Failed to delete page');
+        req.flash('error_msg', 'Error deleting page');
         res.redirect('/admin/pages');
     }
 };
@@ -388,17 +400,16 @@ exports.deleteAttachment = async (req, res) => {
     try {
         const attachmentId = parseInt(req.params.attachmentId);
         
-        // Get the attachment
+        // Get attachment
         const attachment = await prisma.pageAttachment.findUnique({
-            where: { id: attachmentId },
-            include: { page: true }
+            where: { id: attachmentId }
         });
         
         if (!attachment) {
             return res.status(404).json({ success: false, message: 'Attachment not found' });
         }
         
-        // Delete the file
+        // Delete file
         try {
             await unlinkAsync(path.join(__dirname, '../../public', attachment.path));
         } catch (err) {
@@ -411,9 +422,9 @@ exports.deleteAttachment = async (req, res) => {
             where: { id: attachmentId }
         });
         
-        return res.json({ success: true, message: 'Attachment deleted successfully' });
+        return res.json({ success: true });
     } catch (error) {
         logger.error('Error deleting attachment:', error);
-        return res.status(500).json({ success: false, message: 'Failed to delete attachment' });
+        return res.status(500).json({ success: false, message: 'Error deleting attachment' });
     }
 };

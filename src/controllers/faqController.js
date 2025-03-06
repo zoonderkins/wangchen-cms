@@ -230,7 +230,7 @@ exports.renderCreateItem = async (req, res) => {
                 deletedAt: null
             },
             orderBy: {
-                name: 'asc'
+                name_en: 'asc'
             }
         });
         
@@ -304,7 +304,7 @@ exports.renderEditItem = async (req, res) => {
                     deletedAt: null
                 },
                 orderBy: {
-                    name: 'asc'
+                    name_en: 'asc'
                 }
             })
         ]);

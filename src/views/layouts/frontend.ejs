@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= currentLanguage === 'tw' ? 'zh-TW' : 'en' %>">
 
 <head>
     <meta charset="UTF-8">
@@ -23,17 +23,17 @@
                     <a href="/">Your Website</a>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="/" class="text-gray-700 hover:text-gray-900">Home</a>
+                    <a href="/" class="text-gray-700 hover:text-gray-900"><%= currentLanguage === 'en' ? 'Home' : '首頁' %></a>
                     <% if (typeof articleCategories !== 'undefined' && articleCategories.length > 0) { %>
                         <% articleCategories.forEach(function(category) { %>
                             <a href="/category/<%= category.id %>" class="text-gray-700 hover:text-gray-900">
-                                <%= category.name %>
+                                <%= getContent(category, 'name') %>
                             </a>
                         <% }); %>
                     <% } else if (typeof categories !== 'undefined' && categories.length > 0) { %>
                         <% categories.forEach(function(category) { %>
                             <a href="/category/<%= category.id %>" class="text-gray-700 hover:text-gray-900">
-                                <%= category.name %>
+                                <%= getContent(category, 'name') %>
                             </a>
                         <% }); %>
                     <% } %>
@@ -41,12 +41,15 @@
                     <% if (navigationPages && navigationPages.length > 0) { %>
                         <% navigationPages.forEach(function(page) { %>
                             <a href="/page/<%= page.slug %>" class="text-gray-700 hover:text-gray-900">
-                                <%= page.title %>
+                                <%= getContent(page, 'title') %>
                             </a>
                         <% }); %>
                     <% } %>
-                    <a href="/faq" class="text-gray-700 hover:text-gray-900">FAQ</a>
-                    <a href="/downloads" class="text-gray-700 hover:text-gray-900">Downloads</a>
+                    <a href="/faq" class="text-gray-700 hover:text-gray-900"><%= currentLanguage === 'en' ? 'FAQ' : '常見問題' %></a>
+                    <a href="/downloads" class="text-gray-700 hover:text-gray-900"><%= currentLanguage === 'en' ? 'Downloads' : '下載' %></a>
+                    
+                    <!-- Language Switcher -->
+                    <%- include('../partials/language-switcher') %>
                 </div>
                 <!-- Mobile Menu Button -->
                 <button class="md:hidden">
@@ -58,17 +61,17 @@
             <!-- Mobile Menu -->
             <div class="md:hidden hidden">
                 <div class="flex flex-col mt-4 space-y-4">
-                    <a href="/" class="text-gray-700 hover:text-gray-900">Home</a>
+                    <a href="/" class="text-gray-700 hover:text-gray-900"><%= currentLanguage === 'en' ? 'Home' : '首頁' %></a>
                     <% if (typeof articleCategories !== 'undefined' && articleCategories.length > 0) { %>
                         <% articleCategories.forEach(function(category) { %>
                             <a href="/category/<%= category.id %>" class="text-gray-700 hover:text-gray-900">
-                                <%= category.name %>
+                                <%= getContent(category, 'name') %>
                             </a>
                         <% }); %>
                     <% } else if (typeof categories !== 'undefined' && categories.length > 0) { %>
                         <% categories.forEach(function(category) { %>
                             <a href="/category/<%= category.id %>" class="text-gray-700 hover:text-gray-900">
-                                <%= category.name %>
+                                <%= getContent(category, 'name') %>
                             </a>
                         <% }); %>
                     <% } %>
@@ -76,12 +79,15 @@
                     <% if (navigationPages && navigationPages.length > 0) { %>
                         <% navigationPages.forEach(function(page) { %>
                             <a href="/page/<%= page.slug %>" class="text-gray-700 hover:text-gray-900">
-                                <%= page.title %>
+                                <%= getContent(page, 'title') %>
                             </a>
                         <% }); %>
                     <% } %>
-                    <a href="/faq" class="text-gray-700 hover:text-gray-900">FAQ</a>
-                    <a href="/downloads" class="text-gray-700 hover:text-gray-900">Downloads</a>
+                    <a href="/faq" class="text-gray-700 hover:text-gray-900"><%= currentLanguage === 'en' ? 'FAQ' : '常見問題' %></a>
+                    <a href="/downloads" class="text-gray-700 hover:text-gray-900"><%= currentLanguage === 'en' ? 'Downloads' : '下載' %></a>
+                    
+                    <!-- Language Switcher -->
+                    <%- include('../partials/language-switcher') %>
                 </div>
             </div>
         </nav>
@@ -110,22 +116,22 @@
         <div class="container mx-auto px-6 py-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div>
-                    <h3 class="text-lg font-semibold mb-4">About Us</h3>
+                    <h3 class="text-lg font-semibold mb-4"><%= currentLanguage === 'en' ? 'About Us' : '關於我們' %></h3>
                     <p class="text-gray-400">
-                        Brief description about your website or company.
+                        <%= currentLanguage === 'en' ? 'Brief description about your website or company.' : '關於您的網站或公司的簡短描述。' %>
                     </p>
                 </div>
                 <div>
-                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <h3 class="text-lg font-semibold mb-4"><%= currentLanguage === 'en' ? 'Quick Links' : '快速連結' %></h3>
                     <ul class="space-y-2">
-                        <li><a href="/" class="text-gray-400 hover:text-white">Home</a></li>
-                        <li><a href="/faq" class="text-gray-400 hover:text-white">FAQ</a></li>
-                        <li><a href="/downloads" class="text-gray-400 hover:text-white">Downloads</a></li>
+                        <li><a href="/" class="text-gray-400 hover:text-white"><%= currentLanguage === 'en' ? 'Home' : '首頁' %></a></li>
+                        <li><a href="/faq" class="text-gray-400 hover:text-white"><%= currentLanguage === 'en' ? 'FAQ' : '常見問題' %></a></li>
+                        <li><a href="/downloads" class="text-gray-400 hover:text-white"><%= currentLanguage === 'en' ? 'Downloads' : '下載' %></a></li>
                         <% if (typeof articleCategories !== 'undefined' && articleCategories.length > 0) { %>
                             <% articleCategories.forEach(function(category) { %>
                                 <li>
                                     <a href="/category/<%= category.id %>" class="text-gray-400 hover:text-white">
-                                        <%= category.name %>
+                                        <%= getContent(category, 'name') %>
                                     </a>
                                 </li>
                             <% }); %>
@@ -133,7 +139,7 @@
                             <% categories.forEach(function(category) { %>
                                 <li>
                                     <a href="/category/<%= category.id %>" class="text-gray-400 hover:text-white">
-                                        <%= category.name %>
+                                        <%= getContent(category, 'name') %>
                                     </a>
                                 </li>
                             <% }); %>
@@ -143,7 +149,7 @@
                             <% navigationPages.forEach(function(page) { %>
                                 <li>
                                     <a href="/page/<%= page.slug %>" class="text-gray-400 hover:text-white">
-                                        <%= page.title %>
+                                        <%= getContent(page, 'title') %>
                                     </a>
                                 </li>
                             <% }); %>
@@ -151,16 +157,16 @@
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-lg font-semibold mb-4">Contact Info</h3>
+                    <h3 class="text-lg font-semibold mb-4"><%= currentLanguage === 'en' ? 'Contact Info' : '聯絡資訊' %></h3>
                     <ul class="space-y-2 text-gray-400">
                         <li><i class="fas fa-envelope mr-2"></i> email@example.com</li>
                         <li><i class="fas fa-phone mr-2"></i> +1 234 567 890</li>
-                        <li><i class="fas fa-map-marker-alt mr-2"></i> Your Address</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i> <%= currentLanguage === 'en' ? 'Your Address' : '您的地址' %></li>
                     </ul>
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; <%= new Date().getFullYear() %> Your Website. All rights reserved.</p>
+                <p>&copy; <%= new Date().getFullYear() %> <%= currentLanguage === 'en' ? 'Your Website. All rights reserved.' : '您的網站。保留所有權利。' %></p>
             </div>
         </div>
     </footer>

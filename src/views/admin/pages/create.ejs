@@ -25,66 +25,188 @@
                         <!-- Page Creation Form -->
                         <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
                             <form action="/admin/pages" method="POST" enctype="multipart/form-data" id="pageForm">
-                                <!-- Title -->
-                                <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-700" for="title">
-                                        Page Title <span class="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                        type="text" id="title" name="title" placeholder="Enter page title" required>
+                                
+                                <!-- Language Tabs -->
+                                <div class="mb-6 border-b border-gray-200">
+                                    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="languageTabs" role="tablist">
+                                        <li class="mr-2" role="presentation">
+                                            <button class="inline-block p-4 border-b-2 border-blue-600 rounded-t-lg active" id="english-tab" 
+                                                data-tabs-target="#english" type="button" role="tab" aria-controls="english" aria-selected="true">
+                                                English
+                                            </button>
+                                        </li>
+                                        <li class="mr-2" role="presentation">
+                                            <button class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:border-gray-300" id="chinese-tab" 
+                                                data-tabs-target="#chinese" type="button" role="tab" aria-controls="chinese" aria-selected="false">
+                                                Traditional Chinese
+                                            </button>
+                                        </li>
+                                    </ul>
                                 </div>
 
-                                <!-- Editor Mode Toggle -->
-                                <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                                        Editor Mode
-                                    </label>
-                                    <div class="flex">
-                                        <div class="flex items-center mr-4">
-                                            <input type="radio" id="editorMode-editor" name="editorMode" value="editor"
-                                                checked
-                                                class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
-                                            <label for="editorMode-editor" class="ml-2 block text-sm text-gray-700">
-                                                Rich Text Editor
-                                            </label>
+                                <!-- English Content -->
+                                <div id="english" role="tabpanel" aria-labelledby="english-tab">
+                                    <!-- English Title -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700" for="title_en">
+                                            Page Title (English) <span class="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            type="text" id="title_en" name="title_en" placeholder="Enter page title" required>
+                                    </div>
+
+                                    <!-- Editor Mode Toggle -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                                            Editor Mode
+                                        </label>
+                                        <div class="flex">
+                                            <div class="flex items-center mr-4">
+                                                <input type="radio" id="editorMode-editor" name="editorMode" value="editor"
+                                                    checked
+                                                    class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                                <label for="editorMode-editor" class="ml-2 block text-sm text-gray-700">
+                                                    Rich Text Editor
+                                                </label>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <input type="radio" id="editorMode-html" name="editorMode" value="html"
+                                                    class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                                <label for="editorMode-html" class="ml-2 block text-sm text-gray-700">
+                                                    Raw HTML
+                                                </label>
+                                            </div>
                                         </div>
-                                        <div class="flex items-center">
-                                            <input type="radio" id="editorMode-html" name="editorMode" value="html"
-                                                class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
-                                            <label for="editorMode-html" class="ml-2 block text-sm text-gray-700">
-                                                Raw HTML
+                                    </div>
+
+                                    <!-- English Content -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700" for="editor_en">
+                                            Page Content (English) <span class="text-red-500">*</span>
+                                        </label>
+                                        <!-- Quill editor container -->
+                                        <div id="editor_en"
+                                            class="block w-full mt-1 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            style="min-height: 300px;"></div>
+
+                                        <!-- HTML textarea (initially hidden) -->
+                                        <textarea id="htmlEditor_en"
+                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 hidden"
+                                            style="min-height: 300px; font-family: monospace;"
+                                            placeholder="Enter HTML content here"></textarea>
+
+                                        <!-- Hidden input to store content -->
+                                        <input type="hidden" name="content_en" id="content_en">
+                                    </div>
+
+                                    <!-- English SEO Settings -->
+                                    <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+                                        <h3 class="text-lg font-medium text-gray-700 mb-2">SEO Settings (English)</h3>
+
+                                        <div class="mb-2">
+                                            <label class="block text-sm font-medium text-gray-700" for="metaTitle_en">
+                                                Meta Title (English)
                                             </label>
+                                            <input
+                                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                                type="text" id="metaTitle_en" name="metaTitle_en"
+                                                placeholder="Enter meta title (defaults to page title)">
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <label class="block text-sm font-medium text-gray-700" for="metaDescription_en">
+                                                Meta Description (English)
+                                            </label>
+                                            <textarea
+                                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                                id="metaDescription_en" name="metaDescription_en" rows="2"
+                                                placeholder="Enter meta description"></textarea>
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <label class="block text-sm font-medium text-gray-700" for="metaKeywords_en">
+                                                Meta Keywords (English)
+                                            </label>
+                                            <input
+                                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                                type="text" id="metaKeywords_en" name="metaKeywords_en"
+                                                placeholder="Enter meta keywords (comma separated)">
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Content -->
-                                <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-700" for="editor">
-                                        Page Content <span class="text-red-500">*</span>
-                                    </label>
-                                    <!-- Quill editor container -->
-                                    <div id="editor"
-                                        class="block w-full mt-1 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                        style="min-height: 300px;"></div>
+                                <!-- Traditional Chinese Content -->
+                                <div id="chinese" class="hidden" role="tabpanel" aria-labelledby="chinese-tab">
+                                    <!-- Chinese Title -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700" for="title_tw">
+                                            Page Title (Traditional Chinese) <span class="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            type="text" id="title_tw" name="title_tw" placeholder="輸入頁面標題" required>
+                                    </div>
 
-                                    <!-- HTML textarea (initially hidden) -->
-                                    <textarea id="htmlEditor"
-                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 hidden"
-                                        style="min-height: 300px; font-family: monospace;"
-                                        placeholder="Enter HTML content here"></textarea>
+                                    <!-- Chinese Content -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700" for="editor_tw">
+                                            Page Content (Traditional Chinese) <span class="text-red-500">*</span>
+                                        </label>
+                                        <!-- Quill editor container -->
+                                        <div id="editor_tw"
+                                            class="block w-full mt-1 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            style="min-height: 300px;"></div>
 
-                                    <!-- Hidden input to store content -->
-                                    <input type="hidden" name="content" id="content">
-                                    <p class="mt-1 text-xs text-gray-500">
-                                        You can use HTML, CSS, and JavaScript in your page content. All code will be
-                                        rendered on the frontend.
-                                    </p>
+                                        <!-- HTML textarea (initially hidden) -->
+                                        <textarea id="htmlEditor_tw"
+                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 hidden"
+                                            style="min-height: 300px; font-family: monospace;"
+                                            placeholder="在此輸入HTML內容"></textarea>
+
+                                        <!-- Hidden input to store content -->
+                                        <input type="hidden" name="content_tw" id="content_tw">
+                                    </div>
+
+                                    <!-- Chinese SEO Settings -->
+                                    <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+                                        <h3 class="text-lg font-medium text-gray-700 mb-2">SEO Settings (Traditional Chinese)</h3>
+
+                                        <div class="mb-2">
+                                            <label class="block text-sm font-medium text-gray-700" for="metaTitle_tw">
+                                                Meta Title (Traditional Chinese)
+                                            </label>
+                                            <input
+                                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                                type="text" id="metaTitle_tw" name="metaTitle_tw"
+                                                placeholder="輸入元標題 (默認為頁面標題)">
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <label class="block text-sm font-medium text-gray-700" for="metaDescription_tw">
+                                                Meta Description (Traditional Chinese)
+                                            </label>
+                                            <textarea
+                                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                                id="metaDescription_tw" name="metaDescription_tw" rows="2"
+                                                placeholder="輸入元描述"></textarea>
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <label class="block text-sm font-medium text-gray-700" for="metaKeywords_tw">
+                                                Meta Keywords (Traditional Chinese)
+                                            </label>
+                                            <input
+                                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                                type="text" id="metaKeywords_tw" name="metaKeywords_tw"
+                                                placeholder="輸入元關鍵詞 (以逗號分隔)">
+                                        </div>
+                                    </div>
                                 </div>
 
+                                <!-- Common Fields (Not Language Specific) -->
                                 <!-- Attachments -->
-                                <div class="mb-4">
+                                <div class="mb-4 mt-6 pt-4 border-t border-gray-200">
                                     <label class="block text-sm font-medium text-gray-700" for="attachments">
                                         Attachments
                                     </label>
@@ -135,49 +257,10 @@
                                     </div>
                                 </div>
 
-                                <!-- SEO Settings -->
-                                <div class="mb-4 p-4 bg-gray-50 rounded-lg">
-                                    <h3 class="text-lg font-medium text-gray-700 mb-2">SEO Settings</h3>
-
-                                    <div class="mb-2">
-                                        <label class="block text-sm font-medium text-gray-700" for="metaTitle">
-                                            Meta Title
-                                        </label>
-                                        <input
-                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                            type="text" id="metaTitle" name="metaTitle"
-                                            placeholder="Enter meta title (defaults to page title)">
-                                    </div>
-
-                                    <div class="mb-2">
-                                        <label class="block text-sm font-medium text-gray-700" for="metaDescription">
-                                            Meta Description
-                                        </label>
-                                        <textarea
-                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                            id="metaDescription" name="metaDescription" rows="2"
-                                            placeholder="Enter meta description"></textarea>
-                                    </div>
-
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700" for="metaKeywords">
-                                            Meta Keywords
-                                        </label>
-                                        <input
-                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                            type="text" id="metaKeywords" name="metaKeywords"
-                                            placeholder="Enter meta keywords (comma separated)">
-                                    </div>
-                                </div>
-
-                                <!-- Form Actions -->
-                                <div class="flex items-center justify-between">
-                                    <a href="/admin/pages"
-                                        class="px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition-colors duration-150 bg-white border border-gray-300 rounded-lg active:bg-gray-100 hover:bg-gray-50 focus:outline-none focus:shadow-outline-gray">
-                                        Cancel
-                                    </a>
+                                <!-- Submit Button -->
+                                <div class="mt-6 flex justify-end">
                                     <button type="submit"
-                                        class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue">
+                                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                                         Create Page
                                     </button>
                                 </div>
@@ -185,68 +268,88 @@
                         </div>
     </div>
 
-    <%- contentFor('head') %>
-        <!-- Include Quill CSS -->
-        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<!-- Include Quill JS -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+    // Initialize Quill editors
+    const quillOptions = {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'align': [] }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link', 'image', 'video'],
+                ['clean']
+            ]
+        }
+    };
 
-        <%- contentFor('scripts') %>
-            <!-- Include Quill JS -->
-            <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-            <script>
-                // Initialize Quill editor
-                var quill = new Quill('#editor', {
-                    theme: 'snow',
-                    modules: {
-                        toolbar: [
-                            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                            ['bold', 'italic', 'underline', 'strike'],
-                            [{ 'color': [] }, { 'background': [] }],
-                            [{ 'align': [] }],
-                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                            ['link', 'image', 'video'],
-                            ['clean'],
-                            ['code-block']
-                        ]
-                    }
-                });
+    var quill_en = new Quill('#editor_en', quillOptions);
+    var quill_tw = new Quill('#editor_tw', quillOptions);
+    
+    // Handle editor mode toggle
+    const editorModeRadios = document.querySelectorAll('input[name="editorMode"]');
+    const quillContainers = [document.getElementById('editor_en'), document.getElementById('editor_tw')];
+    const htmlEditors = [document.getElementById('htmlEditor_en'), document.getElementById('htmlEditor_tw')];
+    
+    editorModeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'editor') {
+                quillContainers.forEach(container => container.classList.remove('hidden'));
+                htmlEditors.forEach(editor => editor.classList.add('hidden'));
+            } else {
+                quillContainers.forEach(container => container.classList.add('hidden'));
+                htmlEditors.forEach(editor => editor.classList.remove('hidden'));
+            }
+        });
+    });
 
-                // Handle editor mode toggle
-                const editorModeRadios = document.querySelectorAll('input[name="editorMode"]');
-                const quillEditor = document.getElementById('editor');
-                const htmlEditor = document.getElementById('htmlEditor');
+    // Handle language tabs
+    const tabs = document.querySelectorAll('[data-tabs-target]');
+    const tabContents = document.querySelectorAll('[role="tabpanel"]');
 
-                editorModeRadios.forEach(radio => {
-                    radio.addEventListener('change', function () {
-                        if (this.value === 'editor') {
-                            quillEditor.classList.remove('hidden');
-                            htmlEditor.classList.add('hidden');
-
-                            // Transfer content from HTML to Quill if there's content
-                            if (htmlEditor.value.trim()) {
-                                quill.clipboard.dangerouslyPasteHTML(htmlEditor.value);
-                            }
-                        } else {
-                            quillEditor.classList.add('hidden');
-                            htmlEditor.classList.remove('hidden');
-
-                            // Transfer content from Quill to HTML
-                            const quillHtml = quill.root.innerHTML;
-                            htmlEditor.value = quillHtml;
-                        }
-                    });
-                });
-
-                // When form is submitted, update the hidden input with the active editor's contents
-                document.getElementById('pageForm').addEventListener('submit', function () {
-                    const content = document.getElementById('content');
-                    const editorMode = document.querySelector('input[name="editorMode"]:checked').value;
-
-                    if (editorMode === 'editor') {
-                        // Store Quill content as Delta JSON
-                        content.value = JSON.stringify(quill.getContents());
-                    } else {
-                        // Store raw HTML content
-                        content.value = htmlEditor.value;
-                    }
-                });
-            </script>
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = document.querySelector(tab.dataset.tabsTarget);
+            
+            tabContents.forEach(tabContent => {
+                tabContent.classList.add('hidden');
+            });
+            
+            tabs.forEach(tab => {
+                tab.classList.remove('active', 'border-blue-600');
+                tab.classList.add('border-transparent');
+                tab.setAttribute('aria-selected', false);
+            });
+            
+            tab.classList.add('active', 'border-blue-600');
+            tab.classList.remove('border-transparent');
+            tab.setAttribute('aria-selected', true);
+            
+            target.classList.remove('hidden');
+        });
+    });
+    
+    // Handle form submission
+    document.getElementById('pageForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const editorMode = document.querySelector('input[name="editorMode"]:checked').value;
+        
+        if (editorMode === 'editor') {
+            // Get Quill content
+            document.getElementById('content_en').value = JSON.stringify(quill_en.getContents());
+            document.getElementById('content_tw').value = JSON.stringify(quill_tw.getContents());
+        } else {
+            // Get HTML content
+            document.getElementById('content_en').value = document.getElementById('htmlEditor_en').value;
+            document.getElementById('content_tw').value = document.getElementById('htmlEditor_tw').value;
+        }
+        
+        this.submit();
+    });
+</script>

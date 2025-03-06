@@ -11,7 +11,7 @@ exports.listArticles = async (req, res) => {
                     select: { username: true }
                 },
                 category: {
-                    select: { name: true }
+                    select: { name_en: true, name_tw: true }
                 }
             }
         });
@@ -32,18 +32,19 @@ exports.listArticles = async (req, res) => {
 exports.renderCreateForm = async (req, res) => {
     try {
         const categories = await prisma.category.findMany({
-            orderBy: { name: 'asc' }
+            orderBy: { name_en: 'asc' }
         });
 
         const media = await prisma.media.findMany({
             orderBy: { createdAt: 'desc' }
         });
 
-        res.render('admin/articles/create', {
+        res.render('admin/articles/form', {
             title: 'Create Article',
             layout: 'layouts/admin',
             categories,
-            media
+            media,
+            article: null
         });
     } catch (error) {
         logger.error('Error rendering create form:', error);
@@ -56,17 +57,26 @@ exports.renderCreateForm = async (req, res) => {
 exports.createArticle = async (req, res) => {
     try {
         const {
-            title,
-            content,
-            excerpt,
+            title_en,
+            title_tw,
+            content_en,
+            content_tw,
+            excerpt_en,
+            excerpt_tw,
+            metaTitle_en,
+            metaTitle_tw,
+            metaDescription_en,
+            metaDescription_tw,
+            metaKeywords_en,
+            metaKeywords_tw,
             categoryId,
             published
         } = req.body;
 
         // Log the received data
         logger.info('Creating article with data:', {
-            title,
-            excerpt,
+            title_en,
+            title_tw,
             categoryId,
             published,
             userId: req.session.user?.id
@@ -78,13 +88,22 @@ exports.createArticle = async (req, res) => {
 
         const article = await prisma.article.create({
             data: {
-                title,
-                content,
-                excerpt: excerpt || null,
-                status: published === 'on' ? 'published' : 'draft',
+                title_en,
+                title_tw,
+                content_en,
+                content_tw,
+                excerpt_en: excerpt_en || null,
+                excerpt_tw: excerpt_tw || null,
+                metaTitle_en: metaTitle_en || null,
+                metaTitle_tw: metaTitle_tw || null,
+                metaDescription_en: metaDescription_en || null,
+                metaDescription_tw: metaDescription_tw || null,
+                metaKeywords_en: metaKeywords_en || null,
+                metaKeywords_tw: metaKeywords_tw || null,
+                status: published ? 'published' : 'draft',
                 categoryId: parseInt(categoryId),
                 authorId: req.session.user.id,
-                publishedAt: published === 'on' ? new Date() : null
+                publishedAt: published ? new Date() : null
             }
         });
 
@@ -130,7 +149,7 @@ exports.renderEditForm = async (req, res) => {
         }
 
         const categories = await prisma.category.findMany({
-            orderBy: { name: 'asc' }
+            orderBy: { name_en: 'asc' }
         });
 
         const media = await prisma.media.findMany({
@@ -139,11 +158,12 @@ exports.renderEditForm = async (req, res) => {
 
         logger.info('Rendering edit form with data:', {
             articleId: article.id,
-            title: article.title,
+            title_en: article.title_en,
+            title_tw: article.title_tw,
             categoryId: article.categoryId
         });
 
-        res.render('admin/articles/edit', {
+        res.render('admin/articles/form', {
             title: 'Edit Article',
             layout: 'layouts/admin',
             article,
@@ -162,16 +182,26 @@ exports.updateArticle = async (req, res) => {
     try {
         const { id } = req.params;
         const {
-            title,
-            content,
-            excerpt,
+            title_en,
+            title_tw,
+            content_en,
+            content_tw,
+            excerpt_en,
+            excerpt_tw,
+            metaTitle_en,
+            metaTitle_tw,
+            metaDescription_en,
+            metaDescription_tw,
+            metaKeywords_en,
+            metaKeywords_tw,
             categoryId,
             published
         } = req.body;
 
         logger.info('Updating article:', {
             id,
-            title,
+            title_en,
+            title_tw,
             categoryId,
             published,
             userId: req.session.user?.id
@@ -184,12 +214,21 @@ exports.updateArticle = async (req, res) => {
         const article = await prisma.article.update({
             where: { id: parseInt(id) },
             data: {
-                title,
-                content,
-                excerpt: excerpt || null,
-                status: published === 'on' ? 'published' : 'draft',
+                title_en,
+                title_tw,
+                content_en,
+                content_tw,
+                excerpt_en: excerpt_en || null,
+                excerpt_tw: excerpt_tw || null,
+                metaTitle_en: metaTitle_en || null,
+                metaTitle_tw: metaTitle_tw || null,
+                metaDescription_en: metaDescription_en || null,
+                metaDescription_tw: metaDescription_tw || null,
+                metaKeywords_en: metaKeywords_en || null,
+                metaKeywords_tw: metaKeywords_tw || null,
+                status: published ? 'published' : 'draft',
                 categoryId: categoryId ? parseInt(categoryId) : null,
-                publishedAt: published === 'on' ? new Date() : null,
+                publishedAt: published ? new Date() : null,
                 updatedAt: new Date()
             }
         });
@@ -211,7 +250,7 @@ exports.deleteArticle = async (req, res) => {
         await prisma.article.delete({
             where: { id: parseInt(id) }
         });
-
+        
         req.flash('success_msg', 'Article deleted successfully');
         res.redirect('/admin/articles');
     } catch (error) {

@@ -48,14 +48,20 @@ model Role {
 
 model Article {
   id              Int       @id @default(autoincrement())
-  title           String
-  content         String    @db.LongText
-  excerpt         String?   @db.Text
+  title_en        String    // English title
+  title_tw        String    // Traditional Chinese title
+  content_en      String    @db.LongText // English content
+  content_tw      String    @db.LongText // Traditional Chinese content
+  excerpt_en      String?   @db.Text // English excerpt
+  excerpt_tw      String?   @db.Text // Traditional Chinese excerpt
   status          Status    @default(draft)
   publishedAt     DateTime?
-  metaTitle       String?
-  metaDescription String?   @db.Text
-  metaKeywords    String?
+  metaTitle_en    String?   // English meta title
+  metaTitle_tw    String?   // Traditional Chinese meta title
+  metaDescription_en String? @db.Text // English meta description
+  metaDescription_tw String? @db.Text // Traditional Chinese meta description
+  metaKeywords_en String?   // English meta keywords
+  metaKeywords_tw String?   // Traditional Chinese meta keywords
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   deletedAt       DateTime?
@@ -74,8 +80,10 @@ model Article {
 
 model Category {
   id          Int        @id @default(autoincrement())
-  name        String
-  description String?    @db.Text
+  name_en     String     // English name
+  name_tw     String     // Traditional Chinese name
+  description_en String? @db.Text // English description
+  description_tw String? @db.Text // Traditional Chinese description
   order       Int        @default(0)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -98,8 +106,10 @@ model Media {
   mimeType     String
   size         Int
   path         String
-  alt          String?
-  caption      String?   @db.Text
+  alt_en       String?   // English alt text
+  alt_tw       String?   // Traditional Chinese alt text
+  caption_en   String?   @db.Text // English caption
+  caption_tw   String?   @db.Text // Traditional Chinese caption
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   deletedAt    DateTime?
@@ -133,37 +143,44 @@ model CategoryPermission {
 }
 
 model Banner {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String?  @db.Text
-  url         String?
-  mediaPath   String
-  mediaType   String   // "image" or "video"
-  isActive    Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   User     @relation(fields: [userId], references: [id])
-  userId      Int
+  id             Int      @id @default(autoincrement())
+  title_en       String   // English title
+  title_tw       String   // Traditional Chinese title
+  description_en String?  @db.Text // English description
+  description_tw String?  @db.Text // Traditional Chinese description
+  url            String?
+  mediaPath      String
+  mediaType      String   // "image" or "video"
+  isActive       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  createdBy      User     @relation(fields: [userId], references: [id])
+  userId         Int
 
   @@map("Banners")
 }
 
 model Page {
-  id              Int       @id @default(autoincrement())
-  title           String
-  slug            String    @unique
-  content         String    @db.LongText
-  editorMode      String    @default("editor") // "editor" or "html"
-  status          Status    @default(draft)
-  showInNavigation Boolean  @default(false)
-  navigationOrder Int?
-  metaTitle       String?
-  metaDescription String?   @db.Text
-  metaKeywords    String?
-  publishedAt     DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  deletedAt       DateTime?
+  id                 Int       @id @default(autoincrement())
+  title_en           String    // English title
+  title_tw           String    // Traditional Chinese title
+  slug               String    @unique
+  content_en         String    @db.LongText // English content
+  content_tw         String    @db.LongText // Traditional Chinese content
+  editorMode         String    @default("editor") // "editor" or "html"
+  status             Status    @default(draft)
+  showInNavigation   Boolean   @default(false)
+  navigationOrder    Int?
+  metaTitle_en       String?   // English meta title
+  metaTitle_tw       String?   // Traditional Chinese meta title
+  metaDescription_en String?   @db.Text // English meta description
+  metaDescription_tw String?   @db.Text // Traditional Chinese meta description
+  metaKeywords_en    String?   // English meta keywords
+  metaKeywords_tw    String?   // Traditional Chinese meta keywords
+  publishedAt        DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  deletedAt          DateTime?
 
   // Relations
   author         User      @relation(fields: [authorId], references: [id])
@@ -191,15 +208,16 @@ model PageAttachment {
 }
 
 model FaqCategory {
-  id          Int       @id @default(autoincrement())
-  name        String
-  slug        String    @unique
-  description String?   @db.Text
-  description_cn String?   @db.Text
-  order       Int       @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
+  id             Int       @id @default(autoincrement())
+  name_en        String    // English name
+  name_tw        String    // Traditional Chinese name
+  slug           String    @unique
+  description_en String?   @db.Text // English description
+  description_tw String?   @db.Text // Traditional Chinese description
+  order          Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
 
   // Relations
   faqItems    FaqItem[]
@@ -209,8 +227,10 @@ model FaqCategory {
 
 model FaqItem {
   id          Int       @id @default(autoincrement())
-  title       String
-  content     String    @db.LongText
+  title_en    String    // English title
+  title_tw    String    // Traditional Chinese title
+  content_en  String    @db.LongText // English content
+  content_tw  String    @db.LongText // Traditional Chinese content
   order       Int       @default(0)
   status      Status    @default(draft)
   createdAt   DateTime  @default(now())
@@ -227,13 +247,15 @@ model FaqItem {
 }
 
 model DownloadCategory {
-  id          Int       @id @default(autoincrement())
-  name        String
-  description String?   @db.Text
-  order       Int       @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
+  id             Int       @id @default(autoincrement())
+  name_en        String    // English name
+  name_tw        String    // Traditional Chinese name
+  description_en String?   @db.Text // English description
+  description_tw String?   @db.Text // Traditional Chinese description
+  order          Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
 
   // Relations
   downloads   Download[]
@@ -242,20 +264,23 @@ model DownloadCategory {
 }
 
 model Download {
-  id           Int       @id @default(autoincrement())
-  title        String
-  description  String?   @db.Text
-  status       Status    @default(draft)
-  keywords     String?
-  filename     String
-  originalName String
-  mimeType     String
-  size         Int
-  path         String
-  downloadCount Int      @default(0)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  deletedAt    DateTime?
+  id              Int       @id @default(autoincrement())
+  title_en        String    // English title
+  title_tw        String    // Traditional Chinese title
+  description_en  String?   @db.Text // English description
+  description_tw  String?   @db.Text // Traditional Chinese description
+  status          Status    @default(draft)
+  keywords_en     String?   // English keywords
+  keywords_tw     String?   // Traditional Chinese keywords
+  filename        String
+  originalName    String
+  mimeType        String
+  size            Int
+  path            String
+  downloadCount   Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
 
   // Relations
   author       User     @relation(fields: [authorId], references: [id])

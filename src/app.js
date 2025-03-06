@@ -7,7 +7,10 @@ const logger = require('./config/logger');
 const prisma = require('./lib/prisma');
 const expressLayouts = require('express-ejs-layouts');
 const methodOverride = require('method-override');
+const cookieParser = require('cookie-parser');
 const { setLocals } = require('./middleware/viewMiddleware');
+const { languageMiddleware } = require('./middleware/languageMiddleware');
+const { languageRouteMiddleware, addLanguageHelpers } = require('./middleware/languageRouteMiddleware');
 
 // Import routes
 const frontendRoutes = require('./routes/frontend');
@@ -28,6 +31,7 @@ app.set('layout extractStyles', true);
 // Middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(cookieParser());
 
 // Serve static files - keep only one static file serving configuration
 app.use(express.static(path.join(__dirname, '../public')));
@@ -57,6 +61,15 @@ app.use((req, res, next) => {
     res.locals.user = req.session.user || null;  
     next();
 });
+
+// Language route middleware - must be after session middleware and before language middleware
+app.use(languageRouteMiddleware);
+
+// Language middleware - must be after session middleware
+app.use(languageMiddleware);
+
+// Add language helper functions to res.locals
+app.use(addLanguageHelpers);
 
 // Global variables
 app.use((req, res, next) => {

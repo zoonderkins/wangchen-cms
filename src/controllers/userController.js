@@ -109,7 +109,7 @@ exports.renderEditUser = async (req, res) => {
             prisma.role.findMany(),
             prisma.category.findMany({
                 where: { deletedAt: null },
-                orderBy: { name: 'asc' }
+                orderBy: { name_en: 'asc' }
             }),
             prisma.categoryPermission.findMany({
                 where: { userId: parseInt(id) },

@@ -45,7 +45,7 @@ exports.renderCreateCategory = async (req, res) => {
         // Get all categories for parent selection
         const categories = await prisma.category.findMany({
             orderBy: {
-                name: 'asc'
+                name_en: 'asc'
             }
         });
 
@@ -63,14 +63,25 @@ exports.renderCreateCategory = async (req, res) => {
 
 exports.createCategory = async (req, res) => {
     try {
-        const { name, description, parentId, order } = req.body;
+        const { 
+            name_en, 
+            name_tw, 
+            description_en, 
+            description_tw, 
+            parentId, 
+            order,
+            type
+        } = req.body;
 
         await prisma.category.create({
             data: {
-                name,
-                description,
+                name_en,
+                name_tw,
+                description_en,
+                description_tw,
                 parentId: parentId ? parseInt(parentId) : null,
-                order: order ? parseInt(order) : 0
+                order: order ? parseInt(order) : 0,
+                type: type || 'article'
             }
         });
 
@@ -102,7 +113,7 @@ exports.renderEditCategory = async (req, res) => {
                     }
                 },
                 orderBy: {
-                    name: 'asc'
+                    name_en: 'asc'
                 }
             })
         ]);
@@ -128,7 +139,15 @@ exports.renderEditCategory = async (req, res) => {
 exports.updateCategory = async (req, res) => {
     try {
         const categoryId = parseInt(req.params.id);
-        const { name, description, parentId, order } = req.body;
+        const { 
+            name_en, 
+            name_tw, 
+            description_en, 
+            description_tw, 
+            parentId, 
+            order,
+            type
+        } = req.body;
 
         // Check if trying to set as parent of itself
         if (parentId && parseInt(parentId) === categoryId) {
@@ -148,10 +167,13 @@ exports.updateCategory = async (req, res) => {
         await prisma.category.update({
             where: { id: categoryId },
             data: {
-                name,
-                description,
+                name_en,
+                name_tw,
+                description_en,
+                description_tw,
                 parentId: parentId ? parseInt(parentId) : null,
-                order: order ? parseInt(order) : 0
+                order: order ? parseInt(order) : 0,
+                type: type || 'article'
             }
         });
 

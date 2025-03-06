@@ -3,6 +3,8 @@ const logger = require('../config/logger');
 
 exports.renderDashboard = async (req, res) => {
     try {
+        const language = res.locals.currentLanguage || 'en';
+        
         const [
             articleCount,
             mediaCount,
@@ -39,7 +41,11 @@ exports.renderDashboard = async (req, res) => {
                         select: { username: true }
                     },
                     category: {
-                        select: { name: true }
+                        select: { 
+                            name_en: true,
+                            name_tw: true,
+                            id: true
+                        }
                     }
                 }
             }),
@@ -58,7 +64,11 @@ exports.renderDashboard = async (req, res) => {
                 where: { deletedAt: null },
                 include: {
                     category: {
-                        select: { name: true }
+                        select: { 
+                            name_en: true,
+                            name_tw: true,
+                            id: true
+                        }
                     },
                     author: {
                         select: { username: true }
@@ -74,11 +84,40 @@ exports.renderDashboard = async (req, res) => {
                         select: { username: true }
                     },
                     category: {
-                        select: { name: true }
+                        select: { 
+                            name_en: true,
+                            name_tw: true,
+                            id: true
+                        }
                     }
                 }
             })
         ]);
+
+        // Process recent items to handle multilingual content
+        const processedRecentArticles = recentArticles.map(article => {
+            if (article.category) {
+                const nameField = `name_${language}`;
+                article.category.name = article.category[nameField] || article.category.name_en;
+            }
+            return article;
+        });
+
+        const processedRecentFaqItems = recentFaqItems.map(faqItem => {
+            if (faqItem.category) {
+                const nameField = `name_${language}`;
+                faqItem.category.name = faqItem.category[nameField] || faqItem.category.name_en;
+            }
+            return faqItem;
+        });
+
+        const processedRecentDownloads = recentDownloads.map(download => {
+            if (download.category) {
+                const nameField = `name_${language}`;
+                download.category.name = download.category[nameField] || download.category.name_en;
+            }
+            return download;
+        });
 
         res.render('admin/dashboard', {
             title: 'Dashboard',
@@ -93,14 +132,16 @@ exports.renderDashboard = async (req, res) => {
                 faqItems: faqItemCount,
                 downloads: downloadCount
             },
-            recentArticles,
+            recentArticles: processedRecentArticles,
             recentPages,
-            recentFaqItems,
-            recentDownloads
+            recentFaqItems: processedRecentFaqItems,
+            recentDownloads: processedRecentDownloads
         });
     } catch (error) {
         logger.error('Error loading dashboard:', error);
-        req.flash('error_msg', 'Error loading dashboard data');
-        res.redirect('/admin');
+        res.render('admin/dashboard', {
+            title: 'Dashboard',
+            error: 'Failed to load dashboard data'
+        });
     }
 };

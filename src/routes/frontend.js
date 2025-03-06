@@ -4,6 +4,7 @@ const prisma = require('../lib/prisma');
 const logger = require('../config/logger');
 const QuillDeltaToHtmlConverter = require('quill-delta-to-html').QuillDeltaToHtmlConverter;
 const downloadController = require('../controllers/downloadController');
+const { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE } = require('../middleware/languageMiddleware');
 
 // Helper function to create clean excerpts
 function createExcerpt(content, maxLength = 200) {
@@ -40,6 +41,12 @@ function createExcerpt(content, maxLength = 200) {
     
     return content;
 }
+
+// Redirect root to language-specific path
+router.get('/', (req, res) => {
+    const language = res.locals.currentLanguage || DEFAULT_LANGUAGE;
+    res.redirect(`/${language}`);
+});
 
 // Common middleware for frontend routes
 router.use(async (req, res, next) => {
@@ -84,7 +91,8 @@ router.use(async (req, res, next) => {
             },
             select: {
                 id: true,
-                title: true,
+                title_en: true,
+                title_tw: true,
                 slug: true,
                 navigationOrder: true
             },
@@ -104,8 +112,10 @@ router.use(async (req, res, next) => {
 });
 
 // Home page
-router.get('/', async (req, res) => {
+router.get('/:language', async (req, res) => {
     try {
+        const language = req.params.language;
+        
         // Get latest articles and active banners
         const [articles, banners] = await Promise.all([
             prisma.article.findMany({
@@ -141,16 +151,36 @@ router.get('/', async (req, res) => {
             logger.info('No active banners found');
         }
 
-        // Process articles to create excerpts
-        const processedArticles = articles.map(article => ({
-            ...article,
-            excerpt: article.excerpt || createExcerpt(article.content)
-        }));
+        // Process articles to create excerpts and handle multilingual content
+        const processedArticles = articles.map(article => {
+            const titleField = `title_${language}`;
+            const contentField = `content_${language}`;
+            const excerptField = `excerpt_${language}`;
+            
+            return {
+                ...article,
+                title: article[titleField] || article.title_en, // Fallback to English
+                content: article[contentField] || article.content_en,
+                excerpt: article[excerptField] || createExcerpt(article[contentField] || article.content_en)
+            };
+        });
+        
+        // Process banners for multilingual content
+        const processedBanners = banners.map(banner => {
+            const titleField = `title_${language}`;
+            const descriptionField = `description_${language}`;
+            
+            return {
+                ...banner,
+                title: banner[titleField] || banner.title_en,
+                description: banner[descriptionField] || banner.description_en
+            };
+        });
 
         res.render('frontend/index', {
             title: 'Home',
             articles: processedArticles,
-            banners,
+            banners: processedBanners,
             layout: 'layouts/frontend'
         });
     } catch (error) {
@@ -165,11 +195,13 @@ router.get('/', async (req, res) => {
 });
 
 // Articles list page with pagination
-router.get('/articles', async (req, res) => {
+router.get('/:language/articles', async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const perPage = 12;
         const skip = (page - 1) * perPage;
+        const language = req.params.language;
+        logger.info(`Loading articles for language: ${language}`);
 
         const [articles, total] = await Promise.all([
             prisma.article.findMany({
@@ -196,30 +228,42 @@ router.get('/articles', async (req, res) => {
         ]);
 
         const totalPages = Math.ceil(total / perPage);
+        
+        // Process articles for multilingual content
+        const processedArticles = articles.map(article => {
+            const titleField = `title_${language}`;
+            const excerptField = `excerpt_${language}`;
+            const contentField = `content_${language}`;
+            
+            return {
+                ...article,
+                title: article[titleField] || article.title_en, // Fallback to English
+                excerpt: article[excerptField] || createExcerpt(article[contentField] || article.content_en)
+            };
+        });
 
         res.render('frontend/articles', {
-            title: 'Articles',
-            articles,
+            title: language === 'en' ? 'Articles' : '文章',
+            articles: processedArticles,
             currentPage: page,
             totalPages,
             layout: 'layouts/frontend'
         });
     } catch (error) {
-        logger.error('Error fetching articles:', error);
-        res.render('frontend/articles', {
-            title: 'Articles',
-            articles: [],
-            currentPage: 1,
-            totalPages: 1,
+        logger.error('Error loading articles page:', error);
+        res.status(500).render('frontend/error', {
+            title: 'Error',
+            message: language === 'en' ? 'Error loading articles page' : '載入文章頁面時出錯',
             layout: 'layouts/frontend'
         });
     }
 });
 
 // Category page
-router.get('/category/:id', async (req, res) => {
+router.get('/:language/category/:id', async (req, res) => {
     try {
         const categoryId = parseInt(req.params.id);
+        const language = req.params.language;
         
         if (isNaN(categoryId)) {
             return res.status(404).render('frontend/error', {
@@ -254,7 +298,7 @@ router.get('/category/:id', async (req, res) => {
         // Process articles to create excerpts
         const processedArticles = category.articles.map(article => ({
             ...article,
-            excerpt: createExcerpt(article.content),
+            excerpt: article.excerpt || createExcerpt(article.content),
             content: article.content
         }));
 
@@ -276,190 +320,124 @@ router.get('/category/:id', async (req, res) => {
     }
 });
 
-// Add single article route
-router.get('/article/:id', async (req, res) => {
+// Article detail page
+router.get('/:language/articles/:id', async (req, res) => {
     try {
         const articleId = parseInt(req.params.id);
+        const language = req.params.language;
         logger.info(`Looking for article with id: ${articleId}`);
         
-        if (isNaN(articleId)) {
-            logger.warn(`Invalid article ID: ${req.params.id}`);
-            return res.status(404).render('frontend/error', {
-                title: 'Article Not Found',
-                message: 'Invalid article ID',
-                layout: 'layouts/frontend'
-            });
-        }
-
+        // Find the article by ID
         const article = await prisma.article.findFirst({
-            where: { 
+            where: {
                 id: articleId,
                 status: 'published'
             },
             include: {
+                category: true,
                 author: {
                     select: { username: true }
                 },
-                category: true,
                 featured: true,
                 media: true
             }
         });
-
-        logger.info('Found article:', article ? { id: article.id, title: article.title, status: article.status } : 'null');
-
-        if (!article) {
-            return res.status(404).render('frontend/error', {
-                title: 'Article Not Found',
-                message: 'The requested article could not be found',
-                layout: 'layouts/frontend'
-            });
-        }
-
-        // Process the content - handle both Quill.js JSON and HTML formats
-        if (article.content) {
-            try {
-                // Try to parse as JSON (Quill.js format)
-                const contentObj = JSON.parse(article.content);
-                if (contentObj.ops) {
-                    // Convert Quill.js delta to HTML
-                    article.content = contentObj.ops.map(op => {
-                        if (typeof op.insert === 'string') {
-                            let text = op.insert;
-                            
-                            // Apply basic formatting based on attributes
-                            if (op.attributes) {
-                                if (op.attributes.bold) text = `<strong>${text}</strong>`;
-                                if (op.attributes.italic) text = `<em>${text}</em>`;
-                                if (op.attributes.underline) text = `<u>${text}</u>`;
-                                if (op.attributes.link) text = `<a href="${op.attributes.link}">${text}</a>`;
-                                if (op.attributes.header) text = `<h${op.attributes.header}>${text}</h${op.attributes.header}>`;
-                            }
-                            
-                            return text;
-                        } else if (op.insert && op.insert.image) {
-                            return `<img src="${op.insert.image}" alt="Article image">`;
-                        }
-                        return '';
-                    }).join('');
-                }
-            } catch (e) {
-                logger.info('Content appears to be HTML, skipping JSON parsing');
-                // If parsing fails, assume it's already HTML content
-                // No need to modify the content
-            }
-        }
-
-        logger.info('Rendering article template');
-        res.render('frontend/article', {
-            title: article.title,
-            article,
-            layout: 'layouts/frontend'
-        });
-    } catch (error) {
-        logger.error('Error loading article page:', error);
-        res.status(500).render('frontend/error', {
-            title: 'Error',
-            message: 'Error loading article page',
-            layout: 'layouts/frontend'
-        });
-    }
-});
-
-// Handle article routes
-router.get('/articles/:id', async (req, res) => {
-    try {
-        const articleId = parseInt(req.params.id);
-        logger.info(`Looking for article with id: ${articleId}`);
         
-        if (isNaN(articleId)) {
-            logger.warn(`Invalid article ID: ${req.params.id}`);
-            return res.status(404).render('frontend/error', {
-                title: 'Article Not Found',
-                message: 'Invalid article ID',
-                layout: 'layouts/frontend'
-            });
-        }
-
-        const article = await prisma.article.findFirst({
-            where: { 
-                id: articleId,
-                status: 'published'
-            },
-            include: {
-                author: {
-                    select: { username: true }
-                },
-                category: true,
-                featured: true,
-                media: true
-            }
-        });
-
-        logger.info('Found article:', article ? { id: article.id, title: article.title, status: article.status } : 'null');
-
         if (!article) {
-            return res.status(404).render('frontend/error', {
-                title: 'Article Not Found',
-                message: 'The requested article could not be found',
+            logger.warn(`Article not found: ${articleId}`);
+            return res.status(404).render('frontend/404', {
+                title: language === 'en' ? 'Article Not Found' : '找不到文章',
                 layout: 'layouts/frontend'
             });
         }
-
-        // Process the content - handle both Quill.js JSON and HTML formats
-        if (article.content) {
-            try {
-                // Try to parse as JSON (Quill.js format)
-                const contentObj = JSON.parse(article.content);
-                if (contentObj.ops) {
-                    // Convert Quill.js delta to HTML
-                    article.content = contentObj.ops.map(op => {
-                        if (typeof op.insert === 'string') {
-                            let text = op.insert;
-                            
-                            // Apply basic formatting based on attributes
-                            if (op.attributes) {
-                                if (op.attributes.bold) text = `<strong>${text}</strong>`;
-                                if (op.attributes.italic) text = `<em>${text}</em>`;
-                                if (op.attributes.underline) text = `<u>${text}</u>`;
-                                if (op.attributes.link) text = `<a href="${op.attributes.link}">${text}</a>`;
-                                if (op.attributes.header) text = `<h${op.attributes.header}>${text}</h${op.attributes.header}>`;
-                            }
-                            
-                            return text;
-                        } else if (op.insert && op.insert.image) {
-                            return `<img src="${op.insert.image}" alt="Article image">`;
-                        }
-                        return '';
-                    }).join('');
-                }
-            } catch (e) {
-                logger.info('Content appears to be HTML, skipping JSON parsing');
-                // If parsing fails, assume it's already HTML content
-                // No need to modify the content
+        
+        logger.info(`Found article: ${article.title_en}`);
+        
+        // Get content based on language
+        const titleField = `title_${language}`;
+        const contentField = `content_${language}`;
+        const excerptField = `excerpt_${language}`;
+        const metaTitleField = `metaTitle_${language}`;
+        const metaDescriptionField = `metaDescription_${language}`;
+        const metaKeywordsField = `metaKeywords_${language}`;
+        
+        // Process content if it's in Quill Delta format
+        let processedContent = '';
+        try {
+            // Check if content is in Quill Delta JSON format
+            const contentObj = JSON.parse(article[contentField] || article.content_en);
+            if (contentObj.ops) {
+                const converter = new QuillDeltaToHtmlConverter(contentObj.ops, {});
+                processedContent = converter.convert();
             }
+        } catch (e) {
+            // If not JSON or conversion fails, use content as is (HTML)
+            logger.debug(`Content for article ${articleId} is not in Quill Delta format or couldn't be converted`);
+            processedContent = article[contentField] || article.content_en;
         }
-
-        logger.info('Rendering article template');
+        
+        // Create a processed article with the correct language content
+        const processedArticle = {
+            ...article,
+            title: article[titleField] || article.title_en,
+            content: processedContent,
+            excerpt: article[excerptField] || article.excerpt_en,
+            metaTitle: article[metaTitleField] || article[titleField] || article.title_en,
+            metaDescription: article[metaDescriptionField] || article.metaDescription_en,
+            metaKeywords: article[metaKeywordsField] || article.metaKeywords_en
+        };
+        
+        // Get related articles from the same category
+        let relatedArticles = [];
+        if (article.categoryId) {
+            relatedArticles = await prisma.article.findMany({
+                where: {
+                    categoryId: article.categoryId,
+                    id: { not: article.id },
+                    status: 'published'
+                },
+                take: 4,
+                orderBy: {
+                    createdAt: 'desc'
+                },
+                include: {
+                    category: true
+                }
+            });
+            
+            // Process related articles for multilingual content
+            relatedArticles = relatedArticles.map(relatedArticle => ({
+                ...relatedArticle,
+                title: relatedArticle[titleField] || relatedArticle.title_en,
+                excerpt: relatedArticle[excerptField] || createExcerpt(relatedArticle[contentField] || relatedArticle.content_en)
+            }));
+        }
+        
+        // Render the article page
         res.render('frontend/article', {
-            title: article.title,
-            article,
+            title: processedArticle.metaTitle || processedArticle.title,
+            metaDescription: processedArticle.metaDescription,
+            metaKeywords: processedArticle.metaKeywords,
+            article: processedArticle,
+            relatedArticles,
             layout: 'layouts/frontend'
         });
     } catch (error) {
-        logger.error('Error loading article page:', error);
+        logger.error(`Error rendering article ${req.params.id}:`, error);
+        const language = req.params.language;
         res.status(500).render('frontend/error', {
             title: 'Error',
-            message: 'Error loading article page',
+            message: language === 'en' ? 'Error loading article page' : '載入文章頁面時出錯',
             layout: 'layouts/frontend'
         });
     }
 });
 
 // Page route
-router.get('/page/:slug', async (req, res) => {
+router.get('/:language/page/:slug', async (req, res) => {
     try {
         const { slug } = req.params;
+        const language = req.params.language;
         
         // Find the page by slug
         const page = await prisma.page.findFirst({
@@ -486,25 +464,44 @@ router.get('/page/:slug', async (req, res) => {
             });
         }
         
+        // Get content based on language
+        const contentField = `content_${language}`;
+        const titleField = `title_${language}`;
+        const metaTitleField = `metaTitle_${language}`;
+        const metaDescriptionField = `metaDescription_${language}`;
+        const metaKeywordsField = `metaKeywords_${language}`;
+        
         // Process content if it's in Quill Delta format
+        let processedContent = '';
         try {
             // Check if content is in Quill Delta JSON format
-            const contentObj = JSON.parse(page.content);
+            const contentObj = JSON.parse(page[contentField]);
             if (contentObj.ops) {
                 const converter = new QuillDeltaToHtmlConverter(contentObj.ops, {});
-                page.content = converter.convert();
+                processedContent = converter.convert();
             }
         } catch (e) {
             // If not JSON or conversion fails, use content as is (HTML)
             logger.debug(`Content for page ${slug} is not in Quill Delta format or couldn't be converted`);
+            processedContent = page[contentField];
         }
+        
+        // Create a new page object with processed content
+        const processedPage = {
+            ...page,
+            content: processedContent,
+            title: page[titleField] || page.title_en, // Fallback to English if current language not available
+            metaTitle: page[metaTitleField] || page[titleField] || page.title_en,
+            metaDescription: page[metaDescriptionField] || '',
+            metaKeywords: page[metaKeywordsField] || ''
+        };
         
         // Render the page
         res.render('frontend/page', {
-            title: page.metaTitle || page.title,
-            metaDescription: page.metaDescription,
-            metaKeywords: page.metaKeywords,
-            page,
+            title: processedPage.metaTitle || processedPage.title,
+            metaDescription: processedPage.metaDescription,
+            metaKeywords: processedPage.metaKeywords,
+            page: processedPage,
             layout: 'layouts/frontend'
         });
     } catch (error) {
@@ -519,8 +516,9 @@ router.get('/page/:slug', async (req, res) => {
 });
 
 // FAQ page
-router.get('/faq', async (req, res) => {
+router.get('/:language/faq', async (req, res) => {
     try {
+        const language = req.params.language;
         // Get all published FAQ categories with their published items
         const categories = await prisma.faqCategory.findMany({
             where: {
@@ -589,13 +587,13 @@ router.get('/faq', async (req, res) => {
 });
 
 // Downloads list page
-router.get('/downloads', downloadController.listDownloadsForFrontend);
+router.get('/:language/downloads', downloadController.listDownloadsForFrontend);
 
 // Download file
-router.get('/downloads/:id', downloadController.downloadFile);
+router.get('/:language/downloads/:id', downloadController.downloadFile);
 
 // Handle custom URL paths
-router.get('/:path(*)', async (req, res, next) => {
+router.get('/:language/:path(*)', async (req, res, next) => {
     try {
         // Skip admin routes
         if (req.params.path.startsWith('admin/')) {

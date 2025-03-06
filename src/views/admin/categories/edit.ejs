@@ -1,102 +1,136 @@
 <%- contentFor('body') %>
 
-<div class="container mx-auto px-4 py-8">
-    <div class="max-w-2xl mx-auto">
-        <div class="bg-white shadow rounded-lg p-6">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-bold">Edit Category</h1>
-                <a href="/admin/categories" class="text-blue-600 hover:text-blue-800">
-                    Back to Categories
-                </a>
-            </div>
-
-            <form id="updateForm" action="/admin/categories/edit/<%= category.id %>" method="POST">
-                <div class="mb-4">
-                    <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                    <input type="text" 
-                           id="name" 
-                           name="name" 
-                           value="<%= category.name %>" 
-                           required 
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                </div>
-
-                <div class="mb-4">
-                    <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                    <textarea id="description" 
-                              name="description" 
-                              rows="4" 
-                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"><%= category.description || '' %></textarea>
-                </div>
-
-                <div class="mb-4">
-                    <label for="parentId" class="block text-sm font-medium text-gray-700">Parent Category</label>
-                    <select id="parentId" 
-                            name="parentId" 
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        <option value="">None (Top Level Category)</option>
-                        <% categories.forEach(function(cat) { %>
-                            <% if (cat.id !== category.id) { %>
-                                <option value="<%= cat.id %>" <%= category.parentId === cat.id ? 'selected' : '' %>>
-                                    <%= cat.name %>
-                                </option>
-                            <% } %>
-                        <% }); %>
-                    </select>
-                </div>
-
-                <div class="mb-6">
-                    <label for="order" class="block text-sm font-medium text-gray-700">Display Order</label>
-                    <input type="number" 
-                           id="order" 
-                           name="order" 
-                           value="<%= category.order || 0 %>" 
-                           min="0"
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    <p class="mt-1 text-sm text-gray-500">Lower numbers appear first</p>
-                </div>
-
-                <div class="flex justify-between">
-                    <button type="submit" 
-                            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                        Update Category
-                    </button>
-                    <a href="/admin/categories" 
-                       class="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-                        Cancel
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-2xl mx-auto">
+            <div class="bg-white shadow rounded-lg p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold">Edit Category</h1>
+                    <a href="/admin/categories" class="text-blue-600 hover:text-blue-800">
+                        Back to Categories
                     </a>
                 </div>
-            </form>
 
-            <hr class="my-8">
+                <form id="updateForm" action="/admin/categories/edit/<%= category.id %>" method="POST">
+                    <!-- Language Tabs -->
+                    <%- include('../../partials/admin-language-switcher', { title: 'Content Language' , activeTab: 'en'
+                        }) %>
 
-            <% if (category.children && category.children.length > 0) { %>
-                <div class="mb-6">
-                    <h2 class="text-lg font-semibold text-gray-900 mb-2">Subcategories</h2>
-                    <div class="bg-gray-50 rounded-md p-4">
-                        <ul class="space-y-2">
-                            <% category.children.forEach(function(child) { %>
-                                <li class="flex justify-between items-center">
-                                    <span class="text-gray-700"><%= child.name %></span>
-                                    <a href="/admin/categories/edit/<%= child.id %>" 
-                                       class="text-blue-600 hover:text-blue-800">
-                                        Edit
-                                    </a>
-                                </li>
-                            <% }); %>
-                        </ul>
+                        <!-- English Content -->
+                        <div class="language-content language-content-en">
+                            <div class="mb-4">
+                                <label for="name_en" class="block text-sm font-medium text-gray-700">Name
+                                    (English)</label>
+                                <input type="text" id="name_en" name="name_en"
+                                    value="<%= category.name_en || category.name %>" required
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="description_en" class="block text-sm font-medium text-gray-700">Description
+                                    (English)</label>
+                                <textarea id="description_en" name="description_en" rows="4"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"><%= category.description_en || category.description || '' %></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Traditional Chinese Content -->
+                        <div class="language-content language-content-tw hidden">
+                            <div class="mb-4">
+                                <label for="name_tw" class="block text-sm font-medium text-gray-700">名稱 (中文)</label>
+                                <input type="text" id="name_tw" name="name_tw" value="<%= category.name_tw || '' %>"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="description_tw" class="block text-sm font-medium text-gray-700">描述
+                                    (中文)</label>
+                                <textarea id="description_tw" name="description_tw" rows="4"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"><%= category.description_tw || '' %></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Common Fields -->
+                        <div class="border-t pt-4 mt-6">
+                            <div class="mb-4">
+                                <label for="parentId" class="block text-sm font-medium text-gray-700">Parent
+                                    Category</label>
+                                <select id="parentId" name="parentId"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">None (Top Level Category)</option>
+                                    <% categories.forEach(function(cat) { %>
+                                        <% if (cat.id !==category.id) { %>
+                                            <option value="<%= cat.id %>" <%=category.parentId===cat.id ? 'selected'
+                                                : '' %>>
+                                                <%= cat.name_en || cat.name %>
+                                            </option>
+                                            <% } %>
+                                                <% }); %>
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="type" class="block text-sm font-medium text-gray-700">Category Type</label>
+                                <select id="type" name="type"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="article" <%=category.type==='article' ? 'selected' : '' %>>Article
+                                    </option>
+                                    <option value="download" <%=category.type==='download' ? 'selected' : '' %>>Download
+                                    </option>
+                                    <option value="faq" <%=category.type==='faq' ? 'selected' : '' %>>FAQ</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-6">
+                                <label for="order" class="block text-sm font-medium text-gray-700">Display Order</label>
+                                <input type="number" id="order" name="order" value="<%= category.order || 0 %>" min="0"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <p class="mt-1 text-sm text-gray-500">Lower numbers appear first</p>
+                            </div>
+
+                            <div class="flex justify-between">
+                                <button type="submit"
+                                    class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                    Update Category
+                                </button>
+                                <a href="/admin/categories"
+                                    class="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                                    Cancel
+                                </a>
+                            </div>
+                        </div>
+                </form>
+
+                <hr class="my-8">
+
+                <% if (category.children && category.children.length> 0) { %>
+                    <div class="mb-6">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-2">Subcategories</h2>
+                        <div class="bg-gray-50 rounded-md p-4">
+                            <ul class="space-y-2">
+                                <% category.children.forEach(function(child) { %>
+                                    <li class="flex justify-between items-center">
+                                        <span class="text-gray-700">
+                                            <%= child.name_en || child.name %>
+                                        </span>
+                                        <a href="/admin/categories/edit/<%= child.id %>"
+                                            class="text-blue-600 hover:text-blue-800">
+                                            Edit
+                                        </a>
+                                    </li>
+                                    <% }); %>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            <% } %>
+                    <% } %>
 
-            <form id="deleteForm" action="/admin/categories/<%= category.id %>" method="POST" class="mt-6" 
-                  onsubmit="return confirm('Are you sure you want to delete this category? This will also delete all subcategories and cannot be undone.');">
-                <input type="hidden" name="_method" value="DELETE">
-                <button type="submit" 
-                        class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-                    Delete Category
-                </button>
-            </form>
+                        <form id="deleteForm" action="/admin/categories/<%= category.id %>" method="POST" class="mt-6"
+                            onsubmit="return confirm('Are you sure you want to delete this category? This will also delete all subcategories and cannot be undone.');">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit"
+                                class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                                Delete Category
+                            </button>
+                        </form>
+            </div>
         </div>
     </div>
-</div>

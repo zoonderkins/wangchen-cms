@@ -15,69 +15,168 @@
     <form action="<%= article ? `/admin/articles/edit/${article.id}` : '/admin/articles' %>" method="POST"
         class="bg-white rounded-lg shadow-sm p-6" id="articleForm" onsubmit="return handleSubmit()">
 
-        <!-- Title -->
-        <div class="mb-6">
-            <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Title</label>
-            <input type="text" id="title" name="title" value="<%= article ? article.title : '' %>" required
-                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
+        <!-- Language Tabs -->
+        <%- include('../../partials/admin-language-switcher', { title: 'Content Language' , activeTab: 'en' }) %>
 
-        <!-- Category -->
-        <div class="mb-6">
-            <label for="categoryId" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
-            <select id="categoryId" name="categoryId" required
-                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Select Category</option>
-                <% categories.forEach(function(category) { %>
-                    <option value="<%= category.id %>" <%=article && article.categoryId==category.id ? 'selected' : ''
-                        %>>
-                        <%= category.name %>
-                    </option>
-                    <% }); %>
-            </select>
-        </div>
+            <!-- English Content -->
+            <div class="language-content language-content-en">
+                <!-- Title -->
+                <div class="mb-6">
+                    <label for="title_en" class="block text-sm font-medium text-gray-700 mb-2">Title (English)</label>
+                    <input type="text" id="title_en" name="title_en"
+                        value="<%= article ? article.title_en || article.title : '' %>" required
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
 
-        <!-- Content -->
-        <div class="mb-6">
-            <label for="editor" class="block text-sm font-medium text-gray-700 mb-2">Content</label>
-            <div id="editor" style="height: 400px;"><%- article ? article.content : '' %></div>
-            <input type="hidden" name="content" id="content">
-        </div>
+                <!-- Content -->
+                <div class="mb-6">
+                    <label for="editor_en" class="block text-sm font-medium text-gray-700 mb-2">Content
+                        (English)</label>
+                    <div id="editor_en" style="height: 400px;"><%- article ? article.content_en || article.content : ''
+                            %></div>
+                    <input type="hidden" name="content_en" id="content_en">
+                </div>
 
-        <!-- Excerpt -->
-        <div class="mb-6">
-            <label for="excerpt" class="block text-sm font-medium text-gray-700 mb-2">
-                Excerpt
-                <span class="text-gray-500 text-xs">(Optional)</span>
-            </label>
-            <textarea id="excerpt" name="excerpt" rows="3"
-                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"><%= article ? article.excerpt : '' %></textarea>
-        </div>
+                <!-- Excerpt -->
+                <div class="mb-6">
+                    <label for="excerpt_en" class="block text-sm font-medium text-gray-700 mb-2">
+                        Excerpt (English)
+                        <span class="text-gray-500 text-xs">(Optional)</span>
+                    </label>
+                    <textarea id="excerpt_en" name="excerpt_en" rows="3"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"><%= article ? article.excerpt_en || article.excerpt : '' %></textarea>
+                </div>
 
-        <!-- Published Status -->
-        <div class="mb-6">
-            <label class="flex items-center">
-                <input type="checkbox" name="published" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                    <%= article && article.status === 'published' ? 'checked' : '' %>>
-                <span class="ml-2 text-sm text-gray-600">Published</span>
-            </label>
-        </div>
+                <!-- SEO Fields -->
+                <div class="mb-6 border-t pt-4">
+                    <h3 class="text-lg font-medium mb-4">SEO Settings (English)</h3>
 
-        <!-- Submit Button -->
-        <div class="flex justify-end">
-            <button type="submit"
-                class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                <%= article ? 'Update' : 'Create' %> Article
-            </button>
-        </div>
+                    <div class="mb-4">
+                        <label for="metaTitle_en" class="block text-sm font-medium text-gray-700 mb-2">Meta
+                            Title</label>
+                        <input type="text" id="metaTitle_en" name="metaTitle_en"
+                            value="<%= article ? article.metaTitle_en || article.metaTitle : '' %>"
+                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">If left empty, the article title will be used</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="metaDescription_en" class="block text-sm font-medium text-gray-700 mb-2">Meta
+                            Description</label>
+                        <textarea id="metaDescription_en" name="metaDescription_en" rows="2"
+                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"><%= article ? article.metaDescription_en || article.metaDescription : '' %></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="metaKeywords_en" class="block text-sm font-medium text-gray-700 mb-2">Meta
+                            Keywords</label>
+                        <input type="text" id="metaKeywords_en" name="metaKeywords_en"
+                            value="<%= article ? article.metaKeywords_en || article.metaKeywords : '' %>"
+                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">Separate keywords with commas</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Traditional Chinese Content -->
+            <div class="language-content language-content-tw hidden">
+                <!-- Title -->
+                <div class="mb-6">
+                    <label for="title_tw" class="block text-sm font-medium text-gray-700 mb-2">標題 (中文)</label>
+                    <input type="text" id="title_tw" name="title_tw" value="<%= article ? article.title_tw : '' %>"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <!-- Content -->
+                <div class="mb-6">
+                    <label for="editor_tw" class="block text-sm font-medium text-gray-700 mb-2">內容 (中文)</label>
+                    <div id="editor_tw" style="height: 400px;"><%- article ? article.content_tw : '' %></div>
+                    <input type="hidden" name="content_tw" id="content_tw">
+                </div>
+
+                <!-- Excerpt -->
+                <div class="mb-6">
+                    <label for="excerpt_tw" class="block text-sm font-medium text-gray-700 mb-2">
+                        摘要 (中文)
+                        <span class="text-gray-500 text-xs">(選填)</span>
+                    </label>
+                    <textarea id="excerpt_tw" name="excerpt_tw" rows="3"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"><%= article ? article.excerpt_tw : '' %></textarea>
+                </div>
+
+                <!-- SEO Fields -->
+                <div class="mb-6 border-t pt-4">
+                    <h3 class="text-lg font-medium mb-4">SEO 設定 (中文)</h3>
+
+                    <div class="mb-4">
+                        <label for="metaTitle_tw" class="block text-sm font-medium text-gray-700 mb-2">Meta 標題</label>
+                        <input type="text" id="metaTitle_tw" name="metaTitle_tw"
+                            value="<%= article ? article.metaTitle_tw : '' %>"
+                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">如果留空，將使用文章標題</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="metaDescription_tw" class="block text-sm font-medium text-gray-700 mb-2">Meta
+                            描述</label>
+                        <textarea id="metaDescription_tw" name="metaDescription_tw" rows="2"
+                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"><%= article ? article.metaDescription_tw : '' %></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="metaKeywords_tw" class="block text-sm font-medium text-gray-700 mb-2">Meta
+                            關鍵字</label>
+                        <input type="text" id="metaKeywords_tw" name="metaKeywords_tw"
+                            value="<%= article ? article.metaKeywords_tw : '' %>"
+                            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">使用逗號分隔關鍵字</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Common Fields -->
+            <div class="border-t pt-4">
+                <!-- Category -->
+                <div class="mb-6">
+                    <label for="categoryId" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                    <select id="categoryId" name="categoryId" required
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Select Category</option>
+                        <% categories.forEach(function(category) { %>
+                            <option value="<%= category.id %>" <%=article && article.categoryId==category.id
+                                ? 'selected' : '' %>>
+                                <%= category.name %>
+                            </option>
+                            <% }); %>
+                    </select>
+                </div>
+
+                <!-- Published Status -->
+                <div class="mb-6">
+                    <label class="flex items-center">
+                        <input type="checkbox" name="published"
+                            class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                            <%=article && article.status==='published' ? 'checked' : '' %>>
+                        <span class="ml-2 text-sm text-gray-600">Published</span>
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end">
+                    <button type="submit"
+                        class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        <%= article ? 'Update' : 'Create' %> Article
+                    </button>
+                </div>
+            </div>
     </form>
 </div>
 
 <!-- Include Quill JS -->
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script>
-    // Initialize Quill editor
-    var quill = new Quill('#editor', {
+    // Initialize Quill editors
+    var quillEN = new Quill('#editor_en', {
         theme: 'snow',
         modules: {
             toolbar: [
@@ -85,7 +184,22 @@
                 ['bold', 'italic', 'underline', 'strike'],
                 [{ 'color': [] }, { 'background': [] }],
                 [{ 'align': [] }],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                ['link', 'image', 'video'],
+                ['clean']
+            ]
+        }
+    });
+
+    var quillTW = new Quill('#editor_tw', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'align': [] }],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
                 ['link', 'image', 'video'],
                 ['clean']
             ]
@@ -94,19 +208,18 @@
 
     // Handle form submission
     function handleSubmit() {
-        // Get the HTML content from Quill editor
-        var content = quill.root.innerHTML;
-        // Set the content to the hidden input
-        document.getElementById('content').value = content;
+        // Get the content from Quill editors
+        var contentEN = JSON.stringify(quillEN.getContents());
+        var contentTW = JSON.stringify(quillTW.getContents());
 
-        // Log form data
-        console.log('Form data:', {
-            title: document.getElementById('title').value,
-            categoryId: document.getElementById('categoryId').value,
-            content: content,
-            excerpt: document.getElementById('excerpt').value,
-            published: document.querySelector('input[name="published"]').checked
-        });
+        // Set the content to the hidden inputs
+        document.getElementById('content_en').value = contentEN;
+        document.getElementById('content_tw').value = contentTW;
+
+        // For backward compatibility, also set the original title and content fields
+        // This ensures the system works even if some parts haven't been updated for multilingual support
+        document.getElementById('title_en').name = 'title';
+        document.getElementById('content_en').name = 'content';
 
         return true;
     }

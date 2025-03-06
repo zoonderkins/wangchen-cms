@@ -14,7 +14,7 @@
         <% if (page.attachments && page.attachments.length > 0) { %>
             <!-- Attachments Section -->
             <div class="mt-8">
-                <h2 class="text-2xl font-semibold mb-4">Attachments</h2>
+                <h2 class="text-2xl font-semibold mb-4"><%= currentLanguage === 'en' ? 'Attachments' : '附件' %></h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <% page.attachments.forEach(attachment => { %>
                         <div class="border rounded-lg p-4 flex items-center">
@@ -62,11 +62,11 @@
                                 </p>
                                 <a href="<%= attachment.path %>" target="_blank" class="inline-block mt-2 text-sm text-blue-600 hover:underline">
                                     <% if (attachment.mimeType.startsWith('image/')) { %>
-                                        View Image
+                                        <%= currentLanguage === 'en' ? 'View Image' : '查看圖片' %>
                                     <% } else if (attachment.mimeType.startsWith('video/')) { %>
-                                        Watch Video
+                                        <%= currentLanguage === 'en' ? 'Watch Video' : '觀看影片' %>
                                     <% } else { %>
-                                        Download File
+                                        <%= currentLanguage === 'en' ? 'Download File' : '下載檔案' %>
                                     <% } %>
                                 </a>
                             </div>
@@ -77,8 +77,8 @@
         <% } %>
         
         <div class="mt-8 text-sm text-gray-500">
-            <p>Published: <%= new Date(page.publishedAt || page.createdAt).toLocaleDateString() %></p>
-            <p>Last updated: <%= new Date(page.updatedAt).toLocaleDateString() %></p>
+            <p><%= currentLanguage === 'en' ? 'Published' : '發布日期' %>: <%= new Date(page.publishedAt || page.createdAt).toLocaleDateString() %></p>
+            <p><%= currentLanguage === 'en' ? 'Last updated' : '最後更新' %>: <%= new Date(page.updatedAt).toLocaleDateString() %></p>
         </div>
     </div>
 </div>
@@ -198,47 +198,5 @@
     }
     .ql-size-huge {
         font-size: 2.5em;
-    }
-    .ql-bg-black {
-        background-color: #000;
-    }
-    .ql-bg-red {
-        background-color: #e60000;
-    }
-    .ql-bg-orange {
-        background-color: #f90;
-    }
-    .ql-bg-yellow {
-        background-color: #ff0;
-    }
-    .ql-bg-green {
-        background-color: #008a00;
-    }
-    .ql-bg-blue {
-        background-color: #06c;
-    }
-    .ql-bg-purple {
-        background-color: #93f;
-    }
-    .ql-color-white {
-        color: #fff;
-    }
-    .ql-color-red {
-        color: #e60000;
-    }
-    .ql-color-orange {
-        color: #f90;
-    }
-    .ql-color-yellow {
-        color: #ff0;
-    }
-    .ql-color-green {
-        color: #008a00;
-    }
-    .ql-color-blue {
-        color: #06c;
-    }
-    .ql-color-purple {
-        color: #93f;
     }
 </style>
