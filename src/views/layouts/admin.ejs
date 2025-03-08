@@ -92,6 +92,8 @@
                                         </div>
                                     </div>
                                 </div>
+                                <a href="/admin/links"
+                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Links</a>
                                 <% if (user.role && user.role==='super_admin' ) { %>
                                     <a href="/admin/users"
                                         class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Users</a>
@@ -163,6 +165,9 @@
                 <a href="/admin/contact/categories"
                     class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Contact
                     Categories</a>
+                <div class="border-t border-gray-700 my-1"></div>
+                <a href="/admin/links"
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Links</a>
                 <% if (typeof user !=='undefined' && user && user.role && user.role==='super_admin' ) { %>
                     <a href="/admin/users"
                         class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Users</a>

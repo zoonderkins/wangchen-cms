@@ -25,6 +25,7 @@ const newsController = require('../controllers/newsController');
 const aboutController = require('../controllers/aboutController');
 const contactCategoryController = require('../controllers/contactCategoryController');
 const contactController = require('../controllers/contactController');
+const linksController = require('../controllers/linksController');
 
 // Multer configuration
 const storage = multer.diskStorage({
@@ -301,5 +302,16 @@ router.get('/contact', hasRole(['super_admin', 'admin', 'editor']), contactContr
 router.get('/contact/view/:id', hasRole(['super_admin', 'admin', 'editor']), contactController.viewContact);
 router.post('/contact/:id/status', hasRole(['super_admin', 'admin', 'editor']), contactController.updateContactStatus);
 router.post('/contact/:id/delete', hasRole(['super_admin', 'admin']), contactController.deleteContact);
+
+// Links routes
+const { uploadLinkImage } = require('../middleware/linkImageUpload');
+
+router.get('/links', isAuthenticated, hasRole(['super_admin', 'admin', 'editor']), linksController.index);
+router.get('/links/create', isAuthenticated, hasRole(['super_admin', 'admin', 'editor']), linksController.createForm);
+router.post('/links', isAuthenticated, hasRole(['super_admin', 'admin', 'editor']), uploadLinkImage, linksController.create);
+router.get('/links/edit/:id', isAuthenticated, hasRole(['super_admin', 'admin', 'editor']), linksController.editForm);
+router.post('/links/edit/:id', isAuthenticated, hasRole(['super_admin', 'admin', 'editor']), uploadLinkImage, linksController.update);
+router.get('/links/delete/:id', isAuthenticated, hasRole(['super_admin', 'admin']), linksController.delete);
+router.get('/links/toggle/:id', isAuthenticated, hasRole(['super_admin', 'admin', 'editor']), linksController.toggleActive);
 
 module.exports = router;

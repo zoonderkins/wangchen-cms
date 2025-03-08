@@ -439,3 +439,17 @@ model Contact {
   @@index([categoryId], map: "Contacts_categoryId_fkey")
   @@map("Contacts")
 }
+
+model Link {
+  id          Int       @id @default(autoincrement())
+  title_en    String
+  title_tw    String
+  url         String
+  image       String?
+  order       Int       @default(0)
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("Links")
+}

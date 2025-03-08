@@ -6,6 +6,7 @@ const QuillDeltaToHtmlConverter = require('quill-delta-to-html').QuillDeltaToHtm
 const downloadController = require('../controllers/downloadController');
 const newsController = require('../controllers/newsController');
 const { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE } = require('../middleware/languageMiddleware');
+const frontendController = require('../controllers/frontendController');
 
 // Helper function to create clean excerpts
 function createExcerpt(content, maxLength = 200) {
@@ -97,6 +98,17 @@ router.get('/:language', async (req, res, next) => {
             })
         ]);
 
+        // Get active links for the homepage
+        const links = await prisma.link.findMany({
+            where: {
+                active: true
+            },
+            orderBy: {
+                order: 'asc'
+            },
+            take: 6 // Limit to 6 links for the homepage
+        });
+
         // Debug banner information
         logger.info(`Banners found: ${banners.length}`);
         if (banners.length > 0) {
@@ -129,6 +141,7 @@ router.get('/:language', async (req, res, next) => {
             title: 'Home',
             banners: processedBanners,
             navigationPages: navigationPages,
+            links: links,
             currentLanguage: currentLanguage,
             getContent: getContent,
             layout: 'layouts/frontend'
@@ -138,10 +151,22 @@ router.get('/:language', async (req, res, next) => {
         // Store the language from params to avoid reference error
         const currentLanguage = req.params.language || 'en';
         
+        // Get active links for the homepage
+        const links = await prisma.link.findMany({
+            where: {
+                active: true
+            },
+            orderBy: {
+                order: 'asc'
+            },
+            take: 6 // Limit to 6 links for the homepage
+        });
+
         res.render('frontend/index', {
             title: 'Home',
             banners: [],
             navigationPages: [],
+            links: [],
             currentLanguage: currentLanguage,
             getContent: (item, field) => '',
             layout: 'layouts/frontend'
@@ -709,6 +734,10 @@ router.get('/:language/about', aboutController.showAboutPage);
 const contactController = require('../controllers/contactController');
 router.get('/:language/contact', contactController.showContactForm);
 router.post('/:language/contact', contactController.submitContactForm);
+
+// Links routes
+router.get('/en/links', frontendController.links);
+router.get('/tw/links', frontendController.links);
 
 // Handle custom URL paths
 router.get('/:language/:path(*)', async (req, res, next) => {
