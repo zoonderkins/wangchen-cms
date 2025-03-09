@@ -672,9 +672,18 @@ exports.listNewsForFrontend = async (req, res) => {
         const processedItems = newsItems.map(item => {
             const titleField = `title_${language}`;
             
+            // Ensure image path is absolute and doesn't include language prefix
+            let imageUrl = null;
+            if (item.imagePath) {
+                // The imagePath should already be in the correct format (/uploads/news/filename)
+                // Just make sure it doesn't have a language prefix
+                imageUrl = item.imagePath;
+            }
+            
             return {
                 ...item,
                 title: item[titleField] || item.title_en, // Fallback to English
+                imageUrl: imageUrl, // Use the corrected image URL
                 category: item.category ? {
                     ...item.category,
                     name: item.category[`name_${language}`] || item.category.name_en
@@ -775,9 +784,21 @@ exports.listNewsByCategoryForFrontend = async (req, res) => {
         const processedItems = newsItems.map(item => {
             const titleField = `title_${language}`;
             
+            // Ensure image path is absolute and doesn't include language prefix
+            let imageUrl = null;
+            if (item.imagePath) {
+                // The imagePath should already be in the correct format (/uploads/news/filename)
+                imageUrl = item.imagePath;
+            }
+            
             return {
                 ...item,
-                title: item[titleField] || item.title_en // Fallback to English
+                title: item[titleField] || item.title_en, // Fallback to English
+                imageUrl: imageUrl, // Use the corrected image URL
+                category: item.category ? {
+                    ...item.category,
+                    name: item.category[`name_${language}`] || item.category.name_en
+                } : null
             };
         });
         
@@ -874,13 +895,20 @@ exports.getNewsItemForFrontend = async (req, res) => {
         const contentField = `content_${language}`;
         const summaryField = `summary_${language}`;
         
+        // Ensure image path is absolute and doesn't include language prefix
+        let imageUrl = null;
+        if (newsItem.imagePath) {
+            // The imagePath should already be in the correct format (/uploads/news/filename)
+            imageUrl = newsItem.imagePath;
+        }
+        
         // Process the news item for the selected language
         const processedItem = {
             ...newsItem,
             title: newsItem[titleField] || newsItem.title_en, // Fallback to English
             content: newsItem[contentField] || newsItem.content_en, // Fallback to English
             summary: newsItem[summaryField] || newsItem.summary_en, // Fallback to English
-            imageUrl: newsItem.imagePath ? `/${newsItem.imagePath}` : null,
+            imageUrl: imageUrl, // Use the corrected image URL
             category: {
                 ...newsItem.category,
                 name: newsItem.category[`name_${language}`] || newsItem.category.name_en
@@ -889,9 +917,16 @@ exports.getNewsItemForFrontend = async (req, res) => {
         
         // Process related news for the selected language
         const processedRelatedNews = relatedNews.map(item => {
+            // Ensure image path is absolute for related news items
+            let relatedImageUrl = null;
+            if (item.imagePath) {
+                relatedImageUrl = item.imagePath;
+            }
+            
             return {
                 ...item,
-                title: item[titleField] || item.title_en // Fallback to English
+                title: item[titleField] || item.title_en, // Fallback to English
+                imageUrl: relatedImageUrl // Use the corrected image URL
             };
         });
         
@@ -911,7 +946,7 @@ exports.getNewsItemForFrontend = async (req, res) => {
         logger.error('Error loading news item for frontend:', error);
         res.status(500).render('frontend/error', {
             title: 'Error',
-            message: req.params.language === 'en' ? 'Failed to load news item' : '載入最新消息項目失敗',
+            message: language === 'en' ? 'Failed to load news item' : '載入最新消息失敗',
             layout: 'layouts/frontend'
         });
     }

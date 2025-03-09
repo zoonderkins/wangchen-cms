@@ -1,74 +1,106 @@
 <%- contentFor('body') %>
 
-<div class="container mx-auto px-4 py-8">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold">Create Banner</h1>
-        <a href="/admin/banners" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-            <i class="fas fa-arrow-left mr-2"></i> Back to Banners
-        </a>
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold">建立橫幅</h1>
+            <a href="/admin/banners" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                <i class="fas fa-arrow-left mr-2"></i> 返回橫幅列表
+            </a>
+        </div>
+
+        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <form action="/admin/banners" method="POST" enctype="multipart/form-data">
+                <!-- Language Tabs -->
+                <%- include('../../partials/admin-language-switcher', { title: '內容語言' , activeTab: 'en' }) %>
+
+                    <!-- English Content -->
+                    <div class="language-content language-content-en">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="title_en">
+                                Title (English) <span class="text-red-500">*</span>
+                            </label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="title_en" name="title_en" type="text" placeholder="Enter banner title in English"
+                                required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="description_en">
+                                Description (English)
+                            </label>
+                            <textarea
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="description_en" name="description_en" rows="3"
+                                placeholder="Enter banner description in English"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Traditional Chinese Content -->
+                    <div class="language-content language-content-tw hidden">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="title_tw">
+                                標題 (中文) <span class="text-red-500">*</span>
+                            </label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="title_tw" name="title_tw" type="text" placeholder="請輸入橫幅標題" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="description_tw">
+                                描述 (中文)
+                            </label>
+                            <textarea
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="description_tw" name="description_tw" rows="3" placeholder="請輸入橫幅描述"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Common Fields -->
+                    <div class="border-t pt-4 mt-4">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="url">
+                                網址 (選填)
+                            </label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="url" name="url" type="url" placeholder="https://example.com">
+                            <p class="text-gray-600 text-xs italic mt-1">用戶點擊橫幅時的重定向連結</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="media">
+                                媒體 (圖片或影片) <span class="text-red-500">*</span>
+                            </label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="media" name="media" type="file" accept="image/*,video/mp4" required>
+                            <p class="text-gray-600 text-xs italic mt-1">上傳圖片或MP4影片 (最大20MB)</p>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                狀態
+                            </label>
+                            <div class="flex items-center">
+                                <input type="radio" id="active" name="isActive" value="true" class="mr-2">
+                                <label for="active" class="mr-4">啟用</label>
+
+                                <input type="radio" id="inactive" name="isActive" value="false" class="mr-2" checked>
+                                <label for="inactive">停用</label>
+                            </div>
+                            <p class="text-gray-600 text-xs italic mt-1">啟用的橫幅將顯示在首頁</p>
+                        </div>
+
+                        <div class="flex items-center justify-end">
+                            <button
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                type="submit">
+                                建立橫幅
+                            </button>
+                        </div>
+                    </div>
+            </form>
+        </div>
     </div>
-
-    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <form action="/admin/banners" method="POST" enctype="multipart/form-data">
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="title">
-                    Title
-                </label>
-                <input
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="title" name="title" type="text" placeholder="Enter banner title" required>
-            </div>
-
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
-                    Description
-                </label>
-                <textarea
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="description" name="description" rows="3" placeholder="Enter banner description"></textarea>
-            </div>
-
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="url">
-                    URL (Optional)
-                </label>
-                <input
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="url" name="url" type="url" placeholder="https://example.com">
-                <p class="text-gray-600 text-xs italic mt-1">Link to redirect users when they click on the banner</p>
-            </div>
-
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="media">
-                    Media (Image or Video)
-                </label>
-                <input
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="media" name="media" type="file" accept="image/*,video/mp4" required>
-                <p class="text-gray-600 text-xs italic mt-1">Upload an image or MP4 video (max 20MB)</p>
-            </div>
-
-            <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-bold mb-2">
-                    Status
-                </label>
-                <div class="flex items-center">
-                    <input type="radio" id="active" name="isActive" value="true" class="mr-2">
-                    <label for="active" class="mr-4">Active</label>
-                    
-                    <input type="radio" id="inactive" name="isActive" value="false" class="mr-2" checked>
-                    <label for="inactive">Inactive</label>
-                </div>
-                <p class="text-gray-600 text-xs italic mt-1">Active banners will be displayed on the homepage</p>
-            </div>
-
-            <div class="flex items-center justify-end">
-                <button
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    type="submit">
-                    Create Banner
-                </button>
-            </div>
-        </form>
-    </div>
-</div>

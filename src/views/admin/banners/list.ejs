@@ -47,7 +47,7 @@
                                     <div class="flex-shrink-0 h-20 w-32 overflow-hidden">
                                         <% if (banner.mediaType==='image' ) { %>
                                             <img src="<%= banner.mediaPath.replace(/^public/, '') %>"
-                                                alt="<%= banner.title %>" class="h-20 w-32 object-cover">
+                                                alt="<%= banner.title_en %>" class="h-20 w-32 object-cover">
                                             <% } else { %>
                                                 <video class="h-20 w-32 object-cover" controls>
                                                     <source src="<%= banner.mediaPath.replace(/^public/, '') %>"
@@ -59,11 +59,33 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="text-sm font-medium text-gray-900">
-                                        <%= banner.title %>
+                                        <div class="mb-1">
+                                            <span class="text-xs text-gray-500">EN:</span>
+                                            <%= banner.title_en %>
+                                        </div>
+                                        <div>
+                                            <span class="text-xs text-gray-500">中:</span>
+                                            <%= banner.title_tw %>
+                                        </div>
                                     </div>
-                                    <% if (banner.description) { %>
-                                        <div class="text-sm text-gray-500 truncate max-w-xs">
-                                            <%= banner.description %>
+                                    <% if (banner.description_en || banner.description_tw) { %>
+                                        <div class="text-sm text-gray-500 truncate max-w-xs mt-1">
+                                            <% if (banner.description_en) { %>
+                                                <div class="text-xs">
+                                                    <span class="text-gray-400">EN:</span>
+                                                    <%= banner.description_en.length> 30 ?
+                                                        banner.description_en.substring(0, 30) + '...' :
+                                                        banner.description_en %>
+                                                </div>
+                                                <% } %>
+                                                    <% if (banner.description_tw) { %>
+                                                        <div class="text-xs">
+                                                            <span class="text-gray-400">中:</span>
+                                                            <%= banner.description_tw.length> 30 ?
+                                                                banner.description_tw.substring(0, 30) + '...' :
+                                                                banner.description_tw %>
+                                                        </div>
+                                                        <% } %>
                                         </div>
                                         <% } %>
                                 </td>

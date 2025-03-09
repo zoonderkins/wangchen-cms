@@ -1,249 +1,240 @@
 <%- contentFor('body') %>
 
-<div class="container mx-auto px-4 py-8">
-    <h2 class="my-6 text-2xl font-semibold text-gray-700">Create Download</h2>
-    <div class="flex text-sm breadcrumbs mb-4">
-        <ul class="flex space-x-2">
-            <li><a href="/admin/dashboard" class="text-blue-600 hover:text-blue-800">Dashboard</a></li>
-            <li class="before:content-['/'] before:mx-2 before:text-gray-500"><a href="/admin/downloads" class="text-blue-600 hover:text-blue-800">Downloads</a></li>
-            <li class="before:content-['/'] before:mx-2 before:text-gray-500"><span class="text-gray-600">Create</span></li>
-        </ul>
-    </div>
-    
-    <%- include('../../partials/messages') %>
-    
-    <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
-        <div class="mb-4 pb-2 border-b border-gray-200">
-            <div class="flex items-center">
-                <i class="fas fa-file-upload mr-2 text-gray-600"></i>
-                <h3 class="text-lg font-medium text-gray-700">Upload New File</h3>
-            </div>
-        </div>
-        <form action="/admin/downloads" method="POST" enctype="multipart/form-data">
-            <!-- Language Tabs -->
-            <%- include('../../partials/admin-language-switcher', { title: 'Content Language', activeTab: 'en' }) %>
+    <div class="container mx-auto px-4 py-8">
+        <h2 class="my-6 text-2xl font-semibold text-gray-700">建立下載</h2>
 
-            <!-- English Content -->
-            <div class="language-content language-content-en">
-                <div class="mb-4">
-                    <label for="title_en" class="block text-sm font-medium text-gray-700 mb-2">
-                        Title (English) <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
-                        id="title_en" name="title_en" required>
-                    <p class="mt-1 text-xs text-gray-500">Enter a descriptive title for the download in English</p>
-                </div>
-                
-                <div class="mb-4">
-                    <label for="description_en" class="block text-sm font-medium text-gray-700 mb-2">Description (English)</label>
-                    <textarea class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
-                        id="description_en" name="description_en" rows="3"></textarea>
-                    <p class="mt-1 text-xs text-gray-500">Provide a brief description of the file in English (optional)</p>
-                </div>
-                
-                <div class="mb-4">
-                    <label for="keywords_en" class="block text-sm font-medium text-gray-700 mb-2">Keywords (English)</label>
-                    <input type="text" class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
-                        id="keywords_en" name="keywords_en">
-                    <p class="mt-1 text-xs text-gray-500">Enter keywords separated by commas to help with search in English (optional)</p>
-                </div>
-            </div>
+        <%- include('../../partials/messages') %>
 
-            <!-- Traditional Chinese Content -->
-            <div class="language-content language-content-tw hidden">
-                <div class="mb-4">
-                    <label for="title_tw" class="block text-sm font-medium text-gray-700 mb-2">
-                        標題 (中文) <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
-                        id="title_tw" name="title_tw" required>
-                    <p class="mt-1 text-xs text-gray-500">請輸入下載檔案的中文標題</p>
-                </div>
-                
-                <div class="mb-4">
-                    <label for="description_tw" class="block text-sm font-medium text-gray-700 mb-2">描述 (中文)</label>
-                    <textarea class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
-                        id="description_tw" name="description_tw" rows="3"></textarea>
-                    <p class="mt-1 text-xs text-gray-500">請提供檔案的中文簡短描述（選填）</p>
-                </div>
-                
-                <div class="mb-4">
-                    <label for="keywords_tw" class="block text-sm font-medium text-gray-700 mb-2">關鍵字 (中文)</label>
-                    <input type="text" class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
-                        id="keywords_tw" name="keywords_tw">
-                    <p class="mt-1 text-xs text-gray-500">請輸入以逗號分隔的中文關鍵字，以幫助搜尋（選填）</p>
-                </div>
-            </div>
-
-            <!-- Common Fields -->
-            <div class="border-t pt-4 mt-4">
-            
-            <div class="mb-4">
-                <label for="categoryId" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                <select class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
-                    id="categoryId" name="categoryId">
-                    <option value="">Select a category</option>
-                    <% categories.forEach(category => { %>
-                    <option value="<%= category.id %>"><%= category.name_en %></option>
-                    <% }); %>
-                </select>
-                <p class="mt-1 text-xs text-gray-500">Select a category to help organize downloads (optional)</p>
-            </div>
-            
-            <div class="mb-4">
-                <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                <select class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" 
-                    id="status" name="status">
-                    <option value="draft">Draft</option>
-                    <option value="published">Published</option>
-                </select>
-                <p class="mt-1 text-xs text-gray-500">Only published downloads will be visible on the frontend</p>
-            </div>
-            
-            <div class="mb-4">
-                <label for="file" class="block text-sm font-medium text-gray-700 mb-2">
-                    File <span class="text-red-500">*</span>
-                </label>
-                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-blue-500 transition-colors duration-200">
-                    <div class="space-y-1 text-center">
-                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3"></i>
-                        <div class="flex text-sm text-gray-600">
-                            <label for="file" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                                <span>Upload a file</span>
-                                <input type="file" id="file" name="file" class="sr-only" required>
-                            </label>
-                            <p class="pl-1">or drag and drop</p>
-                        </div>
-                        <p class="text-xs text-gray-500">
-                            PDF, Word, Excel, Images, or Archives up to 50MB
-                        </p>
+            <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
+                <div class="mb-4 pb-2 border-b border-gray-200">
+                    <div class="flex items-center">
+                        <i class="fas fa-file-upload mr-2 text-gray-600"></i>
+                        <h3 class="text-lg font-medium text-gray-700">上傳新檔案</h3>
                     </div>
                 </div>
-                <p class="mt-2 text-xs text-gray-500">
-                    Allowed file types: PDF, Word documents (.docx), Excel spreadsheets (.xlsx), Images (.jpg, .png), Archives (.zip, .rar)<br>
-                    Maximum file size: 50MB
-                </p>
-            </div>
-            
-            <div class="flex justify-between mt-6">
-                <a href="/admin/downloads" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
-                    Cancel
-                </a>
-                <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                    <i class="fas fa-upload mr-2"></i>
-                    Upload File
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
+                <form action="/admin/downloads" method="POST" enctype="multipart/form-data">
+                    <!-- Language Tabs -->
+                    <%- include('../../partials/admin-language-switcher', { title: '內容語言' , activeTab: 'en' }) %>
 
-<%- contentFor('script') %>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Language switcher functionality
-        const languageTabs = document.querySelectorAll('.language-tab');
-        const languageContents = document.querySelectorAll('.language-content');
-        
-        languageTabs.forEach(tab => {
-            tab.addEventListener('click', function() {
-                const lang = this.getAttribute('data-lang');
-                
-                // Update active tab
-                languageTabs.forEach(t => t.classList.remove('active-tab'));
-                this.classList.add('active-tab');
-                
-                // Show selected language content
-                languageContents.forEach(content => {
-                    if (content.classList.contains(`language-content-${lang}`)) {
-                        content.classList.remove('hidden');
-                    } else {
-                        content.classList.add('hidden');
+                        <!-- English Content -->
+                        <div class="language-content language-content-en">
+                            <div class="mb-4">
+                                <label for="title_en" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Title (English) <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text"
+                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                    id="title_en" name="title_en" required>
+                                <p class="mt-1 text-xs text-gray-500">Enter a descriptive title for the download in
+                                    English</p>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="description_en"
+                                    class="block text-sm font-medium text-gray-700 mb-2">Description (English)</label>
+                                <textarea
+                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                    id="description_en" name="description_en" rows="3"></textarea>
+                                <p class="mt-1 text-xs text-gray-500">Provide a brief description of the file in English
+                                    (optional)</p>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="keywords_en" class="block text-sm font-medium text-gray-700 mb-2">Keywords
+                                    (English)</label>
+                                <input type="text"
+                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                    id="keywords_en" name="keywords_en">
+                                <p class="mt-1 text-xs text-gray-500">Enter keywords separated by commas to help with
+                                    search in English (optional)</p>
+                            </div>
+                        </div>
+
+                        <!-- Traditional Chinese Content -->
+                        <div class="language-content language-content-tw hidden">
+                            <div class="mb-4">
+                                <label for="title_tw" class="block text-sm font-medium text-gray-700 mb-2">
+                                    標題 (中文) <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text"
+                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                    id="title_tw" name="title_tw" required>
+                                <p class="mt-1 text-xs text-gray-500">請輸入下載檔案的中文標題</p>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="description_tw" class="block text-sm font-medium text-gray-700 mb-2">描述
+                                    (中文)</label>
+                                <textarea
+                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                    id="description_tw" name="description_tw" rows="3"></textarea>
+                                <p class="mt-1 text-xs text-gray-500">請提供檔案的中文簡短描述（選填）</p>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="keywords_tw" class="block text-sm font-medium text-gray-700 mb-2">關鍵字
+                                    (中文)</label>
+                                <input type="text"
+                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                    id="keywords_tw" name="keywords_tw">
+                                <p class="mt-1 text-xs text-gray-500">請輸入以逗號分隔的中文關鍵字，以幫助搜尋（選填）</p>
+                            </div>
+                        </div>
+
+                        <!-- Common Fields -->
+                        <div class="border-t pt-4 mt-4">
+
+                            <div class="mb-4">
+                                <label for="categoryId" class="block text-sm font-medium text-gray-700 mb-2">分類</label>
+                                <select
+                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                    id="categoryId" name="categoryId">
+                                    <option value="">選擇分類</option>
+                                    <% categories.forEach(category=> { %>
+                                        <option value="<%= category.id %>">
+                                            <%= category.name_en %>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                                <p class="mt-1 text-xs text-gray-500">選擇一個分類以幫助組織下載（選填）</p>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="status" class="block text-sm font-medium text-gray-700 mb-2">狀態</label>
+                                <select
+                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                    id="status" name="status">
+                                    <option value="draft">草稿</option>
+                                    <option value="published">已發布</option>
+                                </select>
+                                <p class="mt-1 text-xs text-gray-500">只有已發布的下載內容會顯示在前台</p>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="file" class="block text-sm font-medium text-gray-700 mb-2">
+                                    檔案 <span class="text-red-500">*</span>
+                                </label>
+                                <div
+                                    class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-blue-500 transition-colors duration-200">
+                                    <div class="space-y-1 text-center">
+                                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3"></i>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="file"
+                                                class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                                <span>上傳檔案</span>
+                                                <input type="file" id="file" name="file" class="sr-only" required>
+                                            </label>
+                                            <p class="pl-1">或拖放至此</p>
+                                        </div>
+                                        <p class="text-xs text-gray-500">
+                                            PDF、Word、Excel、圖片或壓縮檔，最大 50MB
+                                        </p>
+                                    </div>
+                                </div>
+                                <p class="mt-2 text-xs text-gray-500">
+                                    允許的檔案類型：PDF、Word 文件 (.docx)、Excel 試算表 (.xlsx)、圖片 (.jpg, .png)、壓縮檔 (.zip, .rar)<br>
+                                    最大檔案大小：50MB
+                                </p>
+                            </div>
+
+                            <div class="flex justify-between mt-6">
+                                <a href="/admin/downloads"
+                                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                                    取消
+                                </a>
+                                <button type="submit"
+                                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                    <i class="fas fa-upload mr-2"></i>
+                                    上傳檔案
+                                </button>
+                            </div>
+                </form>
+            </div>
+    </div>
+
+    <%- contentFor('script') %>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // File upload preview and drag-drop functionality
+                const dropZone = document.querySelector('.border-dashed');
+                const fileInput = document.getElementById('file');
+
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, preventDefaults, false);
+                });
+
+                function preventDefaults(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, highlight, false);
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, unhighlight, false);
+                });
+
+                function highlight(e) {
+                    dropZone.classList.add('border-blue-500', 'bg-blue-50');
+                }
+
+                function unhighlight(e) {
+                    dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+                }
+
+                dropZone.addEventListener('drop', handleDrop, false);
+
+                function handleDrop(e) {
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+                    fileInput.files = files;
+                }
+
+                // Form validation
+                const form = document.querySelector('form');
+                form.addEventListener('submit', function (event) {
+                    const titleInput = document.getElementById('title');
+
+                    if (!titleInput.value.trim()) {
+                        alert('請輸入下載的標題');
+                        event.preventDefault();
+                        return;
+                    }
+
+                    if (!fileInput.files || fileInput.files.length === 0) {
+                        alert('請選擇要上傳的檔案');
+                        event.preventDefault();
+                        return;
+                    }
+
+                    const file = fileInput.files[0];
+                    const allowedTypes = [
+                        'application/pdf',
+                        'application/msword',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        'application/vnd.ms-excel',
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        'image/jpeg',
+                        'image/png',
+                        'image/gif',
+                        'application/zip',
+                        'application/x-rar-compressed'
+                    ];
+
+                    if (!allowedTypes.includes(file.type)) {
+                        alert('無效的檔案類型。請上傳 PDF、Word、Excel、圖片或壓縮檔。');
+                        event.preventDefault();
+                        return;
+                    }
+
+                    const maxSize = 50 * 1024 * 1024; // 50MB
+                    if (file.size > maxSize) {
+                        alert('檔案太大。最大大小為 50MB。');
+                        event.preventDefault();
+                        return;
                     }
                 });
             });
-        });
-        
-        // File upload preview and drag-drop functionality
-        const dropZone = document.querySelector('.border-dashed');
-        const fileInput = document.getElementById('file');
-        
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, preventDefaults, false);
-        });
-        
-        function preventDefaults (e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-        
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropZone.addEventListener(eventName, highlight, false);
-        });
-        
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, unhighlight, false);
-        });
-        
-        function highlight(e) {
-            dropZone.classList.add('border-blue-500', 'bg-blue-50');
-        }
-        
-        function unhighlight(e) {
-            dropZone.classList.remove('border-blue-500', 'bg-blue-50');
-        }
-        
-        dropZone.addEventListener('drop', handleDrop, false);
-        
-        function handleDrop(e) {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            fileInput.files = files;
-        }
-        
-        // Form validation
-        const form = document.querySelector('form');
-        form.addEventListener('submit', function(event) {
-            const titleInput = document.getElementById('title');
-            
-            if (!titleInput.value.trim()) {
-                alert('Please enter a title for the download');
-                event.preventDefault();
-                return;
-            }
-            
-            if (!fileInput.files || fileInput.files.length === 0) {
-                alert('Please select a file to upload');
-                event.preventDefault();
-                return;
-            }
-            
-            const file = fileInput.files[0];
-            const allowedTypes = [
-                'application/pdf', 
-                'application/msword', 
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                'application/vnd.ms-excel',
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'image/jpeg',
-                'image/png',
-                'image/gif',
-                'application/zip',
-                'application/x-rar-compressed'
-            ];
-            
-            if (!allowedTypes.includes(file.type)) {
-                alert('Invalid file type. Please upload a PDF, Word, Excel, image, or archive file.');
-                event.preventDefault();
-                return;
-            }
-            
-            const maxSize = 50 * 1024 * 1024; // 50MB
-            if (file.size > maxSize) {
-                alert('File is too large. Maximum size is 50MB.');
-                event.preventDefault();
-                return;
-            }
-        });
-    });
-</script>
+        </script>

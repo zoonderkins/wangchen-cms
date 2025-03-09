@@ -10,22 +10,13 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 // Define the URL path for serving the images (without 'public' prefix)
-const urlPath = 'uploads/news';
+const urlPath = '/uploads/news';
 
 // Configure storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        // Create year/month folder structure
-        const now = new Date();
-        const yearMonth = `${now.getFullYear()}/${(now.getMonth() + 1).toString().padStart(2, '0')}`;
-        const uploadPath = `${uploadDir}/${yearMonth}`;
-        
-        // Create directory if it doesn't exist
-        if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath, { recursive: true });
-        }
-        
-        cb(null, uploadPath);
+        // Use the main uploads/news directory directly
+        cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
         // Generate unique filename
@@ -80,11 +71,10 @@ const newsImageUpload = (req, res, next) => {
         if (req.file) {
             // Store the URL path (not the filesystem path) in req.file.url for easy access
             // This is what should be used for displaying the image in HTML
-            const yearMonth = new Date().toISOString().slice(0, 7).replace('-', '/');
-            req.file.url = `/${urlPath}/${yearMonth}/${req.file.filename}`;
+            req.file.url = `${urlPath}/${req.file.filename}`;
             
-            // Store the relative path (without 'public') for database storage
-            req.file.relativePath = `${urlPath}/${yearMonth}/${req.file.filename}`;
+            // Store the relative path for database storage
+            req.file.relativePath = `${urlPath}/${req.file.filename}`;
             
             logger.info(`File uploaded successfully: ${JSON.stringify({
                 filename: req.file.filename,

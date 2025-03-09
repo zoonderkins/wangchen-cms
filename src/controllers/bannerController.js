@@ -44,7 +44,7 @@ exports.renderCreateBanner = (req, res) => {
 // Create a new banner
 exports.createBanner = async (req, res) => {
     try {
-        const { title, description, url, isActive } = req.body;
+        const { title_en, title_tw, description_en, description_tw, url, isActive } = req.body;
         
         if (!req.file) {
             req.flash('error_msg', 'Please upload a media file');
@@ -59,8 +59,10 @@ exports.createBanner = async (req, res) => {
         
         await prisma.banner.create({
             data: {
-                title,
-                description,
+                title_en,
+                title_tw,
+                description_en,
+                description_tw,
                 url,
                 mediaPath: relativePath,
                 mediaType,
@@ -108,7 +110,7 @@ exports.renderEditBanner = async (req, res) => {
 exports.updateBanner = async (req, res) => {
     try {
         const bannerId = parseInt(req.params.id);
-        const { title, description, url, isActive } = req.body;
+        const { title_en, title_tw, description_en, description_tw, url, isActive } = req.body;
 
         const banner = await prisma.banner.findUnique({
             where: { id: bannerId }
@@ -120,8 +122,10 @@ exports.updateBanner = async (req, res) => {
         }
 
         const updateData = {
-            title,
-            description,
+            title_en,
+            title_tw,
+            description_en,
+            description_tw,
             url,
             isActive: isActive === 'true'
         };

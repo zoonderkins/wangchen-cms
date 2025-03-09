@@ -12,38 +12,53 @@ graph TB
     ADMIN --> ADMIN_AUTH["admin/auth/*"]
     ADMIN --> ADMIN_DASHBOARD["admin/dashboard"]
     ADMIN --> ADMIN_USERS["admin/users/*"]
-    ADMIN --> ADMIN_ARTICLES["admin/articles/*"]
-    ADMIN --> ADMIN_CATEGORIES["admin/categories/*"]
-    ADMIN --> ADMIN_MEDIA["admin/media/*"]
     ADMIN --> ADMIN_BANNERS["admin/banners/*"]
+    ADMIN --> ADMIN_NEWS["admin/news/*"]
+    ADMIN --> ADMIN_PLATFORMS["admin/platforms/*"]
+    ADMIN --> ADMIN_LINKS["admin/links/*"]
+    ADMIN --> ADMIN_FAQ["admin/faq/*"]
+    ADMIN --> ADMIN_DOWNLOADS["admin/downloads/*"]
+    ADMIN --> ADMIN_CONTACT["admin/contact/*"]
     
     %% Frontend Routes
     FRONTEND --> HOME["/"]
-    FRONTEND --> ARTICLES["/articles"]
-    FRONTEND --> ARTICLE["/article/:id"]
-    FRONTEND --> CATEGORY["/category/:id"]
+    FRONTEND --> NEWS["/news"]
+    FRONTEND --> NEWS_ITEM["/news/:id"]
+    FRONTEND --> PLATFORMS["/platforms"]
+    FRONTEND --> PLATFORM_ITEM["/platform/:id"]
+    FRONTEND --> FAQ["/faq"]
+    FRONTEND --> DOWNLOADS["/downloads"]
     FRONTEND --> CONTACT["/contact"]
     
     %% Controllers Layer
     subgraph Controllers
         AUTH_CTRL[AuthController]
         USER_CTRL[UserController]
-        ARTICLE_CTRL[ArticleController]
-        CATEGORY_CTRL[CategoryController]
-        CATPERM_CTRL[CategoryPermissionController]
-        MEDIA_CTRL[MediaController]
-        DASH_CTRL[DashboardController]
         BANNER_CTRL[BannerController]
+        NEWS_CTRL[NewsController]
+        PLATFORM_CTRL[PlatformController]
+        LINK_CTRL[LinkController]
+        FAQ_CTRL[FAQController]
+        DOWNLOAD_CTRL[DownloadController]
+        CONTACT_CTRL[ContactController]
+        DASH_CTRL[DashboardController]
     end
     
     %% Models Layer via Prisma
     subgraph Database Models
         USER[User]
-        ARTICLE_MODEL[Article]
-        CATEGORY_MODEL[Category]
-        MEDIA_MODEL[Media]
-        CAT_PERM[CategoryPermission]
         BANNER_MODEL[Banner]
+        NEWS_MODEL[News]
+        NEWS_CAT_MODEL[NewsCategory]
+        PLATFORM_MODEL[Platform]
+        PLATFORM_CAT_MODEL[PlatformCategory]
+        LINK_MODEL[Link]
+        FAQ_MODEL[FAQ]
+        FAQ_CAT_MODEL[FAQCategory]
+        DOWNLOAD_MODEL[Download]
+        DOWNLOAD_CAT_MODEL[DownloadCategory]
+        CONTACT_MODEL[Contact]
+        CONTACT_CAT_MODEL[ContactCategory]
     end
     
     %% Middleware Components
@@ -51,6 +66,9 @@ graph TB
         AUTH_MID[auth.js]
         UPLOAD[upload.js]
         BANNER_UPLOAD[bannerUpload.js]
+        NEWS_UPLOAD[newsImageUpload.js]
+        PLATFORM_UPLOAD[platformUpload.js]
+        DOWNLOAD_UPLOAD[downloadUpload.js]
         ERROR[error.js]
     end
     
@@ -62,41 +80,86 @@ graph TB
         
         PAGES[Pages] --> ADMIN_VIEWS[Admin Views]
         ADMIN_VIEWS --> BANNER_VIEWS[Banner Views]
+        ADMIN_VIEWS --> NEWS_VIEWS[News Views]
+        ADMIN_VIEWS --> PLATFORM_VIEWS[Platform Views]
+        ADMIN_VIEWS --> LINK_VIEWS[Link Views]
+        ADMIN_VIEWS --> FAQ_VIEWS[FAQ Views]
+        ADMIN_VIEWS --> DOWNLOAD_VIEWS[Download Views]
+        ADMIN_VIEWS --> CONTACT_VIEWS[Contact Views]
+        
         PAGES --> FRONTEND_VIEWS[Frontend Views]
         FRONTEND_VIEWS --> BANNER_CAROUSEL[Banner Carousel]
+        FRONTEND_VIEWS --> NEWS_LIST[News List]
+        FRONTEND_VIEWS --> PLATFORM_LIST[Platform List]
+        FRONTEND_VIEWS --> FAQ_LIST[FAQ List]
+        FRONTEND_VIEWS --> DOWNLOAD_LIST[Download List]
+        FRONTEND_VIEWS --> CONTACT_FORM[Contact Form]
         
         PARTIALS[Partials] --> NAV[Navigation]
         PARTIALS --> FORMS[Forms]
+        PARTIALS --> LANGUAGE_SWITCHER[Language Switcher]
     end
     
-    %% Relationships
+    %% Relationships - Admin Routes to Controllers
     ADMIN_AUTH --> AUTH_CTRL
     ADMIN_USERS --> USER_CTRL
-    ADMIN_ARTICLES --> ARTICLE_CTRL
-    ADMIN_CATEGORIES --> CATEGORY_CTRL
-    ADMIN_MEDIA --> MEDIA_CTRL
-    ADMIN_DASHBOARD --> DASH_CTRL
     ADMIN_BANNERS --> BANNER_CTRL
+    ADMIN_NEWS --> NEWS_CTRL
+    ADMIN_PLATFORMS --> PLATFORM_CTRL
+    ADMIN_LINKS --> LINK_CTRL
+    ADMIN_FAQ --> FAQ_CTRL
+    ADMIN_DOWNLOADS --> DOWNLOAD_CTRL
+    ADMIN_CONTACT --> CONTACT_CTRL
+    ADMIN_DASHBOARD --> DASH_CTRL
     
+    %% Relationships - Controllers to Models
     AUTH_CTRL --> USER
     USER_CTRL --> USER
-    ARTICLE_CTRL --> ARTICLE_MODEL
-    CATEGORY_CTRL --> CATEGORY_MODEL
-    CATPERM_CTRL --> CAT_PERM
-    MEDIA_CTRL --> MEDIA_MODEL
     BANNER_CTRL --> BANNER_MODEL
+    NEWS_CTRL --> NEWS_MODEL
+    NEWS_CTRL --> NEWS_CAT_MODEL
+    PLATFORM_CTRL --> PLATFORM_MODEL
+    PLATFORM_CTRL --> PLATFORM_CAT_MODEL
+    LINK_CTRL --> LINK_MODEL
+    FAQ_CTRL --> FAQ_MODEL
+    FAQ_CTRL --> FAQ_CAT_MODEL
+    DOWNLOAD_CTRL --> DOWNLOAD_MODEL
+    DOWNLOAD_CTRL --> DOWNLOAD_CAT_MODEL
+    CONTACT_CTRL --> CONTACT_MODEL
+    CONTACT_CTRL --> CONTACT_CAT_MODEL
     
-    %% Database Relationships
-    USER --> ARTICLE_MODEL
-    CATEGORY_MODEL --> ARTICLE_MODEL
-    MEDIA_MODEL --> ARTICLE_MODEL
-    USER --> CAT_PERM
-    CATEGORY_MODEL --> CAT_PERM
-    USER --> BANNER_MODEL
-    
-    %% Banner Flow
+    %% Middleware Relationships
     BANNER_CTRL --> BANNER_UPLOAD
-    HOME --> BANNER_CAROUSEL
+    NEWS_CTRL --> NEWS_UPLOAD
+    PLATFORM_CTRL --> PLATFORM_UPLOAD
+    DOWNLOAD_CTRL --> DOWNLOAD_UPLOAD
+    
+    %% Frontend Routes to Controllers
+    HOME --> BANNER_CTRL
+    NEWS --> NEWS_CTRL
+    NEWS_ITEM --> NEWS_CTRL
+    PLATFORMS --> PLATFORM_CTRL
+    PLATFORM_ITEM --> PLATFORM_CTRL
+    FAQ --> FAQ_CTRL
+    DOWNLOADS --> DOWNLOAD_CTRL
+    CONTACT --> CONTACT_CTRL
+    
+    %% Multilingual Support
+    subgraph Multilingual
+        EN[English Content]
+        TW[Traditional Chinese Content]
+    end
+    
+    NEWS_MODEL --> EN
+    NEWS_MODEL --> TW
+    PLATFORM_MODEL --> EN
+    PLATFORM_MODEL --> TW
+    FAQ_MODEL --> EN
+    FAQ_MODEL --> TW
+    DOWNLOAD_MODEL --> EN
+    DOWNLOAD_MODEL --> TW
+    BANNER_MODEL --> EN
+    BANNER_MODEL --> TW
     
     %% Style Definitions
     classDef controller fill:#f9f,stroke:#333,stroke-width:2px
@@ -104,10 +167,12 @@ graph TB
     classDef route fill:#bfb,stroke:#333,stroke-width:2px
     classDef middleware fill:#fbb,stroke:#333,stroke-width:2px
     classDef view fill:#ffb,stroke:#333,stroke-width:2px
+    classDef multilingual fill:#ffd,stroke:#333,stroke-width:2px
     
     %% Apply Styles
-    class AUTH_CTRL,USER_CTRL,ARTICLE_CTRL,CATEGORY_CTRL,CATPERM_CTRL,MEDIA_CTRL,DASH_CTRL,BANNER_CTRL controller
-    class USER,ARTICLE_MODEL,CATEGORY_MODEL,MEDIA_MODEL,CAT_PERM,BANNER_MODEL model
-    class ADMIN_AUTH,ADMIN_USERS,ADMIN_ARTICLES,ADMIN_CATEGORIES,ADMIN_MEDIA,ADMIN_BANNERS,HOME,ARTICLES,ARTICLE,CATEGORY route
-    class AUTH_MID,UPLOAD,BANNER_UPLOAD,ERROR middleware
-    class LAYOUTS,PAGES,PARTIALS,ADMIN_VIEWS,FRONTEND_VIEWS,BANNER_VIEWS,BANNER_CAROUSEL view
+    class AUTH_CTRL,USER_CTRL,BANNER_CTRL,NEWS_CTRL,PLATFORM_CTRL,LINK_CTRL,FAQ_CTRL,DOWNLOAD_CTRL,CONTACT_CTRL,DASH_CTRL controller
+    class USER,BANNER_MODEL,NEWS_MODEL,NEWS_CAT_MODEL,PLATFORM_MODEL,PLATFORM_CAT_MODEL,LINK_MODEL,FAQ_MODEL,FAQ_CAT_MODEL,DOWNLOAD_MODEL,DOWNLOAD_CAT_MODEL,CONTACT_MODEL,CONTACT_CAT_MODEL model
+    class ADMIN_AUTH,ADMIN_USERS,ADMIN_BANNERS,ADMIN_NEWS,ADMIN_PLATFORMS,ADMIN_LINKS,ADMIN_FAQ,ADMIN_DOWNLOADS,ADMIN_CONTACT,HOME,NEWS,NEWS_ITEM,PLATFORMS,PLATFORM_ITEM,FAQ,DOWNLOADS,CONTACT route
+    class AUTH_MID,UPLOAD,BANNER_UPLOAD,NEWS_UPLOAD,PLATFORM_UPLOAD,DOWNLOAD_UPLOAD,ERROR middleware
+    class LAYOUTS,PAGES,PARTIALS,ADMIN_VIEWS,FRONTEND_VIEWS,BANNER_VIEWS,NEWS_VIEWS,PLATFORM_VIEWS,LINK_VIEWS,FAQ_VIEWS,DOWNLOAD_VIEWS,CONTACT_VIEWS,BANNER_CAROUSEL,NEWS_LIST,PLATFORM_LIST,FAQ_LIST,DOWNLOAD_LIST,CONTACT_FORM,NAV,FORMS,LANGUAGE_SWITCHER view
+    class EN,TW multilingual
