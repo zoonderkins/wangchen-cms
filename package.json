@@ -1,7 +1,7 @@
 {
-  "name": "wangchen-backend",
+  "name": "cms-backend",
   "version": "1.0.0",
-  "description": "Wangchen CMS Backend",
+  "description": "CMS Backend",
   "main": "src/app.js",
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -15,9 +15,6 @@
     "prisma:studio": "prisma studio",
     "init-db": "node src/scripts/init-db.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@prisma/client": "^6.4.1",
     "bcryptjs": "^2.4.3",

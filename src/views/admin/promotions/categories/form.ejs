@@ -2,7 +2,7 @@
 
   <div class="container px-6 mx-auto grid">
     <h2 class="my-6 text-2xl font-semibold text-gray-700">
-      <%= title %>
+      <%= category ? '編輯推廣活動類別' : '建立推廣活動類別' %>
     </h2>
 
     <!-- CTA -->
@@ -10,10 +10,13 @@
       class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-purple-100 bg-purple-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple">
       <div class="flex items-center">
         <span>
-          <%= category ? 'Edit an existing promotion category' : 'Create a new promotion category' %> with multilingual
-            support.
+          <%= category ? '編輯現有推廣活動類別。' : '建立新的推廣活動類別，用於組織推廣活動項目。' %>
         </span>
       </div>
+      <a href="/admin/promotions/categories"
+        class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-800 border border-transparent rounded-lg active:bg-purple-900 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+        <i class="fas fa-arrow-left mr-2"></i> 返回類別列表
+      </a>
     </div>
 
     <!-- Flash Messages -->
@@ -36,69 +39,69 @@
                 <!-- English Name -->
                 <div class="mb-4">
                   <label class="block text-sm font-medium text-gray-700" for="name_en">
-                    Name (English) <span class="text-red-500">*</span>
+                    名稱 (英文) <span class="text-red-500">*</span>
                   </label>
                   <input
                     class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
-                    placeholder="Enter category name in English" type="text" id="name_en" name="name_en"
+                    placeholder="請輸入英文類別名稱" type="text" id="name_en" name="name_en"
                     value="<%= category ? category.name_en : '' %>" required />
-                  <p class="mt-1 text-xs text-gray-500">This will be used to generate the URL slug.</p>
+                  <p class="mt-1 text-xs text-gray-500">此名稱將用於生成網址代碼。</p>
                 </div>
 
                 <!-- Chinese Name -->
                 <div class="mb-4">
                   <label class="block text-sm font-medium text-gray-700" for="name_tw">
-                    Name (Traditional Chinese) <span class="text-red-500">*</span>
+                    名稱 (繁體中文) <span class="text-red-500">*</span>
                   </label>
                   <input
                     class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
-                    placeholder="Enter category name in Traditional Chinese" type="text" id="name_tw" name="name_tw"
+                    placeholder="請輸入繁體中文類別名稱" type="text" id="name_tw" name="name_tw"
                     value="<%= category ? category.name_tw : '' %>" required />
                 </div>
 
                 <!-- English Description -->
                 <div class="mb-4">
                   <label class="block text-sm font-medium text-gray-700" for="description_en">
-                    Description (English)
+                    描述 (英文)
                   </label>
                   <textarea
                     class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-textarea"
-                    rows="3" placeholder="Enter category description in English" id="description_en"
+                    rows="3" placeholder="請輸入英文類別描述" id="description_en"
                     name="description_en"><%= category ? category.description_en : '' %></textarea>
                 </div>
 
                 <!-- Chinese Description -->
                 <div class="mb-4">
                   <label class="block text-sm font-medium text-gray-700" for="description_tw">
-                    Description (Traditional Chinese)
+                    描述 (繁體中文)
                   </label>
                   <textarea
                     class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-textarea"
-                    rows="3" placeholder="Enter category description in Traditional Chinese" id="description_tw"
+                    rows="3" placeholder="請輸入繁體中文類別描述" id="description_tw"
                     name="description_tw"><%= category ? category.description_tw : '' %></textarea>
                 </div>
 
                 <!-- Display Order -->
                 <div class="mb-4">
                   <label class="block text-sm font-medium text-gray-700" for="order">
-                    Display Order
+                    顯示順序
                   </label>
                   <input
                     class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
-                    placeholder="Enter display order (lower numbers appear first)" type="number" id="order" name="order"
+                    placeholder="請輸入顯示順序（數字越小排序越前）" type="number" id="order" name="order"
                     value="<%= category ? category.order : '0' %>" min="0" />
-                  <p class="mt-1 text-xs text-gray-500">Categories with lower numbers will appear first in lists.</p>
+                  <p class="mt-1 text-xs text-gray-500">數字越小的類別在列表中顯示越靠前。</p>
                 </div>
 
                 <!-- Form Actions -->
                 <div class="flex justify-end mt-6 space-x-3">
                   <a href="/admin/promotions/categories"
                     class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray">
-                    Cancel
+                    取消
                   </a>
                   <button type="submit"
                     class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                    <%= category ? 'Update Category' : 'Create Category' %>
+                    <%= category ? '更新類別' : '建立類別' %>
                   </button>
                 </div>
               </form>
@@ -113,7 +116,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
                   </path>
                 </svg>
-                Back to Categories
+                返回類別列表
               </a>
             </div>
   </div>

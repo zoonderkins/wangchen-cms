@@ -2,9 +2,9 @@
 
   <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold">Create Platform Item</h1>
+      <h1 class="text-3xl font-bold">建立平台項目</h1>
       <a href="/admin/platforms" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-        <i class="fas fa-arrow-left mr-2"></i> Back to List
+        <i class="fas fa-arrow-left mr-2"></i> 返回列表
       </a>
     </div>
 
@@ -15,7 +15,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label class="block text-gray-700 text-sm font-bold mb-2" for="title_en">
-                Title (English) <span class="text-red-500">*</span>
+                標題 (英文) <span class="text-red-500">*</span>
               </label>
               <input
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -23,7 +23,7 @@
             </div>
             <div>
               <label class="block text-gray-700 text-sm font-bold mb-2" for="title_tw">
-                Title (Traditional Chinese) <span class="text-red-500">*</span>
+                標題 (繁體中文) <span class="text-red-500">*</span>
               </label>
               <input
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -35,12 +35,12 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label class="block text-gray-700 text-sm font-bold mb-2" for="categoryId">
-                Category <span class="text-red-500 category-required">*</span>
+                類別 <span class="text-red-500 category-required">*</span>
               </label>
               <select
                 class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="categoryId" name="categoryId" required>
-                <option value="">Select a category</option>
+                <option value="">選擇類別</option>
                 <% categories.forEach(function(category) { %>
                   <option value="<%= category.id %>">
                     <%= category.name_en %> / <%= category.name_tw %>
@@ -50,14 +50,14 @@
             </div>
             <div>
               <label class="block text-gray-700 text-sm font-bold mb-2" for="type">
-                Content Type <span class="text-red-500">*</span>
+                內容類型 <span class="text-red-500">*</span>
               </label>
               <select
                 class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="type" name="type" required onchange="toggleContentFields()">
-                <option value="plain_text">Plain Text</option>
-                <option value="image">Image with Caption</option>
-                <option value="attachment_only">Attachment Only</option>
+                <option value="plain_text">純文字</option>
+                <option value="image">圖片與說明</option>
+                <option value="attachment_only">僅附件</option>
                 <option value="partners">合作夥伴</option>
               </select>
             </div>
@@ -68,7 +68,7 @@
             <div>
               <div class="content-field" id="content_en_field">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="content_en">
-                  Content (English) <span class="text-red-500 content-required">*</span>
+                  內容 (英文) <span class="text-red-500 content-required">*</span>
                 </label>
                 <textarea
                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -78,7 +78,7 @@
             <div>
               <div class="content-field" id="content_tw_field">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="content_tw">
-                  Content (Traditional Chinese) <span class="text-red-500 content-required">*</span>
+                  內容 (繁體中文) <span class="text-red-500 content-required">*</span>
                 </label>
                 <textarea
                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
