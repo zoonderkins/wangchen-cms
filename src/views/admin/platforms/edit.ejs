@@ -59,6 +59,7 @@
                 <option value="image" <%=item.type==='image' ? 'selected' : '' %>>Image with Caption</option>
                 <option value="attachment_only" <%=item.type==='attachment_only' ? 'selected' : '' %>>Attachment Only
                 </option>
+                <option value="partners" <%=item.type==='partners' ? 'selected' : '' %>>合作伙伴</option>
               </select>
             </div>
           </div>
@@ -87,11 +88,77 @@
             </div>
           </div>
 
+          <!-- Partners Fields (only visible for partners type) -->
+          <div id="partners-fields-section" class="hidden">
+            <div class="bg-blue-50 p-4 rounded-lg mb-6">
+              <h3 class="text-xl font-bold mb-4 text-blue-800">供應商 (Suppliers)</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="suppliers_en">
+                    Suppliers List (English)
+                  </label>
+                  <textarea
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="suppliers_en" name="suppliers_en" rows="5"><%= item.suppliers_en || '' %></textarea>
+                  <p class="text-gray-600 text-xs italic mt-1">Enter one company per line</p>
+                </div>
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="suppliers_tw">
+                    Suppliers List (Traditional Chinese)
+                  </label>
+                  <textarea
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="suppliers_tw" name="suppliers_tw" rows="5"><%= item.suppliers_tw || '' %></textarea>
+                  <p class="text-gray-600 text-xs italic mt-1">Enter one company per line</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-green-50 p-4 rounded-lg mb-6">
+              <h3 class="text-xl font-bold mb-4 text-green-800">需求商 (Buyers)</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="buyers_en">
+                    Buyers List (English)
+                  </label>
+                  <textarea
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="buyers_en" name="buyers_en" rows="5"><%= item.buyers_en || '' %></textarea>
+                  <p class="text-gray-600 text-xs italic mt-1">Enter one company per line</p>
+                </div>
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="buyers_tw">
+                    Buyers List (Traditional Chinese)
+                  </label>
+                  <textarea
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="buyers_tw" name="buyers_tw" rows="5"><%= item.buyers_tw || '' %></textarea>
+                  <p class="text-gray-600 text-xs italic mt-1">Enter one company per line</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Partners Sub-Type Selection (only visible for partners type) -->
+          <div id="partners-subtype-section" class="mb-4 hidden">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="partners_subtype">
+              Partner Type <span class="text-red-500">*</span>
+            </label>
+            <select
+              class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="partners_subtype" name="partners_subtype">
+              <option value="supplier" <%=item.partners_subtype==='supplier' ? 'selected' : '' %>>供應商 (Supplier)
+              </option>
+              <option value="buyer" <%=item.partners_subtype==='buyer' ? 'selected' : '' %>>需求商 (Buyer)</option>
+            </select>
+            <p class="text-gray-600 text-xs italic mt-1">Select whether these are suppliers or buyers</p>
+          </div>
+
           <!-- Current Image -->
           <% /* Debug info for image path */ %>
             <% console.log('Image path in template:', item.imagePath); %>
               <% if (item.imagePath) { %>
-                <div class="mb-4">
+                <div class="mb-4" id="current-image-section">
                   <div class="bg-gray-100 rounded p-4">
                     <h6 class="font-bold mb-2">Current Image</h6>
                     <div class="flex items-center">
@@ -257,6 +324,14 @@
         const categoryField = document.getElementById('categoryId');
         const contentRequiredMarks = document.querySelectorAll('.content-required');
         const categoryRequiredMarks = document.querySelectorAll('.category-required');
+        const partnersSubtypeSection = document.getElementById('partners-subtype-section');
+        const partnersFieldsSection = document.getElementById('partners-fields-section');
+
+        // Image, URL, and attachments sections
+        const currentImageSection = document.getElementById('current-image-section');
+        const imageUploadSection = document.getElementById('image-upload-section');
+        const urlSection = document.getElementById('url-section');
+        const attachmentsSection = document.getElementById('attachments-section');
 
         if (type === 'attachment_only') {
           // Make content fields optional
@@ -267,6 +342,43 @@
           // Hide required marks
           contentRequiredMarks.forEach(mark => mark.style.display = 'none');
           categoryRequiredMarks.forEach(mark => mark.style.display = 'none');
+
+          // Hide partners sections
+          partnersSubtypeSection.classList.add('hidden');
+          partnersFieldsSection.classList.add('hidden');
+
+          // Show image, URL, and attachments sections
+          if (currentImageSection) currentImageSection.style.display = 'block';
+          if (imageUploadSection) imageUploadSection.style.display = 'block';
+          if (urlSection) urlSection.style.display = 'block';
+          if (attachmentsSection) attachmentsSection.style.display = 'block';
+
+          // Show content fields
+          document.getElementById('content_en_field').parentNode.parentNode.style.display = 'grid';
+        } else if (type === 'partners') {
+          // Hide content fields
+          document.getElementById('content_en_field').parentNode.parentNode.style.display = 'none';
+
+          // Make content fields not required
+          contentEnField.required = false;
+          contentTwField.required = false;
+          categoryField.required = true;
+
+          // Hide required marks for content, show for category
+          contentRequiredMarks.forEach(mark => mark.style.display = 'none');
+          categoryRequiredMarks.forEach(mark => mark.style.display = 'inline');
+
+          // Hide old partners sub-type section
+          partnersSubtypeSection.classList.add('hidden');
+
+          // Show partners fields section
+          partnersFieldsSection.classList.remove('hidden');
+
+          // Hide image, URL, and attachments sections
+          if (currentImageSection) currentImageSection.style.display = 'none';
+          if (imageUploadSection) imageUploadSection.style.display = 'none';
+          if (urlSection) urlSection.style.display = 'none';
+          if (attachmentsSection) attachmentsSection.style.display = 'none';
         } else {
           // Make content fields required
           contentEnField.required = true;
@@ -276,11 +388,61 @@
           // Show required marks
           contentRequiredMarks.forEach(mark => mark.style.display = 'inline');
           categoryRequiredMarks.forEach(mark => mark.style.display = 'inline');
+
+          // Hide partners sections
+          partnersSubtypeSection.classList.add('hidden');
+          partnersFieldsSection.classList.add('hidden');
+
+          // Show image, URL, and attachments sections
+          if (currentImageSection) currentImageSection.style.display = 'block';
+          if (imageUploadSection) imageUploadSection.style.display = 'block';
+          if (urlSection) urlSection.style.display = 'block';
+          if (attachmentsSection) attachmentsSection.style.display = 'block';
+
+          // Show content fields
+          document.getElementById('content_en_field').parentNode.parentNode.style.display = 'grid';
+
+          // Reset labels to default
+          document.querySelector('label[for="content_en"]').innerHTML =
+            'Content (English) <span class="text-red-500 content-required">*</span>';
+          document.querySelector('label[for="content_tw"]').innerHTML =
+            'Content (Traditional Chinese) <span class="text-red-500 content-required">*</span>';
         }
       }
 
       // Set initial state
       document.addEventListener('DOMContentLoaded', function () {
+        // Add IDs to sections for easier toggling
+        const imageUploadRow = document.querySelector('input[name="image"]').closest('.grid');
+        imageUploadRow.id = 'image-upload-section';
+
+        const urlField = document.querySelector('input[name="url"]');
+        if (urlField) {
+          urlField.closest('div').id = 'url-section';
+        }
+
+        // Find attachments section
+        const attachmentsHeadings = document.querySelectorAll('h3');
+        let attachmentsSection = null;
+
+        for (const heading of attachmentsHeadings) {
+          if (heading.textContent.includes('Attachments')) {
+            attachmentsSection = heading.closest('.mb-4');
+            break;
+          }
+        }
+
+        if (!attachmentsSection) {
+          attachmentsSection = document.querySelector('input[name="attachments"]');
+          if (attachmentsSection) {
+            attachmentsSection = attachmentsSection.closest('.mb-4');
+          }
+        }
+
+        if (attachmentsSection) {
+          attachmentsSection.id = 'attachments-section';
+        }
+
         toggleContentFields();
       });
     </script>

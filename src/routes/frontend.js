@@ -757,13 +757,13 @@ router.get('/:language/platforms', (req, res, next) => {
         logger.debug(`Language from URL: ${language}, URL: ${req.originalUrl}`);
         next();
     } else {
-        res.redirect('/en/platforms');
+        res.redirect('/tw/platforms');
     }
 }, platformController.showPlatformPage);
 
-// Add a root platforms route that redirects to the English version
+// Add a root platforms route that redirects to the Traditional Chinese version
 router.get('/platforms', (req, res) => {
-    res.redirect('/en/platforms');
+    res.redirect('/tw/platforms');
 });
 
 // Platform detail route - restrict to only valid languages
@@ -773,7 +773,7 @@ router.get('/:language/platform/:slug', (req, res, next) => {
         req.language = language;
         next();
     } else {
-        res.redirect(`/en/platform/${req.params.slug}`);
+        res.redirect(`/tw/platform/${req.params.slug}`);
     }
 }, platformController.showPlatformPage);
 

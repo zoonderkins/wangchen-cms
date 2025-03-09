@@ -477,26 +477,27 @@ model PlatformCategory {
 // Platform items
 model Platform {
   id            Int       @id @default(autoincrement())
-  title_en      String    // English title
-  title_tw      String    // Traditional Chinese title
-  content_en    String    @db.LongText // English content
-  content_tw    String    @db.LongText // Traditional Chinese content
-  slug          String    @unique // URL-friendly identifier
-  url           String?   // External URL if applicable
-  imagePath     String?   // Path to the uploaded image
-  publishedDate DateTime  // Custom published date
+  title_en      String    @db.VarChar(255)
+  title_tw      String    @db.VarChar(255)
+  content_en    String?   @db.Text
+  content_tw    String?   @db.Text
+  slug          String    @db.VarChar(255)
+  url           String?   @db.VarChar(255)
+  imagePath     String?   @db.VarChar(255)
+  publishedDate DateTime  @default(now())
   status        Status    @default(draft)
-  type          String    @default("plain_text") // Content type: plain_text, image, attachment_only
-  order         Int       @default(0) // Display order
+  type          String    @default("plain_text") // plain_text, image, attachment_only, partners
+  order         Int       @default(0)
+  partnersData  String?   @db.Text // JSON data for partners type: { suppliers: { companies_en: [], companies_tw: [] }, buyers: { companies_en: [], companies_tw: [] } }
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   deletedAt     DateTime?
-
+  
   // Relations
   category      PlatformCategory? @relation(fields: [categoryId], references: [id])
   categoryId    Int?
-  author        User             @relation(fields: [authorId], references: [id])
-  authorId      Int
+  author        User?            @relation(fields: [authorId], references: [id])
+  authorId      Int?
   attachments   PlatformAttachment[]
 
   @@map("Platforms")

@@ -133,7 +133,8 @@ exports.createItem = async (req, res) => {
     try {
         const { 
             title_en, title_tw, type, content_en, content_tw, 
-            order, categoryId, url, publishedDate, status 
+            order, categoryId, url, publishedDate, status,
+            partners_subtype 
         } = req.body;
         
         // Handle image upload
@@ -162,6 +163,46 @@ exports.createItem = async (req, res) => {
         const finalContentTw = type === 'attachment_only' && !content_tw ? '' : content_tw;
         const finalCategoryId = type === 'attachment_only' && !categoryId ? null : parseInt(categoryId || '0');
         
+        // For partners type, content_en and content_tw are used for company lists
+        const isPartners = type === 'partners';
+        let partnersData = null;
+        
+        if (isPartners) {
+            console.log('Creating a partners type item');
+            logger.info('Creating a partners type item');
+            
+            // Get supplier and buyer company lists from request
+            const suppliers_en = req.body.suppliers_en || '';
+            const suppliers_tw = req.body.suppliers_tw || '';
+            const buyers_en = req.body.buyers_en || '';
+            const buyers_tw = req.body.buyers_tw || '';
+            
+            console.log('Suppliers EN:', suppliers_en);
+            console.log('Suppliers TW:', suppliers_tw);
+            console.log('Buyers EN:', buyers_en);
+            console.log('Buyers TW:', buyers_tw);
+            
+            logger.info(`Suppliers EN: ${suppliers_en}`);
+            logger.info(`Suppliers TW: ${suppliers_tw}`);
+            logger.info(`Buyers EN: ${buyers_en}`);
+            logger.info(`Buyers TW: ${buyers_tw}`);
+            
+            // Store both supplier and buyer company lists in a JSON field
+            partnersData = {
+                suppliers: {
+                    companies_en: suppliers_en ? suppliers_en.split('\n').filter(line => line.trim() !== '') : [],
+                    companies_tw: suppliers_tw ? suppliers_tw.split('\n').filter(line => line.trim() !== '') : []
+                },
+                buyers: {
+                    companies_en: buyers_en ? buyers_en.split('\n').filter(line => line.trim() !== '') : [],
+                    companies_tw: buyers_tw ? buyers_tw.split('\n').filter(line => line.trim() !== '') : []
+                }
+            };
+            
+            console.log('Partners data:', partnersData);
+            logger.info(`Partners data: ${JSON.stringify(partnersData)}`);
+        }
+        
         // Create the platform item
         const platform = await prisma.platform.create({
             data: {
@@ -177,7 +218,8 @@ exports.createItem = async (req, res) => {
                 order: order ? parseInt(order) : 0,
                 categoryId: finalCategoryId,
                 authorId: req.session.user.id,
-                status: status || 'draft'
+                status: status || 'draft',
+                partnersData: isPartners ? JSON.stringify(partnersData) : null
             }
         });
         
@@ -350,12 +392,42 @@ exports.renderEditItem = async (req, res) => {
         let displayContentEn = item.content_en;
         let displayContentTw = item.content_tw;
         
-        if (item.type === 'bullet_points' && item.bulletPoints_en && item.bulletPoints_tw) {
+        // Parse partnersData if this is a partners type item
+        if (item.type === 'partners' && item.partnersData) {
             try {
-                displayContentEn = JSON.parse(item.bulletPoints_en).join('\n');
-                displayContentTw = JSON.parse(item.bulletPoints_tw).join('\n');
+                const partnersData = JSON.parse(item.partnersData);
+                console.log('Parsed partners data:', partnersData);
+                logger.info(`Parsed partners data: ${item.partnersData}`);
+                
+                // Extract supplier and buyer company lists
+                if (partnersData.suppliers) {
+                    item.suppliers_en = partnersData.suppliers.companies_en && Array.isArray(partnersData.suppliers.companies_en) 
+                        ? partnersData.suppliers.companies_en.join('\n') 
+                        : '';
+                    
+                    item.suppliers_tw = partnersData.suppliers.companies_tw && Array.isArray(partnersData.suppliers.companies_tw) 
+                        ? partnersData.suppliers.companies_tw.join('\n') 
+                        : '';
+                }
+                
+                if (partnersData.buyers) {
+                    item.buyers_en = partnersData.buyers.companies_en && Array.isArray(partnersData.buyers.companies_en) 
+                        ? partnersData.buyers.companies_en.join('\n') 
+                        : '';
+                    
+                    item.buyers_tw = partnersData.buyers.companies_tw && Array.isArray(partnersData.buyers.companies_tw) 
+                        ? partnersData.buyers.companies_tw.join('\n') 
+                        : '';
+                }
             } catch (e) {
-                logger.error('Error parsing bullet points:', e);
+                console.error('Error parsing partners data:', e);
+                logger.error(`Error parsing partners data: ${e.message}`);
+                
+                // Initialize empty fields if parsing fails
+                item.suppliers_en = '';
+                item.suppliers_tw = '';
+                item.buyers_en = '';
+                item.buyers_tw = '';
             }
         }
         
@@ -416,7 +488,7 @@ exports.updateItem = async (req, res) => {
         const { 
             title_en, title_tw, type, content_en, content_tw, 
             order, categoryId, url, publishedDate, removeImage,
-            removeAttachments, status 
+            removeAttachments, status, partners_subtype 
         } = req.body;
         
         // Log the status for debugging
@@ -548,6 +620,46 @@ exports.updateItem = async (req, res) => {
         const finalContentTw = type === 'attachment_only' && !content_tw ? '' : content_tw;
         const finalCategoryId = type === 'attachment_only' && !categoryId ? null : parseInt(categoryId || '0');
         
+        // For partners type, content_en and content_tw are used for company lists
+        const isPartners = type === 'partners';
+        let partnersData = null;
+        
+        if (isPartners) {
+            console.log('Updating a partners type item');
+            logger.info('Updating a partners type item');
+            
+            // Get supplier and buyer company lists from request
+            const suppliers_en = req.body.suppliers_en || '';
+            const suppliers_tw = req.body.suppliers_tw || '';
+            const buyers_en = req.body.buyers_en || '';
+            const buyers_tw = req.body.buyers_tw || '';
+            
+            console.log('Suppliers EN:', suppliers_en);
+            console.log('Suppliers TW:', suppliers_tw);
+            console.log('Buyers EN:', buyers_en);
+            console.log('Buyers TW:', buyers_tw);
+            
+            logger.info(`Suppliers EN: ${suppliers_en}`);
+            logger.info(`Suppliers TW: ${suppliers_tw}`);
+            logger.info(`Buyers EN: ${buyers_en}`);
+            logger.info(`Buyers TW: ${buyers_tw}`);
+            
+            // Store both supplier and buyer company lists in a JSON field
+            partnersData = {
+                suppliers: {
+                    companies_en: suppliers_en ? suppliers_en.split('\n').filter(line => line.trim() !== '') : [],
+                    companies_tw: suppliers_tw ? suppliers_tw.split('\n').filter(line => line.trim() !== '') : []
+                },
+                buyers: {
+                    companies_en: buyers_en ? buyers_en.split('\n').filter(line => line.trim() !== '') : [],
+                    companies_tw: buyers_tw ? buyers_tw.split('\n').filter(line => line.trim() !== '') : []
+                }
+            };
+            
+            console.log('Partners data:', partnersData);
+            logger.info(`Partners data: ${JSON.stringify(partnersData)}`);
+        }
+        
         await prisma.platform.update({
             where: { id: parsedId },
             data: {
@@ -561,7 +673,8 @@ exports.updateItem = async (req, res) => {
                 publishedDate: new Date(publishedDate),
                 order: order ? parseInt(order) : 0,
                 categoryId: finalCategoryId,
-                status: status
+                status: status,
+                partnersData: isPartners ? JSON.stringify(partnersData) : null
             }
         });
         
@@ -711,6 +824,25 @@ exports.deleteItem = async (req, res) => {
 // Frontend: Display platform page
 exports.showPlatformPage = async (req, res) => {
     try {
+        // Get language from URL path parameter first, then from req.language, default to 'tw'
+        const language = req.params.language || req.language || 'tw';
+        
+        console.log('Platform page language:', language);
+        logger.info(`Platform page language: ${language}`);
+        
+        const pageTitle = language === 'tw' ? '製造平台' : 'Manufacturing Platform';
+        
+        // Fetch navigation pages for the layout
+        const navigationPages = await prisma.page.findMany({
+            where: {
+                status: 'published',
+                showInNavigation: true
+            },
+            orderBy: {
+                navigationOrder: 'asc'
+            }
+        });
+        
         const platforms = await prisma.platform.findMany({
             where: {
                 deletedAt: null,
@@ -730,6 +862,29 @@ exports.showPlatformPage = async (req, res) => {
             }
         });
         
+        // Process partners data for each platform item
+        platforms.forEach(platform => {
+            if (platform.type === 'partners' && platform.partnersData) {
+                try {
+                    // Keep the original JSON string for the template
+                    platform.parsedPartnersData = JSON.parse(platform.partnersData);
+                } catch (error) {
+                    console.error('Error parsing partners data:', error);
+                    logger.error(`Error parsing partners data for platform ${platform.id}: ${error.message}`);
+                    platform.parsedPartnersData = { 
+                        suppliers: {
+                            companies_en: [],
+                            companies_tw: []
+                        },
+                        buyers: {
+                            companies_en: [],
+                            companies_tw: []
+                        }
+                    };
+                }
+            }
+        });
+        
         const categories = await prisma.platformCategory.findMany({
             where: {
                 deletedAt: null
@@ -746,14 +901,19 @@ exports.showPlatformPage = async (req, res) => {
         }));
         
         res.render('frontend/platform', {
-            title: 'Manufacturing Platform',
-            platformsByCategory
+            title: pageTitle,
+            platformsByCategory,
+            navigationPages,
+            currentLanguage: language
         });
     } catch (error) {
+        const language = req.params.language || req.language || 'tw';
         logger.error('Error displaying platform page:', error);
         res.status(500).render('error', {
-            message: 'Error loading platform page',
-            error
+            message: language === 'tw' ? '載入平台頁面失敗' : 'Error loading platform page',
+            error,
+            navigationPages: [],
+            currentLanguage: language
         });
     }
 };
@@ -1072,9 +1232,9 @@ exports.renderEditCategory = async (req, res) => {
             return res.redirect('/admin/platforms/categories');
         }
         
-        // Use findFirst instead of findUnique
-        console.log('Category - Finding platform category with ID:', parsedId);
-        logger.info(`Category - Finding platform category with ID: ${parsedId}`);
+        // Check if category exists
+        console.log('Render Edit Category - Finding platform category with ID:', parsedId);
+        logger.info(`Render Edit Category - Finding platform category with ID: ${parsedId}`);
         
         const category = await prisma.platformCategory.findFirst({
             where: {
@@ -1084,22 +1244,23 @@ exports.renderEditCategory = async (req, res) => {
         });
         
         if (!category) {
-            console.log('Category - Platform category not found with ID:', parsedId);
-            logger.warn(`Category - Platform category not found with ID: ${parsedId}`);
+            console.log('Render Edit Category - Platform category not found with ID:', parsedId);
+            logger.warn(`Render Edit Category - Platform category not found with ID: ${parsedId}`);
             req.flash('error_msg', 'Platform category not found');
             return res.redirect('/admin/platforms/categories');
         }
         
-        console.log('Category - Platform category found:', category.id, category.name_en);
-        logger.info(`Category - Platform category found: ${category.id}, ${category.name_en}`);
+        console.log('Render Edit Category - Platform category found:', category.id, category.name_en);
+        logger.info(`Render Edit Category - Platform category found: ${category.id}, ${category.name_en}`);
         
+        // Render the edit form
         res.render('admin/platforms/categories/edit', {
             title: 'Edit Platform Category',
             category
         });
         
-        console.log('Edit platform category form rendered successfully');
-        logger.info('Edit platform category form rendered successfully');
+        console.log('Render Edit Category - Edit form rendered successfully');
+        logger.info('Render Edit Category - Edit form rendered successfully');
     } catch (error) {
         console.error('Error rendering edit platform category form:', error);
         logger.error('Error rendering edit platform category form:', error);

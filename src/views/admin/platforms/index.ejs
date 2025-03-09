@@ -50,11 +50,13 @@
                         <% } else if (item.type==='attachment_only' ) { %>
                           <span class="bg-purple-200 text-purple-800 py-1 px-3 rounded-full text-xs">Attachment
                             Only</span>
-                          <% } else { %>
-                            <span class="bg-gray-200 text-gray-800 py-1 px-3 rounded-full text-xs">
-                              <%= item.type || 'Unknown' %>
-                            </span>
-                            <% } %>
+                          <% } else if (item.type==='partners' ) { %>
+                            <span class="bg-yellow-200 text-yellow-800 py-1 px-3 rounded-full text-xs">合作伙伴</span>
+                            <% } else { %>
+                              <span class="bg-gray-200 text-gray-800 py-1 px-3 rounded-full text-xs">
+                                <%= item.type || 'Unknown' %>
+                              </span>
+                              <% } %>
                   </td>
                   <td class="py-3 px-6 text-left">
                     <% if (item.status==='published' ) { %>
