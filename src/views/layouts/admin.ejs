@@ -49,56 +49,56 @@
                                 <a href="/admin/categories"
                                     class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Categories</a> -->
                                 <a href="/admin/banners"
-                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Banners</a>
+                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">橫幅</a>
                                 <a href="/admin/downloads"
-                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Downloads</a>
+                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">下載</a>
                                 <a href="/admin/news"
-                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">News</a>
+                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">新聞</a>
                                 <a href="/admin/promotions"
-                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Promotions</a>
+                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">促銷</a>
                                 <a href="/admin/about"
-                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">About</a>
+                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">關於</a>
                                 <div class="relative inline-block text-left dropdown">
                                     <button type="button"
                                         class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium dropdown-toggle">
-                                        FAQ <i class="fas fa-chevron-down ml-1"></i>
+                                        常見問題 <i class="fas fa-chevron-down ml-1"></i>
                                     </button>
                                     <div
                                         class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 dropdown-menu">
                                         <div class="py-1" role="menu" aria-orientation="vertical">
                                             <a href="/admin/faq/categories"
                                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                                role="menuitem">Categories</a>
+                                                role="menuitem">分類</a>
                                             <a href="/admin/faq/items"
                                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                                role="menuitem">FAQ Items</a>
+                                                role="menuitem">問題項目</a>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="relative inline-block text-left dropdown">
                                     <button type="button"
                                         class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium dropdown-toggle">
-                                        Contact <i class="fas fa-chevron-down ml-1"></i>
+                                        聯絡 <i class="fas fa-chevron-down ml-1"></i>
                                     </button>
                                     <div
                                         class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 dropdown-menu">
                                         <div class="py-1" role="menu" aria-orientation="vertical">
                                             <a href="/admin/contact"
                                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                                role="menuitem">Submissions</a>
+                                                role="menuitem">提交</a>
                                             <a href="/admin/contact/categories"
                                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                                role="menuitem">Categories</a>
+                                                role="menuitem">分類</a>
                                         </div>
                                     </div>
                                 </div>
                                 <a href="/admin/links"
-                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Links</a>
+                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">連結</a>
                                 <a href="/admin/platforms"
-                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Platforms</a>
+                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">平台</a>
                                 <% if (user.role && user.role==='super_admin' ) { %>
                                     <a href="/admin/users"
-                                        class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Users</a>
+                                        class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">用戶</a>
                                     <% } %>
                             </div>
                         </div>
@@ -117,7 +117,7 @@
                             </div>
                             <% } else { %>
                                 <a href="/admin/login" class="text-gray-300 hover:text-white">
-                                    <i class="fas fa-sign-in-alt"></i> Login
+                                    <i class="fas fa-sign-in-alt"></i> 登入
                                 </a>
                                 <% } %>
                     </div>
@@ -134,47 +134,47 @@
         <div id="mobile-menu" class="md:hidden hidden">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <a href="/admin/dashboard"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Dashboard</a>
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">儀表板</a>
                 <a href="/admin/articles"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Articles</a>
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">文章</a>
                 <a href="/admin/pages"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Pages</a>
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">頁面</a>
                 <a href="/admin/media"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Media</a>
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">媒體</a>
                 <a href="/admin/categories"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Categories</a>
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">分類</a>
                 <a href="/admin/banners"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Banners</a>
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">橫幅</a>
                 <a href="/admin/downloads"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Downloads</a>
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">下載</a>
                 <a href="/admin/news"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">News</a>
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">新聞</a>
                 <a href="/admin/promotions"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Promotions</a>
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">促銷</a>
                 <a href="/admin/about"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">About</a>
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">關於</a>
                 <div class="border-t border-gray-700 my-1"></div>
                 <a href="/admin/faq/categories"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">FAQ
-                    Categories</a>
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">常見問題
+                    分類</a>
                 <a href="/admin/faq/items"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">FAQ
-                    Items</a>
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">常見問題
+                    項目</a>
                 <div class="border-t border-gray-700 my-1"></div>
                 <a href="/admin/contact"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Contact
-                    Submissions</a>
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">聯絡
+                    提交</a>
                 <a href="/admin/contact/categories"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Contact
-                    Categories</a>
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">聯絡
+                    分類</a>
                 <div class="border-t border-gray-700 my-1"></div>
                 <a href="/admin/links"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Links</a>
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">連結</a>
                 <a href="/admin/platforms"
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Platforms</a>
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">平台</a>
                 <% if (typeof user !=='undefined' && user && user.role && user.role==='super_admin' ) { %>
                     <a href="/admin/users"
-                        class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Users</a>
+                        class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">用戶</a>
                     <% } %>
                         <% if (typeof user !=='undefined' && user) { %>
                             <div class="border-t border-gray-700 pt-4 pb-3">
@@ -185,8 +185,7 @@
                                 </div>
                                 <div class="mt-3 px-2">
                                     <a href="/admin/logout"
-                                        class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">Sign
-                                        out</a>
+                                        class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">登出</a>
                                 </div>
                             </div>
                             <% } %>
@@ -221,7 +220,7 @@
                             <footer class="bg-white shadow mt-8 py-4">
                                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                                     <p class="text-center text-gray-500 text-sm">
-                                        &copy; <%= new Date().getFullYear() %> Wangchen CMS. All rights reserved.
+                                        &copy; <%= new Date().getFullYear() %> Wangchen CMS. 版權所有。
                                     </p>
                                 </div>
                             </footer>
