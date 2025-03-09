@@ -149,40 +149,62 @@ exports.createDownload = async (req, res) => {
 // Admin: Render edit download form
 exports.renderEditDownload = async (req, res) => {
     try {
-        const { id } = req.params;
-        const [download, categories] = await Promise.all([
-            prisma.download.findUnique({
-                where: { id: parseInt(id) },
-                include: { category: true }
-            }),
-            prisma.downloadCategory.findMany({
-                where: { deletedAt: null },
-                orderBy: { order: 'asc' }
-            })
-        ]);
-
-        if (!download) {
-            req.flash('error_msg', 'Download not found');
+        // Parse the ID from the request params
+        const id = parseInt(req.params.id, 10);
+        
+        // Check if ID is valid
+        if (isNaN(id)) {
+            req.flash('error_msg', 'Invalid download ID');
             return res.redirect('/admin/downloads');
         }
+        
+        try {
+            const [download, categories] = await Promise.all([
+                prisma.download.findUnique({
+                    where: { id },
+                    include: { category: true }
+                }),
+                prisma.downloadCategory.findMany({
+                    where: { deletedAt: null },
+                    orderBy: { order: 'asc' }
+                })
+            ]);
 
-        res.render('admin/downloads/edit', {
-            title: 'Edit Download',
-            layout: 'layouts/admin',
-            download,
-            categories
-        });
+            if (!download) {
+                req.flash('error_msg', 'Download not found');
+                return res.redirect('/admin/downloads');
+            }
+
+            res.render('admin/downloads/edit', {
+                title: 'Edit Download',
+                layout: 'layouts/admin',
+                download,
+                categories
+            });
+        } catch (prismaError) {
+            logger.error('Prisma error when fetching download:', prismaError);
+            req.flash('error_msg', 'Error loading download data');
+            return res.redirect('/admin/downloads');
+        }
     } catch (error) {
         logger.error('Error loading download:', error);
         req.flash('error_msg', 'Error loading download');
-        res.redirect('/admin/downloads');
+        return res.redirect('/admin/downloads');
     }
 };
 
 // Admin: Update a download
 exports.updateDownload = async (req, res) => {
     try {
-        const { id } = req.params;
+        // Parse the ID from the request params
+        const id = parseInt(req.params.id, 10);
+        
+        // Check if ID is valid
+        if (isNaN(id)) {
+            req.flash('error_msg', 'Invalid download ID');
+            return res.redirect('/admin/downloads');
+        }
+        
         const { 
             title_en, title_tw, 
             description_en, description_tw, 
@@ -191,103 +213,122 @@ exports.updateDownload = async (req, res) => {
             categoryId 
         } = req.body;
         
-        // Find the download to update
-        const download = await prisma.download.findUnique({
-            where: { id: parseInt(id) }
-        });
+        try {
+            // Find the download to update
+            const download = await prisma.download.findUnique({
+                where: { id }
+            });
 
-        if (!download) {
-            req.flash('error_msg', 'Download not found');
-            return res.redirect('/admin/downloads');
-        }
-
-        // Prepare update data
-        const updateData = {
-            title_en,
-            title_tw,
-            description_en,
-            description_tw,
-            status,
-            keywords_en,
-            keywords_tw,
-            categoryId: categoryId ? parseInt(categoryId) : null,
-            updatedAt: new Date()
-        };
-
-        // If a new file is uploaded, update file information
-        if (req.file) {
-            const { filename, originalname, mimetype, size } = req.file;
-            const filePath = `/uploads/downloads/${filename}`;
-            
-            // Delete the old file
-            try {
-                await fs.unlink(path.join(__dirname, '../../public', download.path));
-            } catch (error) {
-                logger.error('Error deleting old file:', error);
-                // Continue even if old file deletion fails
+            if (!download) {
+                req.flash('error_msg', 'Download not found');
+                return res.redirect('/admin/downloads');
             }
 
-            // Update with new file information
-            Object.assign(updateData, {
-                filename,
-                originalName: originalname,
-                mimeType: mimetype,
-                size,
-                path: filePath
+            // Prepare update data
+            const updateData = {
+                title_en,
+                title_tw,
+                description_en,
+                description_tw,
+                status,
+                keywords_en,
+                keywords_tw,
+                categoryId: categoryId ? parseInt(categoryId) : null,
+                updatedAt: new Date()
+            };
+
+            // If a new file is uploaded, update file information
+            if (req.file) {
+                const { filename, originalname, mimetype, size } = req.file;
+                const filePath = `/uploads/downloads/${filename}`;
+                
+                // Delete the old file
+                try {
+                    await fs.unlink(path.join(__dirname, '../../public', download.path));
+                } catch (error) {
+                    logger.error('Error deleting old file:', error);
+                    // Continue even if old file deletion fails
+                }
+
+                // Update with new file information
+                Object.assign(updateData, {
+                    filename,
+                    originalName: originalname,
+                    mimeType: mimetype,
+                    size,
+                    path: filePath
+                });
+            }
+
+            // Update the download
+            await prisma.download.update({
+                where: { id },
+                data: updateData
             });
+
+            req.flash('success_msg', 'Download updated successfully');
+            return res.redirect('/admin/downloads');
+        } catch (prismaError) {
+            logger.error('Prisma error when updating download:', prismaError);
+            req.flash('error_msg', 'Error updating download');
+            return res.redirect('/admin/downloads');
         }
-
-        // Update the download
-        await prisma.download.update({
-            where: { id: parseInt(id) },
-            data: updateData
-        });
-
-        req.flash('success_msg', 'Download updated successfully');
-        return res.redirect('/admin/downloads');
     } catch (error) {
         logger.error('Error updating download:', error);
         req.flash('error_msg', 'Error updating download');
-        return res.redirect(`/admin/downloads/edit/${req.params.id}`);
+        return res.redirect('/admin/downloads');
     }
 };
 
 // Admin: Delete a download
 exports.deleteDownload = async (req, res) => {
     try {
-        const { id } = req.params;
+        // Parse the ID from the request params
+        const id = parseInt(req.params.id, 10);
         
-        // Find the download to delete
-        const download = await prisma.download.findUnique({
-            where: { id: parseInt(id) }
-        });
-
-        if (!download) {
-            req.flash('error_msg', 'Download not found');
+        // Check if ID is valid
+        if (isNaN(id)) {
+            req.flash('error_msg', 'Invalid download ID');
             return res.redirect('/admin/downloads');
         }
-
-        // Delete the file from the filesystem
+        
         try {
-            const filePath = path.join(process.cwd(), 'public', download.path);
-            await fs.unlink(filePath);
-            logger.info(`Deleted file: ${filePath}`);
-        } catch (error) {
-            logger.warn(`Could not delete file: ${error.message}`);
+            // Find the download to delete
+            const download = await prisma.download.findUnique({
+                where: { id }
+            });
+
+            if (!download) {
+                req.flash('error_msg', 'Download not found');
+                return res.redirect('/admin/downloads');
+            }
+
+            // Delete the file from the filesystem
+            try {
+                const filePath = path.join(process.cwd(), 'public', download.path);
+                await fs.unlink(filePath);
+                logger.info(`Deleted file: ${filePath}`);
+            } catch (error) {
+                logger.warn(`Could not delete file: ${error.message}`);
+            }
+
+            // Soft delete the download
+            await prisma.download.update({
+                where: { id },
+                data: { deletedAt: new Date() }
+            });
+
+            req.flash('success_msg', 'Download deleted successfully');
+            return res.redirect('/admin/downloads');
+        } catch (prismaError) {
+            logger.error('Prisma error when deleting download:', prismaError);
+            req.flash('error_msg', 'Error deleting download');
+            return res.redirect('/admin/downloads');
         }
-
-        // Delete from database (soft delete)
-        await prisma.download.update({
-            where: { id: parseInt(id) },
-            data: { deletedAt: new Date() }
-        });
-
-        req.flash('success_msg', 'Download deleted successfully');
-        res.redirect('/admin/downloads');
     } catch (error) {
         logger.error('Error deleting download:', error);
         req.flash('error_msg', 'Error deleting download');
-        res.redirect('/admin/downloads');
+        return res.redirect('/admin/downloads');
     }
 };
 

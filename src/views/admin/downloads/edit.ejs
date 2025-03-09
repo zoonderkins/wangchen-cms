@@ -22,159 +22,155 @@
                     </div>
                 </div>
                 <form action="/admin/downloads/<%= download.id %>" method="POST" enctype="multipart/form-data">
-                    <!-- Language Tabs -->
-                    <%- include('../../partials/admin-language-switcher', { title: '內容語言' , activeTab: 'en' }) %>
-
-                        <!-- English Content -->
-                        <div class="language-content language-content-en">
-                            <div class="mb-4">
-                                <label for="title_en" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Title (English) <span class="text-red-500">*</span>
-                                </label>
-                                <input type="text"
-                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                    id="title_en" name="title_en" value="<%= download.title_en %>" required>
-                                <p class="mt-1 text-xs text-gray-500">Enter a descriptive title for the download in
-                                    English</p>
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="description_en"
-                                    class="block text-sm font-medium text-gray-700 mb-2">Description (English)</label>
-                                <textarea
-                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                    id="description_en" name="description_en"
-                                    rows="3"><%= download.description_en || '' %></textarea>
-                                <p class="mt-1 text-xs text-gray-500">Provide a brief description of the file in English
-                                    (optional)</p>
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="keywords_en" class="block text-sm font-medium text-gray-700 mb-2">Keywords
-                                    (English)</label>
-                                <input type="text"
-                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                    id="keywords_en" name="keywords_en" value="<%= download.keywords_en || '' %>">
-                                <p class="mt-1 text-xs text-gray-500">Enter keywords separated by commas to help with
-                                    search in English (optional)</p>
-                            </div>
+                    <!-- English Content -->
+                    <div class="mb-6 pb-4 border-b border-gray-200">
+                        <h2 class="text-lg font-medium text-gray-700 mb-4">English Content</h2>
+                        <div class="mb-4">
+                            <label for="title_en" class="block text-sm font-medium text-gray-700 mb-2">
+                                標題 (英文) <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text"
+                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                id="title_en" name="title_en" value="<%= download.title_en %>" required>
+                            <p class="mt-1 text-xs text-gray-500">請輸入下載檔案的英文標題</p>
                         </div>
 
-                        <!-- Traditional Chinese Content -->
-                        <div class="language-content language-content-tw hidden">
-                            <div class="mb-4">
-                                <label for="title_tw" class="block text-sm font-medium text-gray-700 mb-2">
-                                    標題 (中文) <span class="text-red-500">*</span>
-                                </label>
-                                <input type="text"
-                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                    id="title_tw" name="title_tw" value="<%= download.title_tw %>" required>
-                                <p class="mt-1 text-xs text-gray-500">請輸入下載檔案的中文標題</p>
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="description_tw" class="block text-sm font-medium text-gray-700 mb-2">描述
-                                    (中文)</label>
-                                <textarea
-                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                    id="description_tw" name="description_tw"
-                                    rows="3"><%= download.description_tw || '' %></textarea>
-                                <p class="mt-1 text-xs text-gray-500">請提供檔案的中文簡短描述（選填）</p>
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="keywords_tw" class="block text-sm font-medium text-gray-700 mb-2">關鍵字
-                                    (中文)</label>
-                                <input type="text"
-                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                    id="keywords_tw" name="keywords_tw" value="<%= download.keywords_tw || '' %>">
-                                <p class="mt-1 text-xs text-gray-500">請輸入以逗號分隔的中文關鍵字，以幫助搜尋（選填）</p>
-                            </div>
+                        <div class="mb-4">
+                            <label for="description_en" class="block text-sm font-medium text-gray-700 mb-2">描述
+                                (英文)</label>
+                            <textarea
+                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                id="description_en" name="description_en"
+                                rows="3"><%= download.description_en || '' %></textarea>
+                            <p class="mt-1 text-xs text-gray-500">請提供檔案的英文簡短描述（選填）</p>
                         </div>
 
-                        <!-- Common Fields -->
-                        <div class="border-t pt-4 mt-4">
+                        <div class="mb-4">
+                            <label for="keywords_en" class="block text-sm font-medium text-gray-700 mb-2">關鍵字
+                                (英文)</label>
+                            <input type="text"
+                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                id="keywords_en" name="keywords_en" value="<%= download.keywords_en || '' %>">
+                            <p class="mt-1 text-xs text-gray-500">請輸入以逗號分隔的英文關鍵字，以幫助搜尋（選填）</p>
+                        </div>
+                    </div>
 
-                            <div class="mb-4">
-                                <label for="categoryId" class="block text-sm font-medium text-gray-700 mb-2">分類</label>
-                                <select
-                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                    id="categoryId" name="categoryId">
-                                    <option value="">選擇分類</option>
-                                    <% categories.forEach(category=> { %>
-                                        <option value="<%= category.id %>" <%=download.categoryId===category.id
-                                            ? 'selected' : '' %>><%= category.name_en %>
-                                        </option>
-                                        <% }); %>
-                                </select>
-                                <p class="mt-1 text-xs text-gray-500">選擇一個分類以幫助組織下載（選填）</p>
-                            </div>
+                    <!-- Traditional Chinese Content -->
+                    <div class="mb-6 pb-4 border-b border-gray-200">
+                        <h2 class="text-lg font-medium text-gray-700 mb-4">中文內容</h2>
+                        <div class="mb-4">
+                            <label for="title_tw" class="block text-sm font-medium text-gray-700 mb-2">
+                                標題 (中文) <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text"
+                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                id="title_tw" name="title_tw" value="<%= download.title_tw %>" required>
+                            <p class="mt-1 text-xs text-gray-500">請輸入下載檔案的中文標題</p>
+                        </div>
 
-                            <div class="mb-4">
-                                <label for="status" class="block text-sm font-medium text-gray-700 mb-2">狀態</label>
-                                <select
-                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                    id="status" name="status">
-                                    <option value="draft" <%=download.status==='draft' ? 'selected' : '' %>>草稿</option>
-                                    <option value="published" <%=download.status==='published' ? 'selected' : '' %>>已發布
+                        <div class="mb-4">
+                            <label for="description_tw" class="block text-sm font-medium text-gray-700 mb-2">描述
+                                (中文)</label>
+                            <textarea
+                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                id="description_tw" name="description_tw"
+                                rows="3"><%= download.description_tw || '' %></textarea>
+                            <p class="mt-1 text-xs text-gray-500">請提供檔案的中文簡短描述（選填）</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="keywords_tw" class="block text-sm font-medium text-gray-700 mb-2">關鍵字
+                                (中文)</label>
+                            <input type="text"
+                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                id="keywords_tw" name="keywords_tw" value="<%= download.keywords_tw || '' %>">
+                            <p class="mt-1 text-xs text-gray-500">請輸入以逗號分隔的中文關鍵字，以幫助搜尋（選填）</p>
+                        </div>
+                    </div>
+
+                    <!-- Common Fields -->
+                    <div class="border-t pt-4 mt-4">
+
+                        <div class="mb-4">
+                            <label for="categoryId" class="block text-sm font-medium text-gray-700 mb-2">分類</label>
+                            <select
+                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                id="categoryId" name="categoryId">
+                                <option value="">選擇分類</option>
+                                <% categories.forEach(category=> { %>
+                                    <option value="<%= category.id %>" <%=download.categoryId===category.id ? 'selected'
+                                        : '' %>><%= category.name_en %>
                                     </option>
-                                </select>
-                                <p class="mt-1 text-xs text-gray-500">只有已發布的下載內容會顯示在前台</p>
-                            </div>
+                                    <% }); %>
+                            </select>
+                            <p class="mt-1 text-xs text-gray-500">選擇一個分類以幫助組織下載（選填）</p>
+                        </div>
 
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">目前檔案</label>
-                                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                                    <div class="flex items-center">
-                                        <% let icon='fa-file' ; if (download.mimeType.includes('pdf')) {
-                                            icon='fa-file-pdf' ; } else if (download.mimeType.includes('word')) {
-                                            icon='fa-file-word' ; } else if (download.mimeType.includes('excel') ||
-                                            download.mimeType.includes('spreadsheet')) { icon='fa-file-excel' ; } else
-                                            if (download.mimeType.includes('image')) { icon='fa-file-image' ; } else if
-                                            (download.mimeType.includes('zip') || download.mimeType.includes('rar')) {
-                                            icon='fa-file-archive' ; } %>
-                                            <i class="fas <%= icon %> fa-2x mr-3 text-gray-600"></i>
-                                            <div>
-                                                <div class="font-medium">
-                                                    <%= download.originalName %>
-                                                </div>
-                                                <div class="text-xs text-gray-500">
-                                                    <%= download.mimeType %> | <%= (download.size / 1024).toFixed(2) %>
-                                                            KB
-                                                </div>
+                        <div class="mb-4">
+                            <label for="status" class="block text-sm font-medium text-gray-700 mb-2">狀態</label>
+                            <select
+                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                id="status" name="status">
+                                <option value="draft" <%=download.status==='draft' ? 'selected' : '' %>>草稿</option>
+                                <option value="published" <%=download.status==='published' ? 'selected' : '' %>>已發布
+                                </option>
+                            </select>
+                            <p class="mt-1 text-xs text-gray-500">只有已發布的下載內容會顯示在前台</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">目前檔案</label>
+                            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex items-center">
+                                    <% let icon='fa-file' ; if (download.mimeType.includes('pdf')) { icon='fa-file-pdf'
+                                        ; } else if (download.mimeType.includes('word')) { icon='fa-file-word' ; } else
+                                        if (download.mimeType.includes('excel') ||
+                                        download.mimeType.includes('spreadsheet')) { icon='fa-file-excel' ; } else if
+                                        (download.mimeType.includes('image')) { icon='fa-file-image' ; } else if
+                                        (download.mimeType.includes('zip') || download.mimeType.includes('rar')) {
+                                        icon='fa-file-archive' ; } %>
+                                        <i class="fas <%= icon %> fa-2x mr-3 text-gray-600"></i>
+                                        <div>
+                                            <div class="font-medium">
+                                                <%= download.originalName %>
                                             </div>
-                                            <a href="<%= download.path %>" target="_blank"
-                                                class="ml-auto px-3 py-1 text-xs font-medium text-blue-600 bg-blue-100 rounded-md hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                                                <i class="fas fa-download mr-1"></i> 下載
-                                            </a>
-                                    </div>
+                                            <div class="text-xs text-gray-500">
+                                                <%= download.mimeType %> | <%= (download.size / 1024).toFixed(2) %>
+                                                        KB
+                                            </div>
+                                        </div>
+                                        <a href="<%= download.path %>" target="_blank"
+                                            class="ml-auto px-3 py-1 text-xs font-medium text-blue-600 bg-blue-100 rounded-md hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                            <i class="fas fa-download mr-1"></i> 下載
+                                        </a>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="mb-4">
-                                <label for="file" class="block text-sm font-medium text-gray-700 mb-2">替換檔案</label>
-                                <input type="file"
-                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                    id="file" name="file">
-                                <p class="mt-1 text-xs text-gray-500">
-                                    留空以保留目前檔案。上傳新檔案將替換現有檔案。<br>
-                                    允許的檔案類型：PDF、Word 文件 (.docx)、Excel 試算表 (.xlsx)、圖片 (.jpg, .png)、壓縮檔 (.zip, .rar)<br>
-                                    最大檔案大小：50MB
-                                </p>
-                            </div>
+                        <div class="mb-4">
+                            <label for="file" class="block text-sm font-medium text-gray-700 mb-2">替換檔案</label>
+                            <input type="file"
+                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                id="file" name="file">
+                            <p class="mt-1 text-xs text-gray-500">
+                                留空以保留目前檔案。上傳新檔案將替換現有檔案。<br>
+                                允許的檔案類型：PDF、Word 文件 (.docx)、Excel 試算表 (.xlsx)、圖片 (.jpg, .png)、壓縮檔 (.zip, .rar)<br>
+                                最大檔案大小：50MB
+                            </p>
+                        </div>
 
-                            <div class="flex justify-between mt-6">
-                                <a href="/admin/downloads"
-                                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
-                                    取消
-                                </a>
-                                <div class="flex space-x-2">
-                                    <button type="submit"
-                                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                                        更新
-                                    </button>
-                                </div>
+                        <div class="flex justify-between mt-6">
+                            <a href="/admin/downloads"
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                                取消
+                            </a>
+                            <div class="flex space-x-2">
+                                <button type="submit"
+                                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                    更新
+                                </button>
                             </div>
+                        </div>
                 </form>
             </div>
     </div>
@@ -182,29 +178,6 @@
     <%- contentFor('script') %>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                // Language switcher functionality
-                const languageTabs = document.querySelectorAll('.language-tab');
-                const languageContents = document.querySelectorAll('.language-content');
-
-                languageTabs.forEach(tab => {
-                    tab.addEventListener('click', function () {
-                        const lang = this.getAttribute('data-lang');
-
-                        // Update active tab
-                        languageTabs.forEach(t => t.classList.remove('active-tab'));
-                        this.classList.add('active-tab');
-
-                        // Show selected language content
-                        languageContents.forEach(content => {
-                            if (content.classList.contains(`language-content-${lang}`)) {
-                                content.classList.remove('hidden');
-                            } else {
-                                content.classList.add('hidden');
-                            }
-                        });
-                    });
-                });
-
                 // Form validation
                 const form = document.querySelector('form');
                 form.addEventListener('submit', function (event) {

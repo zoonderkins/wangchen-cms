@@ -72,7 +72,7 @@ const handleDownloadFileUploadError = (err, req, res, next) => {
         req.flash('error_msg', `Upload error: ${err.message}`);
         
         // Redirect based on whether it's a create or edit operation
-        if (req.params.id) {
+        if (req.params.id && req.params.id.trim() !== '') {
             return res.redirect(`/admin/downloads/edit/${req.params.id}`);
         } else {
             return res.redirect('/admin/downloads/create');
@@ -83,7 +83,7 @@ const handleDownloadFileUploadError = (err, req, res, next) => {
         req.flash('error_msg', `Upload error: ${err.message}`);
         
         // Redirect based on whether it's a create or edit operation
-        if (req.params.id) {
+        if (req.params.id && req.params.id.trim() !== '') {
             return res.redirect(`/admin/downloads/edit/${req.params.id}`);
         } else {
             return res.redirect('/admin/downloads/create');

@@ -6,13 +6,20 @@ exports.listCategories = async (req, res) => {
     try {
         const categories = await prisma.downloadCategory.findMany({
             where: { deletedAt: null },
-            orderBy: { order: 'asc' }
+            orderBy: { order: 'asc' },
+            include: {
+                _count: {
+                    select: { downloads: true }
+                }
+            }
         });
 
         res.render('admin/downloads/categories/list', {
             title: 'Download Categories',
             layout: 'layouts/admin',
-            categories
+            categories,
+            success_msg: req.flash('success_msg'),
+            error_msg: req.flash('error_msg')
         });
     } catch (error) {
         logger.error('Error listing download categories:', error);
@@ -45,20 +52,27 @@ exports.createCategory = async (req, res) => {
         });
 
         req.flash('success_msg', 'Download category created successfully');
-        res.redirect('/admin/downloads/categories');
+        return res.redirect('/admin/downloads/categories');
     } catch (error) {
         logger.error('Error creating download category:', error);
         req.flash('error_msg', 'Error creating download category');
-        res.redirect('/admin/downloads/categories/create');
+        return res.redirect('/admin/downloads/categories/create');
     }
 };
 
 // Render edit category form
 exports.renderEditCategory = async (req, res) => {
     try {
-        const { id } = req.params;
+        // Parse the ID from the request params
+        const id = parseInt(req.params.id, 10);
+        
+        if (isNaN(id)) {
+            req.flash('error_msg', 'Invalid category ID');
+            return res.redirect('/admin/downloads/categories');
+        }
+        
         const category = await prisma.downloadCategory.findUnique({
-            where: { id: parseInt(id) }
+            where: { id }
         });
 
         if (!category) {
@@ -74,18 +88,25 @@ exports.renderEditCategory = async (req, res) => {
     } catch (error) {
         logger.error('Error loading download category:', error);
         req.flash('error_msg', 'Error loading download category');
-        res.redirect('/admin/downloads/categories');
+        return res.redirect('/admin/downloads/categories');
     }
 };
 
 // Update a category
 exports.updateCategory = async (req, res) => {
     try {
-        const { id } = req.params;
+        // Parse the ID from the request params
+        const id = parseInt(req.params.id, 10);
+        
+        if (isNaN(id)) {
+            req.flash('error_msg', 'Invalid category ID');
+            return res.redirect('/admin/downloads/categories');
+        }
+        
         const { name_en, name_tw, description_en, description_tw, order } = req.body;
 
         await prisma.downloadCategory.update({
-            where: { id: parseInt(id) },
+            where: { id },
             data: {
                 name_en,
                 name_tw,
@@ -97,29 +118,35 @@ exports.updateCategory = async (req, res) => {
         });
 
         req.flash('success_msg', 'Download category updated successfully');
-        res.redirect('/admin/downloads/categories');
+        return res.redirect('/admin/downloads/categories');
     } catch (error) {
         logger.error('Error updating download category:', error);
         req.flash('error_msg', 'Error updating download category');
-        res.redirect('/admin/downloads/categories');
+        return res.redirect('/admin/downloads/categories');
     }
 };
 
 // Delete a category
 exports.deleteCategory = async (req, res) => {
     try {
-        const { id } = req.params;
-
+        // Parse the ID from the request params
+        const id = parseInt(req.params.id, 10);
+        
+        if (isNaN(id)) {
+            req.flash('error_msg', 'Invalid category ID');
+            return res.redirect('/admin/downloads/categories');
+        }
+        
         await prisma.downloadCategory.update({
-            where: { id: parseInt(id) },
+            where: { id },
             data: { deletedAt: new Date() }
         });
 
         req.flash('success_msg', 'Download category deleted successfully');
-        res.redirect('/admin/downloads/categories');
+        return res.redirect('/admin/downloads/categories');
     } catch (error) {
         logger.error('Error deleting download category:', error);
         req.flash('error_msg', 'Error deleting download category');
-        res.redirect('/admin/downloads/categories');
+        return res.redirect('/admin/downloads/categories');
     }
 };

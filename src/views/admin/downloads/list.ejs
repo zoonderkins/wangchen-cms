@@ -34,7 +34,7 @@
                             <option value="">所有分類</option>
                             <% categories.forEach(category=> { %>
                                 <option value="<%= category.id %>" <%=filters.category==category.id ? 'selected' : '' %>
-                                    ><%= category.name %>
+                                    ><%= category.name_en %> / <%= category.name_tw %>
                                 </option>
                                 <% }); %>
                         </select>
@@ -89,8 +89,13 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="text-sm text-gray-900">
-                                        <%= download.category ? download.category.name : '-' %>
+                                        <%= download.category ? download.category.name_en : '-' %>
                                     </div>
+                                    <% if (download.category) { %>
+                                        <div class="text-sm text-gray-500">
+                                            <%= download.category.name_tw %>
+                                        </div>
+                                        <% } %>
                                 </td>
                                 <td class="px-6 py-4">
                                     <span

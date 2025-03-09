@@ -212,20 +212,20 @@ router.post('/faq/items/:id/delete', hasRole(['super_admin', 'admin', 'editor'])
 // Download Routes
 const downloadFileUpload = require('../middleware/downloadFileUpload');
 
+// Download Category Routes
+router.get('/downloads/categories', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.listCategories);
+router.get('/downloads/categories/create', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.renderCreateCategory);
+router.post('/downloads/categories', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.createCategory);
+router.get('/downloads/categories/edit/:id', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.renderEditCategory);
+router.post('/downloads/categories/:id', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.updateCategory);
+router.post('/downloads/categories/:id/delete', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.deleteCategory);
+
 router.get('/downloads', hasRole(['super_admin', 'admin', 'editor']), downloadController.listDownloads);
 router.get('/downloads/create', hasRole(['super_admin', 'admin', 'editor']), downloadController.renderCreateDownload);
 router.post('/downloads', hasRole(['super_admin', 'admin', 'editor']), downloadFileUpload, downloadController.createDownload);
 router.get('/downloads/edit/:id', hasRole(['super_admin', 'admin', 'editor']), downloadController.renderEditDownload);
 router.post('/downloads/:id', hasRole(['super_admin', 'admin', 'editor']), downloadFileUpload, downloadController.updateDownload);
 router.post('/downloads/:id/delete', hasRole(['super_admin', 'admin', 'editor']), downloadController.deleteDownload);
-
-// Download Category Routes
-router.get('/downloads/categories', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.listCategories);
-router.get('/downloads/categories/create', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.renderCreateCategory);
-router.post('/downloads/categories/create', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.createCategory);
-router.get('/downloads/categories/:id/edit', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.renderEditCategory);
-router.post('/downloads/categories/:id/edit', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.updateCategory);
-router.post('/downloads/categories/:id/delete', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.deleteCategory);
 
 // News Dashboard
 router.get('/news', hasRole(['super_admin', 'admin', 'editor']), (req, res) => {
