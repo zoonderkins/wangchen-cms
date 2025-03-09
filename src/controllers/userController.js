@@ -142,6 +142,10 @@ exports.updateUser = async (req, res) => {
         const { id } = req.params;
         const { username, email, password, roleId } = req.body;
 
+        // Log the request body for debugging
+        console.log('Update User Request Body:', req.body);
+        console.log('roleId:', roleId, 'type:', typeof roleId);
+
         // Get current user data
         const currentUser = await prisma.user.findUnique({
             where: { id: parseInt(id) },
@@ -153,9 +157,13 @@ exports.updateUser = async (req, res) => {
             return res.redirect('/admin/users');
         }
 
+        // Use current roleId if not provided in the form
+        const roleIdToUse = roleId ? parseInt(roleId) : currentUser.roleId;
+        console.log('roleIdToUse:', roleIdToUse);
+
         // Get new role details
         const newRole = await prisma.role.findUnique({
-            where: { id: parseInt(roleId) }
+            where: { id: roleIdToUse }
         });
 
         if (!newRole) {
@@ -176,7 +184,7 @@ exports.updateUser = async (req, res) => {
         const updateData = {
             username,
             email,
-            roleId: parseInt(roleId),
+            roleId: roleIdToUse,
             isActive: true // Always keep isActive true when updating
         };
 
@@ -238,6 +246,11 @@ exports.deleteUser = async (req, res) => {
                 return res.redirect('/admin/users');
             }
         }
+
+        // Delete related category permissions first
+        await prisma.categoryPermission.deleteMany({
+            where: { userId: parseInt(id) }
+        });
 
         // Delete user
         await prisma.user.delete({

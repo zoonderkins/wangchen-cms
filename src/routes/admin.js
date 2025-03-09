@@ -22,6 +22,7 @@ const faqController = require('../controllers/faqController');
 const downloadController = require('../controllers/downloadController');
 const downloadCategoryController = require('../controllers/downloadCategoryController');
 const newsController = require('../controllers/newsController');
+const promotionController = require('../controllers/promotionController');
 const aboutController = require('../controllers/aboutController');
 const contactCategoryController = require('../controllers/contactCategoryController');
 const contactController = require('../controllers/contactController');
@@ -68,140 +69,78 @@ router.use((req, res, next) => {
     next();
 });
 
-// Root admin route - redirect to dashboard
-router.get('/', (req, res) => {
-    res.redirect('/admin/dashboard');
+// Default admin route - accessible to all authenticated users
+router.get('/', isAuthenticated, (req, res) => {
+    // Redirect super_admin, admin, and editor to dashboard if they have access
+    if (req.session.user.role === 'super_admin' || 
+        (req.session.user.permissions && req.session.user.permissions.includes('access:dashboard'))) {
+        return res.redirect('/admin/dashboard');
+    }
+    
+    // Otherwise show a simple welcome page
+    res.render('admin/welcome', {
+        title: 'Admin Panel',
+        layout: 'layouts/admin',
+        user: req.session.user
+    });
 });
 
 // Dashboard
 router.get('/dashboard', hasPermission('access:dashboard'), dashboardController.renderDashboard);
 
 // Article routes
-router.get('/articles', hasPermission('article:list'), articleController.listArticles);
-router.get('/articles/create', hasPermission('article:create'), articleController.renderCreateForm);
-router.post('/articles', hasPermission('article:create'), articleController.createArticle);
+router.get('/articles', hasRole(['super_admin', 'admin']), articleController.listArticles);
+router.get('/articles/create', hasRole(['super_admin', 'admin']), articleController.renderCreateForm);
+router.post('/articles', hasRole(['super_admin', 'admin']), articleController.createArticle);
+router.get('/articles/edit/:id', hasRole(['super_admin', 'admin']), articleController.renderEditForm);
+router.post('/articles/:id', hasRole(['super_admin', 'admin']), articleController.updateArticle);
+router.post('/articles/:id/delete', hasRole(['super_admin', 'admin']), articleController.deleteArticle);
 
-// Article edit routes with ownership check
-router.get('/articles/edit/:id', 
-    isOwnerOrHasPermission('article:edit_all', async (req) => {
-        const article = await prisma.article.findUnique({
-            where: { id: parseInt(req.params.id) }
-        });
-        return article ? article.authorId : null;
-    }), 
-    articleController.renderEditForm
-);
-
-router.post('/articles/edit/:id', 
-    isOwnerOrHasPermission('article:edit_all', async (req) => {
-        const article = await prisma.article.findUnique({
-            where: { id: parseInt(req.params.id) }
-        });
-        return article ? article.authorId : null;
-    }), 
-    articleController.updateArticle
-);
-
-router.post('/articles/delete/:id', 
-    isOwnerOrHasPermission('article:delete_all', async (req) => {
-        const article = await prisma.article.findUnique({
-            where: { id: parseInt(req.params.id) }
-        });
-        return article ? article.authorId : null;
-    }), 
-    articleController.deleteArticle
-);
-
-// Category management routes
-router.get('/categories', hasPermission('category:list'), categoryController.listCategories);
-router.get('/categories/create', hasPermission('category:create'), categoryController.renderCreateCategory);
-router.post('/categories', hasPermission('category:create'), categoryController.createCategory);
-router.get('/categories/edit/:id', hasPermission('category:edit'), categoryController.renderEditCategory);
-router.post('/categories/edit/:id', hasPermission('category:edit'), categoryController.updateCategory);
-router.post('/categories/:id/delete', hasPermission('category:delete'), categoryController.deleteCategory);
-
-// User management routes
-router.get('/users', hasRole(['super_admin']), userController.listUsers);
-router.get('/users/create', hasRole(['super_admin']), userController.renderCreateUser);
-router.post('/users', 
-    hasRole(['super_admin']),
-    [
-        body('username').trim().isLength({ min: 3 }).escape(),
-        body('email').isEmail().normalizeEmail(),
-        body('password').isLength({ min: 6 })
-    ],
-    userController.createUser
-);
-router.get('/users/edit/:id', hasRole(['super_admin']), userController.renderEditUser);
-router.post('/users/edit/:id', 
-    hasRole(['super_admin']),
-    userController.updateUser
-);
-router.post('/users/delete/:id', hasRole(['super_admin']), userController.deleteUser);
-
-// Category permission routes
-router.get('/users/:userId/category-permissions', 
-    hasPermission('category:manage_permissions'),
-    categoryPermissionController.getCategoryPermissions
-);
-
-router.post('/users/:userId/category-permissions',
-    hasPermission('category:manage_permissions'),
-    categoryPermissionController.assignCategoryPermissions
-);
+// Category routes
+router.get('/categories', hasRole(['super_admin', 'admin']), categoryController.listCategories);
+router.get('/categories/create', hasRole(['super_admin', 'admin']), categoryController.renderCreateCategory);
+router.post('/categories', hasRole(['super_admin', 'admin']), categoryController.createCategory);
+router.get('/categories/edit/:id', hasRole(['super_admin', 'admin']), categoryController.renderEditCategory);
+router.post('/categories/:id', hasRole(['super_admin', 'admin']), categoryController.updateCategory);
+router.post('/categories/:id/delete', hasRole(['super_admin', 'admin']), categoryController.deleteCategory);
 
 // Media routes
-router.get('/media', hasPermission('manage_media'), mediaController.listMedia);
-
-router.post('/media/upload',
-    hasPermission('manage_media'),
-    upload.single('file'),
-    handleUploadError,
-    mediaController.uploadMedia
-);
-
-router.post('/media/:id/delete',
-    hasPermission('manage_media'),
-    mediaController.deleteMedia
-);
-
-router.get('/media/:id',
-    hasPermission('manage_media'),
-    mediaController.getMediaDetails
-);
+router.get('/media', hasRole(['super_admin', 'admin']), mediaController.listMedia);
+router.post('/media/upload', hasRole(['super_admin', 'admin']), upload.single('file'), handleUploadError, mediaController.uploadMedia);
+router.get('/media/:id', hasRole(['super_admin', 'admin']), mediaController.getMediaDetails);
+router.post('/media/:id/delete', hasRole(['super_admin', 'admin']), mediaController.deleteMedia);
 
 // Banner routes
 const bannerUpload = require('../middleware/bannerUpload');
 
-router.get('/banners', hasRole(['super_admin', 'admin', 'editor']), bannerController.listBanners);
-router.get('/banners/create', hasRole(['super_admin', 'admin', 'editor']), bannerController.renderCreateBanner);
-router.post('/banners', hasRole(['super_admin', 'admin', 'editor']), bannerUpload, bannerController.createBanner);
-router.get('/banners/edit/:id', hasRole(['super_admin', 'admin', 'editor']), bannerController.renderEditBanner);
-router.post('/banners/edit/:id', hasRole(['super_admin', 'admin', 'editor']), bannerUpload, bannerController.updateBanner);
-router.post('/banners/toggle/:id', hasRole(['super_admin', 'admin', 'editor']), bannerController.toggleBannerStatus);
-router.delete('/banners/:id', hasRole(['super_admin', 'admin', 'editor']), bannerController.deleteBanner);
+router.get('/banners', hasRole(['super_admin', 'admin']), bannerController.listBanners);
+router.get('/banners/create', hasRole(['super_admin', 'admin']), bannerController.renderCreateBanner);
+router.post('/banners', hasRole(['super_admin', 'admin']), bannerUpload, bannerController.createBanner);
+router.get('/banners/edit/:id', hasRole(['super_admin', 'admin']), bannerController.renderEditBanner);
+router.post('/banners/:id', hasRole(['super_admin', 'admin']), bannerUpload, bannerController.updateBanner);
+router.post('/banners/:id/delete', hasRole(['super_admin', 'admin']), bannerController.deleteBanner);
 
 // Page routes
 const pageAttachmentUpload = require('../middleware/pageAttachmentUpload');
 
-router.get('/pages', hasRole(['super_admin', 'admin', 'editor']), pageController.listPages);
-router.get('/pages/create', hasRole(['super_admin', 'admin', 'editor']), pageController.renderCreatePage);
-router.post('/pages', hasRole(['super_admin', 'admin', 'editor']), pageAttachmentUpload, pageController.createPage);
-router.get('/pages/edit/:id', hasRole(['super_admin', 'admin', 'editor']), pageController.renderEditPage);
-router.post('/pages/:id', hasRole(['super_admin', 'admin', 'editor']), pageAttachmentUpload, pageController.updatePage);
-router.put('/pages/:id', hasRole(['super_admin', 'admin', 'editor']), pageAttachmentUpload, pageController.updatePage);
-router.post('/pages/:id/delete', hasRole(['super_admin', 'admin', 'editor']), pageController.deletePage);
-router.delete('/pages/attachment/:attachmentId', hasRole(['super_admin', 'admin', 'editor']), pageController.deleteAttachment);
+router.get('/pages', hasRole(['super_admin', 'admin']), pageController.listPages);
+router.get('/pages/create', hasRole(['super_admin', 'admin']), pageController.renderCreatePage);
+router.post('/pages', hasRole(['super_admin', 'admin']), pageAttachmentUpload, pageController.createPage);
+router.get('/pages/edit/:id', hasRole(['super_admin', 'admin']), pageController.renderEditPage);
+router.post('/pages/:id', hasRole(['super_admin', 'admin']), pageAttachmentUpload, pageController.updatePage);
+router.put('/pages/:id', hasRole(['super_admin', 'admin']), pageAttachmentUpload, pageController.updatePage);
+router.post('/pages/:id/delete', hasRole(['super_admin', 'admin']), pageController.deletePage);
+router.delete('/pages/attachment/:attachmentId', hasRole(['super_admin', 'admin']), pageController.deleteAttachment);
 
 // FAQ Category Routes
-router.get('/faq/categories', hasRole(['super_admin', 'admin', 'editor']), faqController.listCategories);
-router.get('/faq/categories/create', hasRole(['super_admin', 'admin', 'editor']), faqController.renderCreateCategory);
-router.post('/faq/categories', hasRole(['super_admin', 'admin', 'editor']), faqController.createCategory);
-router.get('/faq/categories/edit/:id', hasRole(['super_admin', 'admin', 'editor']), faqController.renderEditCategory);
-router.post('/faq/categories/:id', hasRole(['super_admin', 'admin', 'editor']), faqController.updateCategory);
-router.post('/faq/categories/:id/delete', hasRole(['super_admin', 'admin', 'editor']), faqController.deleteCategory);
+router.get('/faq/categories', hasRole(['super_admin', 'admin']), faqController.listCategories);
+router.get('/faq/categories/create', hasRole(['super_admin', 'admin']), faqController.renderCreateCategory);
+router.post('/faq/categories', hasRole(['super_admin', 'admin']), faqController.createCategory);
+router.get('/faq/categories/edit/:id', hasRole(['super_admin', 'admin']), faqController.renderEditCategory);
+router.post('/faq/categories/:id', hasRole(['super_admin', 'admin']), faqController.updateCategory);
+router.post('/faq/categories/:id/delete', hasRole(['super_admin', 'admin']), faqController.deleteCategory);
 
-// FAQ Item Routes
+// FAQ Item Routes - Accessible to editors
 router.get('/faq/items', hasRole(['super_admin', 'admin', 'editor']), faqController.listItems);
 router.get('/faq/items/create', hasRole(['super_admin', 'admin', 'editor']), faqController.renderCreateItem);
 router.post('/faq/items', hasRole(['super_admin', 'admin', 'editor']), faqController.createItem);
@@ -213,19 +152,20 @@ router.post('/faq/items/:id/delete', hasRole(['super_admin', 'admin', 'editor'])
 const downloadFileUpload = require('../middleware/downloadFileUpload');
 
 // Download Category Routes
-router.get('/downloads/categories', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.listCategories);
-router.get('/downloads/categories/create', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.renderCreateCategory);
-router.post('/downloads/categories', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.createCategory);
-router.get('/downloads/categories/edit/:id', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.renderEditCategory);
-router.post('/downloads/categories/:id', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.updateCategory);
-router.post('/downloads/categories/:id/delete', hasRole(['super_admin', 'admin', 'editor']), downloadCategoryController.deleteCategory);
+router.get('/downloads/categories', hasRole(['super_admin', 'admin']), downloadCategoryController.listCategories);
+router.get('/downloads/categories/create', hasRole(['super_admin', 'admin']), downloadCategoryController.renderCreateCategory);
+router.post('/downloads/categories', hasRole(['super_admin', 'admin']), downloadCategoryController.createCategory);
+router.get('/downloads/categories/edit/:id', hasRole(['super_admin', 'admin']), downloadCategoryController.renderEditCategory);
+router.post('/downloads/categories/:id', hasRole(['super_admin', 'admin']), downloadCategoryController.updateCategory);
+router.post('/downloads/categories/:id/delete', hasRole(['super_admin', 'admin']), downloadCategoryController.deleteCategory);
 
-router.get('/downloads', hasRole(['super_admin', 'admin', 'editor']), downloadController.listDownloads);
-router.get('/downloads/create', hasRole(['super_admin', 'admin', 'editor']), downloadController.renderCreateDownload);
-router.post('/downloads', hasRole(['super_admin', 'admin', 'editor']), downloadFileUpload, downloadController.createDownload);
-router.get('/downloads/edit/:id', hasRole(['super_admin', 'admin', 'editor']), downloadController.renderEditDownload);
-router.post('/downloads/:id', hasRole(['super_admin', 'admin', 'editor']), downloadFileUpload, downloadController.updateDownload);
-router.post('/downloads/:id/delete', hasRole(['super_admin', 'admin', 'editor']), downloadController.deleteDownload);
+// Download Item Routes
+router.get('/downloads', hasRole(['super_admin', 'admin']), downloadController.listDownloads);
+router.get('/downloads/create', hasRole(['super_admin', 'admin']), downloadController.renderCreateDownload);
+router.post('/downloads', hasRole(['super_admin', 'admin']), downloadFileUpload, downloadController.createDownload);
+router.get('/downloads/edit/:id', hasRole(['super_admin', 'admin']), downloadController.renderEditDownload);
+router.post('/downloads/:id', hasRole(['super_admin', 'admin']), downloadFileUpload, downloadController.updateDownload);
+router.post('/downloads/:id/delete', hasRole(['super_admin', 'admin']), downloadController.deleteDownload);
 
 // News Dashboard
 router.get('/news', hasRole(['super_admin', 'admin', 'editor']), (req, res) => {
@@ -237,14 +177,14 @@ router.get('/news', hasRole(['super_admin', 'admin', 'editor']), (req, res) => {
 });
 
 // News Category Routes
-router.get('/news/categories', hasRole(['super_admin', 'admin', 'editor']), newsController.listCategories);
-router.get('/news/categories/create', hasRole(['super_admin', 'admin', 'editor']), newsController.renderCreateCategory);
-router.post('/news/categories', hasRole(['super_admin', 'admin', 'editor']), newsController.createCategory);
-router.get('/news/categories/edit/:id', hasRole(['super_admin', 'admin', 'editor']), newsController.renderEditCategory);
-router.post('/news/categories/:id', hasRole(['super_admin', 'admin', 'editor']), newsController.updateCategory);
-router.post('/news/categories/:id/delete', hasRole(['super_admin', 'admin', 'editor']), newsController.deleteCategory);
+router.get('/news/categories', hasRole(['super_admin', 'admin']), newsController.listCategories);
+router.get('/news/categories/create', hasRole(['super_admin', 'admin']), newsController.renderCreateCategory);
+router.post('/news/categories', hasRole(['super_admin', 'admin']), newsController.createCategory);
+router.get('/news/categories/edit/:id', hasRole(['super_admin', 'admin']), newsController.renderEditCategory);
+router.post('/news/categories/:id', hasRole(['super_admin', 'admin']), newsController.updateCategory);
+router.post('/news/categories/:id/delete', hasRole(['super_admin', 'admin']), newsController.deleteCategory);
 
-// News Item Routes
+// News Item Routes - Accessible to editors
 const newsImageUpload = require('../middleware/newsImageUpload');
 
 router.get('/news/items', hasRole(['super_admin', 'admin', 'editor']), newsController.listItems);
@@ -255,10 +195,9 @@ router.post('/news/items/:id', hasRole(['super_admin', 'admin', 'editor']), news
 router.post('/news/items/:id/delete', hasRole(['super_admin', 'admin', 'editor']), newsController.deleteItem);
 
 // Promotions Dashboard
-const promotionController = require('../controllers/promotionController');
 const promotionImageUpload = require('../middleware/promotionImageUpload');
 
-router.get('/promotions', hasRole(['super_admin', 'admin', 'editor']), (req, res) => {
+router.get('/promotions', hasRole(['super_admin', 'admin']), (req, res) => {
     res.render('admin/promotions/index', {
         title: 'Promotion Management',
         success_msg: req.flash('success_msg'),
@@ -267,85 +206,72 @@ router.get('/promotions', hasRole(['super_admin', 'admin', 'editor']), (req, res
 });
 
 // Promotion Category Routes
-router.get('/promotions/categories', hasRole(['super_admin', 'admin', 'editor']), promotionController.listCategories);
-router.get('/promotions/categories/create', hasRole(['super_admin', 'admin', 'editor']), promotionController.renderCreateCategory);
-router.post('/promotions/categories', hasRole(['super_admin', 'admin', 'editor']), promotionController.createCategory);
-router.get('/promotions/categories/edit/:id', hasRole(['super_admin', 'admin', 'editor']), promotionController.renderEditCategory);
-router.post('/promotions/categories/:id', hasRole(['super_admin', 'admin', 'editor']), promotionController.updateCategory);
-router.post('/promotions/categories/:id/delete', hasRole(['super_admin', 'admin', 'editor']), promotionController.deleteCategory);
+router.get('/promotions/categories', hasRole(['super_admin', 'admin']), promotionController.listCategories);
+router.get('/promotions/categories/create', hasRole(['super_admin', 'admin']), promotionController.renderCreateCategory);
+router.post('/promotions/categories', hasRole(['super_admin', 'admin']), promotionController.createCategory);
+router.get('/promotions/categories/edit/:id', hasRole(['super_admin', 'admin']), promotionController.renderEditCategory);
+router.post('/promotions/categories/:id', hasRole(['super_admin', 'admin']), promotionController.updateCategory);
+router.post('/promotions/categories/:id/delete', hasRole(['super_admin', 'admin']), promotionController.deleteCategory);
 
 // Promotion Item Routes
-router.get('/promotions/items', hasRole(['super_admin', 'admin', 'editor']), promotionController.listItems);
-router.get('/promotions/items/create', hasRole(['super_admin', 'admin', 'editor']), promotionController.renderCreateItem);
-router.post('/promotions/items', hasRole(['super_admin', 'admin', 'editor']), promotionImageUpload, promotionController.createItem);
-router.get('/promotions/items/edit/:id', hasRole(['super_admin', 'admin', 'editor']), promotionController.renderEditItem);
-router.post('/promotions/items/:id', hasRole(['super_admin', 'admin', 'editor']), promotionImageUpload, promotionController.updateItem);
-router.post('/promotions/items/:id/delete', hasRole(['super_admin', 'admin', 'editor']), promotionController.deleteItem);
+router.get('/promotions/items', hasRole(['super_admin', 'admin']), promotionController.listItems);
+router.get('/promotions/items/create', hasRole(['super_admin', 'admin']), promotionController.renderCreateItem);
+router.post('/promotions/items', hasRole(['super_admin', 'admin']), promotionImageUpload, promotionController.createItem);
+router.get('/promotions/items/edit/:id', hasRole(['super_admin', 'admin']), promotionController.renderEditItem);
+router.post('/promotions/items/:id', hasRole(['super_admin', 'admin']), promotionImageUpload, promotionController.updateItem);
+router.post('/promotions/items/:id/delete', hasRole(['super_admin', 'admin']), promotionController.deleteItem);
 
-// About page routes
-router.get('/about', hasRole(['super_admin', 'admin', 'editor']), aboutController.listItems);
-router.get('/about/create', hasRole(['super_admin', 'admin', 'editor']), aboutController.renderCreateItem);
-router.post('/about/create', hasRole(['super_admin', 'admin', 'editor']), aboutController.upload, aboutController.createItem);
-router.get('/about/edit/:id', hasRole(['super_admin', 'admin', 'editor']), aboutController.renderEditItem);
-router.post('/about/edit/:id', hasRole(['super_admin', 'admin', 'editor']), aboutController.upload, aboutController.updateItem);
-router.post('/about/delete/:id', hasRole(['super_admin', 'admin']), aboutController.deleteItem);
+// About Routes
+router.get('/about', hasRole(['super_admin', 'admin']), aboutController.listItems);
+router.get('/about/create', hasRole(['super_admin', 'admin']), aboutController.renderCreateItem);
+router.post('/about', hasRole(['super_admin', 'admin']), aboutController.createItem);
+router.get('/about/edit/:id', hasRole(['super_admin', 'admin']), aboutController.renderEditItem);
+router.post('/about/:id', hasRole(['super_admin', 'admin']), aboutController.updateItem);
+router.post('/about/:id/delete', hasRole(['super_admin', 'admin']), aboutController.deleteItem);
 
 // Contact Category Routes
-router.get('/contact/categories', hasRole(['super_admin', 'admin', 'editor']), contactCategoryController.listCategories);
-router.get('/contact/categories/create', hasRole(['super_admin', 'admin', 'editor']), contactCategoryController.renderCreateCategory);
-router.post('/contact/categories', hasRole(['super_admin', 'admin', 'editor']), contactCategoryController.createCategory);
-router.get('/contact/categories/edit/:id', hasRole(['super_admin', 'admin', 'editor']), contactCategoryController.renderEditCategory);
-router.post('/contact/categories/:id', hasRole(['super_admin', 'admin', 'editor']), contactCategoryController.updateCategory);
+router.get('/contact/categories', hasRole(['super_admin', 'admin']), contactCategoryController.listCategories);
+router.get('/contact/categories/create', hasRole(['super_admin', 'admin']), contactCategoryController.renderCreateCategory);
+router.post('/contact/categories', hasRole(['super_admin', 'admin']), contactCategoryController.createCategory);
+router.get('/contact/categories/edit/:id', hasRole(['super_admin', 'admin']), contactCategoryController.renderEditCategory);
+router.post('/contact/categories/:id', hasRole(['super_admin', 'admin']), contactCategoryController.updateCategory);
 router.post('/contact/categories/:id/delete', hasRole(['super_admin', 'admin']), contactCategoryController.deleteCategory);
 
-// Contact Submissions Routes
-router.get('/contact', hasRole(['super_admin', 'admin', 'editor']), contactController.listContacts);
-router.get('/contact/view/:id', hasRole(['super_admin', 'admin', 'editor']), contactController.viewContact);
-router.post('/contact/:id/status', hasRole(['super_admin', 'admin', 'editor']), contactController.updateContactStatus);
+// Contact Routes
+router.get('/contact', hasRole(['super_admin', 'admin']), contactController.listContacts);
+router.get('/contact/view/:id', hasRole(['super_admin', 'admin']), contactController.viewContact);
 router.post('/contact/:id/delete', hasRole(['super_admin', 'admin']), contactController.deleteContact);
 
-// Links routes
-const { uploadLinkImage } = require('../middleware/linkImageUpload');
-const platformImageUpload = require('../middleware/platformImageUpload');
+// Platform Routes
+router.get('/platforms', hasRole(['super_admin', 'admin']), platformController.listItems);
+router.get('/platforms/create', hasRole(['super_admin', 'admin']), platformController.renderCreateItem);
+router.post('/platforms', hasRole(['super_admin', 'admin']), platformController.createItem);
+router.get('/platforms/categories', hasRole(['super_admin', 'admin']), platformController.listCategories);
+router.get('/platforms/categories/create', hasRole(['super_admin', 'admin']), platformController.renderCreateCategory);
+router.post('/platforms/categories', hasRole(['super_admin', 'admin']), platformController.createCategory);
+router.get('/platforms/categories/edit/:id', hasRole(['super_admin', 'admin']), platformController.renderEditCategory);
+router.post('/platforms/categories/:id', hasRole(['super_admin', 'admin']), platformController.updateCategory);
+router.post('/platforms/categories/:id/delete', hasRole(['super_admin', 'admin']), platformController.deleteCategory);
+router.post('/platforms/attachments', hasRole(['super_admin', 'admin']), platformController.uploadAttachment);
+router.get('/platforms/edit/:id', hasRole(['super_admin', 'admin']), platformController.renderEditItem);
+router.post('/platforms/:id', hasRole(['super_admin', 'admin']), platformController.updateItem);
+router.post('/platforms/:id/delete', hasRole(['super_admin', 'admin']), platformController.deleteItem);
 
-// Platform routes
-router.get('/platforms', hasRole(['super_admin', 'admin', 'editor']), platformController.listItems);
-router.get('/platforms/create', hasRole(['super_admin', 'admin', 'editor']), platformController.renderCreateItem);
-
-// Platform Category routes - moved before platform item routes with dynamic parameters
-router.get('/platforms/categories', hasRole(['super_admin', 'admin', 'editor']), platformController.listCategories);
-router.get('/platforms/categories/create', hasRole(['super_admin', 'admin', 'editor']), platformController.renderCreateCategory);
-router.post('/platforms/categories', hasRole(['super_admin', 'admin', 'editor']), platformController.createCategory);
-router.get('/platforms/categories/edit/:id', hasRole(['super_admin', 'admin', 'editor']), platformController.renderEditCategory);
-router.post('/platforms/categories/:id', hasRole(['super_admin', 'admin', 'editor']), platformController.updateCategory);
-router.post('/platforms/categories/:id/delete', hasRole(['super_admin', 'admin', 'editor']), platformController.deleteCategory);
-
-// Platform item routes with dynamic parameters
-router.post('/platforms', 
-    hasRole(['super_admin', 'admin', 'editor']), 
-    platformImageUpload.fields([
-        { name: 'image', maxCount: 1 },
-        { name: 'attachments', maxCount: 10 }
-    ]), 
-    platformController.createItem
-);
-router.get('/platforms/edit/:id', hasRole(['super_admin', 'admin', 'editor']), platformController.renderEditItem);
-router.post('/platforms/:id', 
-    hasRole(['super_admin', 'admin', 'editor']), 
-    platformImageUpload.fields([
-        { name: 'image', maxCount: 1 },
-        { name: 'attachments', maxCount: 10 }
-    ]), 
-    platformController.updateItem
-);
-router.post('/platforms/:id/delete', hasRole(['super_admin', 'admin', 'editor']), platformController.deleteItem);
-
-router.get('/links', isAuthenticated, hasRole(['super_admin', 'admin', 'editor']), linksController.index);
-router.get('/links/create', isAuthenticated, hasRole(['super_admin', 'admin', 'editor']), linksController.createForm);
-router.post('/links', isAuthenticated, hasRole(['super_admin', 'admin', 'editor']), uploadLinkImage, linksController.create);
-router.get('/links/edit/:id', isAuthenticated, hasRole(['super_admin', 'admin', 'editor']), linksController.editForm);
-router.post('/links/edit/:id', isAuthenticated, hasRole(['super_admin', 'admin', 'editor']), uploadLinkImage, linksController.update);
+// Links Routes
+router.get('/links', isAuthenticated, hasRole(['super_admin', 'admin']), linksController.index);
+router.get('/links/create', isAuthenticated, hasRole(['super_admin', 'admin']), linksController.createForm);
+router.post('/links', isAuthenticated, hasRole(['super_admin', 'admin']), linksController.create);
+router.get('/links/edit/:id', isAuthenticated, hasRole(['super_admin', 'admin']), linksController.editForm);
+router.post('/links/:id', isAuthenticated, hasRole(['super_admin', 'admin']), linksController.update);
 router.get('/links/delete/:id', isAuthenticated, hasRole(['super_admin', 'admin']), linksController.delete);
-router.get('/links/toggle/:id', isAuthenticated, hasRole(['super_admin', 'admin', 'editor']), linksController.toggleActive);
+router.get('/links/toggle/:id', isAuthenticated, hasRole(['super_admin', 'admin']), linksController.toggleActive);
+
+// User Routes
+router.get('/users', hasRole(['super_admin', 'admin']), userController.listUsers);
+router.get('/users/new', hasRole(['super_admin', 'admin']), userController.renderCreateUser);
+router.post('/users', hasRole(['super_admin', 'admin']), userController.createUser);
+router.get('/users/edit/:id', hasRole(['super_admin', 'admin']), userController.renderEditUser);
+router.post('/users/:id', hasRole(['super_admin', 'admin']), userController.updateUser);
+router.post('/users/:id/delete', hasRole(['super_admin', 'admin']), userController.deleteUser);
 
 module.exports = router;

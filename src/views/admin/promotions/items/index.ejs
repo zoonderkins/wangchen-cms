@@ -187,12 +187,12 @@
             </div>
 
             <!-- Pagination -->
-            <% if (totalPages> 1) { %>
+            <% if (pagination && pagination.totalPages> 1) { %>
               <div
                 class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t bg-gray-50 sm:grid-cols-9">
                 <span class="flex items-center col-span-3">
-                  顯示 <%= (currentPage - 1) * limit + 1 %> 至 <%= Math.min(currentPage * limit, totalItems) %> 項，共 <%=
-                        totalItems %> 項
+                  顯示 <%= (pagination.currentPage - 1) * pagination.perPage + 1 %> 至 <%= Math.min(pagination.currentPage
+                      * pagination.perPage, pagination.totalItems) %> 項，共 <%= pagination.totalItems %> 項
                 </span>
                 <span class="col-span-2"></span>
                 <!-- Pagination -->
@@ -200,22 +200,22 @@
                   <nav aria-label="頁面導航">
                     <ul class="inline-flex items-center">
                       <li>
-                        <a href="<%= currentPage > 1 ? `/admin/promotions/items?page=${currentPage - 1}&search=${search}&category=${selectedCategory}&status=${selectedStatus}` : '#' %>"
-                          class="<%= currentPage > 1 ? 'px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple' : 'px-3 py-1 text-gray-400 cursor-not-allowed' %>">
+                        <a href="<%= pagination.currentPage > 1 ? `/admin/promotions/items?page=${pagination.currentPage - 1}&search=${search}&category=${selectedCategory}&status=${selectedStatus}` : '#' %>"
+                          class="<%= pagination.currentPage > 1 ? 'px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple' : 'px-3 py-1 text-gray-400 cursor-not-allowed' %>">
                           上一頁
                         </a>
                       </li>
-                      <% for (let i=1; i <=totalPages; i++) { %>
+                      <% for (let i=1; i <=pagination.totalPages; i++) { %>
                         <li>
                           <a href="/admin/promotions/items?page=<%= i %>&search=<%= search %>&category=<%= selectedCategory %>&status=<%= selectedStatus %>"
-                            class="<%= i === currentPage ? 'px-3 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none focus:shadow-outline-purple' : 'px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple' %>">
+                            class="<%= pagination.currentPage === i ? 'px-3 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none focus:shadow-outline-purple' : 'px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple' %>">
                             <%= i %>
                           </a>
                         </li>
                         <% } %>
                           <li>
-                            <a href="<%= currentPage < totalPages ? `/admin/promotions/items?page=${currentPage + 1}&search=${search}&category=${selectedCategory}&status=${selectedStatus}` : '#' %>"
-                              class="<%= currentPage < totalPages ? 'px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple' : 'px-3 py-1 text-gray-400 cursor-not-allowed' %>">
+                            <a href="<%= pagination.currentPage < pagination.totalPages ? `/admin/promotions/items?page=${pagination.currentPage + 1}&search=${search}&category=${selectedCategory}&status=${selectedStatus}` : '#' %>"
+                              class="<%= pagination.currentPage < pagination.totalPages ? 'px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple' : 'px-3 py-1 text-gray-400 cursor-not-allowed' %>">
                               下一頁
                             </a>
                           </li>

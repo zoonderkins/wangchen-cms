@@ -87,7 +87,17 @@ const hasPermission = (permission) => {
 
         if (!userPermissions.includes(permission)) {
             req.flash('error_msg', 'You do not have permission to access this resource');
-            return res.redirect('/admin/dashboard');
+            
+            // Avoid redirect loop - if we're already on dashboard, redirect to a different page
+            if (req.path === '/dashboard' && permission === 'access:dashboard') {
+                return res.render('admin/access-denied', {
+                    title: 'Access Denied',
+                    layout: 'layouts/admin',
+                    user: req.session.user
+                });
+            }
+            
+            return res.redirect('/admin');
         }
         
         next();
