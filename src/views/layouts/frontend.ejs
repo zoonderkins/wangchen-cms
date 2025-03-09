@@ -152,59 +152,7 @@
                             : '關於您的網站或公司的簡短描述。' %>
                     </p>
                 </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">
-                        <%= currentLanguage==='en' ? 'Quick Links' : '快速連結' %>
-                    </h3>
-                    <ul class="space-y-2">
-                        <li><a href="/<%= currentLanguage %>" class="text-gray-400 hover:text-white">
-                                <%= currentLanguage==='en' ? 'Home' : '首頁' %>
-                            </a></li>
-                        <li><a href="/<%= currentLanguage %>/about" class="text-gray-400 hover:text-white">
-                                <%= currentLanguage==='en' ? 'About Us' : '關於我們' %>
-                            </a></li>
-                        <li><a href="/<%= currentLanguage %>/news" class="text-gray-400 hover:text-white">
-                                <%= currentLanguage==='en' ? 'News' : '最新消息' %>
-                            </a></li>
-                        <li><a href="/<%= currentLanguage %>/promotions" class="text-gray-400 hover:text-white">
-                                <%= currentLanguage==='en' ? 'Promotions' : '推動方案' %>
-                            </a></li>
-                        <li><a href="/<%= currentLanguage %>/faq" class="text-gray-400 hover:text-white">
-                                <%= currentLanguage==='en' ? 'FAQ' : '常見問題' %>
-                            </a></li>
-                        <li><a href="/<%= currentLanguage %>/downloads" class="text-gray-400 hover:text-white">
-                                <%= currentLanguage==='en' ? 'Downloads' : '下載' %>
-                            </a></li>
-                        <li><a href="/<%= currentLanguage %>/platforms" class="text-gray-400 hover:text-white">
-                                <%= currentLanguage==='en' ? 'Manufacturing Platforms' : '製造平台' %>
-                            </a></li>
-                        <li><a href="/<%= currentLanguage %>/contact" class="text-gray-400 hover:text-white">
-                                <%= currentLanguage==='en' ? 'Contact' : '聯絡我們' %>
-                            </a></li>
-                        <li><a href="/<%= currentLanguage %>/links" class="text-gray-400 hover:text-white">
-                                <%= currentLanguage==='en' ? 'Related Links' : '相關連結' %>
-                            </a></li>
 
-                        <% if (navigationPages && navigationPages.length> 0) { %>
-                            <% navigationPages.forEach(function(page) { %>
-                                <li>
-                                    <a href="/<%= currentLanguage %>/page/<%= page.slug %>"
-                                        class="text-gray-400 hover:text-white">
-                                        <%= getContent(page, 'title' ) %>
-                                    </a>
-                                </li>
-                                <% }); %>
-                                    <% } %>
-                                        <li><a href="/<%= currentLanguage %>/about"
-                                                class="text-gray-400 hover:text-white">
-                                                <%= currentLanguage==='en' ? 'About Us' : '關於我們' %>
-                                            </a></li>
-                                        <li><a href="/<%= currentLanguage %>/news"
-                                                class="text-gray-400 hover:text-white">
-                                                <%= currentLanguage==='en' ? 'News' : '最新消息' %>
-                                            </a></li>
-                    </ul>
-                </div>
                 <div>
                     <h3 class="text-lg font-semibold mb-4">
                         <%= currentLanguage==='en' ? 'Contact Info' : '聯絡資訊' %>

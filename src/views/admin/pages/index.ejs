@@ -1,136 +1,169 @@
 <%- contentFor('body') %>
 
-<div class="container px-6 mx-auto grid">
-    <h2 class="my-6 text-2xl font-semibold text-gray-700">
-        Manage Pages
-    </h2>
+    <div class="container px-6 mx-auto grid">
+        <h2 class="my-6 text-2xl font-semibold text-gray-700">
+            頁面管理
+        </h2>
 
-    <!-- CTA -->
-    <a href="/admin/pages/create" class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-white bg-blue-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-blue">
-        <div class="flex items-center">
-            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" fill-rule="evenodd"></path>
-            </svg>
-            <span>Create New Page</span>
-        </div>
-    </a>
+        <!-- CTA -->
+        <a href="/admin/pages/create"
+            class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-white bg-blue-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-blue">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                        clip-rule="evenodd" fill-rule="evenodd"></path>
+                </svg>
+                <span>建立新頁面</span>
+            </div>
+        </a>
 
-    <!-- Flash messages -->
-    <% if (success_msg && success_msg.length > 0) { %>
-        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
-            <p><%= success_msg %></p>
-        </div>
-    <% } %>
-
-    <% if (error_msg && error_msg.length > 0) { %>
-        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
-            <p><%= error_msg %></p>
-        </div>
-    <% } %>
-
-    <!-- Pages Table -->
-    <div class="w-full overflow-hidden rounded-lg shadow-xs">
-        <div class="w-full overflow-x-auto">
-            <% if (pages && pages.length > 0) { %>
-                <table class="w-full whitespace-no-wrap">
-                    <thead>
-                        <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b bg-gray-50">
-                            <th class="px-4 py-3">Title</th>
-                            <th class="px-4 py-3">Slug</th>
-                            <th class="px-4 py-3">Status</th>
-                            <th class="px-4 py-3">Navigation</th>
-                            <th class="px-4 py-3">Attachments</th>
-                            <th class="px-4 py-3">Author</th>
-                            <th class="px-4 py-3">Created</th>
-                            <th class="px-4 py-3">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y">
-                        <% pages.forEach(page => { %>
-                            <tr class="text-gray-700">
-                                <td class="px-4 py-3">
-                                    <div class="flex items-center text-sm">
-                                        <div>
-                                            <p class="font-semibold"><%= page.title %></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-4 py-3 text-sm">
-                                    <%= page.slug %>
-                                </td>
-                                <td class="px-4 py-3 text-sm">
-                                    <% if (page.status === 'published') { %>
-                                        <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full">
-                                            Published
-                                        </span>
-                                    <% } else if (page.status === 'draft') { %>
-                                        <span class="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-full">
-                                            Draft
-                                        </span>
-                                    <% } else { %>
-                                        <span class="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full">
-                                            Archived
-                                        </span>
-                                    <% } %>
-                                </td>
-                                <td class="px-4 py-3 text-sm">
-                                    <% if (page.showInNavigation) { %>
-                                        <span class="px-2 py-1 font-semibold leading-tight text-blue-700 bg-blue-100 rounded-full">
-                                            Shown
-                                        </span>
-                                        <% if (page.navigationOrder !== null) { %>
-                                            <span class="text-xs text-gray-500">
-                                                (Order: <%= page.navigationOrder %>)
-                                            </span>
-                                        <% } %>
-                                    <% } else { %>
-                                        <span class="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full">
-                                            Hidden
-                                        </span>
-                                    <% } %>
-                                </td>
-                                <td class="px-4 py-3 text-sm">
-                                    <%= page._count.attachments %>
-                                </td>
-                                <td class="px-4 py-3 text-sm">
-                                    <%= page.author.username %>
-                                </td>
-                                <td class="px-4 py-3 text-sm">
-                                    <%= new Date(page.createdAt).toLocaleDateString() %>
-                                </td>
-                                <td class="px-4 py-3 text-sm">
-                                    <div class="flex items-center space-x-4 text-sm">
-                                        <a href="/admin/pages/edit/<%= page.id %>" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-blue-600 rounded-lg focus:outline-none focus:shadow-outline-gray" aria-label="Edit">
-                                            <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                                            </svg>
-                                        </a>
-                                        <% if (page.status === 'published') { %>
-                                            <a href="/page/<%= page.slug %>" target="_blank" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-green-600 rounded-lg focus:outline-none focus:shadow-outline-gray" aria-label="View">
-                                                <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
-                                                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
-                                                </svg>
-                                            </a>
-                                        <% } %>
-                                        <form action="/admin/pages/<%= page.id %>/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete this page? This action cannot be undone.');">
-                                            <button type="submit" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-red-600 rounded-lg focus:outline-none focus:shadow-outline-gray" aria-label="Delete">
-                                                <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                                </svg>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        <% }); %>
-                    </tbody>
-                </table>
-            <% } else { %>
-                <div class="text-center py-8">
-                    <p class="text-gray-600">No pages found. <a href="/admin/pages/create" class="text-blue-600 hover:underline">Create your first page</a>.</p>
-                </div>
+        <!-- Flash messages -->
+        <% if (success_msg && success_msg.length> 0) { %>
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+                <p>
+                    <%= success_msg %>
+                </p>
+            </div>
             <% } %>
-        </div>
+
+                <% if (error_msg && error_msg.length> 0) { %>
+                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+                        <p>
+                            <%= error_msg %>
+                        </p>
+                    </div>
+                    <% } %>
+
+                        <!-- Pages Table -->
+                        <div class="w-full overflow-hidden rounded-lg shadow-xs">
+                            <div class="w-full overflow-x-auto">
+                                <% if (pages && pages.length> 0) { %>
+                                    <table class="w-full whitespace-no-wrap">
+                                        <thead>
+                                            <tr
+                                                class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b bg-gray-50">
+                                                <th class="px-4 py-3">標題</th>
+                                                <th class="px-4 py-3">網址代碼</th>
+                                                <th class="px-4 py-3">狀態</th>
+                                                <th class="px-4 py-3">導航顯示</th>
+                                                <th class="px-4 py-3">附件</th>
+                                                <th class="px-4 py-3">作者</th>
+                                                <th class="px-4 py-3">建立日期</th>
+                                                <th class="px-4 py-3">操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y">
+                                            <% pages.forEach(page=> { %>
+                                                <tr class="text-gray-700">
+                                                    <td class="px-4 py-3">
+                                                        <div class="flex items-center text-sm">
+                                                            <div>
+                                                                <p class="font-semibold">
+                                                                    <%= page.title %>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-3 text-sm">
+                                                        <%= page.slug %>
+                                                    </td>
+                                                    <td class="px-4 py-3 text-sm">
+                                                        <% if (page.status==='published' ) { %>
+                                                            <span
+                                                                class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full">
+                                                                已發佈
+                                                            </span>
+                                                            <% } else if (page.status==='draft' ) { %>
+                                                                <span
+                                                                    class="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-full">
+                                                                    草稿
+                                                                </span>
+                                                                <% } else { %>
+                                                                    <span
+                                                                        class="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full">
+                                                                        已封存
+                                                                    </span>
+                                                                    <% } %>
+                                                    </td>
+                                                    <td class="px-4 py-3 text-sm">
+                                                        <% if (page.showInNavigation) { %>
+                                                            <span
+                                                                class="px-2 py-1 font-semibold leading-tight text-blue-700 bg-blue-100 rounded-full">
+                                                                顯示
+                                                            </span>
+                                                            <% if (page.navigationOrder !==null) { %>
+                                                                <span class="text-xs text-gray-500">
+                                                                    (順序: <%= page.navigationOrder %>)
+                                                                </span>
+                                                                <% } %>
+                                                                    <% } else { %>
+                                                                        <span
+                                                                            class="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full">
+                                                                            隱藏
+                                                                        </span>
+                                                                        <% } %>
+                                                    </td>
+                                                    <td class="px-4 py-3 text-sm">
+                                                        <%= page._count.attachments %>
+                                                    </td>
+                                                    <td class="px-4 py-3 text-sm">
+                                                        <%= page.author.username %>
+                                                    </td>
+                                                    <td class="px-4 py-3 text-sm">
+                                                        <%= new Date(page.createdAt).toLocaleDateString() %>
+                                                    </td>
+                                                    <td class="px-4 py-3 text-sm">
+                                                        <div class="flex items-center space-x-4 text-sm">
+                                                            <a href="/admin/pages/edit/<%= page.id %>"
+                                                                class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-blue-600 rounded-lg focus:outline-none focus:shadow-outline-gray"
+                                                                aria-label="編輯">
+                                                                <svg class="w-5 h-5" aria-hidden="true"
+                                                                    fill="currentColor" viewBox="0 0 20 20">
+                                                                    <path
+                                                                        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z">
+                                                                    </path>
+                                                                </svg>
+                                                            </a>
+                                                            <% if (page.status==='published' ) { %>
+                                                                <a href="/page/<%= page.slug %>" target="_blank"
+                                                                    class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-green-600 rounded-lg focus:outline-none focus:shadow-outline-gray"
+                                                                    aria-label="查看">
+                                                                    <svg class="w-5 h-5" aria-hidden="true"
+                                                                        fill="currentColor" viewBox="0 0 20 20">
+                                                                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z">
+                                                                        </path>
+                                                                        <path fill-rule="evenodd"
+                                                                            d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                                                                            clip-rule="evenodd"></path>
+                                                                    </svg>
+                                                                </a>
+                                                                <% } %>
+                                                                    <form action="/admin/pages/<%= page.id %>/delete"
+                                                                        method="POST"
+                                                                        onsubmit="return confirm('您確定要刪除此頁面嗎？此操作無法復原。');">
+                                                                        <button type="submit"
+                                                                            class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-red-600 rounded-lg focus:outline-none focus:shadow-outline-gray"
+                                                                            aria-label="刪除">
+                                                                            <svg class="w-5 h-5" aria-hidden="true"
+                                                                                fill="currentColor" viewBox="0 0 20 20">
+                                                                                <path fill-rule="evenodd"
+                                                                                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                                                                    clip-rule="evenodd"></path>
+                                                                            </svg>
+                                                                        </button>
+                                                                    </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <% }); %>
+                                        </tbody>
+                                    </table>
+                                    <% } else { %>
+                                        <div class="text-center py-8">
+                                            <p class="text-gray-600">尚未找到任何頁面。<a href="/admin/pages/create"
+                                                    class="text-blue-600 hover:underline">建立您的第一個頁面</a>。</p>
+                                        </div>
+                                        <% } %>
+                            </div>
+                        </div>
     </div>
-</div>

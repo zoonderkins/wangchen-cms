@@ -2,38 +2,35 @@
 
     <div class="container mx-auto px-4 py-8">
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold">Create Category</h1>
+            <h1 class="text-3xl font-bold">建立分類</h1>
             <a href="/admin/categories" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-arrow-left mr-2"></i> Back to Categories
+                <i class="fas fa-arrow-left mr-2"></i> 返回分類列表
             </a>
         </div>
 
         <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <form action="/admin/categories" method="POST">
                 <!-- Language Tabs -->
-                <%- include('../../partials/admin-language-switcher', { title: 'Content Language' , activeTab: 'en' })
-                    %>
+                <%- include('../../partials/admin-language-switcher', { title: '內容語言' , activeTab: 'en' }) %>
 
                     <!-- English Content -->
                     <div class="language-content language-content-en">
                         <div class="mb-4">
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="name_en">
-                                Name (English)
+                                名稱 (英文)
                             </label>
                             <input
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="name_en" name="name_en" type="text" placeholder="Enter category name in English"
-                                required>
+                                id="name_en" name="name_en" type="text" placeholder="輸入英文分類名稱" required>
                         </div>
 
                         <div class="mb-4">
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="description_en">
-                                Description (English)
+                                描述 (英文)
                             </label>
                             <textarea
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="description_en" name="description_en" rows="3"
-                                placeholder="Enter category description in English"></textarea>
+                                id="description_en" name="description_en" rows="3" placeholder="輸入英文分類描述"></textarea>
                         </div>
                     </div>
 
@@ -62,12 +59,12 @@
                     <div class="border-t pt-4 mt-6">
                         <div class="mb-4">
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="parentId">
-                                Parent Category
+                                上層分類
                             </label>
                             <select
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 id="parentId" name="parentId">
-                                <option value="">None (Top Level Category)</option>
+                                <option value="">無 (頂層分類)</option>
                                 <% categories.forEach(function(category) { %>
                                     <option value="<%= category.id %>">
                                         <%= category.name_en %>
@@ -78,32 +75,32 @@
 
                         <div class="mb-4">
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="type">
-                                Category Type
+                                分類類型
                             </label>
                             <select
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 id="type" name="type">
-                                <option value="article">Article</option>
-                                <option value="download">Download</option>
-                                <option value="faq">FAQ</option>
+                                <option value="article">文章</option>
+                                <option value="download">下載</option>
+                                <option value="faq">常見問題</option>
                             </select>
                         </div>
 
                         <div class="mb-4">
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="order">
-                                Display Order
+                                顯示順序
                             </label>
                             <input
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 id="order" name="order" type="number" value="0" min="0">
-                            <p class="text-gray-600 text-xs italic mt-1">Lower numbers appear first</p>
+                            <p class="text-gray-600 text-xs italic mt-1">數字越小排序越前</p>
                         </div>
 
                         <div class="flex items-center justify-end">
                             <button
                                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                                 type="submit">
-                                Create Category
+                                建立分類
                             </button>
                         </div>
                     </div>

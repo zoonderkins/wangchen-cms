@@ -2,18 +2,18 @@
 
   <div class="container px-6 mx-auto grid">
     <h2 class="my-6 text-2xl font-semibold text-gray-700">
-      Promotion Items
+      推動項目
     </h2>
 
     <!-- CTA -->
     <div
       class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-purple-100 bg-purple-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple">
       <div class="flex items-center">
-        <span>Manage promotion items with multilingual support.</span>
+        <span>管理推動項目，支援多語言功能。</span>
       </div>
       <a href="/admin/promotions/items/create"
         class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green">
-        Add New Item
+        新增項目
       </a>
     </div>
 
@@ -36,22 +36,22 @@
                 <!-- Search -->
                 <div class="flex-1 mb-4 md:mb-0">
                   <label class="block text-sm font-medium text-gray-700 mb-2" for="search">
-                    Search
+                    搜尋
                   </label>
                   <input
                     class="block w-full text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
-                    placeholder="Search by title..." type="text" id="search" name="search" value="<%= search %>" />
+                    placeholder="依標題搜尋..." type="text" id="search" name="search" value="<%= search %>" />
                 </div>
 
                 <!-- Category Filter -->
                 <div class="flex-1 mb-4 md:mb-0">
                   <label class="block text-sm font-medium text-gray-700 mb-2" for="category">
-                    Category
+                    分類
                   </label>
                   <select
                     class="block w-full text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-select"
                     id="category" name="category">
-                    <option value="all" <%=selectedCategory==='all' ? 'selected' : '' %>>All Categories</option>
+                    <option value="all" <%=selectedCategory==='all' ? 'selected' : '' %>>所有分類</option>
                     <% categories.forEach(category=> { %>
                       <option value="<%= category.id %>" <%=selectedCategory==category.id ? 'selected' : '' %>>
                         <%= category.name_en %>
@@ -63,15 +63,15 @@
                 <!-- Status Filter -->
                 <div class="flex-1 mb-4 md:mb-0">
                   <label class="block text-sm font-medium text-gray-700 mb-2" for="status">
-                    Status
+                    狀態
                   </label>
                   <select
                     class="block w-full text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-select"
                     id="status" name="status">
-                    <option value="" <%=selectedStatus==='' ? 'selected' : '' %>>All Statuses</option>
-                    <option value="draft" <%=selectedStatus==='draft' ? 'selected' : '' %>>Draft</option>
-                    <option value="published" <%=selectedStatus==='published' ? 'selected' : '' %>>Published</option>
-                    <option value="archived" <%=selectedStatus==='archived' ? 'selected' : '' %>>Archived</option>
+                    <option value="" <%=selectedStatus==='' ? 'selected' : '' %>>所有狀態</option>
+                    <option value="draft" <%=selectedStatus==='draft' ? 'selected' : '' %>>草稿</option>
+                    <option value="published" <%=selectedStatus==='published' ? 'selected' : '' %>>已發佈</option>
+                    <option value="archived" <%=selectedStatus==='archived' ? 'selected' : '' %>>已封存</option>
                   </select>
                 </div>
 
@@ -79,7 +79,7 @@
                 <div class="flex-none">
                   <button type="submit"
                     class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                    Filter
+                    篩選
                   </button>
                 </div>
               </form>
@@ -92,15 +92,15 @@
                   <thead>
                     <tr
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b bg-gray-50">
-                      <th class="px-4 py-3">Title</th>
-                      <th class="px-4 py-3">Category</th>
-                      <th class="px-4 py-3">Status</th>
-                      <th class="px-4 py-3">Published Date</th>
-                      <th class="px-4 py-3">Actions</th>
+                      <th class="px-4 py-3">標題</th>
+                      <th class="px-4 py-3">分類</th>
+                      <th class="px-4 py-3">狀態</th>
+                      <th class="px-4 py-3">發佈日期</th>
+                      <th class="px-4 py-3">操作</th>
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y">
-                    <% if (items && items.length> 0) { %>
+                    <% if (items.length> 0) { %>
                       <% items.forEach(item=> { %>
                         <tr class="text-gray-700">
                           <td class="px-4 py-3">
@@ -123,131 +123,119 @@
                             </div>
                           </td>
                           <td class="px-4 py-3 text-sm">
-                            <%= item.category ? item.category.name_en : 'Uncategorized' %>
+                            <%= item.category ? item.category.name_en : '未分類' %>
                           </td>
-                          <td class="px-4 py-3 text-xs">
+                          <td class="px-4 py-3 text-sm">
                             <% if (item.status==='published' ) { %>
                               <span
                                 class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full">
-                                Published
+                                已發佈
                               </span>
                               <% } else if (item.status==='draft' ) { %>
                                 <span
                                   class="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-full">
-                                  Draft
+                                  草稿
                                 </span>
                                 <% } else { %>
                                   <span
                                     class="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full">
-                                    Archived
+                                    已封存
                                   </span>
                                   <% } %>
                           </td>
                           <td class="px-4 py-3 text-sm">
-                            <%= new Date(item.publishedDate).toLocaleDateString() %>
+                            <%= item.publishDate ? new Date(item.publishDate).toLocaleDateString() : '未設定' %>
                           </td>
                           <td class="px-4 py-3 text-sm">
-                            <div class="flex items-center space-x-2">
+                            <div class="flex items-center space-x-4">
                               <a href="/admin/promotions/items/edit/<%= item.id %>"
-                                class="px-2 py-1 text-xs font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-md active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue">
-                                Edit
+                                class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg focus:outline-none focus:shadow-outline-gray"
+                                aria-label="編輯">
+                                <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
+                                  <path
+                                    d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z">
+                                  </path>
+                                </svg>
                               </a>
                               <form action="/admin/promotions/items/<%= item.id %>/delete" method="POST"
-                                onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                onsubmit="return confirm('您確定要刪除此推動項目嗎？此操作無法復原。');">
                                 <button type="submit"
-                                  class="px-2 py-1 text-xs font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-md active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-red">
-                                  Delete
+                                  class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-red-600 rounded-lg focus:outline-none focus:shadow-outline-gray"
+                                  aria-label="刪除">
+                                  <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                      d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                      clip-rule="evenodd"></path>
+                                  </svg>
                                 </button>
                               </form>
-                              <% if (item.status==='published' ) { %>
-                                <a href="/<%= item.slug %>" target="_blank"
-                                  class="px-2 py-1 text-xs font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-md active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green">
-                                  View
-                                </a>
-                                <% } %>
                             </div>
                           </td>
                         </tr>
                         <% }); %>
                           <% } else { %>
-                            <tr class="text-gray-700">
-                              <td colspan="5" class="px-4 py-3 text-center">
-                                No promotion items found. <a href="/admin/promotions/items/create"
-                                  class="text-purple-600 hover:underline">Create your first item</a>.
+                            <tr>
+                              <td colspan="5" class="px-4 py-3 text-center text-gray-500">
+                                尚未找到任何推動項目。<a href="/admin/promotions/items/create"
+                                  class="text-purple-600 hover:underline">立即建立一個</a>。
                               </td>
                             </tr>
                             <% } %>
                   </tbody>
                 </table>
               </div>
+            </div>
 
-              <!-- Pagination -->
-              <% if (pagination && pagination.totalPages> 1) { %>
-                <div
-                  class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t bg-gray-50 sm:grid-cols-9">
-                  <span class="flex items-center col-span-3">
-                    Showing <%= ((pagination.currentPage - 1) * pagination.perPage) + 1 %>-<%=
-                        Math.min(pagination.currentPage * pagination.perPage, pagination.totalItems) %> of <%=
-                          pagination.totalItems %>
-                  </span>
-                  <span class="col-span-2"></span>
-                  <!-- Pagination -->
-                  <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
-                    <nav aria-label="Table navigation">
-                      <ul class="inline-flex items-center">
-                        <% if (pagination.currentPage> 1) { %>
+            <!-- Pagination -->
+            <% if (totalPages> 1) { %>
+              <div
+                class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t bg-gray-50 sm:grid-cols-9">
+                <span class="flex items-center col-span-3">
+                  顯示 <%= (currentPage - 1) * limit + 1 %> 至 <%= Math.min(currentPage * limit, totalItems) %> 項，共 <%=
+                        totalItems %> 項
+                </span>
+                <span class="col-span-2"></span>
+                <!-- Pagination -->
+                <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
+                  <nav aria-label="頁面導航">
+                    <ul class="inline-flex items-center">
+                      <li>
+                        <a href="<%= currentPage > 1 ? `/admin/promotions/items?page=${currentPage - 1}&search=${search}&category=${selectedCategory}&status=${selectedStatus}` : '#' %>"
+                          class="<%= currentPage > 1 ? 'px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple' : 'px-3 py-1 text-gray-400 cursor-not-allowed' %>">
+                          上一頁
+                        </a>
+                      </li>
+                      <% for (let i=1; i <=totalPages; i++) { %>
+                        <li>
+                          <a href="/admin/promotions/items?page=<%= i %>&search=<%= search %>&category=<%= selectedCategory %>&status=<%= selectedStatus %>"
+                            class="<%= i === currentPage ? 'px-3 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none focus:shadow-outline-purple' : 'px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple' %>">
+                            <%= i %>
+                          </a>
+                        </li>
+                        <% } %>
                           <li>
-                            <a href="?page=<%= pagination.currentPage - 1 %>&search=<%= search %>&category=<%= selectedCategory %>&status=<%= selectedStatus %>"
-                              class="px-3 py-1 rounded-md rounded-l-lg focus:outline-none focus:shadow-outline-purple"
-                              aria-label="Previous">
-                              <svg aria-hidden="true" class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                <path
-                                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                                  clip-rule="evenodd" fill-rule="evenodd"></path>
-                              </svg>
+                            <a href="<%= currentPage < totalPages ? `/admin/promotions/items?page=${currentPage + 1}&search=${search}&category=${selectedCategory}&status=${selectedStatus}` : '#' %>"
+                              class="<%= currentPage < totalPages ? 'px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple' : 'px-3 py-1 text-gray-400 cursor-not-allowed' %>">
+                              下一頁
                             </a>
                           </li>
-                          <% } %>
+                    </ul>
+                  </nav>
+                </span>
+              </div>
+              <% } %>
 
-                            <% for(let i=1; i <=pagination.totalPages; i++) { %>
-                              <li>
-                                <a href="?page=<%= i %>&search=<%= search %>&category=<%= selectedCategory %>&status=<%= selectedStatus %>"
-                                  class="px-3 py-1 rounded-md <%= pagination.currentPage === i ? 'text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600' : 'focus:outline-none focus:shadow-outline-purple' %>">
-                                  <%= i %>
-                                </a>
-                              </li>
-                              <% } %>
-
-                                <% if (pagination.currentPage < pagination.totalPages) { %>
-                                  <li>
-                                    <a href="?page=<%= pagination.currentPage + 1 %>&search=<%= search %>&category=<%= selectedCategory %>&status=<%= selectedStatus %>"
-                                      class="px-3 py-1 rounded-md rounded-r-lg focus:outline-none focus:shadow-outline-purple"
-                                      aria-label="Next">
-                                      <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
-                                        <path
-                                          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                          clip-rule="evenodd" fill-rule="evenodd"></path>
-                                      </svg>
-                                    </a>
-                                  </li>
-                                  <% } %>
-                      </ul>
-                    </nav>
-                  </span>
+                <!-- Back to Promotion Management -->
+                <div class="mt-6">
+                  <a href="/admin/promotions"
+                    class="flex items-center justify-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                      </path>
+                    </svg>
+                    Back to Promotion Management
+                  </a>
                 </div>
-                <% } %>
-            </div>
-
-            <!-- Back to Promotion Management -->
-            <div class="mt-6">
-              <a href="/admin/promotions"
-                class="flex items-center justify-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
-                  </path>
-                </svg>
-                Back to Promotion Management
-              </a>
-            </div>
   </div>

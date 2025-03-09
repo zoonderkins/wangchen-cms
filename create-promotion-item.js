@@ -24,9 +24,9 @@ async function main() {
     const promotionItem = await prisma.promotionItem.create({
       data: {
         title_en: title_en,
-        title_tw: '測試促銷項目',
+        title_tw: '測試推動項目',
         content_en: '<p>This is a test promotion item.</p>',
-        content_tw: '<p>這是一個測試促銷項目。</p>',
+        content_tw: '<p>這是一個測試推動項目。</p>',
         url: 'https://example.com',
         slug: slug,
         imagePath: null,
