@@ -17,20 +17,21 @@ model User {
   lastLogin DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  roleId    Int
 
   // Relations
-  role      Role      @relation(fields: [roleId], references: [id])
-  roleId    Int
-  articles  Article[]
-  uploads   Media[]   @relation("uploads")
+  role              Role              @relation(fields: [roleId], references: [id])
+  articles          Article[]
+  newsItems         NewsItem[]
+  promotionItems    PromotionItem[]
+  banners           Banner[]
+  platforms         Platform[]        // Added relation for platforms
+  uploads           Media[]           @relation("uploads")
   categoryPermissions CategoryPermission[] @relation("categoryPermissions")
-  banners   Banner[]
-  pages     Page[]
-  faqItems  FaqItem[]
-  downloads Download[]
-  newsItems NewsItem[]
-  promotionItems PromotionItem[]
-  aboutItems AboutItem[]
+  pages             Page[]
+  faqItems          FaqItem[]
+  downloads         Download[]
+  aboutItems        AboutItem[]
 
   @@index([roleId], map: "Users_roleId_fkey")
   @@map("Users")
@@ -452,4 +453,73 @@ model Link {
   updatedAt   DateTime  @updatedAt
 
   @@map("Links")
+}
+
+// Platform categories
+model PlatformCategory {
+  id            Int       @id @default(autoincrement())
+  name_en       String    // English name
+  name_tw       String    // Traditional Chinese name
+  description_en String?  // English description
+  description_tw String?  // Traditional Chinese description
+  slug          String    @unique // URL-friendly identifier
+  order         Int       @default(0) // Display order
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  // Relations
+  platforms     Platform[] // Platforms in this category
+
+  @@map("PlatformCategories")
+}
+
+// Platform items
+model Platform {
+  id            Int       @id @default(autoincrement())
+  title_en      String    // English title
+  title_tw      String    // Traditional Chinese title
+  content_en    String    @db.LongText // English content
+  content_tw    String    @db.LongText // Traditional Chinese content
+  slug          String    @unique // URL-friendly identifier
+  url           String?   // External URL if applicable
+  imagePath     String?   // Path to the uploaded image
+  publishedDate DateTime  // Custom published date
+  status        Status    @default(draft)
+  type          String    @default("plain_text") // Content type: plain_text, image, attachment_only
+  order         Int       @default(0) // Display order
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  // Relations
+  category      PlatformCategory? @relation(fields: [categoryId], references: [id])
+  categoryId    Int?
+  author        User             @relation(fields: [authorId], references: [id])
+  authorId      Int
+  attachments   PlatformAttachment[]
+
+  @@map("Platforms")
+}
+
+// Platform attachments
+model PlatformAttachment {
+  id           Int      @id @default(autoincrement())
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  path         String
+  title_en     String?  // English title
+  title_tw     String?  // Traditional Chinese title
+  description_en String? @db.Text // English description
+  description_tw String? @db.Text // Traditional Chinese description
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  platform     Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+  platformId   Int
+
+  @@map("PlatformAttachments")
 }

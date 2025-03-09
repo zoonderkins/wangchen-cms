@@ -1,0 +1,239 @@
+<%- contentFor('body') %>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">Create Platform Item</h1>
+      <a href="/admin/platforms" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+        <i class="fas fa-arrow-left mr-2"></i> Back to List
+      </a>
+    </div>
+
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <div class="mb-4">
+        <form action="/admin/platforms" method="POST" enctype="multipart/form-data">
+          <!-- Basic Information -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="title_en">
+                Title (English) <span class="text-red-500">*</span>
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="title_en" name="title_en" type="text" required>
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="title_tw">
+                Title (Traditional Chinese) <span class="text-red-500">*</span>
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="title_tw" name="title_tw" type="text" required>
+            </div>
+          </div>
+
+          <!-- Category and Type Selection -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="categoryId">
+                Category <span class="text-red-500 category-required">*</span>
+              </label>
+              <select
+                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="categoryId" name="categoryId" required>
+                <option value="">Select a category</option>
+                <% categories.forEach(function(category) { %>
+                  <option value="<%= category.id %>">
+                    <%= category.name_en %> / <%= category.name_tw %>
+                  </option>
+                  <% }); %>
+              </select>
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="type">
+                Content Type <span class="text-red-500">*</span>
+              </label>
+              <select
+                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="type" name="type" required onchange="toggleContentFields()">
+                <option value="plain_text">Plain Text</option>
+                <option value="image">Image with Caption</option>
+                <option value="attachment_only">Attachment Only</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Content Fields -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <div class="content-field" id="content_en_field">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="content_en">
+                  Content (English) <span class="text-red-500 content-required">*</span>
+                </label>
+                <textarea
+                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="content_en" name="content_en" rows="5" required></textarea>
+              </div>
+            </div>
+            <div>
+              <div class="content-field" id="content_tw_field">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="content_tw">
+                  Content (Traditional Chinese) <span class="text-red-500 content-required">*</span>
+                </label>
+                <textarea
+                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="content_tw" name="content_tw" rows="5" required></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Image Upload -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="image">
+                Image
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="image" name="image" type="file" accept="image/*">
+              <p class="text-gray-600 text-xs italic mt-1">Max size: 5MB. Supported formats: JPG, PNG, GIF, WebP</p>
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="url">
+                External URL
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="url" name="url" type="url">
+              <p class="text-gray-600 text-xs italic mt-1">Optional: Link to external website</p>
+            </div>
+          </div>
+
+          <!-- Attachments -->
+          <div id="attachments-section" class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="attachments">
+              Attachments <span id="attachment-required" class="text-red-500 hidden">*</span>
+            </label>
+            <input
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="attachments" name="attachments" type="file" multiple>
+            <p class="text-gray-600 text-xs italic mt-1">
+              Max size: 50MB per file. Supported formats: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, ZIP, RAR
+            </p>
+          </div>
+
+          <!-- Additional Settings -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="order">
+                Display Order
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="order" name="order" type="number" value="0">
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="status">
+                Status <span class="text-red-500">*</span>
+              </label>
+              <select
+                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="status" name="status" required>
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="publishedDate">
+                Published Date <span class="text-red-500">*</span>
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="publishedDate" name="publishedDate" type="date" required>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end">
+            <button type="reset" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2">
+              Reset
+            </button>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              Create Platform Item
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <%- contentFor('scripts') %>
+    <script>
+      function toggleContentFields() {
+        const type = document.getElementById('type').value;
+        const contentEnField = document.getElementById('content_en');
+        const contentTwField = document.getElementById('content_tw');
+        const categoryField = document.getElementById('categoryId');
+        const contentRequiredMarks = document.querySelectorAll('.content-required');
+        const categoryRequiredMarks = document.querySelectorAll('.category-required');
+        const attachmentsSection = document.getElementById('attachments-section');
+        const attachmentRequired = document.getElementById('attachment-required');
+
+        if (type === 'attachment_only') {
+          // Make content fields optional
+          contentEnField.required = false;
+          contentTwField.required = false;
+          categoryField.required = false;
+
+          // Make attachments required
+          document.getElementById('attachments').required = true;
+
+          // Hide required marks for content and category
+          contentRequiredMarks.forEach(mark => mark.style.display = 'none');
+          categoryRequiredMarks.forEach(mark => mark.style.display = 'none');
+
+          // Show required mark for attachments and highlight the section
+          attachmentRequired.classList.remove('hidden');
+          attachmentsSection.classList.add('border-2', 'border-blue-300', 'p-4', 'rounded-lg');
+
+          // Add a heading to the attachments section
+          const heading = document.createElement('h3');
+          heading.className = 'text-xl font-bold mb-4 text-blue-600';
+          heading.textContent = 'Attachments (Required)';
+
+          // Insert the heading at the beginning of the section
+          if (!attachmentsSection.querySelector('h3')) {
+            attachmentsSection.insertBefore(heading, attachmentsSection.firstChild);
+          }
+        } else {
+          // Make content fields required
+          contentEnField.required = true;
+          contentTwField.required = true;
+          categoryField.required = true;
+
+          // Make attachments optional
+          document.getElementById('attachments').required = false;
+
+          // Show required marks for content and category
+          contentRequiredMarks.forEach(mark => mark.style.display = 'inline');
+          categoryRequiredMarks.forEach(mark => mark.style.display = 'inline');
+
+          // Hide required mark for attachments and remove highlighting
+          attachmentRequired.classList.add('hidden');
+          attachmentsSection.classList.remove('border-2', 'border-blue-300', 'p-4', 'rounded-lg');
+
+          // Remove the heading if it exists
+          const heading = attachmentsSection.querySelector('h3');
+          if (heading) {
+            attachmentsSection.removeChild(heading);
+          }
+        }
+      }
+
+      // Set initial state
+      document.addEventListener('DOMContentLoaded', function () {
+        toggleContentFields();
+
+        // Set default published date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('publishedDate').value = today;
+      });
+    </script>

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `Platforms` ADD COLUMN `order` INTEGER NOT NULL DEFAULT 0,
+    ADD COLUMN `type` VARCHAR(191) NOT NULL DEFAULT 'plain_text';

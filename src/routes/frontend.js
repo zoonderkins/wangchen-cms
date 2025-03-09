@@ -7,6 +7,7 @@ const downloadController = require('../controllers/downloadController');
 const newsController = require('../controllers/newsController');
 const { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE } = require('../middleware/languageMiddleware');
 const frontendController = require('../controllers/frontendController');
+const platformController = require('../controllers/platformController');
 
 // Helper function to create clean excerpts
 function createExcerpt(content, maxLength = 200) {
@@ -237,46 +238,51 @@ router.use(async (req, res, next) => {
 });
 
 // Home page
-router.get('/:language', async (req, res) => {
+router.get(['/', '/en', '/tw'], async (req, res) => {
     try {
-        const language = req.params.language;
+        // Set language based on URL
+        const language = req.path.includes('/en') ? 'en' : (req.path.includes('/tw') ? 'tw' : 'en');
+        req.session.language = language;
         
-        // Get latest articles and active banners
-        const [articles, banners] = await Promise.all([
-            prisma.article.findMany({
-                where: {
-                    status: 'published'
-                },
-                orderBy: {
-                    createdAt: 'desc'
-                },
-                take: 10,
-                include: {
-                    category: true
-                }
-            }),
-            prisma.banner.findMany({
-                where: {
-                    isActive: true
-                },
-                orderBy: {
-                    createdAt: 'desc'
-                },
-                take: 4 // Limit to 4 banners
-            })
-        ]);
-
-        // Debug banner information
+        // Get featured articles
+        const articles = await prisma.article.findMany({
+            where: {
+                status: 'published'
+            },
+            orderBy: {
+                createdAt: 'desc'
+            },
+            take: 6
+        });
+        
+        // Get active banners
+        const banners = await prisma.banner.findMany({
+            where: {
+                isActive: true
+            },
+            orderBy: {
+                createdAt: 'desc'
+            },
+            take: 5
+        });
+        
+        // Get active links
+        const links = await prisma.link.findMany({
+            where: {
+                isActive: true
+            },
+            orderBy: {
+                order: 'asc'
+            },
+            take: 6
+        });
+        
         logger.info(`Banners found: ${banners.length}`);
-        if (banners.length > 0) {
-            banners.forEach((banner, index) => {
-                logger.info(`Banner ${index + 1}: ID=${banner.id}, Title=${banner.title}, Media=${banner.mediaPath}, Active=${banner.isActive}, Type=${banner.mediaType}`);
-            });
-        } else {
-            logger.info('No active banners found');
-        }
-
-        // Process articles to create excerpts and handle multilingual content
+        banners.forEach((banner, index) => {
+            logger.info(`Banner ${index + 1}: ID=${banner.id}, Title=${banner.title_en}, Media=${banner.mediaPath}, Active=${banner.isActive}, Type=${banner.mediaType}`);
+        });
+        
+        // Process articles for multilingual content
         const processedArticles = articles.map(article => {
             const titleField = `title_${language}`;
             const contentField = `content_${language}`;
@@ -284,7 +290,7 @@ router.get('/:language', async (req, res) => {
             
             return {
                 ...article,
-                title: article[titleField] || article.title_en, // Fallback to English
+                title: article[titleField] || article.title_en,
                 content: article[contentField] || article.content_en,
                 excerpt: article[excerptField] || createExcerpt(article[contentField] || article.content_en)
             };
@@ -306,6 +312,7 @@ router.get('/:language', async (req, res) => {
             title: 'Home',
             articles: processedArticles,
             banners: processedBanners,
+            links: links,
             layout: 'layouts/frontend'
         });
     } catch (error) {
@@ -314,6 +321,7 @@ router.get('/:language', async (req, res) => {
             title: 'Home',
             articles: [],
             banners: [],
+            links: [],
             layout: 'layouts/frontend'
         });
     }
@@ -641,6 +649,7 @@ router.get('/:language/page/:slug', async (req, res) => {
 });
 
 // FAQ page
+
 router.get('/:language/faq', async (req, res) => {
     try {
         const language = req.params.language;
@@ -738,6 +747,35 @@ router.post('/:language/contact', contactController.submitContactForm);
 // Links routes
 router.get('/en/links', frontendController.links);
 router.get('/tw/links', frontendController.links);
+
+// Platform routes - restrict to only valid languages
+router.get('/:language/platforms', (req, res, next) => {
+    // Set language based on URL
+    const language = req.params.language;
+    if (language === 'en' || language === 'tw') {
+        req.session.language = language;
+        logger.debug(`Language from URL: ${language}, URL: ${req.originalUrl}`);
+        next();
+    } else {
+        res.redirect('/en/platforms');
+    }
+}, platformController.showPlatformPage);
+
+// Add a root platforms route that redirects to the English version
+router.get('/platforms', (req, res) => {
+    res.redirect('/en/platforms');
+});
+
+// Platform detail route - restrict to only valid languages
+router.get('/:language/platform/:slug', (req, res, next) => {
+    const language = req.params.language;
+    if (language === 'en' || language === 'tw') {
+        req.language = language;
+        next();
+    } else {
+        res.redirect(`/en/platform/${req.params.slug}`);
+    }
+}, platformController.showPlatformPage);
 
 // Handle custom URL paths
 router.get('/:language/:path(*)', async (req, res, next) => {

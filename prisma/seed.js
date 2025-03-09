@@ -85,15 +85,18 @@ async function main() {
         // Create default category
         // First check if the category exists
         let defaultCategory = await prisma.category.findFirst({
-            where: { name: 'Uncategorized' }
+            where: { name_en: 'Uncategorized' }
         });
         
         // If it doesn't exist, create it
         if (!defaultCategory) {
             defaultCategory = await prisma.category.create({
                 data: {
-                    name: 'Uncategorized',
-                    description: 'Default category for uncategorized content'
+                    name_en: 'Uncategorized',
+                    name_tw: '未分類',
+                    description_en: 'Default category for uncategorized content',
+                    description_tw: '未分類內容的預設類別',
+                    order: 0
                 }
             });
         }

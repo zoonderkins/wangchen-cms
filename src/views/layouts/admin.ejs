@@ -38,7 +38,7 @@
                     <% if (typeof user !=='undefined' && user) { %>
                         <div class="hidden md:block">
                             <div class="ml-10 flex items-baseline space-x-4">
-                                <a href="/admin/dashboard"
+                                <!-- <a href="/admin/dashboard"
                                     class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
                                 <a href="/admin/articles"
                                     class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Articles</a>
@@ -47,7 +47,7 @@
                                 <a href="/admin/media"
                                     class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Media</a>
                                 <a href="/admin/categories"
-                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Categories</a>
+                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Categories</a> -->
                                 <a href="/admin/banners"
                                     class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Banners</a>
                                 <a href="/admin/downloads"
@@ -94,6 +94,8 @@
                                 </div>
                                 <a href="/admin/links"
                                     class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Links</a>
+                                <a href="/admin/platforms"
+                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Platforms</a>
                                 <% if (user.role && user.role==='super_admin' ) { %>
                                     <a href="/admin/users"
                                         class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Users</a>
@@ -168,6 +170,8 @@
                 <div class="border-t border-gray-700 my-1"></div>
                 <a href="/admin/links"
                     class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Links</a>
+                <a href="/admin/platforms"
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Platforms</a>
                 <% if (typeof user !=='undefined' && user && user.role && user.role==='super_admin' ) { %>
                     <a href="/admin/users"
                         class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Users</a>

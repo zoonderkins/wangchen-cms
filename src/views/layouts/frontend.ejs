@@ -52,11 +52,12 @@
                                         class="text-gray-700 hover:text-gray-900">
                                         <%= currentLanguage==='en' ? 'Downloads' : '下載' %>
                                     </a>
+                                    <a href="/<%= currentLanguage %>/platforms"
+                                        class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'Manufacturing Platforms' : '製造平台' %>
+                                    </a>
                                     <a href="/<%= currentLanguage %>/contact" class="text-gray-700 hover:text-gray-900">
                                         <%= currentLanguage==='en' ? 'Contact' : '聯絡我們' %>
-                                    </a>
-                                    <a href="/<%= currentLanguage %>/links" class="text-gray-700 hover:text-gray-900">
-                                        <%= currentLanguage==='en' ? 'Related Links' : '相關連結' %>
                                     </a>
 
                                     <!-- Language Switcher -->
@@ -101,6 +102,10 @@
                                     <a href="/<%= currentLanguage %>/downloads"
                                         class="text-gray-700 hover:text-gray-900">
                                         <%= currentLanguage==='en' ? 'Downloads' : '下載' %>
+                                    </a>
+                                    <a href="/<%= currentLanguage %>/platforms"
+                                        class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'Manufacturing Platforms' : '製造平台' %>
                                     </a>
                                     <a href="/<%= currentLanguage %>/contact" class="text-gray-700 hover:text-gray-900">
                                         <%= currentLanguage==='en' ? 'Contact' : '聯絡我們' %>
@@ -169,6 +174,9 @@
                             </a></li>
                         <li><a href="/<%= currentLanguage %>/downloads" class="text-gray-400 hover:text-white">
                                 <%= currentLanguage==='en' ? 'Downloads' : '下載' %>
+                            </a></li>
+                        <li><a href="/<%= currentLanguage %>/platforms" class="text-gray-400 hover:text-white">
+                                <%= currentLanguage==='en' ? 'Manufacturing Platforms' : '製造平台' %>
                             </a></li>
                         <li><a href="/<%= currentLanguage %>/contact" class="text-gray-400 hover:text-white">
                                 <%= currentLanguage==='en' ? 'Contact' : '聯絡我們' %>

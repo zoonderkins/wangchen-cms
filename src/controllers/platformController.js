@@ -1,0 +1,1109 @@
+const prisma = require('../lib/prisma');
+const logger = require('../config/logger');
+const fs = require('fs');
+const path = require('path');
+const { promisify } = require('util');
+const unlinkAsync = promisify(fs.unlink);
+const multer = require('multer');
+
+// Configure multer for image uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadPath = path.join(__dirname, '../../public/uploads/platform');
+        // Create directory if it doesn't exist
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+        }
+        cb(null, uploadPath);
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, 'platform-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+// Configure multer for attachments
+const attachmentStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadPath = path.join(__dirname, '../../public/uploads/platform/attachments');
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+        }
+        cb(null, uploadPath);
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, 'attachment-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+// Multer middleware for image uploads
+exports.upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: function (req, file, cb) {
+        if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+            return cb(new Error('Only image files are allowed!'), false);
+        }
+        cb(null, true);
+    }
+}).single('image');
+
+// Multer middleware for attachments
+exports.uploadAttachment = multer({
+    storage: attachmentStorage,
+    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit
+}).array('attachments', 10); // Allow up to 10 attachments
+
+// Admin: List all platform items
+exports.listItems = async (req, res) => {
+    try {
+        const items = await prisma.platform.findMany({
+            where: {
+                deletedAt: null
+            },
+            orderBy: {
+                order: 'asc'
+            },
+            include: {
+                author: {
+                    select: {
+                        username: true
+                    }
+                },
+                category: true,
+                attachments: true
+            }
+        });
+        
+        // Log item types for debugging
+        console.log('Platform items types:', items.map(item => ({
+            id: item.id,
+            title: item.title_en,
+            type: item.type
+        })));
+        logger.info(`Platform items count: ${items.length}`);
+        
+        const categories = await prisma.platformCategory.findMany({
+            where: {
+                deletedAt: null
+            },
+            orderBy: {
+                order: 'asc'
+            }
+        });
+        
+        res.render('admin/platforms/index', {
+            title: 'Platform Items',
+            items,
+            categories
+        });
+    } catch (error) {
+        logger.error('Error listing platform items:', error);
+        req.flash('error_msg', `Failed to load platform items: ${error.message}`);
+        res.redirect('/admin/dashboard');
+    }
+};
+
+// Admin: Render create platform item form
+exports.renderCreateItem = async (req, res) => {
+    try {
+        const categories = await prisma.platformCategory.findMany({
+            where: {
+                deletedAt: null
+            },
+            orderBy: {
+                order: 'asc'
+            }
+        });
+
+        res.render('admin/platforms/create', {
+            title: 'Create Platform Item',
+            categories
+        });
+    } catch (error) {
+        logger.error('Error loading categories:', error);
+        req.flash('error_msg', `Failed to load categories: ${error.message}`);
+        res.redirect('/admin/platforms');
+    }
+};
+
+// Admin: Create a new platform item
+exports.createItem = async (req, res) => {
+    try {
+        const { 
+            title_en, title_tw, type, content_en, content_tw, 
+            order, categoryId, url, publishedDate, status 
+        } = req.body;
+        
+        // Handle image upload
+        let imagePath = null;
+        if (req.files && req.files.image && req.files.image.length > 0) {
+            imagePath = `/uploads/platform/${req.files.image[0].filename}`;
+            console.log('Image uploaded:', req.files.image[0].filename);
+            console.log('Image path:', imagePath);
+            logger.info(`Image uploaded: ${req.files.image[0].filename}`);
+            logger.info(`Image path: ${imagePath}`);
+        }
+        
+        // Generate slug from English title with timestamp to ensure uniqueness
+        const timestamp = new Date().getTime();
+        const slug = `${title_en
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '')}-${timestamp}`;
+            
+        // Log the generated slug
+        console.log('Generated slug:', slug);
+        logger.info(`Generated slug: ${slug}`);
+        
+        // Set default values for optional fields when type is attachment_only
+        const finalContentEn = type === 'attachment_only' && !content_en ? '' : content_en;
+        const finalContentTw = type === 'attachment_only' && !content_tw ? '' : content_tw;
+        const finalCategoryId = type === 'attachment_only' && !categoryId ? null : parseInt(categoryId || '0');
+        
+        // Create the platform item
+        const platform = await prisma.platform.create({
+            data: {
+                title_en,
+                title_tw,
+                type,
+                content_en: finalContentEn,
+                content_tw: finalContentTw,
+                imagePath,
+                url,
+                slug,
+                publishedDate: new Date(publishedDate),
+                order: order ? parseInt(order) : 0,
+                categoryId: finalCategoryId,
+                authorId: req.session.user.id,
+                status: status || 'draft'
+            }
+        });
+        
+        // Handle attachments if any
+        if (req.files && req.files.attachments && req.files.attachments.length > 0) {
+            console.log(`Processing ${req.files.attachments.length} attachments`);
+            logger.info(`Processing ${req.files.attachments.length} attachments`);
+            
+            try {
+                const attachmentPromises = req.files.attachments.map(file => {
+                    console.log(`Processing attachment: ${file.originalname}, size: ${file.size}, type: ${file.mimetype}`);
+                    logger.info(`Processing attachment: ${file.originalname}, size: ${file.size}, type: ${file.mimetype}`);
+                    
+                    return prisma.platformAttachment.create({
+                        data: {
+                            filename: file.filename,
+                            originalName: file.originalname,
+                            mimeType: file.mimetype,
+                            size: file.size,
+                            path: `/uploads/platform/attachments/${file.filename}`,
+                            platformId: platform.id
+                        }
+                    });
+                });
+                
+                await Promise.all(attachmentPromises);
+                console.log('All attachments processed successfully');
+                logger.info('All attachments processed successfully');
+            } catch (attachmentError) {
+                console.error('Error processing attachments:', attachmentError);
+                logger.error(`Error processing attachments: ${attachmentError.message}`);
+                // Continue with the response even if attachments fail
+            }
+        }
+        
+        req.flash('success_msg', 'Platform item created successfully');
+        res.redirect('/admin/platforms');
+    } catch (error) {
+        logger.error('Error creating platform item:', error);
+        req.flash('error_msg', `Failed to create platform item: ${error.message}`);
+        res.redirect('/admin/platforms/create');
+    }
+};
+
+// Admin: Render edit platform item form
+exports.renderEditItem = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        if (!id) {
+            req.flash('error_msg', 'Platform item ID is required');
+            return res.redirect('/admin/platforms');
+        }
+        
+        // Log the ID for debugging
+        console.log('Platform item ID:', id, 'Type:', typeof id);
+        logger.info(`Platform item ID: ${id}, Type: ${typeof id}`);
+        
+        // Try to parse the ID
+        let parsedId;
+        try {
+            parsedId = parseInt(id, 10);
+            console.log('Parsed ID:', parsedId, 'Type:', typeof parsedId, 'isNaN:', isNaN(parsedId));
+            logger.info(`Parsed ID: ${parsedId}, Type: ${typeof parsedId}, isNaN: ${isNaN(parsedId)}`);
+        } catch (error) {
+            console.error('Error parsing ID:', error);
+            logger.error(`Error parsing ID: ${error.message}`);
+            req.flash('error_msg', 'Invalid platform item ID format');
+            return res.redirect('/admin/platforms');
+        }
+        
+        if (isNaN(parsedId)) {
+            console.log('ID is not a number, redirecting');
+            logger.warn(`ID is not a number: ${id}`);
+            req.flash('error_msg', 'Invalid platform item ID');
+            return res.redirect('/admin/platforms');
+        }
+        
+        // Use findFirst instead of findUnique
+        console.log('Finding platform item with ID:', parsedId);
+        logger.info(`Finding platform item with ID: ${parsedId}`);
+        
+        const item = await prisma.platform.findFirst({
+            where: {
+                id: parsedId,
+                deletedAt: null
+            },
+            include: {
+                attachments: true
+            }
+        });
+        
+        if (!item) {
+            console.log('Platform item not found with ID:', parsedId);
+            logger.warn(`Platform item not found with ID: ${parsedId}`);
+            req.flash('error_msg', 'Platform item not found');
+            return res.redirect('/admin/platforms');
+        }
+        
+        console.log('Platform item found:', item.id, item.title_en);
+        logger.info(`Platform item found: ${item.id}, ${item.title_en}`);
+        
+        // Log image path for debugging
+        console.log('Image path:', item.imagePath);
+        logger.info(`Image path: ${item.imagePath || 'none'}`);
+        
+        // Check if the image file exists
+        if (item.imagePath) {
+            const imagePath = path.join(__dirname, '../../public', item.imagePath);
+            try {
+                const exists = fs.existsSync(imagePath);
+                console.log('Image file exists:', exists, imagePath);
+                logger.info(`Image file exists: ${exists}, ${imagePath}`);
+            } catch (err) {
+                console.error('Error checking if image file exists:', err);
+                logger.error(`Error checking if image file exists: ${err.message}`);
+            }
+        }
+        
+        // Log attachments for debugging
+        console.log('Attachments:', item.attachments ? item.attachments.length : 0);
+        if (item.attachments && item.attachments.length > 0) {
+            console.log('Attachment details:', item.attachments.map(a => ({
+                id: a.id,
+                filename: a.filename,
+                originalName: a.originalName,
+                path: a.path,
+                size: a.size,
+                mimeType: a.mimeType
+            })));
+        } else {
+            console.log('No attachments found for this item. Checking if attachments were included in the query...');
+            console.log('Item object keys:', Object.keys(item));
+            console.log('Item type:', item.type);
+            
+            // If this is an attachment_only type but no attachments were found, query for them directly
+            if (item.type === 'attachment_only') {
+                console.log('This is an attachment_only item. Querying for attachments directly...');
+                const attachments = await prisma.platformAttachment.findMany({
+                    where: {
+                        platformId: parsedId
+                    }
+                });
+                
+                console.log('Direct query found attachments:', attachments.length);
+                if (attachments.length > 0) {
+                    console.log('Attachment details from direct query:', attachments.map(a => ({
+                        id: a.id,
+                        filename: a.filename,
+                        originalName: a.originalName
+                    })));
+                    
+                    // Add the attachments to the item
+                    item.attachments = attachments;
+                }
+            }
+        }
+        logger.info(`Attachments count: ${item.attachments ? item.attachments.length : 0}`);
+        
+        const categories = await prisma.platformCategory.findMany({
+            where: {
+                deletedAt: null
+            },
+            orderBy: {
+                order: 'asc'
+            }
+        });
+        
+        // If bullet points, convert JSON array back to newline-separated text
+        let displayContentEn = item.content_en;
+        let displayContentTw = item.content_tw;
+        
+        if (item.type === 'bullet_points' && item.bulletPoints_en && item.bulletPoints_tw) {
+            try {
+                displayContentEn = JSON.parse(item.bulletPoints_en).join('\n');
+                displayContentTw = JSON.parse(item.bulletPoints_tw).join('\n');
+            } catch (e) {
+                logger.error('Error parsing bullet points:', e);
+            }
+        }
+        
+        res.render('admin/platforms/edit', {
+            title: 'Edit Platform Item',
+            item: {
+                ...item,
+                content_en: displayContentEn,
+                content_tw: displayContentTw
+            },
+            categories
+        });
+        
+        console.log('Edit platform item form rendered successfully');
+        logger.info('Edit platform item form rendered successfully');
+    } catch (error) {
+        console.error('Error rendering edit platform item form:', error);
+        logger.error('Error rendering edit platform item form:', error);
+        req.flash('error_msg', `Failed to load platform item: ${error.message}`);
+        res.redirect('/admin/platforms');
+    }
+};
+
+// Admin: Update a platform item
+exports.updateItem = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        if (!id) {
+            req.flash('error_msg', 'Platform item ID is required');
+            return res.redirect('/admin/platforms');
+        }
+        
+        // Log the ID for debugging
+        console.log('Update - Platform item ID:', id, 'Type:', typeof id);
+        logger.info(`Update - Platform item ID: ${id}, Type: ${typeof id}`);
+        
+        // Try to parse the ID
+        let parsedId;
+        try {
+            parsedId = parseInt(id, 10);
+            console.log('Update - Parsed ID:', parsedId, 'Type:', typeof parsedId, 'isNaN:', isNaN(parsedId));
+            logger.info(`Update - Parsed ID: ${parsedId}, Type: ${typeof parsedId}, isNaN: ${isNaN(parsedId)}`);
+        } catch (error) {
+            console.error('Update - Error parsing ID:', error);
+            logger.error(`Update - Error parsing ID: ${error.message}`);
+            req.flash('error_msg', 'Invalid platform item ID format');
+            return res.redirect('/admin/platforms');
+        }
+        
+        if (isNaN(parsedId)) {
+            console.log('Update - ID is not a number, redirecting');
+            logger.warn(`Update - ID is not a number: ${id}`);
+            req.flash('error_msg', 'Invalid platform item ID');
+            return res.redirect('/admin/platforms');
+        }
+        
+        const { 
+            title_en, title_tw, type, content_en, content_tw, 
+            order, categoryId, url, publishedDate, removeImage,
+            removeAttachments, status 
+        } = req.body;
+        
+        // Log the status for debugging
+        console.log('Update - Status:', status);
+        logger.info(`Update - Status: ${status}`);
+        
+        // Use findFirst instead of findUnique
+        console.log('Update - Finding platform item with ID:', parsedId);
+        logger.info(`Update - Finding platform item with ID: ${parsedId}`);
+        
+        const existingItem = await prisma.platform.findFirst({
+            where: {
+                id: parsedId,
+                deletedAt: null
+            },
+            include: {
+                attachments: true
+            }
+        });
+        
+        if (!existingItem) {
+            console.log('Update - Platform item not found with ID:', parsedId);
+            logger.warn(`Update - Platform item not found with ID: ${parsedId}`);
+            req.flash('error_msg', 'Platform item not found');
+            return res.redirect('/admin/platforms');
+        }
+        
+        console.log('Update - Platform item found:', existingItem.id, existingItem.title_en);
+        logger.info(`Update - Platform item found: ${existingItem.id}, ${existingItem.title_en}`);
+        
+        // Log existing attachments
+        console.log('Update - Existing attachments:', existingItem.attachments ? existingItem.attachments.length : 0);
+        if (existingItem.attachments && existingItem.attachments.length > 0) {
+            console.log('Update - Attachment details:', existingItem.attachments.map(a => ({
+                id: a.id,
+                filename: a.filename,
+                originalName: a.originalName
+            })));
+        }
+        logger.info(`Update - Existing attachments count: ${existingItem.attachments ? existingItem.attachments.length : 0}`);
+        
+        // Log request files
+        console.log('Update - Request files:', req.files ? Object.keys(req.files) : 'none');
+        if (req.files && req.files.attachments) {
+            console.log('Update - New attachments in request:', req.files.attachments.length);
+        }
+        logger.info(`Update - Request files: ${req.files ? JSON.stringify(Object.keys(req.files)) : 'none'}`);
+        
+        // Handle image upload or removal
+        let imagePath = existingItem.imagePath;
+        
+        // Log image path for debugging
+        console.log('Update - Current image path:', imagePath);
+        logger.info(`Update - Current image path: ${imagePath || 'none'}`);
+        
+        if (removeImage === 'true') {
+            // Only remove the image if explicitly requested
+            if (existingItem.imagePath) {
+                const filePath = path.join(__dirname, '../../public', existingItem.imagePath);
+                try {
+                    await unlinkAsync(filePath);
+                    console.log('Update - Image removed:', existingItem.imagePath);
+                    logger.info(`Update - Image removed: ${existingItem.imagePath}`);
+                } catch (err) {
+                    console.error('Update - Failed to delete image file:', err);
+                    logger.error(`Update - Failed to delete image file: ${err.message}`);
+                }
+                imagePath = null;
+            }
+        }
+        
+        // Handle new image upload
+        if (req.files && req.files.image && req.files.image.length > 0) {
+            console.log('Update - New image uploaded:', req.files.image[0].filename);
+            logger.info(`Update - New image uploaded: ${req.files.image[0].filename}`);
+            
+            // Delete old image if exists
+            if (existingItem.imagePath) {
+                const oldFilePath = path.join(__dirname, '../../public', existingItem.imagePath);
+                try {
+                    await unlinkAsync(oldFilePath);
+                    console.log('Update - Old image deleted:', existingItem.imagePath);
+                    logger.info(`Update - Old image deleted: ${existingItem.imagePath}`);
+                } catch (err) {
+                    console.error('Update - Failed to delete old image file:', err);
+                    logger.error(`Update - Failed to delete old image file: ${err.message}`);
+                }
+            }
+            
+            // Set new image path
+            imagePath = `/uploads/platform/${req.files.image[0].filename}`;
+            console.log('Update - New image path:', imagePath);
+            logger.info(`Update - New image path: ${imagePath}`);
+        }
+        
+        // Handle attachment removals if specified
+        if (removeAttachments) {
+            const attachmentIds = Array.isArray(removeAttachments) 
+                ? removeAttachments.map(id => parseInt(id))
+                : [parseInt(removeAttachments)];
+            
+            const attachmentsToRemove = existingItem.attachments.filter(att => 
+                attachmentIds.includes(att.id)
+            );
+            
+            // Delete attachment files
+            for (const attachment of attachmentsToRemove) {
+                const filePath = path.join(__dirname, '../../public', attachment.path);
+                try {
+                    await unlinkAsync(filePath);
+                } catch (err) {
+                    logger.error(`Failed to delete attachment file: ${err.message}`);
+                }
+            }
+            
+            // Delete attachments from database
+            await prisma.platformAttachment.deleteMany({
+                where: {
+                    id: {
+                        in: attachmentIds
+                    }
+                }
+            });
+        }
+        
+        // Update the platform item
+        // Set default values for optional fields when type is attachment_only
+        const finalContentEn = type === 'attachment_only' && !content_en ? '' : content_en;
+        const finalContentTw = type === 'attachment_only' && !content_tw ? '' : content_tw;
+        const finalCategoryId = type === 'attachment_only' && !categoryId ? null : parseInt(categoryId || '0');
+        
+        await prisma.platform.update({
+            where: { id: parsedId },
+            data: {
+                title_en,
+                title_tw,
+                type,
+                content_en: finalContentEn,
+                content_tw: finalContentTw,
+                imagePath,
+                url,
+                publishedDate: new Date(publishedDate),
+                order: order ? parseInt(order) : 0,
+                categoryId: finalCategoryId,
+                status: status
+            }
+        });
+        
+        // Log the updated item to confirm status was updated
+        const updatedItem = await prisma.platform.findFirst({
+            where: { id: parsedId }
+        });
+        console.log('Update - Updated item status:', updatedItem.status);
+        logger.info(`Update - Updated item status: ${updatedItem.status}`);
+        
+        // Handle new attachments if any
+        if (req.files && req.files.attachments && req.files.attachments.length > 0) {
+            console.log(`Update - Processing ${req.files.attachments.length} new attachments`);
+            logger.info(`Update - Processing ${req.files.attachments.length} new attachments`);
+            
+            try {
+                const attachmentPromises = req.files.attachments.map(file => {
+                    console.log(`Update - Processing attachment: ${file.originalname}, size: ${file.size}, type: ${file.mimetype}`);
+                    logger.info(`Update - Processing attachment: ${file.originalname}, size: ${file.size}, type: ${file.mimetype}`);
+                    
+                    return prisma.platformAttachment.create({
+                        data: {
+                            filename: file.filename,
+                            originalName: file.originalname,
+                            mimeType: file.mimetype,
+                            size: file.size,
+                            path: `/uploads/platform/attachments/${file.filename}`,
+                            platformId: parsedId
+                        }
+                    });
+                });
+                
+                await Promise.all(attachmentPromises);
+                console.log('Update - All attachments processed successfully');
+                logger.info('Update - All attachments processed successfully');
+            } catch (attachmentError) {
+                console.error('Update - Error processing attachments:', attachmentError);
+                logger.error(`Update - Error processing attachments: ${attachmentError.message}`);
+                // Continue with the response even if attachments fail
+            }
+        }
+        
+        req.flash('success_msg', 'Platform item updated successfully');
+        res.redirect('/admin/platforms');
+    } catch (error) {
+        logger.error('Error updating platform item:', error);
+        req.flash('error_msg', `Failed to update platform item: ${error.message}`);
+        res.redirect(`/admin/platforms/edit/${req.params.id}`);
+    }
+};
+
+// Admin: Delete a platform item
+exports.deleteItem = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        if (!id) {
+            req.flash('error_msg', 'Platform item ID is required');
+            return res.redirect('/admin/platforms');
+        }
+        
+        // Log the ID for debugging
+        console.log('Delete - Platform item ID:', id, 'Type:', typeof id);
+        logger.info(`Delete - Platform item ID: ${id}, Type: ${typeof id}`);
+        
+        // Try to parse the ID
+        let parsedId;
+        try {
+            parsedId = parseInt(id, 10);
+            console.log('Delete - Parsed ID:', parsedId, 'Type:', typeof parsedId, 'isNaN:', isNaN(parsedId));
+            logger.info(`Delete - Parsed ID: ${parsedId}, Type: ${typeof parsedId}, isNaN: ${isNaN(parsedId)}`);
+        } catch (error) {
+            console.error('Delete - Error parsing ID:', error);
+            logger.error(`Delete - Error parsing ID: ${error.message}`);
+            req.flash('error_msg', 'Invalid platform item ID format');
+            return res.redirect('/admin/platforms');
+        }
+        
+        if (isNaN(parsedId)) {
+            console.log('Delete - ID is not a number, redirecting');
+            logger.warn(`Delete - ID is not a number: ${id}`);
+            req.flash('error_msg', 'Invalid platform item ID');
+            return res.redirect('/admin/platforms');
+        }
+        
+        // Use findFirst instead of findUnique
+        console.log('Delete - Finding platform item with ID:', parsedId);
+        logger.info(`Delete - Finding platform item with ID: ${parsedId}`);
+        
+        const item = await prisma.platform.findFirst({
+            where: {
+                id: parsedId,
+                deletedAt: null
+            },
+            include: {
+                attachments: true
+            }
+        });
+        
+        if (!item) {
+            console.log('Delete - Platform item not found with ID:', parsedId);
+            logger.warn(`Delete - Platform item not found with ID: ${parsedId}`);
+            req.flash('error_msg', 'Platform item not found');
+            return res.redirect('/admin/platforms');
+        }
+        
+        console.log('Delete - Platform item found:', item.id, item.title_en);
+        logger.info(`Delete - Platform item found: ${item.id}, ${item.title_en}`);
+        
+        // Delete image file if exists
+        if (item.imagePath) {
+            const imagePath = path.join(__dirname, '../../public', item.imagePath);
+            try {
+                await unlinkAsync(imagePath);
+            } catch (err) {
+                logger.error(`Failed to delete image file: ${err.message}`);
+            }
+        }
+        
+        // Delete attachment files
+        for (const attachment of item.attachments) {
+            const filePath = path.join(__dirname, '../../public', attachment.path);
+            try {
+                await unlinkAsync(filePath);
+            } catch (err) {
+                logger.error(`Failed to delete attachment file: ${err.message}`);
+            }
+        }
+        
+        // Soft delete the platform item and its attachments
+        await prisma.platform.update({
+            where: { id: parsedId },
+            data: {
+                deletedAt: new Date()
+            }
+        });
+        
+        req.flash('success_msg', 'Platform item deleted successfully');
+        res.redirect('/admin/platforms');
+    } catch (error) {
+        logger.error('Error deleting platform item:', error);
+        req.flash('error_msg', `Failed to delete platform item: ${error.message}`);
+        res.redirect('/admin/platforms');
+    }
+};
+
+// Frontend: Display platform page
+exports.showPlatformPage = async (req, res) => {
+    try {
+        const platforms = await prisma.platform.findMany({
+            where: {
+                deletedAt: null,
+                status: 'published'
+            },
+            orderBy: [
+                {
+                    categoryId: 'asc'
+                },
+                {
+                    order: 'asc'
+                }
+            ],
+            include: {
+                category: true,
+                attachments: true
+            }
+        });
+        
+        const categories = await prisma.platformCategory.findMany({
+            where: {
+                deletedAt: null
+            },
+            orderBy: {
+                order: 'asc'
+            }
+        });
+        
+        // Group platforms by category
+        const platformsByCategory = categories.map(category => ({
+            ...category,
+            platforms: platforms.filter(p => p.categoryId === category.id)
+        }));
+        
+        res.render('frontend/platform', {
+            title: 'Manufacturing Platform',
+            platformsByCategory
+        });
+    } catch (error) {
+        logger.error('Error displaying platform page:', error);
+        res.status(500).render('error', {
+            message: 'Error loading platform page',
+            error
+        });
+    }
+};
+
+// Admin: Platform Categories
+exports.listCategories = async (req, res) => {
+    try {
+        console.log('Listing platform categories...');
+        logger.info('Listing platform categories...');
+        
+        const categories = await prisma.platformCategory.findMany({
+            where: {
+                deletedAt: null
+            },
+            orderBy: {
+                order: 'asc'
+            },
+            include: {
+                platforms: {
+                    where: {
+                        deletedAt: null
+                    }
+                }
+            }
+        });
+        
+        console.log(`Found ${categories.length} platform categories`);
+        logger.info(`Found ${categories.length} platform categories`);
+        
+        res.render('admin/platforms/categories/index', {
+            title: 'Platform Categories',
+            categories
+        });
+        
+        console.log('Platform categories rendered successfully');
+        logger.info('Platform categories rendered successfully');
+    } catch (error) {
+        console.error('Error listing platform categories:', error);
+        logger.error('Error listing platform categories:', error);
+        req.flash('error_msg', `Failed to load categories: ${error.message}`);
+        res.redirect('/admin/dashboard');
+    }
+};
+
+exports.createCategory = async (req, res) => {
+    try {
+        console.log('Creating new platform category...');
+        logger.info('Creating new platform category...');
+        
+        const { name_en, name_tw, description_en, description_tw, order } = req.body;
+        
+        console.log('Request body:', req.body);
+        logger.info(`Request body: ${JSON.stringify(req.body)}`);
+        
+        // Generate slug from English name
+        const slug = name_en
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '');
+        
+        console.log('Generated slug:', slug);
+        logger.info(`Generated slug: ${slug}`);
+        
+        // Create the category
+        try {
+            const newCategory = await prisma.platformCategory.create({
+                data: {
+                    name_en,
+                    name_tw,
+                    description_en,
+                    description_tw,
+                    slug,
+                    order: order ? parseInt(order, 10) : 0
+                }
+            });
+            
+            console.log('New category created successfully:', newCategory);
+            logger.info(`New category created successfully: ${JSON.stringify(newCategory)}`);
+            
+            req.flash('success_msg', 'Platform category created successfully');
+            res.redirect('/admin/platforms/categories');
+        } catch (dbError) {
+            console.error('Database error creating category:', dbError);
+            logger.error(`Database error creating category: ${dbError.message}`);
+            throw dbError;
+        }
+    } catch (error) {
+        console.error('Error creating platform category:', error);
+        logger.error('Error creating platform category:', error);
+        req.flash('error_msg', `Failed to create category: ${error.message}`);
+        res.redirect('/admin/platforms/categories');
+    }
+};
+
+exports.updateCategory = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        if (!id) {
+            req.flash('error_msg', 'Category ID is required');
+            return res.redirect('/admin/platforms/categories');
+        }
+        
+        // Log the ID for debugging
+        console.log('Update Category - Platform category ID:', id, 'Type:', typeof id);
+        logger.info(`Update Category - Platform category ID: ${id}, Type: ${typeof id}`);
+        
+        // Try to parse the ID
+        let parsedId;
+        try {
+            parsedId = parseInt(id, 10);
+            console.log('Update Category - Parsed ID:', parsedId, 'Type:', typeof parsedId, 'isNaN:', isNaN(parsedId));
+            logger.info(`Update Category - Parsed ID: ${parsedId}, Type: ${typeof parsedId}, isNaN: ${isNaN(parsedId)}`);
+        } catch (error) {
+            console.error('Update Category - Error parsing ID:', error);
+            logger.error(`Update Category - Error parsing ID: ${error.message}`);
+            req.flash('error_msg', 'Invalid category ID format');
+            return res.redirect('/admin/platforms/categories');
+        }
+        
+        if (isNaN(parsedId)) {
+            console.log('Update Category - ID is not a number, redirecting');
+            logger.warn(`Update Category - ID is not a number: ${id}`);
+            req.flash('error_msg', 'Invalid category ID');
+            return res.redirect('/admin/platforms/categories');
+        }
+        
+        const { name_en, name_tw, description_en, description_tw, order } = req.body;
+        
+        // Check if category exists
+        console.log('Update Category - Finding platform category with ID:', parsedId);
+        logger.info(`Update Category - Finding platform category with ID: ${parsedId}`);
+        
+        const existingCategory = await prisma.platformCategory.findFirst({
+            where: {
+                id: parsedId,
+                deletedAt: null
+            }
+        });
+        
+        if (!existingCategory) {
+            console.log('Update Category - Platform category not found with ID:', parsedId);
+            logger.warn(`Update Category - Platform category not found with ID: ${parsedId}`);
+            req.flash('error_msg', 'Platform category not found');
+            return res.redirect('/admin/platforms/categories');
+        }
+        
+        console.log('Update Category - Platform category found:', existingCategory.id, existingCategory.name_en);
+        logger.info(`Update Category - Platform category found: ${existingCategory.id}, ${existingCategory.name_en}`);
+        
+        // Update the category
+        const updatedCategory = await prisma.platformCategory.update({
+            where: { id: parsedId },
+            data: {
+                name_en,
+                name_tw,
+                description_en,
+                description_tw,
+                order: order ? parseInt(order, 10) : 0
+            }
+        });
+        
+        console.log('Update Category - Platform category updated successfully:', updatedCategory.id);
+        logger.info(`Update Category - Platform category updated successfully: ${updatedCategory.id}`);
+        
+        req.flash('success_msg', 'Platform category updated successfully');
+        res.redirect('/admin/platforms/categories');
+    } catch (error) {
+        console.error('Error updating platform category:', error);
+        logger.error('Error updating platform category:', error);
+        req.flash('error_msg', `Failed to update category: ${error.message}`);
+        res.redirect('/admin/platforms/categories');
+    }
+};
+
+exports.deleteCategory = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        if (!id) {
+            req.flash('error_msg', 'Category ID is required');
+            return res.redirect('/admin/platforms/categories');
+        }
+        
+        // Log the ID for debugging
+        console.log('Delete Category - Platform category ID:', id, 'Type:', typeof id);
+        logger.info(`Delete Category - Platform category ID: ${id}, Type: ${typeof id}`);
+        
+        // Try to parse the ID
+        let parsedId;
+        try {
+            parsedId = parseInt(id, 10);
+            console.log('Delete Category - Parsed ID:', parsedId, 'Type:', typeof parsedId, 'isNaN:', isNaN(parsedId));
+            logger.info(`Delete Category - Parsed ID: ${parsedId}, Type: ${typeof parsedId}, isNaN: ${isNaN(parsedId)}`);
+        } catch (error) {
+            console.error('Delete Category - Error parsing ID:', error);
+            logger.error(`Delete Category - Error parsing ID: ${error.message}`);
+            req.flash('error_msg', 'Invalid category ID format');
+            return res.redirect('/admin/platforms/categories');
+        }
+        
+        if (isNaN(parsedId)) {
+            console.log('Delete Category - ID is not a number, redirecting');
+            logger.warn(`Delete Category - ID is not a number: ${id}`);
+            req.flash('error_msg', 'Invalid category ID');
+            return res.redirect('/admin/platforms/categories');
+        }
+        
+        // Check if category has any platforms
+        console.log('Delete Category - Finding platform category with ID:', parsedId);
+        logger.info(`Delete Category - Finding platform category with ID: ${parsedId}`);
+        
+        const category = await prisma.platformCategory.findFirst({
+            where: {
+                id: parsedId,
+                deletedAt: null
+            },
+            include: {
+                platforms: {
+                    where: {
+                        deletedAt: null
+                    }
+                }
+            }
+        });
+        
+        if (!category) {
+            console.log('Delete Category - Platform category not found with ID:', parsedId);
+            logger.warn(`Delete Category - Platform category not found with ID: ${parsedId}`);
+            req.flash('error_msg', 'Platform category not found');
+            return res.redirect('/admin/platforms/categories');
+        }
+        
+        console.log('Delete Category - Platform category found:', category.id, category.name_en);
+        logger.info(`Delete Category - Platform category found: ${category.id}, ${category.name_en}`);
+        
+        if (category.platforms.length > 0) {
+            console.log('Delete Category - Cannot delete category with existing platforms:', category.platforms.length);
+            logger.warn(`Delete Category - Cannot delete category with existing platforms: ${category.platforms.length}`);
+            req.flash('error_msg', 'Cannot delete category with existing platforms');
+            return res.redirect('/admin/platforms/categories');
+        }
+        
+        // Soft delete the category
+        const deletedCategory = await prisma.platformCategory.update({
+            where: { id: parsedId },
+            data: {
+                deletedAt: new Date()
+            }
+        });
+        
+        console.log('Delete Category - Platform category deleted successfully:', deletedCategory.id);
+        logger.info(`Delete Category - Platform category deleted successfully: ${deletedCategory.id}`);
+        
+        req.flash('success_msg', 'Platform category deleted successfully');
+        res.redirect('/admin/platforms/categories');
+    } catch (error) {
+        console.error('Error deleting platform category:', error);
+        logger.error('Error deleting platform category:', error);
+        req.flash('error_msg', `Failed to delete category: ${error.message}`);
+        res.redirect('/admin/platforms/categories');
+    }
+};
+
+// Admin: Render create platform category form
+exports.renderCreateCategory = (req, res) => {
+    try {
+        console.log('Rendering create platform category form...');
+        logger.info('Rendering create platform category form...');
+        
+        res.render('admin/platforms/categories/create', {
+            title: 'Create Platform Category'
+        });
+        
+        console.log('Create platform category form rendered successfully');
+        logger.info('Create platform category form rendered successfully');
+    } catch (error) {
+        console.error('Error rendering create platform category form:', error);
+        logger.error('Error rendering create platform category form:', error);
+        req.flash('error_msg', `Failed to load form: ${error.message}`);
+        res.redirect('/admin/platforms/categories');
+    }
+};
+
+// Admin: Render edit platform category form
+exports.renderEditCategory = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        if (!id) {
+            req.flash('error_msg', 'Category ID is required');
+            return res.redirect('/admin/platforms/categories');
+        }
+        
+        // Log the ID for debugging
+        console.log('Category - Platform category ID:', id, 'Type:', typeof id);
+        logger.info(`Category - Platform category ID: ${id}, Type: ${typeof id}`);
+        
+        // Try to parse the ID
+        let parsedId;
+        try {
+            parsedId = parseInt(id, 10);
+            console.log('Category - Parsed ID:', parsedId, 'Type:', typeof parsedId, 'isNaN:', isNaN(parsedId));
+            logger.info(`Category - Parsed ID: ${parsedId}, Type: ${typeof parsedId}, isNaN: ${isNaN(parsedId)}`);
+        } catch (error) {
+            console.error('Category - Error parsing ID:', error);
+            logger.error(`Category - Error parsing ID: ${error.message}`);
+            req.flash('error_msg', 'Invalid category ID format');
+            return res.redirect('/admin/platforms/categories');
+        }
+        
+        if (isNaN(parsedId)) {
+            console.log('Category - ID is not a number, redirecting');
+            logger.warn(`Category - ID is not a number: ${id}`);
+            req.flash('error_msg', 'Invalid category ID');
+            return res.redirect('/admin/platforms/categories');
+        }
+        
+        // Use findFirst instead of findUnique
+        console.log('Category - Finding platform category with ID:', parsedId);
+        logger.info(`Category - Finding platform category with ID: ${parsedId}`);
+        
+        const category = await prisma.platformCategory.findFirst({
+            where: {
+                id: parsedId,
+                deletedAt: null
+            }
+        });
+        
+        if (!category) {
+            console.log('Category - Platform category not found with ID:', parsedId);
+            logger.warn(`Category - Platform category not found with ID: ${parsedId}`);
+            req.flash('error_msg', 'Platform category not found');
+            return res.redirect('/admin/platforms/categories');
+        }
+        
+        console.log('Category - Platform category found:', category.id, category.name_en);
+        logger.info(`Category - Platform category found: ${category.id}, ${category.name_en}`);
+        
+        res.render('admin/platforms/categories/edit', {
+            title: 'Edit Platform Category',
+            category
+        });
+        
+        console.log('Edit platform category form rendered successfully');
+        logger.info('Edit platform category form rendered successfully');
+    } catch (error) {
+        console.error('Error rendering edit platform category form:', error);
+        logger.error('Error rendering edit platform category form:', error);
+        req.flash('error_msg', `Failed to load category: ${error.message}`);
+        res.redirect('/admin/platforms/categories');
+    }
+};
