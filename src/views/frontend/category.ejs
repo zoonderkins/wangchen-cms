@@ -1,0 +1,43 @@
+<%- contentFor('body') %>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold mb-2"><%= category.name %></h1>
+        <% if (category.description) { %>
+            <p class="text-gray-600"><%= category.description %></p>
+        <% } %>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6">
+        <% if (category.articles && category.articles.length > 0) { %>
+            <% category.articles.forEach(article => { %>
+                <article class="bg-white shadow rounded-lg p-6">
+                    <h2 class="text-2xl font-semibold mb-3">
+                        <a href="/article/<%= article.id %>" class="text-blue-600 hover:text-blue-800 hover:underline">
+                            <%= article.title %>
+                        </a>
+                    </h2>
+                    <div class="text-gray-600 text-sm mb-4">
+                        <span><%= new Date(article.createdAt).toLocaleDateString() %></span>
+                    </div>
+                    <div class="text-gray-700 mb-4">
+                        <%= article.excerpt %>
+                    </div>
+                    <div>
+                        <a href="/article/<%= article.id %>" class="text-blue-600 hover:text-blue-800 hover:underline">
+                            Read more →
+                        </a>
+                    </div>
+                </article>
+            <% }); %>
+        <% } else { %>
+            <div class="bg-white shadow rounded-lg p-6 text-center text-gray-600">
+                No articles found in this category.
+            </div>
+        <% } %>
+    </div>
+
+    <div class="mt-8">
+        <a href="/" class="text-blue-600 hover:text-blue-800 hover:underline">← Back to Home</a>
+    </div>
+</div>

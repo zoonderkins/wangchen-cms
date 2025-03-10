@@ -1,0 +1,164 @@
+<%- contentFor('body') %>
+
+    <div class="container px-6 mx-auto grid">
+        <h2 class="my-6 text-2xl font-semibold text-gray-700">
+            <%= category ? '編輯新聞類別' : '建立新聞類別' %>
+        </h2>
+
+        <!-- CTA -->
+        <div
+            class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-purple-100 bg-purple-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple">
+            <div class="flex items-center">
+                <span>
+                    <%= category ? '編輯現有新聞類別。' : '建立新的新聞類別，用於組織新聞項目。' %>
+                </span>
+            </div>
+            <a href="/admin/news/categories"
+                class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-800 border border-transparent rounded-lg active:bg-purple-900 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                <i class="fas fa-arrow-left mr-2"></i> 返回類別列表
+            </a>
+        </div>
+
+        <!-- Flash Messages -->
+        <% if(typeof error_msg !=='undefined' && error_msg.length> 0) { %>
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+                <%= error_msg %>
+            </div>
+            <% } %>
+
+                <!-- Form -->
+                <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
+                    <form action="<%= category ? `/admin/news/categories/${category.id}` : '/admin/news/categories' %>"
+                        method="POST">
+
+                        <!-- Language Tabs -->
+                        <div class="mb-6">
+                            <div class="border-b border-gray-200">
+                                <nav class="-mb-px flex">
+                                    <button type="button"
+                                        class="language-tab active-tab py-2 px-4 border-b-2 border-blue-500 font-medium text-sm leading-5 text-blue-600 focus:outline-none"
+                                        data-lang="en">英文</button>
+                                    <button type="button"
+                                        class="language-tab py-2 px-4 border-b-2 border-transparent font-medium text-sm leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none"
+                                        data-lang="tw">中文</button>
+                                </nav>
+                            </div>
+                        </div>
+
+                        <!-- English Content -->
+                        <div class="language-content language-content-en">
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2" for="name_en">
+                                    名稱 (英文)
+                                </label>
+                                <input
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                    id="name_en" name="name_en" type="text"
+                                    value="<%= category ? category.name_en : '' %>" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2" for="description_en">
+                                    描述 (英文)
+                                </label>
+                                <textarea
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                    id="description_en" name="description_en"
+                                    rows="3"><%= category ? category.description_en : '' %></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Traditional Chinese Content -->
+                        <div class="language-content language-content-tw hidden">
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2" for="name_tw">
+                                    名稱 (中文)
+                                </label>
+                                <input
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                    id="name_tw" name="name_tw" type="text"
+                                    value="<%= category ? category.name_tw : '' %>">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2" for="description_tw">
+                                    描述 (中文)
+                                </label>
+                                <textarea
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                    id="description_tw" name="description_tw"
+                                    rows="3"><%= category ? category.description_tw : '' %></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Common Fields -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2" for="slug">
+                                網址代碼
+                            </label>
+                            <input
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                id="slug" name="slug" type="text" value="<%= category ? category.slug : '' %>" required>
+                            <p class="mt-1 text-sm text-gray-500">
+                                網址友好名稱。留空將自動從英文名稱生成。
+                            </p>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2" for="order">
+                                顯示順序
+                            </label>
+                            <input
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                id="order" name="order" type="number" value="<%= category ? category.order : 0 %>"
+                                min="0">
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="mt-6">
+                            <button type="submit"
+                                class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                                <%= category ? '更新類別' : '建立類別' %>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Language tab switching
+            const tabs = document.querySelectorAll('.language-tab');
+            const contents = document.querySelectorAll('.language-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const lang = tab.getAttribute('data-lang');
+
+                    // Update tabs
+                    tabs.forEach(t => t.classList.remove('active-tab', 'border-blue-500', 'text-blue-600'));
+                    tabs.forEach(t => t.classList.add('border-transparent', 'text-gray-500'));
+                    tab.classList.add('active-tab', 'border-blue-500', 'text-blue-600');
+                    tab.classList.remove('border-transparent', 'text-gray-500');
+
+                    // Update content
+                    contents.forEach(content => content.classList.add('hidden'));
+                    document.querySelector(`.language-content-${lang}`).classList.remove('hidden');
+                });
+            });
+
+            // Slug generation from name
+            const nameInput = document.getElementById('name_en');
+            const slugInput = document.getElementById('slug');
+
+            if (nameInput && slugInput) {
+                nameInput.addEventListener('blur', function () {
+                    if (slugInput.value === '') {
+                        const slug = this.value
+                            .toLowerCase()
+                            .replace(/[^\w\s-]/g, '')
+                            .replace(/[\s_-]+/g, '-')
+                            .replace(/^-+|-+$/g, '');
+                        slugInput.value = slug;
+                    }
+                });
+            }
+        });
+    </script>

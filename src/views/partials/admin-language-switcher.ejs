@@ -1,0 +1,59 @@
+<div class="language-switcher flex items-center space-x-2 mb-4">
+    <div class="text-sm text-gray-600 mr-2">
+        <%= title || 'Language' %>:
+    </div>
+    <div class="flex border rounded overflow-hidden">
+        <button type="button"
+            class="language-tab px-4 py-2 text-sm <%= activeTab === 'en' ? 'bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-700' %>"
+            data-lang="en">
+            <span class="flag-icon">🇺🇸</span>
+            <span class="ml-1">English</span>
+        </button>
+        <button type="button"
+            class="language-tab px-4 py-2 text-sm <%= activeTab === 'tw' ? 'bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-700' %>"
+            data-lang="tw">
+            <span class="flag-icon">🇹🇼</span>
+            <span class="ml-1">中文</span>
+        </button>
+    </div>
+</div>
+
+<script>
+    // Simple global function for switching language tabs
+    function switchLanguageTab(lang) {
+        // Hide all language content sections
+        document.querySelectorAll('.language-content').forEach(el => {
+            el.classList.add('hidden');
+        });
+
+        // Show the selected language content
+        document.querySelectorAll(`.language-content-${lang}`).forEach(el => {
+            el.classList.remove('hidden');
+        });
+
+        // Update active tab styling
+        document.querySelectorAll('.language-tab').forEach(tab => {
+            if (tab.getAttribute('data-lang') === lang) {
+                tab.classList.add('bg-blue-600', 'text-white');
+                tab.classList.remove('bg-gray-100', 'hover:bg-gray-200', 'text-gray-700');
+            } else {
+                tab.classList.remove('bg-blue-600', 'text-white');
+                tab.classList.add('bg-gray-100', 'hover:bg-gray-200', 'text-gray-700');
+            }
+        });
+    }
+
+    // Initialize the active tab when the page loads
+    document.addEventListener('DOMContentLoaded', function () {
+        const activeTab = '<%= activeTab %>' || 'en';
+        switchLanguageTab(activeTab);
+
+        // Add click event listeners to language tabs
+        document.querySelectorAll('.language-tab').forEach(tab => {
+            tab.addEventListener('click', function () {
+                const lang = this.getAttribute('data-lang');
+                switchLanguageTab(lang);
+            });
+        });
+    });
+</script>

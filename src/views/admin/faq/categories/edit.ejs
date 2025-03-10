@@ -1,0 +1,141 @@
+<%- contentFor('body') %>
+
+    <div class="container px-6 mx-auto grid">
+        <h2 class="my-6 text-2xl font-semibold text-gray-700">
+            編輯常見問題分類: <%= category.name_en %>
+        </h2>
+
+        <!-- Flash Messages -->
+        <% if(typeof success_msg !=='undefined' && success_msg.length> 0) { %>
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+                <%= success_msg %>
+            </div>
+            <% } %>
+                <% if(typeof error_msg !=='undefined' && error_msg.length> 0) { %>
+                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+                        <%= error_msg %>
+                    </div>
+                    <% } %>
+
+                        <!-- Category Form -->
+                        <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
+                            <!-- Language Switcher -->
+                            <div class="mb-6">
+                                <div class="flex items-center space-x-4">
+                                    <button type="button" id="lang-en"
+                                        class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                                        英文
+                                    </button>
+                                    <button type="button" id="lang-tw"
+                                        class="px-3 py-1 text-sm font-medium leading-5 text-gray-700 transition-colors duration-150 bg-white border border-gray-300 rounded-md active:bg-gray-100 hover:bg-gray-100 focus:outline-none focus:shadow-outline-gray">
+                                        中文
+                                    </button>
+                                </div>
+                            </div>
+
+                            <form action="/admin/faq/categories/<%= category.id %>" method="POST">
+                                <!-- English Fields -->
+                                <div id="english-fields">
+                                    <!-- Name (English) -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700" for="name_en">
+                                            分類名稱 (英文) <span class="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
+                                            type="text" id="name_en" name="name_en" required
+                                            value="<%= category.name_en %>" />
+                                    </div>
+
+                                    <!-- Description (English) -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700" for="description_en">
+                                            描述 (英文)
+                                        </label>
+                                        <textarea
+                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-textarea"
+                                            id="description_en" name="description_en"
+                                            rows="3"><%= category.description_en || '' %></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Chinese Fields -->
+                                <div id="chinese-fields" style="display: none;">
+                                    <!-- Name (Traditional Chinese) -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700" for="name_tw">
+                                            分類名稱 (中文) <span class="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
+                                            type="text" id="name_tw" name="name_tw" required
+                                            value="<%= category.name_tw %>" />
+                                    </div>
+
+                                    <!-- Description (Traditional Chinese) -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700" for="description_tw">
+                                            描述 (中文)
+                                        </label>
+                                        <textarea
+                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-textarea"
+                                            id="description_tw" name="description_tw"
+                                            rows="3"><%= category.description_tw || '' %></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Order -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700" for="order">
+                                        顯示順序
+                                    </label>
+                                    <input
+                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
+                                        type="number" id="order" name="order" min="0" value="<%= category.order %>" />
+                                    <p class="text-xs text-gray-500 mt-1">較小順序值的分類將會優先顯示。</p>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="flex justify-end mt-6">
+                                    <a href="/admin/faq/categories"
+                                        class="px-4 py-2 mr-3 text-sm font-medium leading-5 text-gray-700 transition-colors duration-150 border border-gray-300 rounded-lg active:bg-gray-100 hover:bg-gray-50 focus:outline-none focus:shadow-outline-gray">
+                                        取消
+                                    </a>
+                                    <button type="submit"
+                                        class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                                        更新分類
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+    </div>
+
+    <script>
+        // Language switcher functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const langEn = document.getElementById('lang-en');
+            const langTw = document.getElementById('lang-tw');
+            const englishFields = document.getElementById('english-fields');
+            const chineseFields = document.getElementById('chinese-fields');
+
+            // Switch to English
+            langEn.addEventListener('click', function () {
+                englishFields.style.display = 'block';
+                chineseFields.style.display = 'none';
+                langEn.classList.remove('bg-white', 'text-gray-700', 'border-gray-300');
+                langEn.classList.add('bg-purple-600', 'text-white', 'border-transparent');
+                langTw.classList.remove('bg-purple-600', 'text-white', 'border-transparent');
+                langTw.classList.add('bg-white', 'text-gray-700', 'border-gray-300');
+            });
+
+            // Switch to Chinese
+            langTw.addEventListener('click', function () {
+                englishFields.style.display = 'none';
+                chineseFields.style.display = 'block';
+                langTw.classList.remove('bg-white', 'text-gray-700', 'border-gray-300');
+                langTw.classList.add('bg-purple-600', 'text-white', 'border-transparent');
+                langEn.classList.remove('bg-purple-600', 'text-white', 'border-transparent');
+                langEn.classList.add('bg-white', 'text-gray-700', 'border-gray-300');
+            });
+        });
+    </script>

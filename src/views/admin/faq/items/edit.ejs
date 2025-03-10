@@ -1,0 +1,242 @@
+<%- contentFor('body') %>
+
+    <div class="container px-6 mx-auto grid">
+        <h2 class="my-6 text-2xl font-semibold text-gray-700">
+            編輯常見問題項目: <%= item.title_en %>
+        </h2>
+
+        <!-- Flash Messages -->
+        <% if(typeof success_msg !=='undefined' && success_msg.length> 0) { %>
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+                <%= success_msg %>
+            </div>
+            <% } %>
+
+                <% if(typeof error_msg !=='undefined' && error_msg.length> 0) { %>
+                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+                        <%= error_msg %>
+                    </div>
+                    <% } %>
+
+                        <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
+                            <!-- Language Switcher -->
+                            <div class="mb-4">
+                                <div class="flex border-b border-gray-200">
+                                    <button type="button"
+                                        class="py-2 px-4 text-center border-b-2 border-blue-500 text-blue-500 font-medium text-sm leading-5 focus:outline-none language-tab active"
+                                        data-language="en">
+                                        英文
+                                    </button>
+                                    <button type="button"
+                                        class="py-2 px-4 text-center border-b-2 border-transparent text-gray-500 font-medium text-sm leading-5 hover:text-gray-700 hover:border-gray-300 focus:outline-none language-tab"
+                                        data-language="tw">
+                                        繁體中文
+                                    </button>
+                                </div>
+                            </div>
+
+                            <form action="/admin/faq/items/<%= item.id %>" method="POST">
+                                <!-- Title - English -->
+                                <div class="mb-4 language-content en">
+                                    <label class="block text-sm font-medium text-gray-700" for="title_en">
+                                        問題/標題 (英文) <span class="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                        type="text" id="title_en" name="title_en"
+                                        placeholder="Enter the FAQ question or title in English" required
+                                        value="<%= item.title_en %>" />
+                                </div>
+
+                                <!-- Title - Traditional Chinese -->
+                                <div class="mb-4 language-content tw hidden">
+                                    <label class="block text-sm font-medium text-gray-700" for="title_tw">
+                                        問題/標題 (繁體中文) <span class="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                        type="text" id="title_tw" name="title_tw" placeholder="請輸入常見問題的問題或標題（繁體中文）"
+                                        required value="<%= item.title_tw %>" />
+                                </div>
+
+                                <!-- Category -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700" for="categoryId">
+                                        分類 <span class="text-red-500">*</span>
+                                    </label>
+                                    <select
+                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                        id="categoryId" name="categoryId" required>
+                                        <option value="">選擇分類</option>
+                                        <% categories.forEach(function(category) { %>
+                                            <option value="<%= category.id %>" <%=item.categoryId===category.id
+                                                ? 'selected' : '' %>><%= category.name_en %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+
+                                <!-- Content - English -->
+                                <div class="mb-4 language-content en">
+                                    <label class="block text-sm font-medium text-gray-700" for="content_en">
+                                        答案/內容 (英文) <span class="text-red-500">*</span>
+                                    </label>
+                                    <div id="editor-container-en" class="h-64 mt-1"></div>
+                                    <input type="hidden" name="content_en" id="content_en"
+                                        value="<%= item.content_en %>">
+                                </div>
+
+                                <!-- Content - Traditional Chinese -->
+                                <div class="mb-4 language-content tw hidden">
+                                    <label class="block text-sm font-medium text-gray-700" for="content_tw">
+                                        答案/內容 (繁體中文) <span class="text-red-500">*</span>
+                                    </label>
+                                    <div id="editor-container-tw" class="h-64 mt-1"></div>
+                                    <input type="hidden" name="content_tw" id="content_tw"
+                                        value="<%= item.content_tw %>">
+                                </div>
+
+                                <!-- Order -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700" for="order">
+                                        顯示順序
+                                    </label>
+                                    <input
+                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                        type="number" id="order" name="order" placeholder="輸入顯示順序（較小的數字會先顯示）"
+                                        value="<%= item.order %>" />
+                                </div>
+
+                                <!-- Status -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700" for="status">
+                                        狀態
+                                    </label>
+                                    <select
+                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                        id="status" name="status">
+                                        <option value="draft" <%=item.status==='draft' ? 'selected' : '' %>>草稿</option>
+                                        <option value="published" <%=item.status==='published' ? 'selected' : '' %>>已發布
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="flex justify-end mt-6">
+                                    <a href="/admin/faq/items"
+                                        class="px-4 py-2 mr-2 text-sm font-medium leading-5 text-gray-700 transition-colors duration-150 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline-gray">
+                                        取消
+                                    </a>
+                                    <button type="submit"
+                                        class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue">
+                                        更新常見問題項目
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+    </div>
+
+    <!-- Include Quill.js -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize Quill editors for both languages
+            const toolbarOptions = [
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                [{ 'indent': '-1' }, { 'indent': '+1' }],
+                ['link', 'image'],
+                ['clean']
+            ];
+
+            // English Quill editor
+            var quillEn = new Quill('#editor-container-en', {
+                theme: 'snow',
+                modules: {
+                    toolbar: toolbarOptions
+                },
+                placeholder: '在此輸入英文答案內容...'
+            });
+
+            // Traditional Chinese Quill editor
+            var quillTw = new Quill('#editor-container-tw', {
+                theme: 'snow',
+                modules: {
+                    toolbar: toolbarOptions
+                },
+                placeholder: '在此輸入繁體中文答案內容...'
+            });
+
+            // Try to load existing English content
+            try {
+                const contentEnInput = document.querySelector('#content_en');
+                if (contentEnInput.value) {
+                    // Check if it's already in Delta format
+                    try {
+                        const deltaEn = JSON.parse(contentEnInput.value);
+                        quillEn.setContents(deltaEn);
+                    } catch (e) {
+                        // If not in Delta format, set as HTML
+                        quillEn.root.innerHTML = contentEnInput.value;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading English content:', error);
+            }
+
+            // Try to load existing Traditional Chinese content
+            try {
+                const contentTwInput = document.querySelector('#content_tw');
+                if (contentTwInput.value) {
+                    // Check if it's already in Delta format
+                    try {
+                        const deltaTw = JSON.parse(contentTwInput.value);
+                        quillTw.setContents(deltaTw);
+                    } catch (e) {
+                        // If not in Delta format, set as HTML
+                        quillTw.root.innerHTML = contentTwInput.value;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading Traditional Chinese content:', error);
+            }
+
+            // When form is submitted, update hidden inputs with Quill content
+            document.querySelector('form').addEventListener('submit', function () {
+                var contentEnInput = document.querySelector('#content_en');
+                contentEnInput.value = JSON.stringify(quillEn.getContents());
+
+                var contentTwInput = document.querySelector('#content_tw');
+                contentTwInput.value = JSON.stringify(quillTw.getContents());
+            });
+
+            // Language switcher functionality
+            const languageTabs = document.querySelectorAll('.language-tab');
+            const languageContents = document.querySelectorAll('.language-content');
+
+            languageTabs.forEach(tab => {
+                tab.addEventListener('click', function () {
+                    const language = this.getAttribute('data-language');
+
+                    // Update active tab
+                    languageTabs.forEach(t => {
+                        t.classList.remove('border-blue-500', 'text-blue-500');
+                        t.classList.add('border-transparent', 'text-gray-500');
+                    });
+                    this.classList.remove('border-transparent', 'text-gray-500');
+                    this.classList.add('border-blue-500', 'text-blue-500');
+
+                    // Show/hide content sections
+                    languageContents.forEach(content => {
+                        if (content.classList.contains(language)) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+        });
+    </script>

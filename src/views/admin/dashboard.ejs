@@ -1,0 +1,257 @@
+<%- contentFor('body') %>
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8">歡迎，<%= user.username %>
+        </h1>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-gray-500 text-sm font-medium">文章總數</h3>
+                <p class="text-3xl font-bold text-gray-900">
+                    <%= stats.articles %>
+                </p>
+                <a href="/admin/articles" class="mt-2 inline-block text-blue-600 hover:text-blue-800">查看所有文章 →</a>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-gray-500 text-sm font-medium">頁面總數</h3>
+                <p class="text-3xl font-bold text-gray-900">
+                    <%= stats.pages %>
+                </p>
+                <a href="/admin/pages" class="mt-2 inline-block text-blue-600 hover:text-blue-800">查看所有頁面 →</a>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-gray-500 text-sm font-medium">媒體總數</h3>
+                <p class="text-3xl font-bold text-gray-900">
+                    <%= stats.media %>
+                </p>
+                <a href="/admin/media" class="mt-2 inline-block text-blue-600 hover:text-blue-800">查看所有媒體 →</a>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-gray-500 text-sm font-medium">分類總數</h3>
+                <p class="text-3xl font-bold text-gray-900">
+                    <%= stats.categories %>
+                </p>
+                <a href="/admin/categories" class="mt-2 inline-block text-blue-600 hover:text-blue-800">查看所有分類 →</a>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-gray-500 text-sm font-medium">常見問題總數</h3>
+                <p class="text-3xl font-bold text-gray-900">
+                    <%= stats.faqItems %>
+                </p>
+                <a href="/admin/faq/items" class="mt-2 inline-block text-blue-600 hover:text-blue-800">管理常見問題 →</a>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-gray-500 text-sm font-medium">下載總數</h3>
+                <p class="text-3xl font-bold text-gray-900">
+                    <%= stats.downloads %>
+                </p>
+                <a href="/admin/downloads" class="mt-2 inline-block text-blue-600 hover:text-blue-800">管理下載 →</a>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-gray-500 text-sm font-medium">使用者總數</h3>
+                <p class="text-3xl font-bold text-gray-900">
+                    <%= stats.users %>
+                </p>
+                <% if (user.role==='super_admin' ) { %>
+                    <a href="/admin/users" class="mt-2 inline-block text-blue-600 hover:text-blue-800">管理使用者 →</a>
+                    <% } %>
+            </div>
+        </div>
+
+        <!-- Content Management -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Recent Articles -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b flex justify-between items-center">
+                    <h2 class="text-xl font-semibold">最新文章</h2>
+                    <a href="/admin/articles/create"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <i class="fas fa-plus mr-2"></i> 新增文章
+                    </a>
+                </div>
+                <div class="divide-y">
+                    <% if (recentArticles && recentArticles.length> 0) { %>
+                        <% recentArticles.forEach(article=> { %>
+                            <div class="px-6 py-4">
+                                <a href="/admin/articles/edit/<%= article.id %>"
+                                    class="text-lg font-medium text-blue-600 hover:text-blue-800">
+                                    <%= article.title %>
+                                </a>
+                                <div class="mt-1 text-sm text-gray-500">
+                                    <span>作者：<%= article.author ? article.author.username : '未知' %></span>
+                                    <% if (article.category) { %>
+                                        <span class="mx-2">•</span>
+                                        <span>
+                                            <%= article.category.name %>
+                                        </span>
+                                        <% } %>
+                                            <span class="mx-2">•</span>
+                                            <span>
+                                                <%= new Date(article.createdAt).toLocaleDateString() %>
+                                            </span>
+                                </div>
+                            </div>
+                            <% }); %>
+                                <% } else { %>
+                                    <div class="px-6 py-4 text-gray-500">
+                                        尚無文章。<a href="/admin/articles/create"
+                                            class="text-blue-600 hover:text-blue-800">建立您的第一篇文章</a>
+                                    </div>
+                                    <% } %>
+                </div>
+            </div>
+
+            <!-- Recent Pages -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b flex justify-between items-center">
+                    <h2 class="text-xl font-semibold">最新頁面</h2>
+                    <a href="/admin/pages/create"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <i class="fas fa-plus mr-2"></i> 新增頁面
+                    </a>
+                </div>
+                <div class="divide-y">
+                    <% if (recentPages && recentPages.length> 0) { %>
+                        <% recentPages.forEach(page=> { %>
+                            <div class="px-6 py-4">
+                                <a href="/admin/pages/edit/<%= page.id %>"
+                                    class="text-lg font-medium text-blue-600 hover:text-blue-800">
+                                    <%= page.title %>
+                                </a>
+                                <div class="mt-1 text-sm text-gray-500">
+                                    <span>作者：<%= page.author ? page.author.username : '未知' %></span>
+                                    <span class="mx-2">•</span>
+                                    <span>
+                                        <%= new Date(page.createdAt).toLocaleDateString() %>
+                                    </span>
+                                </div>
+                            </div>
+                            <% }); %>
+                                <% } else { %>
+                                    <div class="px-6 py-4 text-gray-500">
+                                        尚無頁面。<a href="/admin/pages/create"
+                                            class="text-blue-600 hover:text-blue-800">建立您的第一個頁面</a>
+                                    </div>
+                                    <% } %>
+                </div>
+            </div>
+
+            <!-- Recent FAQ Items -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b flex justify-between items-center">
+                    <h2 class="text-xl font-semibold">最新常見問題</h2>
+                    <a href="/admin/faq/items/create"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <i class="fas fa-plus mr-2"></i> 新增常見問題
+                    </a>
+                </div>
+                <div class="divide-y">
+                    <% if (recentFaqItems && recentFaqItems.length> 0) { %>
+                        <% recentFaqItems.forEach(item=> { %>
+                            <div class="px-6 py-4">
+                                <a href="/admin/faq/items/edit/<%= item.id %>"
+                                    class="text-lg font-medium text-blue-600 hover:text-blue-800">
+                                    <%= item.title %>
+                                </a>
+                                <div class="mt-1 text-sm text-gray-500">
+                                    <span>作者：<%= item.author ? item.author.username : '未知' %></span>
+                                    <% if (item.category) { %>
+                                        <span class="mx-2">•</span>
+                                        <span>
+                                            <%= item.category.name %>
+                                        </span>
+                                        <% } %>
+                                            <span class="mx-2">•</span>
+                                            <span>
+                                                <%= item.status==='published' ? '已發佈' : '草稿' %>
+                                            </span>
+                                </div>
+                            </div>
+                            <% }); %>
+                                <% } else { %>
+                                    <div class="px-6 py-4 text-gray-500">
+                                        尚無常見問題。<a href="/admin/faq/items/create"
+                                            class="text-blue-600 hover:text-blue-800">建立您的第一個常見問題</a>
+                                    </div>
+                                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Downloads -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b flex justify-between items-center">
+                <h2 class="text-xl font-semibold">最新下載</h2>
+                <a href="/admin/downloads/create"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    <i class="fas fa-plus mr-2"></i> 新增下載
+                </a>
+            </div>
+            <div class="divide-y">
+                <% if (recentDownloads && recentDownloads.length> 0) { %>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
+                        <% recentDownloads.forEach(download=> { %>
+                            <div class="border rounded-lg p-4">
+                                <a href="/admin/downloads/edit/<%= download.id %>"
+                                    class="text-lg font-medium text-blue-600 hover:text-blue-800">
+                                    <%= download.title %>
+                                </a>
+                                <% if (download.category) { %>
+                                    <div class="mt-1">
+                                        <span
+                                            class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">
+                                            <%= download.category.name_en %> / <%= download.category.name_tw %>
+                                        </span>
+                                    </div>
+                                    <% } %>
+                                        <div class="mt-2 text-sm text-gray-500">
+                                            <span>作者：<%= download.author ? download.author.username : '未知' %></span>
+                                            <span class="mx-2">•</span>
+                                            <span>
+                                                <%= download.status==='published' ? '已發佈' : '草稿' %>
+                                            </span>
+                                        </div>
+                            </div>
+                            <% }); %>
+                    </div>
+                    <% } else { %>
+                        <div class="px-6 py-4 text-gray-500">
+                            尚無下載。<a href="/admin/downloads/create"
+                                class="text-blue-600 hover:text-blue-800">建立您的第一個下載</a>
+                        </div>
+                        <% } %>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b">
+                <h2 class="text-xl font-semibold">快速操作</h2>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <a href="/admin/articles/create" class="block p-4 border rounded-lg hover:bg-gray-50">
+                        <h3 class="text-lg font-medium text-gray-900">建立新文章</h3>
+                        <p class="mt-1 text-sm text-gray-500">撰寫並發佈新文章</p>
+                    </a>
+                    <a href="/admin/pages/create" class="block p-4 border rounded-lg hover:bg-gray-50">
+                        <h3 class="text-lg font-medium text-gray-900">建立新頁面</h3>
+                        <p class="mt-1 text-sm text-gray-500">為您的網站建立自訂頁面</p>
+                    </a>
+                    <a href="/admin/faq/categories" class="block p-4 border rounded-lg hover:bg-gray-50">
+                        <h3 class="text-lg font-medium text-gray-900">管理常見問題分類</h3>
+                        <p class="mt-1 text-sm text-gray-500">整理您的常見問題內容</p>
+                    </a>
+                    <a href="/admin/faq/items/create" class="block p-4 border rounded-lg hover:bg-gray-50">
+                        <h3 class="text-lg font-medium text-gray-900">建立新常見問題</h3>
+                        <p class="mt-1 text-sm text-gray-500">為您的網站新增常見問題項目</p>
+                    </a>
+                    <a href="/admin/downloads/create" class="block p-4 border rounded-lg hover:bg-gray-50">
+                        <h3 class="text-lg font-medium text-gray-900">上傳新下載</h3>
+                        <p class="mt-1 text-sm text-gray-500">新增可下載的檔案</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>

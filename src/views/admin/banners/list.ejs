@@ -1,0 +1,177 @@
+<%- contentFor('body') %>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold">橫幅管理</h1>
+            <a href="/admin/banners/create"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <i class="fas fa-plus mr-2"></i> 新增橫幅
+            </a>
+        </div>
+
+        <% if (banners && banners.length> 0) { %>
+            <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                媒體
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                標題
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                網址
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                狀態
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                建立者
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                操作
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <% banners.forEach(banner=> { %>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex-shrink-0 h-20 w-32 overflow-hidden">
+                                        <% if (banner.mediaType==='image' ) { %>
+                                            <img src="<%= banner.mediaPath.replace(/^public/, '') %>"
+                                                alt="<%= banner.title_en %>" class="h-20 w-32 object-cover">
+                                            <% } else { %>
+                                                <video class="h-20 w-32 object-cover" controls>
+                                                    <source src="<%= banner.mediaPath.replace(/^public/, '') %>"
+                                                        type="video/mp4">
+                                                    您的瀏覽器不支援影片標籤。
+                                                </video>
+                                                <% } %>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm font-medium text-gray-900">
+                                        <div class="mb-1">
+                                            <span class="text-xs text-gray-500">EN:</span>
+                                            <%= banner.title_en %>
+                                        </div>
+                                        <div>
+                                            <span class="text-xs text-gray-500">中:</span>
+                                            <%= banner.title_tw %>
+                                        </div>
+                                    </div>
+                                    <% if (banner.description_en || banner.description_tw) { %>
+                                        <div class="text-sm text-gray-500 truncate max-w-xs mt-1">
+                                            <% if (banner.description_en) { %>
+                                                <div class="text-xs">
+                                                    <span class="text-gray-400">EN:</span>
+                                                    <%= banner.description_en.length> 30 ?
+                                                        banner.description_en.substring(0, 30) + '...' :
+                                                        banner.description_en %>
+                                                </div>
+                                                <% } %>
+                                                    <% if (banner.description_tw) { %>
+                                                        <div class="text-xs">
+                                                            <span class="text-gray-400">中:</span>
+                                                            <%= banner.description_tw.length> 30 ?
+                                                                banner.description_tw.substring(0, 30) + '...' :
+                                                                banner.description_tw %>
+                                                        </div>
+                                                        <% } %>
+                                        </div>
+                                        <% } %>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <% if (banner.url) { %>
+                                        <a href="<%= banner.url %>" target="_blank"
+                                            class="text-blue-600 hover:text-blue-900">
+                                            <%= banner.url.length> 30 ? banner.url.substring(0, 30) + '...' : banner.url
+                                                %>
+                                        </a>
+                                        <% } else { %>
+                                            <span class="text-gray-400">無網址</span>
+                                            <% } %>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <button
+                                        class="toggle-status px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= banner.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>"
+                                        data-id="<%= banner.id %>" data-active="<%= banner.isActive %>">
+                                        <%= banner.isActive ? '啟用中' : '已停用' %>
+                                    </button>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <%= banner.createdBy.username %>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="/admin/banners/edit/<%= banner.id %>"
+                                        class="text-blue-600 hover:text-blue-900 mr-4">編輯</a>
+                                    <form action="/admin/banners/<%= banner.id %>?_method=DELETE" method="POST"
+                                        class="inline" onsubmit="return confirm('您確定要刪除此橫幅嗎？');">
+                                        <button type="submit" class="text-red-600 hover:text-red-900">刪除</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% }); %>
+                    </tbody>
+                </table>
+            </div>
+            <% } else { %>
+                <div class="bg-white shadow overflow-hidden sm:rounded-lg p-6 text-center text-gray-500">
+                    尚未找到任何橫幅。<a href="/admin/banners/create" class="text-blue-600 hover:text-blue-900">立即建立一個</a>。
+                </div>
+                <% } %>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleButtons = document.querySelectorAll('.toggle-status');
+
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', async function () {
+                    const id = this.dataset.id;
+                    const currentStatus = this.dataset.active === 'true';
+
+                    try {
+                        const response = await fetch(`/admin/banners/toggle/${id}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            // Update button appearance
+                            this.classList.remove(currentStatus ? 'bg-green-100' : 'bg-red-100');
+                            this.classList.remove(currentStatus ? 'text-green-800' : 'text-red-800');
+                            this.classList.add(!currentStatus ? 'bg-green-100' : 'bg-red-100');
+                            this.classList.add(!currentStatus ? 'text-green-800' : 'text-red-800');
+
+                            // Update text
+                            this.textContent = !currentStatus ? '啟用中' : '已停用';
+
+                            // Update data attribute
+                            this.dataset.active = !currentStatus;
+
+                            // Show success message
+                            alert(data.message);
+                        } else {
+                            alert('錯誤: ' + data.message);
+                        }
+                    } catch (error) {
+                        console.error('錯誤:', error);
+                        alert('更新橫幅狀態時發生錯誤');
+                    }
+                });
+            });
+        });
+    </script>

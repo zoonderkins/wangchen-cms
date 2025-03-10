@@ -1,0 +1,158 @@
+<%- contentFor('body') %>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold">建立下載分類</h1>
+            <a href="/admin/downloads/categories"
+                class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded">
+                <i class="fas fa-arrow-left mr-2"></i> 返回列表
+            </a>
+        </div>
+
+        <%- include('../../../partials/messages') %>
+
+            <!-- Category Form -->
+            <div class="bg-white shadow rounded-lg p-6">
+                <form action="/admin/downloads/categories" method="POST">
+                    <!-- English Content -->
+                    <div class="mb-6 pb-4 border-b border-gray-200">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-language mr-2 text-gray-600"></i>
+                            <h3 class="text-lg font-medium text-gray-700">English Content</h3>
+                        </div>
+
+                        <!-- Name (English) -->
+                        <div class="mb-4">
+                            <label for="name_en" class="block text-sm font-medium text-gray-700 mb-2">
+                                Category Name (English) <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                id="name_en" name="name_en" required placeholder="e.g., Documents" />
+                            <p class="mt-1 text-xs text-gray-500">Enter the English name for this category</p>
+                        </div>
+
+                        <!-- Description (English) -->
+                        <div class="mb-4">
+                            <label for="description_en" class="block text-sm font-medium text-gray-700 mb-2">
+                                Description (English)
+                            </label>
+                            <textarea
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                id="description_en" name="description_en" rows="3"
+                                placeholder="Brief description of this category"></textarea>
+                            <p class="mt-1 text-xs text-gray-500">Optional: Provide a short description for this
+                                category</p>
+                        </div>
+                    </div>
+
+                    <!-- Traditional Chinese Content -->
+                    <div class="mb-6 pb-4 border-b border-gray-200">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-language mr-2 text-gray-600"></i>
+                            <h3 class="text-lg font-medium text-gray-700">中文內容</h3>
+                        </div>
+
+                        <!-- Name (Traditional Chinese) -->
+                        <div class="mb-4">
+                            <label for="name_tw" class="block text-sm font-medium text-gray-700 mb-2">
+                                類別名稱 (中文) <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                id="name_tw" name="name_tw" required placeholder="例如：文件" />
+                            <p class="mt-1 text-xs text-gray-500">請輸入此類別的中文名稱</p>
+                        </div>
+
+                        <!-- Description (Traditional Chinese) -->
+                        <div class="mb-4">
+                            <label for="description_tw" class="block text-sm font-medium text-gray-700 mb-2">
+                                描述 (中文)
+                            </label>
+                            <textarea
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                id="description_tw" name="description_tw" rows="3" placeholder="此類別的簡短描述"></textarea>
+                            <p class="mt-1 text-xs text-gray-500">選填：提供此類別的簡短描述</p>
+                        </div>
+                    </div>
+
+                    <!-- Common Fields -->
+                    <div>
+                        <!-- Order -->
+                        <div class="mb-6">
+                            <label for="order" class="block text-sm font-medium text-gray-700 mb-2">
+                                顯示順序
+                            </label>
+                            <input type="number"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                id="order" name="order" min="0" value="0" />
+                            <p class="mt-1 text-xs text-gray-500">數字越小，顯示越靠前</p>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex justify-end">
+                            <a href="/admin/downloads/categories"
+                                class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded mr-2">
+                                取消
+                            </a>
+                            <button type="submit"
+                                class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+                                建立分類
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+    </div>
+
+    <%- contentFor('script') %>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const form = document.getElementById('categoryForm');
+                const nameEn = document.getElementById('name_en');
+                const nameTw = document.getElementById('name_tw');
+                const nameEnError = document.getElementById('name_en_error');
+                const nameTwError = document.getElementById('name_tw_error');
+
+                form.addEventListener('submit', function (e) {
+                    let isValid = true;
+
+                    // Validate English name
+                    if (!nameEn.value.trim()) {
+                        nameEnError.classList.remove('hidden');
+                        isValid = false;
+                    } else {
+                        nameEnError.classList.add('hidden');
+                    }
+
+                    // Validate Chinese name
+                    if (!nameTw.value.trim()) {
+                        nameTwError.classList.remove('hidden');
+                        isValid = false;
+                        // Switch to Chinese tab if there's an error
+                        if (document.querySelector('.language-content-tw').classList.contains('hidden')) {
+                            switchLanguageTab('tw');
+                        }
+                    } else {
+                        nameTwError.classList.add('hidden');
+                    }
+
+                    if (!isValid) {
+                        e.preventDefault();
+                    }
+                });
+
+                // Add event listeners to hide error messages when typing
+                nameEn.addEventListener('input', function () {
+                    if (nameEn.value.trim()) {
+                        nameEnError.classList.add('hidden');
+                    }
+                });
+
+                nameTw.addEventListener('input', function () {
+                    if (nameTw.value.trim()) {
+                        nameTwError.classList.add('hidden');
+                    }
+                });
+            });
+        </script>

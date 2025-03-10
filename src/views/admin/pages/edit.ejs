@@ -1,0 +1,414 @@
+<%- contentFor('body') %>
+
+    <div class="container px-6 mx-auto grid">
+        <h2 class="my-6 text-2xl font-semibold text-gray-700">
+            Edit Page: <%= page.title %>
+        </h2>
+
+        <!-- Flash messages -->
+        <% if (success_msg && success_msg.length> 0) { %>
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+                <p>
+                    <%= success_msg %>
+                </p>
+            </div>
+            <% } %>
+
+                <% if (error_msg && error_msg.length> 0) { %>
+                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+                        <p>
+                            <%= error_msg %>
+                        </p>
+                    </div>
+                    <% } %>
+
+                        <!-- Page Edit Form -->
+                        <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
+                            <form action="/admin/pages/<%= page.id %>" method="POST" enctype="multipart/form-data"
+                                id="pageForm">
+                                <!-- We can keep this for API clients, but it's not needed for our POST route now -->
+                                <!-- <input type="hidden" name="_method" value="PUT"> -->
+
+                                <!-- Title -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700" for="title">
+                                        Page Title <span class="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                        type="text" id="title" name="title" value="<%= page.title %>"
+                                        placeholder="Enter page title" required>
+                                </div>
+                                <!-- Editor Mode Toggle -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Editor Mode
+                                    </label>
+                                    <div class="flex">
+                                        <div class="flex items-center mr-4">
+                                            <input type="radio" id="editorMode-editor" name="editorMode" value="editor"
+                                                <%=page.editorMode==='editor' || !page.editorMode ? 'checked' : '' %>
+                                            class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                            >
+                                            <label for="editorMode-editor" class="ml-2 block text-sm text-gray-700">
+                                                Rich Text Editor
+                                            </label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="radio" id="editorMode-html" name="editorMode" value="html"
+                                                <%=page.editorMode==='html' ? 'checked' : '' %>
+                                            class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                            >
+                                            <label for="editorMode-html" class="ml-2 block text-sm text-gray-700">
+                                                Raw HTML
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Content -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700" for="editor">
+                                        Page Content <span class="text-red-500">*</span>
+                                    </label>
+                                    <!-- Quill editor container -->
+                                    <div id="editor"
+                                        class="block w-full mt-1 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                        style="min-height: 300px;"></div>
+                                    <textarea id="htmlEditor"
+                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 hidden"
+                                        style="min-height: 300px; font-family: monospace;"
+                                        placeholder="Enter HTML content here"></textarea>
+                                    <!-- Hidden input to store Quill content -->
+                                    <input type="hidden" name="content" id="content" value="<%= page.content %>">
+                                    <p class="mt-1 text-xs text-gray-500">
+                                        You can use HTML, CSS, and JavaScript in your page content. All code will be
+                                        rendered on the frontend.
+                                    </p>
+                                </div>
+
+                                <!-- Existing Attachments -->
+                                <% if (page.attachments && page.attachments.length> 0) { %>
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                                            Existing Attachments
+                                        </label>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                            <% page.attachments.forEach(attachment=> { %>
+                                                <div class="border rounded-lg p-3 relative attachment-item"
+                                                    data-id="<%= attachment.id %>">
+                                                    <div class="flex items-center">
+                                                        <% if (attachment.mimeType.startsWith('image/')) { %>
+                                                            <img src="<%= attachment.path %>"
+                                                                alt="<%= attachment.originalName %>"
+                                                                class="w-16 h-16 object-cover mr-3">
+                                                            <% } else if (attachment.mimeType.startsWith('video/')) { %>
+                                                                <div
+                                                                    class="w-16 h-16 bg-gray-200 flex items-center justify-center mr-3">
+                                                                    <svg class="w-8 h-8 text-gray-500"
+                                                                        fill="currentColor" viewBox="0 0 20 20">
+                                                                        <path
+                                                                            d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm12.553 1.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z">
+                                                                        </path>
+                                                                    </svg>
+                                                                </div>
+                                                                <% } else if (attachment.mimeType==='application/pdf' )
+                                                                    { %>
+                                                                    <div
+                                                                        class="w-16 h-16 bg-gray-200 flex items-center justify-center mr-3">
+                                                                        <svg class="w-8 h-8 text-gray-500"
+                                                                            fill="currentColor" viewBox="0 0 20 20">
+                                                                            <path fill-rule="evenodd"
+                                                                                d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+                                                                                clip-rule="evenodd"></path>
+                                                                        </svg>
+                                                                    </div>
+                                                                    <% } else if (attachment.mimeType.includes('word')
+                                                                        || attachment.mimeType.includes('document')) {
+                                                                        %>
+                                                                        <div
+                                                                            class="w-16 h-16 bg-gray-200 flex items-center justify-center mr-3">
+                                                                            <svg class="w-8 h-8 text-gray-500"
+                                                                                fill="currentColor" viewBox="0 0 20 20">
+                                                                                <path fill-rule="evenodd"
+                                                                                    d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
+                                                                                    clip-rule="evenodd"></path>
+                                                                            </svg>
+                                                                        </div>
+                                                                        <% } else if
+                                                                            (attachment.mimeType.includes('excel') ||
+                                                                            attachment.mimeType.includes('spreadsheet'))
+                                                                            { %>
+                                                                            <div
+                                                                                class="w-16 h-16 bg-gray-200 flex items-center justify-center mr-3">
+                                                                                <svg class="w-8 h-8 text-gray-500"
+                                                                                    fill="currentColor"
+                                                                                    viewBox="0 0 20 20">
+                                                                                    <path fill-rule="evenodd"
+                                                                                        d="M5 4a3 3 0 00-3 3v6a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H5zm-1 9v-1h5v2H5a1 1 0 01-1-1zm7 1h4a1 1 0 001-1v-1h-5v2zm0-4h5V8h-5v2zM9 8H4v2h5V8z"
+                                                                                        clip-rule="evenodd"></path>
+                                                                                </svg>
+                                                                            </div>
+                                                                            <% } else { %>
+                                                                                <div
+                                                                                    class="w-16 h-16 bg-gray-200 flex items-center justify-center mr-3">
+                                                                                    <svg class="w-8 h-8 text-gray-500"
+                                                                                        fill="currentColor"
+                                                                                        viewBox="0 0 20 20">
+                                                                                        <path fill-rule="evenodd"
+                                                                                            d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
+                                                                                            clip-rule="evenodd"></path>
+                                                                                    </svg>
+                                                                                </div>
+                                                                                <% } %>
+                                                                                    <div class="flex-1 min-w-0">
+                                                                                        <p
+                                                                                            class="text-sm font-medium text-gray-900 truncate">
+                                                                                            <%= attachment.originalName
+                                                                                                %>
+                                                                                        </p>
+                                                                                        <p
+                                                                                            class="text-xs text-gray-500">
+                                                                                            <%= (attachment.size /
+                                                                                                1024).toFixed(2) %> KB
+                                                                                        </p>
+                                                                                        <div class="flex mt-1">
+                                                                                            <a href="<%= attachment.path %>"
+                                                                                                target="_blank"
+                                                                                                class="text-xs text-blue-600 hover:underline mr-3">View</a>
+                                                                                            <button type="button"
+                                                                                                class="text-xs text-red-600 hover:underline delete-attachment"
+                                                                                                data-id="<%= attachment.id %>">Delete</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                    </div>
+                                                    <input type="checkbox" name="deletedAttachments"
+                                                        value="<%= attachment.id %>"
+                                                        class="hidden attachment-delete-checkbox">
+                                                </div>
+                                                <% }); %>
+                                        </div>
+                                    </div>
+                                    <% } %>
+
+                                        <!-- New Attachments -->
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-700" for="attachments">
+                                                Add New Attachments
+                                            </label>
+                                            <input
+                                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                                type="file" id="attachments" name="attachments" multiple>
+                                            <p class="mt-1 text-xs text-gray-500">
+                                                Allowed file types: JPG, PNG, PDF, Word, Excel, MP4. Max size: 50MB per
+                                                file.
+                                            </p>
+                                        </div>
+
+                                        <!-- Status -->
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-700" for="status">
+                                                Status <span class="text-red-500">*</span>
+                                            </label>
+                                            <select
+                                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                                id="status" name="status" required>
+                                                <option value="draft" <%=page.status==='draft' ? 'selected' : '' %>
+                                                    >Draft</option>
+                                                <option value="published" <%=page.status==='published' ? 'selected' : ''
+                                                    %>>Published</option>
+                                                <option value="archived" <%=page.status==='archived' ? 'selected' : ''
+                                                    %>>Archived</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Navigation Settings -->
+                                        <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+                                            <h3 class="text-lg font-medium text-gray-700 mb-2">Navigation Settings</h3>
+
+                                            <div class="flex items-center mb-2">
+                                                <input type="checkbox" id="showInNavigation" name="showInNavigation"
+                                                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                                    <%=page.showInNavigation ? 'checked' : '' %>
+                                                >
+                                                <label class="ml-2 text-sm text-gray-700" for="showInNavigation">
+                                                    Show in website navigation
+                                                </label>
+                                            </div>
+
+                                            <div class="ml-6">
+                                                <label class="block text-sm font-medium text-gray-700"
+                                                    for="navigationOrder">
+                                                    Navigation Order
+                                                </label>
+                                                <input
+                                                    class="block w-32 mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                                    type="number" id="navigationOrder" name="navigationOrder" min="0"
+                                                    value="<%= page.navigationOrder !== null ? page.navigationOrder : '' %>"
+                                                    placeholder="Order">
+                                                <p class="mt-1 text-xs text-gray-500">
+                                                    Lower numbers appear first in navigation.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <!-- SEO Settings -->
+                                        <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+                                            <h3 class="text-lg font-medium text-gray-700 mb-2">SEO Settings</h3>
+
+                                            <div class="mb-2">
+                                                <label class="block text-sm font-medium text-gray-700" for="metaTitle">
+                                                    Meta Title
+                                                </label>
+                                                <input
+                                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                                    type="text" id="metaTitle" name="metaTitle"
+                                                    value="<%= page.metaTitle || '' %>"
+                                                    placeholder="Enter meta title (defaults to page title)">
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label class="block text-sm font-medium text-gray-700"
+                                                    for="metaDescription">
+                                                    Meta Description
+                                                </label>
+                                                <textarea
+                                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                                    id="metaDescription" name="metaDescription" rows="2"
+                                                    placeholder="Enter meta description"><%= page.metaDescription || '' %></textarea>
+                                            </div>
+
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700"
+                                                    for="metaKeywords">
+                                                    Meta Keywords
+                                                </label>
+                                                <input
+                                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                                    type="text" id="metaKeywords" name="metaKeywords"
+                                                    value="<%= page.metaKeywords || '' %>"
+                                                    placeholder="Enter meta keywords (comma separated)">
+                                            </div>
+                                        </div>
+
+                                        <!-- Form Actions -->
+                                        <div class="flex items-center justify-between">
+                                            <a href="/admin/pages"
+                                                class="px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition-colors duration-150 bg-white border border-gray-300 rounded-lg active:bg-gray-100 hover:bg-gray-50 focus:outline-none focus:shadow-outline-gray">
+                                                Cancel
+                                            </a>
+                                            <div class="flex space-x-2">
+                                                <% if (page.status==='published' ) { %>
+                                                    <a href="/page/<%= page.slug %>" target="_blank"
+                                                        class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green">
+                                                        View Page
+                                                    </a>
+                                                    <% } %>
+                                                        <button type="submit"
+                                                            class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue">
+                                                            Update Page
+                                                        </button>
+                                            </div>
+                                        </div>
+                            </form>
+                        </div>
+    </div>
+
+    <%- contentFor('head') %>
+        <!-- Include Quill CSS -->
+        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+        <%- contentFor('scripts') %>
+            <!-- Include Quill JS -->
+            <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+            <script>
+                // Initialize Quill editor
+                var quill = new Quill('#editor', {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: [
+                            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                            ['bold', 'italic', 'underline', 'strike'],
+                            [{ 'color': [] }, { 'background': [] }],
+                            [{ 'align': [] }],
+                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                            ['link', 'image', 'video'],
+                            ['clean'],
+                            ['code-block']
+                        ]
+                    }
+                });
+
+                // Get editor elements
+                const quillEditor = document.getElementById('editor');
+                const htmlEditor = document.getElementById('htmlEditor');
+                const editorMode = '<%= page.editorMode %>' || 'editor';
+
+                // Set initial content and editor mode
+                try {
+                    const content = document.getElementById('content').value;
+
+                    if (editorMode === 'html') {
+                        // Show HTML editor and hide Quill
+                        quillEditor.classList.add('hidden');
+                        htmlEditor.classList.remove('hidden');
+
+                        // Set the HTML content
+                        htmlEditor.value = content;
+                    } else {
+                        // Show Quill editor and hide HTML
+                        quillEditor.classList.remove('hidden');
+                        htmlEditor.classList.add('hidden');
+
+                        // Try to parse as JSON (Quill Delta format)
+                        if (content) {
+                            try {
+                                const delta = JSON.parse(content);
+                                quill.setContents(delta);
+                            } catch (e) {
+                                // If not valid JSON, set as HTML
+                                quill.clipboard.dangerouslyPasteHTML(content);
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error setting editor content:', e);
+                }
+
+                // Handle editor mode toggle
+                const editorModeRadios = document.querySelectorAll('input[name="editorMode"]');
+
+                editorModeRadios.forEach(radio => {
+                    radio.addEventListener('change', function () {
+                        if (this.value === 'editor') {
+                            quillEditor.classList.remove('hidden');
+                            htmlEditor.classList.add('hidden');
+
+                            // Transfer content from HTML to Quill if there's content
+                            if (htmlEditor.value.trim()) {
+                                quill.clipboard.dangerouslyPasteHTML(htmlEditor.value);
+                            }
+                        } else {
+                            quillEditor.classList.add('hidden');
+                            htmlEditor.classList.remove('hidden');
+
+                            // Transfer content from Quill to HTML
+                            const quillHtml = quill.root.innerHTML;
+                            htmlEditor.value = quillHtml;
+                        }
+                    });
+                });
+
+                // When form is submitted, update the hidden input with the active editor's contents
+                document.getElementById('pageForm').addEventListener('submit', function () {
+                    const content = document.getElementById('content');
+                    const activeEditorMode = document.querySelector('input[name="editorMode"]:checked').value;
+
+                    if (activeEditorMode === 'editor') {
+                        // Store Quill content as Delta JSON
+                        content.value = JSON.stringify(quill.getContents());
+                    } else {
+                        // Store raw HTML content
+                        content.value = htmlEditor.value;
+                    }
+                });
+            </script>

@@ -1,0 +1,526 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  username  String    @unique
+  email     String    @unique
+  password  String
+  isActive  Boolean   @default(true)
+  lastLogin DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  roleId    Int
+
+  // Relations
+  role              Role              @relation(fields: [roleId], references: [id])
+  articles          Article[]
+  newsItems         NewsItem[]
+  promotionItems    PromotionItem[]
+  banners           Banner[]
+  platforms         Platform[]        // Added relation for platforms
+  uploads           Media[]           @relation("uploads")
+  categoryPermissions CategoryPermission[] @relation("categoryPermissions")
+  pages             Page[]
+  faqItems          FaqItem[]
+  downloads         Download[]
+  aboutItems        AboutItem[]
+
+  @@index([roleId], map: "Users_roleId_fkey")
+  @@map("Users")
+}
+
+model Role {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  permissions Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  users User[]
+
+  @@map("Roles")
+}
+
+model Article {
+  id                 Int       @id @default(autoincrement())
+  title_en           String // English title
+  title_tw           String // Traditional Chinese title
+  content_en         String    @db.LongText // English content
+  content_tw         String    @db.LongText // Traditional Chinese content
+  excerpt_en         String?   @db.Text // English excerpt
+  excerpt_tw         String?   @db.Text // Traditional Chinese excerpt
+  status             Status    @default(draft)
+  publishedAt        DateTime?
+  metaTitle_en       String? // English meta title
+  metaTitle_tw       String? // Traditional Chinese meta title
+  metaDescription_en String?   @db.Text // English meta description
+  metaDescription_tw String?   @db.Text // Traditional Chinese meta description
+  metaKeywords_en    String? // English meta keywords
+  metaKeywords_tw    String? // Traditional Chinese meta keywords
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  deletedAt          DateTime?
+
+  // Relations
+  author        User      @relation(fields: [authorId], references: [id])
+  authorId      Int
+  category      Category? @relation(fields: [categoryId], references: [id])
+  categoryId    Int?
+  featured      Media?    @relation("FeaturedImage", fields: [featuredImage], references: [id])
+  featuredImage Int?
+  media         Media[]   @relation("ArticleToMedia")
+
+  @@map("articles")
+}
+
+model Category {
+  id             Int       @id @default(autoincrement())
+  name_en        String // English name
+  name_tw        String // Traditional Chinese name
+  description_en String?   @db.Text // English description
+  description_tw String?   @db.Text // Traditional Chinese description
+  order          Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  // Relations
+  parent      Category?            @relation("CategoryToCategory", fields: [parentId], references: [id])
+  parentId    Int?
+  children    Category[]           @relation("CategoryToCategory")
+  articles    Article[]
+  permissions CategoryPermission[]
+
+  @@map("Categories")
+}
+
+model Media {
+  id           Int       @id @default(autoincrement())
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  path         String
+  alt_en       String? // English alt text
+  alt_tw       String? // Traditional Chinese alt text
+  caption_en   String?   @db.Text // English caption
+  caption_tw   String?   @db.Text // Traditional Chinese caption
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  // Relations
+  uploader           User      @relation("uploads", fields: [uploaderId], references: [id])
+  uploaderId         Int
+  featuredInArticles Article[] @relation("FeaturedImage")
+  articles           Article[] @relation("ArticleToMedia")
+
+  @@map("Media")
+}
+
+model CategoryPermission {
+  id        Int      @id @default(autoincrement())
+  canView   Boolean  @default(true)
+  canCreate Boolean  @default(false)
+  canEdit   Boolean  @default(false)
+  canDelete Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user       User     @relation("categoryPermissions", fields: [userId], references: [id])
+  userId     Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+
+  @@unique([userId, categoryId])
+  @@map("CategoryPermissions")
+}
+
+model Banner {
+  id             Int      @id @default(autoincrement())
+  title_en       String // English title
+  title_tw       String // Traditional Chinese title
+  description_en String?  @db.Text // English description
+  description_tw String?  @db.Text // Traditional Chinese description
+  url            String?
+  mediaPath      String
+  mediaType      String // "image" or "video"
+  isActive       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  createdBy      User     @relation(fields: [userId], references: [id])
+  userId         Int
+
+  @@map("Banners")
+}
+
+model Page {
+  id                 Int       @id @default(autoincrement())
+  title_en           String // English title
+  title_tw           String // Traditional Chinese title
+  slug               String    @unique
+  content_en         String    @db.LongText // English content
+  content_tw         String    @db.LongText // Traditional Chinese content
+  editorMode         String    @default("editor") // "editor" or "html"
+  status             Status    @default(draft)
+  showInNavigation   Boolean   @default(false)
+  navigationOrder    Int?
+  metaTitle_en       String? // English meta title
+  metaTitle_tw       String? // Traditional Chinese meta title
+  metaDescription_en String?   @db.Text // English meta description
+  metaDescription_tw String?   @db.Text // Traditional Chinese meta description
+  metaKeywords_en    String? // English meta keywords
+  metaKeywords_tw    String? // Traditional Chinese meta keywords
+  publishedAt        DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  deletedAt          DateTime?
+
+  // Relations
+  author      User             @relation(fields: [authorId], references: [id])
+  authorId    Int
+  attachments PageAttachment[]
+
+  @@map("Pages")
+}
+
+model PageAttachment {
+  id           Int      @id @default(autoincrement())
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  path         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  page   Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  pageId Int
+
+  @@map("PageAttachments")
+}
+
+model FaqCategory {
+  id             Int       @id @default(autoincrement())
+  name_en        String // English name
+  name_tw        String // Traditional Chinese name
+  slug           String    @unique
+  description_en String?   @db.Text // English description
+  description_tw String?   @db.Text // Traditional Chinese description
+  order          Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  // Relations
+  faqItems FaqItem[]
+
+  @@map("FaqCategories")
+}
+
+model FaqItem {
+  id         Int       @id @default(autoincrement())
+  title_en   String // English title
+  title_tw   String // Traditional Chinese title
+  content_en String    @db.LongText // English content
+  content_tw String    @db.LongText // Traditional Chinese content
+  order      Int       @default(0)
+  status     Status    @default(draft)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  // Relations
+  category   FaqCategory @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  author     User        @relation(fields: [authorId], references: [id])
+  authorId   Int
+
+  @@map("FaqItems")
+}
+
+model DownloadCategory {
+  id             Int       @id @default(autoincrement())
+  name_en        String // English name
+  name_tw        String // Traditional Chinese name
+  description_en String?   @db.Text // English description
+  description_tw String?   @db.Text // Traditional Chinese description
+  order          Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  // Relations
+  downloads Download[]
+
+  @@map("DownloadCategories")
+}
+
+model Download {
+  id             Int       @id @default(autoincrement())
+  title_en       String // English title
+  title_tw       String // Traditional Chinese title
+  description_en String?   @db.Text // English description
+  description_tw String?   @db.Text // Traditional Chinese description
+  status         Status    @default(draft)
+  keywords_en    String? // English keywords
+  keywords_tw    String? // Traditional Chinese keywords
+  filename       String
+  originalName   String
+  mimeType       String
+  size           Int
+  path           String
+  downloadCount  Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  // Relations
+  author     User              @relation(fields: [authorId], references: [id])
+  authorId   Int
+  category   DownloadCategory? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+
+  @@map("Downloads")
+}
+
+enum Status {
+  draft
+  published
+  archived
+}
+
+model NewsCategory {
+  id             Int       @id @default(autoincrement())
+  name_en        String // English name
+  name_tw        String // Traditional Chinese name
+  slug           String    @unique
+  description_en String?   @db.Text // English description
+  description_tw String?   @db.Text // Traditional Chinese description
+  order          Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  // Relations
+  newsItems NewsItem[]
+
+  @@map("NewsCategories")
+}
+
+model NewsItem {
+  id            Int       @id @default(autoincrement())
+  title_en      String // English title
+  title_tw      String // Traditional Chinese title
+  // content fields removed as they are no longer needed
+  summary_en    String?   @db.Text // English summary
+  summary_tw    String?   @db.Text // Traditional Chinese summary
+  slug          String    @unique // URL-friendly identifier
+  url           String? // External URL if applicable
+  imagePath     String? // Path to the uploaded image
+  publishedDate DateTime // Custom published date
+  status        Status    @default(draft)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  // Relations
+  category   NewsCategory @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  author     User         @relation(fields: [authorId], references: [id])
+  authorId   Int
+
+  @@map("NewsItems")
+}
+
+model PromotionCategory {
+  id             Int       @id @default(autoincrement())
+  name_en        String // English name
+  name_tw        String // Traditional Chinese name
+  slug           String    @unique
+  description_en String?   @db.Text // English description
+  description_tw String?   @db.Text // Traditional Chinese description
+  order          Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  // Relations
+  promotionItems PromotionItem[]
+
+  @@map("PromotionCategories")
+}
+
+model PromotionItem {
+  id            Int       @id @default(autoincrement())
+  title_en      String // English title
+  title_tw      String // Traditional Chinese title
+  content_en    String    @db.LongText // English content
+  content_tw    String    @db.LongText // Traditional Chinese content
+  slug          String    @unique // URL-friendly identifier
+  url           String? // External URL if applicable
+  imagePath     String? // Path to the uploaded image
+  publishedDate DateTime // Custom published date
+  status        Status    @default(draft)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  // Relations
+  category   PromotionCategory @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  author     User              @relation(fields: [authorId], references: [id])
+  authorId   Int
+
+  @@map("PromotionItems")
+}
+
+// About page items
+model AboutItem {
+  id          Int      @id @default(autoincrement())
+  title_en    String
+  title_tw    String
+  type        String   // "plain_text", "image", "bullet_points"
+  content_en  String   @db.Text
+  content_tw  String   @db.Text
+  imagePath   String?  // For image type items
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+  authorId    Int?
+  author      User?    @relation(fields: [authorId], references: [id])
+
+  @@index([authorId], map: "AboutItems_authorId_fkey")
+  @@map("AboutItems")
+}
+
+// Contact categories
+model ContactCategory {
+  id          Int       @id @default(autoincrement())
+  name_en     String
+  name_tw     String
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  contacts    Contact[]
+
+  @@map("ContactCategories")
+}
+
+// Contact submissions
+model Contact {
+  id           Int             @id @default(autoincrement())
+  name         String
+  email        String
+  company      String?
+  phone        String?
+  message      String          @db.Text
+  categoryId   Int?
+  category     ContactCategory? @relation(fields: [categoryId], references: [id])
+  agreeTerms   Boolean         @default(false)
+  status       String          @default("pending") // pending, processed, archived
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  deletedAt    DateTime?
+
+  @@index([categoryId], map: "Contacts_categoryId_fkey")
+  @@map("Contacts")
+}
+
+model Link {
+  id          Int       @id @default(autoincrement())
+  title_en    String
+  title_tw    String
+  url         String
+  image       String?
+  order       Int       @default(0)
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("Links")
+}
+
+// Platform categories
+model PlatformCategory {
+  id            Int       @id @default(autoincrement())
+  name_en       String    // English name
+  name_tw       String    // Traditional Chinese name
+  description_en String?  // English description
+  description_tw String?  // Traditional Chinese description
+  slug          String    @unique // URL-friendly identifier
+  order         Int       @default(0) // Display order
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  // Relations
+  platforms     Platform[] // Platforms in this category
+
+  @@map("PlatformCategories")
+}
+
+// Platform items
+model Platform {
+  id            Int       @id @default(autoincrement())
+  title_en      String    @db.VarChar(255)
+  title_tw      String    @db.VarChar(255)
+  content_en    String?   @db.Text
+  content_tw    String?   @db.Text
+  slug          String    @db.VarChar(255)
+  url           String?   @db.VarChar(255)
+  imagePath     String?   @db.VarChar(255)
+  publishedDate DateTime  @default(now())
+  status        Status    @default(draft)
+  type          String    @default("plain_text") // plain_text, image, attachment_only, partners
+  order         Int       @default(0)
+  partnersData  String?   @db.Text // JSON data for partners type: { suppliers: { companies_en: [], companies_tw: [] }, buyers: { companies_en: [], companies_tw: [] } }
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+  
+  // Relations
+  category      PlatformCategory? @relation(fields: [categoryId], references: [id])
+  categoryId    Int?
+  author        User?            @relation(fields: [authorId], references: [id])
+  authorId      Int?
+  attachments   PlatformAttachment[]
+
+  @@map("Platforms")
+}
+
+// Platform attachments
+model PlatformAttachment {
+  id           Int      @id @default(autoincrement())
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  path         String
+  title_en     String?  // English title
+  title_tw     String?  // Traditional Chinese title
+  description_en String? @db.Text // English description
+  description_tw String? @db.Text // Traditional Chinese description
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  platform     Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+  platformId   Int
+
+  @@map("PlatformAttachments")
+}
