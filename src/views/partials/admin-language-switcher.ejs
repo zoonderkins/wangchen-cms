@@ -47,5 +47,13 @@
     document.addEventListener('DOMContentLoaded', function () {
         const activeTab = '<%= activeTab %>' || 'en';
         switchLanguageTab(activeTab);
+
+        // Add click event listeners to language tabs
+        document.querySelectorAll('.language-tab').forEach(tab => {
+            tab.addEventListener('click', function () {
+                const lang = this.getAttribute('data-lang');
+                switchLanguageTab(lang);
+            });
+        });
     });
 </script>
