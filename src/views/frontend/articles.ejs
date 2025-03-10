@@ -1,0 +1,63 @@
+<%- contentFor('body') %>
+
+<div class="container mx-auto px-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% if (articles && articles.length > 0) { %>
+            <% articles.forEach(function(article) { %>
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <% if (article.featuredImageMedia) { %>
+                        <img src="<%= article.featuredImageMedia.url %>" alt="<%= article.title %>" class="w-full h-48 object-cover">
+                    <% } %>
+                    <div class="p-6">
+                        <h2 class="text-xl font-semibold mb-2">
+                            <a href="/articles/<%= article.id %>" class="text-gray-900 hover:text-blue-600">
+                                <%= article.title %>
+                            </a>
+                        </h2>
+                        <% if (article.excerpt) { %>
+                            <p class="text-gray-600 mb-4"><%= article.excerpt %></p>
+                        <% } %>
+                        <div class="flex items-center justify-between text-sm text-gray-500">
+                            <% if (article.author) { %>
+                                <span>By <%= article.author.username %></span>
+                            <% } %>
+                            <% if (article.category) { %>
+                                <a href="/category/<%= article.category.id %>" class="text-blue-600 hover:text-blue-800">
+                                    <%= article.category.name %>
+                                </a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div class="alert alert-info text-center">
+                No articles available yet.
+            </div>
+        <% } %>
+    </div>
+
+    <% if (totalPages > 1) { %>
+        <div class="mt-8 flex justify-center">
+            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <% if (currentPage > 1) { %>
+                    <a href="?page=<%= currentPage - 1 %>" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        Previous
+                    </a>
+                <% } %>
+                
+                <% for(let i = 1; i <= totalPages; i++) { %>
+                    <a href="?page=<%= i %>" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium <%= currentPage === i ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:bg-gray-50' %>">
+                        <%= i %>
+                    </a>
+                <% } %>
+                
+                <% if (currentPage < totalPages) { %>
+                    <a href="?page=<%= currentPage + 1 %>" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        Next
+                    </a>
+                <% } %>
+            </nav>
+        </div>
+    <% } %>
+</div>

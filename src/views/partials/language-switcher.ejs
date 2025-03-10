@@ -1,0 +1,11 @@
+<div class="language-switcher flex items-center space-x-2">
+    <a href="<%= switchLanguageUrl('en') %>" class="<%= currentLanguage === 'en' ? 'font-bold text-blue-600' : 'text-gray-600 hover:text-gray-900' %>">
+        <span class="flag-icon">🇺🇸</span>
+        <span class="ml-1">EN</span>
+    </a>
+    <span class="text-gray-400">|</span>
+    <a href="<%= switchLanguageUrl('tw') %>" class="<%= currentLanguage === 'tw' ? 'font-bold text-blue-600' : 'text-gray-600 hover:text-gray-900' %>">
+        <span class="flag-icon">🇹🇼</span>
+        <span class="ml-1">中文</span>
+    </a>
+</div>

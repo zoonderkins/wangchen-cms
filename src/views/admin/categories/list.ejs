@@ -1,0 +1,94 @@
+<%- contentFor('body') %>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold">分類管理</h1>
+            <a href="/admin/categories/create"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <i class="fas fa-plus mr-2"></i> 新增分類
+            </a>
+        </div>
+
+        <% if (categories && categories.length> 0) { %>
+            <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                名稱
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                描述
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                文章數
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                排序
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                操作
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <% function renderCategory(category, level=0) { %>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">
+                                        <% if (level> 0) { %>
+                                            <span class="text-gray-400">
+                                                <%= '─' .repeat(level) %>
+                                            </span>
+                                            <% } %>
+                                                <%= category.name %>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-500">
+                                        <%= category.description || '-' %>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                        <%= category._count.articles %> 篇文章
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <%= category.order || 0 %>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="/admin/categories/edit/<%= category.id %>"
+                                        class="text-blue-600 hover:text-blue-900 mr-4">編輯</a>
+                                    <form action="/admin/categories/<%= category.id %>" method="POST" class="inline"
+                                        onsubmit="return confirm('您確定要刪除此分類嗎？這將同時刪除所有子分類。');">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button type="submit" class="text-red-600 hover:text-red-900">刪除</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% if (category.children && category.children.length> 0) { %>
+                                <% category.children.forEach(child=> { %>
+                                    <%- renderCategory(child, level + 1) %>
+                                        <% }); %>
+                                            <% } %>
+                                                <% } %>
+
+                                                    <% categories.forEach(category=> { %>
+                                                        <%- renderCategory(category) %>
+                                                            <% }); %>
+                    </tbody>
+                </table>
+            </div>
+            <% } else { %>
+                <div class="bg-white shadow overflow-hidden sm:rounded-lg p-6 text-center text-gray-500">
+                    尚未找到任何分類。<a href="/admin/categories/create" class="text-blue-600 hover:text-blue-900">立即建立一個</a>。
+                </div>
+                <% } %>
+    </div>

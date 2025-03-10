@@ -1,0 +1,115 @@
+<%- contentFor('body') %>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold">建立分類</h1>
+            <a href="/admin/categories" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                <i class="fas fa-arrow-left mr-2"></i> 返回分類列表
+            </a>
+        </div>
+
+        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <form action="/admin/categories" method="POST">
+                <!-- Language Tabs -->
+                <%- include('../../partials/admin-language-switcher', { title: '內容語言' , activeTab: 'en' }) %>
+
+                    <!-- English Content -->
+                    <div class="language-content language-content-en">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="name_en">
+                                名稱 (英文)
+                            </label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="name_en" name="name_en" type="text" placeholder="輸入英文分類名稱" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="description_en">
+                                描述 (英文)
+                            </label>
+                            <textarea
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="description_en" name="description_en" rows="3" placeholder="輸入英文分類描述"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Traditional Chinese Content -->
+                    <div class="language-content language-content-tw hidden">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="name_tw">
+                                名稱 (中文)
+                            </label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="name_tw" name="name_tw" type="text" placeholder="輸入類別中文名稱">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="description_tw">
+                                描述 (中文)
+                            </label>
+                            <textarea
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="description_tw" name="description_tw" rows="3" placeholder="輸入類別中文描述"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Common Fields -->
+                    <div class="border-t pt-4 mt-6">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="parentId">
+                                上層分類
+                            </label>
+                            <select
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="parentId" name="parentId">
+                                <option value="">無 (頂層分類)</option>
+                                <% categories.forEach(function(category) { %>
+                                    <option value="<%= category.id %>">
+                                        <%= category.name_en %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="type">
+                                分類類型
+                            </label>
+                            <select
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="type" name="type">
+                                <option value="article">文章</option>
+                                <option value="download">下載</option>
+                                <option value="faq">常見問題</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="order">
+                                顯示順序
+                            </label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="order" name="order" type="number" value="0" min="0">
+                            <p class="text-gray-600 text-xs italic mt-1">數字越小排序越前</p>
+                        </div>
+
+                        <div class="flex items-center justify-end">
+                            <button
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                type="submit">
+                                建立分類
+                            </button>
+                        </div>
+                    </div>
+            </form>
+        </div>
+    </div>
+    Searched for files in
+    src/views/admin/categories
+    1 result
+    Analyzed
+
+    edit.ejs:(1-200)

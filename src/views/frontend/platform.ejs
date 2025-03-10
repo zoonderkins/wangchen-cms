@@ -1,0 +1,240 @@
+<%- contentFor('body') %>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto">
+      <h1 class="text-3xl font-bold mb-8 text-center">
+        <%= currentLanguage==='en' ? 'Manufacturing Platform' : '製造平台' %>
+      </h1>
+
+      <% if (platformsByCategory && platformsByCategory.length> 0) { %>
+        <div class="space-y-16">
+          <% platformsByCategory.forEach(function(category) { %>
+            <% if (category.platforms && category.platforms.length> 0) { %>
+              <section class="mb-12">
+                <h2 class="text-2xl font-semibold mb-6 pb-2 border-b-2 border-gray-200">
+                  <%= currentLanguage==='en' ? category.name_en : category.name_tw %>
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <% category.platforms.forEach(function(platform) { %>
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                      <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-gray-800">
+                          <%= currentLanguage==='en' ? platform.title_en : platform.title_tw %>
+                        </h3>
+
+                        <% if (platform.type==='plain_text' ) { %>
+                          <div class="prose max-w-none">
+                            <p class="text-gray-700 whitespace-pre-line">
+                              <%= currentLanguage==='en' ? platform.content_en : platform.content_tw %>
+                            </p>
+                          </div>
+                          <% if (platform.imagePath) { %>
+                            <div class="mt-4">
+                              <img src="<%= platform.imagePath %>"
+                                alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
+                                class="w-full h-auto rounded-lg shadow-sm">
+                            </div>
+                            <% } %>
+
+                              <% } else if (platform.type==='image' ) { %>
+                                <% if (platform.imagePath) { %>
+                                  <div class="mb-4">
+                                    <img src="<%= platform.imagePath %>"
+                                      alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
+                                      class="w-full h-auto rounded-lg shadow-sm">
+                                  </div>
+                                  <div class="text-gray-700">
+                                    <p class="whitespace-pre-line">
+                                      <%= currentLanguage==='en' ? platform.content_en : platform.content_tw %>
+                                    </p>
+                                  </div>
+                                  <% } else { %>
+                                    <div class="bg-gray-100 p-4 rounded-lg text-center text-gray-500">
+                                      <%= currentLanguage==='en' ? 'Image not available' : '圖片不可用' %>
+                                    </div>
+                                    <% } %>
+
+                                      <% } else if (platform.type==='partners' ) { %>
+                                        <% let partnersData=platform.parsedPartnersData || { suppliers: { companies_en:
+                                          [], companies_tw: [] }, buyers: { companies_en: [], companies_tw: [] } }; if
+                                          (!partnersData) { try { if (platform.partnersData) {
+                                          partnersData=JSON.parse(platform.partnersData); } } catch (e) {
+                                          console.error('Error parsing partners data:', e); partnersData={ suppliers: {
+                                          companies_en: [], companies_tw: [] }, buyers: { companies_en: [],
+                                          companies_tw: [] } }; } } const suppliersCompanies=currentLanguage==='en' ?
+                                          (partnersData.suppliers?.companies_en || []) :
+                                          (partnersData.suppliers?.companies_tw || []); const
+                                          buyersCompanies=currentLanguage==='en' ? (partnersData.buyers?.companies_en ||
+                                          []) : (partnersData.buyers?.companies_tw || []); const
+                                          hasSuppliers=suppliersCompanies.length> 0;
+                                          const hasBuyers = buyersCompanies.length > 0;
+                                          %>
+
+                                          <% if (platform.imagePath) { %>
+                                            <div class="mb-5">
+                                              <img src="<%= platform.imagePath %>"
+                                                alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
+                                                class="w-full h-auto rounded-lg shadow-sm object-cover">
+                                            </div>
+                                            <% } %>
+
+                                              <% if (hasSuppliers) { %>
+                                                <div class="mb-6">
+                                                  <div class="flex items-center mb-3">
+                                                    <span
+                                                      class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                                      <%= currentLanguage==='en' ? 'Suppliers' : '供應商' %>
+                                                    </span>
+                                                  </div>
+
+                                                  <div class="bg-blue-50 p-4 rounded-lg">
+                                                    <h4
+                                                      class="text-md font-medium mb-3 text-gray-700 flex items-center">
+                                                      <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="h-5 w-5 mr-2 text-blue-500" fill="none"
+                                                        viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                          stroke-width="2"
+                                                          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                      </svg>
+                                                      <%= currentLanguage==='en' ? 'Companies' : '公司' %>
+                                                    </h4>
+                                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                                      <% suppliersCompanies.forEach(function(company) { %>
+                                                        <div class="flex items-center p-2 bg-white rounded shadow-sm">
+                                                          <svg xmlns="http://www.w3.org/2000/svg"
+                                                            class="h-4 w-4 text-blue-400 mr-2" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                              stroke-width="2" d="M9 5l7 7-7 7" />
+                                                          </svg>
+                                                          <span class="text-gray-700">
+                                                            <%= company %>
+                                                          </span>
+                                                        </div>
+                                                        <% }); %>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                <% } %>
+
+                                                  <% if (hasBuyers) { %>
+                                                    <div class="mb-6">
+                                                      <div class="flex items-center mb-3">
+                                                        <span
+                                                          class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                                          <%= currentLanguage==='en' ? 'Buyers' : '需求商' %>
+                                                        </span>
+                                                      </div>
+
+                                                      <div class="bg-green-50 p-4 rounded-lg">
+                                                        <h4
+                                                          class="text-md font-medium mb-3 text-gray-700 flex items-center">
+                                                          <svg xmlns="http://www.w3.org/2000/svg"
+                                                            class="h-5 w-5 mr-2 text-green-500" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                              stroke-width="2"
+                                                              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                          </svg>
+                                                          <%= currentLanguage==='en' ? 'Companies' : '公司' %>
+                                                        </h4>
+                                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                                          <% buyersCompanies.forEach(function(company) { %>
+                                                            <div
+                                                              class="flex items-center p-2 bg-white rounded shadow-sm">
+                                                              <svg xmlns="http://www.w3.org/2000/svg"
+                                                                class="h-4 w-4 text-green-400 mr-2" fill="none"
+                                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                  stroke-width="2" d="M9 5l7 7-7 7" />
+                                                              </svg>
+                                                              <span class="text-gray-700">
+                                                                <%= company %>
+                                                              </span>
+                                                            </div>
+                                                            <% }); %>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                    <% } %>
+
+                                                      <% if (!hasSuppliers && !hasBuyers) { %>
+                                                        <div
+                                                          class="mt-4 bg-gray-50 p-4 rounded-lg text-center text-gray-500">
+                                                          <%= currentLanguage==='en' ? 'No companies listed' : '沒有列出公司'
+                                                            %>
+                                                        </div>
+                                                        <% } %>
+
+                                                          <% } %>
+
+                                                            <% if (platform.url) { %>
+                                                              <div class="mt-6">
+                                                                <a href="<%= platform.url %>" target="_blank"
+                                                                  rel="noopener noreferrer"
+                                                                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+                                                                  <%= currentLanguage==='en' ? 'Visit Website' : '訪問網站'
+                                                                    %>
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                      class="h-4 w-4 ml-2" fill="none"
+                                                                      viewBox="0 0 24 24" stroke="currentColor">
+                                                                      <path stroke-linecap="round"
+                                                                        stroke-linejoin="round" stroke-width="2"
+                                                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                                    </svg>
+                                                                </a>
+                                                              </div>
+                                                              <% } %>
+
+                                                                <% if (platform.attachments &&
+                                                                  platform.attachments.length> 0)
+                                                                  {
+                                                                  %>
+                                                                  <div class="mt-6 border-t pt-4">
+                                                                    <h4 class="font-medium mb-2">
+                                                                      <%= currentLanguage==='en' ? 'Downloads' : '下載' %>
+                                                                    </h4>
+                                                                    <div class="space-y-2">
+                                                                      <% platform.attachments.forEach(function(attachment)
+                                                                        { %>
+                                                                        <a href="<%= attachment.path %>" download
+                                                                          class="flex items-center p-2 hover:bg-gray-50 rounded-md group">
+                                                                          <svg xmlns="http://www.w3.org/2000/svg"
+                                                                            class="h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                                                                            fill="none" viewBox="0 0 24 24"
+                                                                            stroke="currentColor">
+                                                                            <path stroke-linecap="round"
+                                                                              stroke-linejoin="round" stroke-width="2"
+                                                                              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                                          </svg>
+                                                                          <span
+                                                                            class="ml-2 text-sm text-gray-600 group-hover:text-gray-900">
+                                                                            <%= attachment.originalName %>
+                                                                          </span>
+                                                                          <span class="ml-auto text-xs text-gray-400">
+                                                                            <%= Math.round(attachment.size / 1024) %> KB
+                                                                          </span>
+                                                                        </a>
+                                                                        <% }); %>
+                                                                    </div>
+                                                                  </div>
+                                                                  <% } %>
+                      </div>
+                    </div>
+                    <% }); %>
+                </div>
+              </section>
+              <% } %>
+                <% }); %>
+        </div>
+        <% } else { %>
+          <div class="bg-white rounded-lg shadow-md p-8 text-center">
+            <p class="text-gray-500">
+              <%= currentLanguage==='en' ? 'No platform content available yet.' : '尚無平台內容。' %>
+            </p>
+          </div>
+          <% } %>
+    </div>
+  </div>

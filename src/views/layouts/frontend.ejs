@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="<%= currentLanguage === 'tw' ? 'zh-TW' : 'en' %>">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= typeof title !=='undefined' ? title + ' - ' : '' %>Your Website Name
+    </title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <%- defineContent('head') %>
+</head>
+
+<body class="bg-white">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold">
+                    <a href="/<%= currentLanguage %>">Your Website</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/<%= currentLanguage %>" class="text-gray-700 hover:text-gray-900">
+                        <%= currentLanguage==='en' ? 'Home' : '首頁' %>
+                    </a>
+
+                    <% if (navigationPages && navigationPages.length> 0) { %>
+                        <% navigationPages.forEach(function(page) { %>
+                            <a href="/<%= currentLanguage %>/page/<%= page.slug %>"
+                                class="text-gray-700 hover:text-gray-900">
+                                <%= getContent(page, 'title' ) %>
+                            </a>
+                            <% }); %>
+                                <% } %>
+                                    <a href="/<%= currentLanguage %>/about" class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'About Us' : '關於我們' %>
+                                    </a>
+                                    <a href="/<%= currentLanguage %>/news" class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'News' : '最新消息' %>
+                                    </a>
+                                    <a href="/<%= currentLanguage %>/promotions"
+                                        class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'Promotions' : '推動方案' %>
+                                    </a>
+                                    <a href="/<%= currentLanguage %>/faq" class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'FAQ' : '常見問題' %>
+                                    </a>
+                                    <a href="/<%= currentLanguage %>/downloads"
+                                        class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'Downloads' : '下載' %>
+                                    </a>
+                                    <a href="/<%= currentLanguage %>/platforms"
+                                        class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'Manufacturing Platforms' : '製造平台' %>
+                                    </a>
+                                    <a href="/<%= currentLanguage %>/contact" class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'Contact' : '聯絡我們' %>
+                                    </a>
+
+                                    <!-- Language Switcher -->
+                                    <%- include('../partials/language-switcher') %>
+                </div>
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden">
+                    <svg class="h-6 w-6 fill-current text-gray-700" viewBox="0 0 24 24">
+                        <path
+                            d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Mobile Menu -->
+            <div class="md:hidden hidden">
+                <div class="flex flex-col mt-4 space-y-4">
+                    <a href="/<%= currentLanguage %>" class="text-gray-700 hover:text-gray-900">
+                        <%= currentLanguage==='en' ? 'Home' : '首頁' %>
+                    </a>
+
+                    <% if (navigationPages && navigationPages.length> 0) { %>
+                        <% navigationPages.forEach(function(page) { %>
+                            <a href="/<%= currentLanguage %>/page/<%= page.slug %>"
+                                class="text-gray-700 hover:text-gray-900">
+                                <%= getContent(page, 'title' ) %>
+                            </a>
+                            <% }); %>
+                                <% } %>
+                                    <a href="/<%= currentLanguage %>/about" class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'About Us' : '關於我們' %>
+                                    </a>
+                                    <a href="/<%= currentLanguage %>/news" class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'News' : '最新消息' %>
+                                    </a>
+                                    <a href="/<%= currentLanguage %>/promotions"
+                                        class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'Promotions' : '推動方案' %>
+                                    </a>
+                                    <a href="/<%= currentLanguage %>/faq" class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'FAQ' : '常見問題' %>
+                                    </a>
+                                    <a href="/<%= currentLanguage %>/downloads"
+                                        class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'Downloads' : '下載' %>
+                                    </a>
+                                    <a href="/<%= currentLanguage %>/platforms"
+                                        class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'Manufacturing Platforms' : '製造平台' %>
+                                    </a>
+                                    <a href="/<%= currentLanguage %>/contact" class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'Contact' : '聯絡我們' %>
+                                    </a>
+                                    <a href="/<%= currentLanguage %>/links" class="text-gray-700 hover:text-gray-900">
+                                        <%= currentLanguage==='en' ? 'Related Links' : '相關連結' %>
+                                    </a>
+
+                                    <!-- Language Switcher -->
+                                    <%- include('../partials/language-switcher') %>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        <!-- Flash Messages -->
+        <% if (typeof success_msg !=='undefined' && success_msg.length> 0) { %>
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+                <%= success_msg %>
+            </div>
+            <% } %>
+                <% if (typeof error_msg !=='undefined' && error_msg.length> 0) { %>
+                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+                        <%= error_msg %>
+                    </div>
+                    <% } %>
+
+                        <!-- Page Content -->
+                        <%- body %>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto px-6 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">
+                        <%= currentLanguage==='en' ? 'About Us' : '關於我們' %>
+                    </h3>
+                    <p class="text-gray-400">
+                        <%= currentLanguage==='en' ? 'Brief description about your website or company.'
+                            : '關於您的網站或公司的簡短描述。' %>
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">
+                        <%= currentLanguage==='en' ? 'Contact Info' : '聯絡資訊' %>
+                    </h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><i class="fas fa-envelope mr-2"></i> email@example.com</li>
+                        <li><i class="fas fa-phone mr-2"></i> +1 234 567 890</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i>
+                            <%= currentLanguage==='en' ? 'Your Address' : '您的地址' %>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; <%= new Date().getFullYear() %>
+                        <%= currentLanguage==='en' ? 'Your Website. All rights reserved.' : '您的網站。保留所有權利。' %>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        const menuButton = document.querySelector('button.md\\:hidden');
+        const mobileMenu = document.querySelector('div.md\\:hidden');
+
+        menuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+    <%- defineContent('script') %>
+</body>
+
+</html>

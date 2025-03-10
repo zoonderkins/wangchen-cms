@@ -1,0 +1,122 @@
+<%- contentFor('body') %>
+
+  <div class="container px-6 mx-auto grid">
+    <h2 class="my-6 text-2xl font-semibold text-gray-700">
+      <%= category ? '編輯推廣活動類別' : '建立推廣活動類別' %>
+    </h2>
+
+    <!-- CTA -->
+    <div
+      class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-purple-100 bg-purple-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple">
+      <div class="flex items-center">
+        <span>
+          <%= category ? '編輯現有推廣活動類別。' : '建立新的推廣活動類別，用於組織推廣活動項目。' %>
+        </span>
+      </div>
+      <a href="/admin/promotions/categories"
+        class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-800 border border-transparent rounded-lg active:bg-purple-900 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+        <i class="fas fa-arrow-left mr-2"></i> 返回類別列表
+      </a>
+    </div>
+
+    <!-- Flash Messages -->
+    <% if(typeof success_msg !=='undefined' && success_msg.length> 0) { %>
+      <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+        <%= success_msg %>
+      </div>
+      <% } %>
+        <% if(typeof error_msg !=='undefined' && error_msg.length> 0) { %>
+          <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+            <%= error_msg %>
+          </div>
+          <% } %>
+
+            <!-- Category Form -->
+            <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
+              <form
+                action="<%= category ? `/admin/promotions/categories/${category.id}` : '/admin/promotions/categories' %>"
+                method="POST">
+                <!-- English Name -->
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700" for="name_en">
+                    名稱 (英文) <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
+                    placeholder="請輸入英文類別名稱" type="text" id="name_en" name="name_en"
+                    value="<%= category ? category.name_en : '' %>" required />
+                  <p class="mt-1 text-xs text-gray-500">此名稱將用於生成網址代碼。</p>
+                </div>
+
+                <!-- Chinese Name -->
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700" for="name_tw">
+                    名稱 (繁體中文) <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
+                    placeholder="請輸入繁體中文類別名稱" type="text" id="name_tw" name="name_tw"
+                    value="<%= category ? category.name_tw : '' %>" required />
+                </div>
+
+                <!-- English Description -->
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700" for="description_en">
+                    描述 (英文)
+                  </label>
+                  <textarea
+                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-textarea"
+                    rows="3" placeholder="請輸入英文類別描述" id="description_en"
+                    name="description_en"><%= category ? category.description_en : '' %></textarea>
+                </div>
+
+                <!-- Chinese Description -->
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700" for="description_tw">
+                    描述 (繁體中文)
+                  </label>
+                  <textarea
+                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-textarea"
+                    rows="3" placeholder="請輸入繁體中文類別描述" id="description_tw"
+                    name="description_tw"><%= category ? category.description_tw : '' %></textarea>
+                </div>
+
+                <!-- Display Order -->
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700" for="order">
+                    顯示順序
+                  </label>
+                  <input
+                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
+                    placeholder="請輸入顯示順序（數字越小排序越前）" type="number" id="order" name="order"
+                    value="<%= category ? category.order : '0' %>" min="0" />
+                  <p class="mt-1 text-xs text-gray-500">數字越小的類別在列表中顯示越靠前。</p>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex justify-end mt-6 space-x-3">
+                  <a href="/admin/promotions/categories"
+                    class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray">
+                    取消
+                  </a>
+                  <button type="submit"
+                    class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                    <%= category ? '更新類別' : '建立類別' %>
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Back to Categories -->
+            <div class="mt-6">
+              <a href="/admin/promotions/categories"
+                class="flex items-center justify-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                  </path>
+                </svg>
+                返回類別列表
+              </a>
+            </div>
+  </div>

@@ -1,0 +1,224 @@
+<%- contentFor('body') %>
+
+  <div class="container px-6 mx-auto grid">
+    <h2 class="my-6 text-2xl font-semibold text-gray-700">
+      <%= title %>
+    </h2>
+
+    <!-- CTA -->
+    <div
+      class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-purple-100 bg-purple-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple">
+      <div class="flex items-center">
+        <span>
+          <%= item ? '編輯現有推廣項目' : '建立新的推廣項目' %>，支援多語言內容。
+        </span>
+      </div>
+    </div>
+
+    <!-- Flash Messages -->
+    <% if(typeof success_msg !=='undefined' && success_msg.length> 0) { %>
+      <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+        <%= success_msg %>
+      </div>
+      <% } %>
+        <% if(typeof error_msg !=='undefined' && error_msg.length> 0) { %>
+          <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+            <%= error_msg %>
+          </div>
+          <% } %>
+
+            <!-- Item Form -->
+            <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
+              <form action="<%= item ? `/admin/promotions/items/${item.id}` : '/admin/promotions/items' %>"
+                method="POST" enctype="multipart/form-data">
+                <!-- Basic Information Section -->
+                <div class="mb-6">
+                  <h3 class="text-lg font-medium text-gray-700 mb-4 pb-2 border-b">基本資訊</h3>
+
+                  <!-- Category -->
+                  <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="categoryId">
+                      類別 <span class="text-red-500">*</span>
+                    </label>
+                    <select
+                      class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-select"
+                      id="categoryId" name="categoryId" required>
+                      <option value="">選擇類別</option>
+                      <% if (categories && categories.length> 0) { %>
+                        <% categories.forEach(category=> { %>
+                          <option value="<%= category.id %>" <%=item && item.categoryId===category.id ? 'selected' : ''
+                            %>>
+                            <%= category.name_en %> / <%= category.name_tw %>
+                          </option>
+                          <% }); %>
+                            <% } else { %>
+                              <option value="" disabled>沒有可用的類別</option>
+                              <% } %>
+                    </select>
+                    <p class="mt-1 text-xs text-gray-500">請為此推廣項目選擇一個類別。</p>
+                  </div>
+
+                  <!-- Status -->
+                  <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="status">
+                      狀態 <span class="text-red-500">*</span>
+                    </label>
+                    <select
+                      class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-select"
+                      id="status" name="status" required>
+                      <option value="draft" <%=item && item.status==='draft' ? 'selected' : '' %>>草稿</option>
+                      <option value="published" <%=item && item.status==='published' ? 'selected' : '' %>>已發布
+                      </option>
+                      <option value="archived" <%=item && item.status==='archived' ? 'selected' : '' %>>已封存
+                      </option>
+                    </select>
+                  </div>
+
+                  <!-- Published Date -->
+                  <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="publishedDate">
+                      發布日期 <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                      class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
+                      type="date" id="publishedDate" name="publishedDate"
+                      value="<%= item ? item.formattedPublishedDate : new Date().toISOString().split('T')[0] %>"
+                      required />
+                  </div>
+                </div>
+
+                <!-- English Content Section -->
+                <div class="mb-6">
+                  <h3 class="text-lg font-medium text-gray-700 mb-4 pb-2 border-b">英文內容</h3>
+
+                  <!-- English Title -->
+                  <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="title_en">
+                      標題 (英文) <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                      class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
+                      placeholder="請輸入英文標題" type="text" id="title_en" name="title_en"
+                      value="<%= item ? item.title_en : '' %>" required />
+                    <p class="mt-1 text-xs text-gray-500">此標題將用於生成網址代碼。</p>
+                  </div>
+
+                  <!-- English Content -->
+                  <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="content_en">
+                      內容 (英文) <span class="text-red-500">*</span>
+                    </label>
+                    <textarea
+                      class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-textarea"
+                      rows="10" placeholder="請輸入英文HTML內容" id="content_en" name="content_en"
+                      required><%= item ? item.content_en : '' %></textarea>
+                    <p class="mt-1 text-xs text-gray-500">您可以使用HTML標籤進行格式化。</p>
+                  </div>
+                </div>
+
+                <!-- Chinese Content Section -->
+                <div class="mb-6">
+                  <h3 class="text-lg font-medium text-gray-700 mb-4 pb-2 border-b">繁體中文內容</h3>
+
+                  <!-- Chinese Title -->
+                  <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="title_tw">
+                      標題 (繁體中文) <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                      class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
+                      placeholder="請輸入繁體中文標題" type="text" id="title_tw" name="title_tw"
+                      value="<%= item ? item.title_tw : '' %>" required />
+                  </div>
+
+                  <!-- Chinese Content -->
+                  <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="content_tw">
+                      內容 (繁體中文) <span class="text-red-500">*</span>
+                    </label>
+                    <textarea
+                      class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-textarea"
+                      rows="10" placeholder="請輸入繁體中文HTML內容" id="content_tw" name="content_tw"
+                      required><%= item ? item.content_tw : '' %></textarea>
+                    <p class="mt-1 text-xs text-gray-500">您可以使用HTML標籤進行格式化。</p>
+                  </div>
+                </div>
+
+                <!-- External Link -->
+                <div class="mb-6">
+                  <h3 class="text-lg font-medium text-gray-700 mb-4 pb-2 border-b">連結設定</h3>
+
+                  <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700" for="url">
+                      外部連結
+                    </label>
+                    <input
+                      class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
+                      placeholder="請輸入外部網址 (例如：https://example.com)" type="url" id="url" name="url"
+                      value="<%= item ? item.url : '' %>" />
+                    <p class="mt-1 text-xs text-gray-500">如果提供，按鈕將連結到此網址。</p>
+                  </div>
+                </div>
+
+                <!-- Image Section -->
+                <div class="mb-6">
+                  <h3 class="text-lg font-medium text-gray-700 mb-4 pb-2 border-b">特色圖片</h3>
+
+                  <!-- Current Image (if editing) -->
+                  <% if (item && item.imagePath) { %>
+                    <div class="mb-4">
+                      <label class="block text-sm font-medium text-gray-700 mb-2">
+                        目前圖片
+                      </label>
+                      <div class="relative w-64 h-48 mb-2">
+                        <img src="/<%= item.imagePath %>" alt="<%= item.title_en %>"
+                          class="object-cover w-full h-full rounded-md" />
+                      </div>
+                      <div class="flex items-center">
+                        <input type="checkbox" id="removeImage" name="removeImage" value="true"
+                          class="mr-2 text-purple-600 border-gray-300 rounded focus:ring-purple-500" />
+                        <label for="removeImage" class="text-sm text-gray-700">
+                          移除目前圖片
+                        </label>
+                      </div>
+                    </div>
+                    <% } %>
+
+                      <!-- Upload New Image -->
+                      <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2" for="image">
+                          <%= item && item.imagePath ? '替換圖片' : '上傳圖片' %>
+                        </label>
+                        <input type="file" id="image" name="image" accept="image/*"
+                          class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100" />
+                        <p class="mt-1 text-xs text-gray-500">建議尺寸：1200x800像素。最大檔案大小：5MB。</p>
+                      </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex justify-end mt-6 space-x-3">
+                  <a href="/admin/promotions/items"
+                    class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray">
+                    取消
+                  </a>
+                  <button type="submit"
+                    class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                    <%= item ? '更新推廣項目' : '建立推廣項目' %>
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Back to Items -->
+            <div class="mt-6">
+              <a href="/admin/promotions/items"
+                class="flex items-center justify-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                  </path>
+                </svg>
+                返回推廣項目列表
+              </a>
+            </div>
+  </div>
