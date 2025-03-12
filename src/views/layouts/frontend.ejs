@@ -202,6 +202,23 @@
                     }
                 });
             });
+
+            // 獲取所有 accordion 元素
+            const accordions = document.querySelectorAll('.accordion');
+            
+            accordions.forEach(accordion => {
+                const header = accordion.querySelector('.accordion-header');
+                const content = accordion.querySelector('.accordion-content');
+                const icon = accordion.querySelector('.accordion-icon');
+                
+                header.addEventListener('click', function() {
+                    // 簡單地切換內容的顯示/隱藏狀態
+                    content.classList.toggle('hidden');
+                    // 切換箭頭方向
+                    icon.classList.toggle('rotate-180');
+                });
+            });
+
         });
     </script>
     <%- defineContent('script') %>
