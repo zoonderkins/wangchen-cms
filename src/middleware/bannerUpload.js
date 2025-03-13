@@ -1,11 +1,17 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const logger = require('../config/logger');
+
+// Get allowed file types from environment variables or use defaults
+const ALLOWED_BANNER_TYPES = process.env.ALLOWED_BANNER_TYPES || 'jpg,jpeg,png,gif,webp,mp4';
+const MAX_BANNER_SIZE = parseInt(process.env.MAX_BANNER_SIZE) || 20 * 1024 * 1024; // 20MB default
 
 // Create uploads directory if it doesn't exist
 const uploadDir = path.join(__dirname, '../../public/uploads/banners');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
+    logger.info(`Created directory: ${uploadDir}`);
 }
 
 // Configure storage
@@ -22,12 +28,15 @@ const storage = multer.diskStorage({
 
 // File filter
 const fileFilter = (req, file, cb) => {
-    // Accept images and videos
-    if (file.mimetype.startsWith('image/') || 
-        file.mimetype === 'video/mp4') {
+    // Parse allowed types
+    const allowedTypes = ALLOWED_BANNER_TYPES.split(',').map(type => type.trim().toLowerCase());
+    
+    // Accept images and videos based on environment variable
+    if ((file.mimetype.startsWith('image/') && allowedTypes.some(type => ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(type))) || 
+        (file.mimetype === 'video/mp4' && allowedTypes.includes('mp4'))) {
         cb(null, true);
     } else {
-        cb(new Error('Only images and MP4 videos are allowed!'), false);
+        cb(new Error(`Only ${ALLOWED_BANNER_TYPES.toUpperCase()} files are allowed!`), false);
     }
 };
 
@@ -35,7 +44,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 20 * 1024 * 1024 // 20MB max file size
+        fileSize: MAX_BANNER_SIZE
     },
     fileFilter: fileFilter
 });
@@ -48,7 +57,7 @@ const handleUploadErrors = (req, res, next) => {
         if (err instanceof multer.MulterError) {
             // A Multer error occurred when uploading
             if (err.code === 'LIMIT_FILE_SIZE') {
-                req.flash('error_msg', 'File too large. Maximum size is 20MB.');
+                req.flash('error_msg', `File too large. Maximum size is ${MAX_BANNER_SIZE / (1024 * 1024)}MB.`);
             } else {
                 req.flash('error_msg', `Upload error: ${err.message}`);
             }

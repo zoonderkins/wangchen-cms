@@ -517,6 +517,7 @@ model PlatformAttachment {
   description_tw String? @db.Text // Traditional Chinese description
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  deletedAt    DateTime?
 
   // Relations
   platform     Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)

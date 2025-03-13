@@ -13,7 +13,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "init-db": "node src/scripts/init-db.js",
+    "init-db": "node src/scripts/init-db.js"
   },
   "dependencies": {
     "@prisma/client": "^6.4.1",

@@ -4,56 +4,6 @@ const fs = require('fs');
 const path = require('path');
 const { promisify } = require('util');
 const unlinkAsync = promisify(fs.unlink);
-const multer = require('multer');
-
-// Configure multer for image uploads
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        const uploadPath = path.join(__dirname, '../../public/uploads/platform');
-        // Create directory if it doesn't exist
-        if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath, { recursive: true });
-        }
-        cb(null, uploadPath);
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, 'platform-' + uniqueSuffix + path.extname(file.originalname));
-    }
-});
-
-// Configure multer for attachments
-const attachmentStorage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        const uploadPath = path.join(__dirname, '../../public/uploads/platform/attachments');
-        if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath, { recursive: true });
-        }
-        cb(null, uploadPath);
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, 'attachment-' + uniqueSuffix + path.extname(file.originalname));
-    }
-});
-
-// Multer middleware for image uploads
-exports.upload = multer({
-    storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-    fileFilter: function (req, file, cb) {
-        if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-            return cb(new Error('Only image files are allowed!'), false);
-        }
-        cb(null, true);
-    }
-}).single('image');
-
-// Multer middleware for attachments
-exports.uploadAttachment = multer({
-    storage: attachmentStorage,
-    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit
-}).array('attachments', 10); // Allow up to 10 attachments
 
 // Admin: List all platform items
 exports.listItems = async (req, res) => {
@@ -72,7 +22,11 @@ exports.listItems = async (req, res) => {
                     }
                 },
                 category: true,
-                attachments: true
+                attachments: {
+                    where: {
+                        deletedAt: null
+                    }
+                }
             }
         });
         
@@ -336,7 +290,11 @@ exports.renderEditItem = async (req, res) => {
                 deletedAt: null
             },
             include: {
-                attachments: true
+                attachments: {
+                    where: {
+                        deletedAt: null
+                    }
+                }
             }
         });
         
@@ -388,7 +346,8 @@ exports.renderEditItem = async (req, res) => {
                 console.log('This is an attachment_only item. Querying for attachments directly...');
                 const attachments = await prisma.platformAttachment.findMany({
                     where: {
-                        platformId: parsedId
+                        platformId: parsedId,
+                        deletedAt: null
                     }
                 });
                 
@@ -533,7 +492,11 @@ exports.updateItem = async (req, res) => {
                 deletedAt: null
             },
             include: {
-                attachments: true
+                attachments: {
+                    where: {
+                        deletedAt: null
+                    }
+                }
             }
         });
         
@@ -627,19 +590,28 @@ exports.updateItem = async (req, res) => {
                 const filePath = path.join(__dirname, '../../public', attachment.path);
                 try {
                     await unlinkAsync(filePath);
+                    console.log('Update - Attachment file deleted:', attachment.path);
+                    logger.info(`Update - Attachment file deleted: ${attachment.path}`);
                 } catch (err) {
-                    logger.error(`Failed to delete attachment file: ${err.message}`);
+                    console.error('Update - Failed to delete attachment file:', err);
+                    logger.error(`Update - Failed to delete attachment file: ${err.message}`);
                 }
             }
             
-            // Delete attachments from database
-            await prisma.platformAttachment.deleteMany({
+            // Soft delete attachments from database instead of hard delete
+            await prisma.platformAttachment.updateMany({
                 where: {
                     id: {
                         in: attachmentIds
                     }
+                },
+                data: {
+                    deletedAt: new Date()
                 }
             });
+            
+            console.log(`Update - Soft deleted ${attachmentIds.length} attachments in database`);
+            logger.info(`Update - Soft deleted ${attachmentIds.length} attachments in database`);
         }
         
         // Update the platform item
@@ -729,7 +701,14 @@ exports.updateItem = async (req, res) => {
         
         // Log the updated item to confirm status was updated
         const updatedItem = await prisma.platform.findFirst({
-            where: { id: parsedId }
+            where: { id: parsedId },
+            include: {
+                attachments: {
+                    where: {
+                        deletedAt: null
+                    }
+                }
+            }
         });
         console.log('Update - Updated item status:', updatedItem.status);
         logger.info(`Update - Updated item status: ${updatedItem.status}`);
@@ -819,7 +798,11 @@ exports.deleteItem = async (req, res) => {
                 deletedAt: null
             },
             include: {
-                attachments: true
+                attachments: {
+                    where: {
+                        deletedAt: null
+                    }
+                }
             }
         });
         
@@ -838,32 +821,72 @@ exports.deleteItem = async (req, res) => {
             const imagePath = path.join(__dirname, '../../public', item.imagePath);
             try {
                 await unlinkAsync(imagePath);
+                console.log('Delete - Image file deleted:', imagePath);
+                logger.info(`Delete - Image file deleted: ${imagePath}`);
             } catch (err) {
-                logger.error(`Failed to delete image file: ${err.message}`);
+                console.error('Delete - Failed to delete image file:', err);
+                logger.error(`Delete - Failed to delete image file: ${err.message}`);
             }
         }
         
         // Delete attachment files
+        let deletedAttachments = 0;
+        let failedAttachments = 0;
+        
         for (const attachment of item.attachments) {
             const filePath = path.join(__dirname, '../../public', attachment.path);
             try {
                 await unlinkAsync(filePath);
+                deletedAttachments++;
+                console.log('Delete - Attachment file deleted:', filePath);
+                logger.info(`Delete - Attachment file deleted: ${filePath}`);
             } catch (err) {
-                logger.error(`Failed to delete attachment file: ${err.message}`);
+                failedAttachments++;
+                console.error('Delete - Failed to delete attachment file:', err);
+                logger.error(`Delete - Failed to delete attachment file: ${err.message}`);
             }
         }
         
-        // Soft delete the platform item and its attachments
-        await prisma.platform.update({
-            where: { id: parsedId },
-            data: {
-                deletedAt: new Date()
+        console.log(`Delete - Deleted ${deletedAttachments} attachment files, failed to delete ${failedAttachments} attachment files`);
+        logger.info(`Delete - Deleted ${deletedAttachments} attachment files, failed to delete ${failedAttachments} attachment files`);
+        
+        // Begin a transaction to ensure both platform and attachments are deleted together
+        await prisma.$transaction(async (prisma) => {
+            // Soft delete the attachments first
+            if (item.attachments && item.attachments.length > 0) {
+                const attachmentIds = item.attachments.map(att => att.id);
+                
+                await prisma.platformAttachment.updateMany({
+                    where: { 
+                        id: { 
+                            in: attachmentIds 
+                        } 
+                    },
+                    data: {
+                        deletedAt: new Date()
+                    }
+                });
+                
+                console.log(`Delete - Soft deleted ${attachmentIds.length} attachments in database`);
+                logger.info(`Delete - Soft deleted ${attachmentIds.length} attachments in database`);
             }
+            
+            // Soft delete the platform item
+            await prisma.platform.update({
+                where: { id: parsedId },
+                data: {
+                    deletedAt: new Date()
+                }
+            });
+            
+            console.log(`Delete - Soft deleted platform item ${parsedId} in database`);
+            logger.info(`Delete - Soft deleted platform item ${parsedId} in database`);
         });
         
         req.flash('success_msg', 'Platform item deleted successfully');
         res.redirect('/admin/platforms');
     } catch (error) {
+        console.error('Delete - Error deleting platform item:', error);
         logger.error('Error deleting platform item:', error);
         req.flash('error_msg', `Failed to delete platform item: ${error.message}`);
         res.redirect('/admin/platforms');
@@ -907,9 +930,44 @@ exports.showPlatformPage = async (req, res) => {
             ],
             include: {
                 category: true,
-                attachments: true
+                attachments: {
+                    where: {
+                        deletedAt: null
+                    }
+                }
             }
         });
+        
+        // Log platform types and attachment counts for debugging
+        console.log('Platform items for frontend:', platforms.map(item => ({
+            id: item.id,
+            title: item.title_en,
+            type: item.type,
+            categoryId: item.categoryId,
+            attachmentsCount: item.attachments ? item.attachments.length : 0
+        })));
+        
+        // Check specifically for attachment_only type items
+        const attachmentOnlyItems = platforms.filter(p => p.type === 'attachment_only');
+        console.log(`Found ${attachmentOnlyItems.length} attachment_only items:`, 
+            attachmentOnlyItems.map(item => ({
+                id: item.id,
+                title: item.title_en,
+                categoryId: item.categoryId,
+                attachmentsCount: item.attachments ? item.attachments.length : 0
+            }))
+        );
+        
+        // Check for uncategorized items
+        const uncategorizedItems = platforms.filter(p => p.categoryId === null);
+        console.log(`Found ${uncategorizedItems.length} uncategorized items:`, 
+            uncategorizedItems.map(item => ({
+                id: item.id,
+                title: item.title_en,
+                type: item.type,
+                attachmentsCount: item.attachments ? item.attachments.length : 0
+            }))
+        );
         
         // Process partners data for each platform item
         platforms.forEach(platform => {
@@ -948,6 +1006,16 @@ exports.showPlatformPage = async (req, res) => {
             ...category,
             platforms: platforms.filter(p => p.categoryId === category.id)
         }));
+        
+        // Add a section for uncategorized items if there are any
+        if (uncategorizedItems.length > 0) {
+            platformsByCategory.push({
+                id: 0,
+                name_en: 'Uncategorized',
+                name_tw: '未分類',
+                platforms: uncategorizedItems
+            });
+        }
         
         res.render('frontend/platform', {
             title: pageTitle,
@@ -1187,5 +1255,58 @@ exports.deleteCategory = async (req, res) => {
         logger.error('Error deleting platform category:', error);
         req.flash('error_msg', `Failed to delete category: ${error.message}`);
         res.redirect('/admin/platforms/categories');
+    }
+};
+
+// Admin: Upload attachments (standalone)
+exports.uploadAttachment = async (req, res) => {
+    try {
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'No files were uploaded'
+            });
+        }
+        
+        const attachments = [];
+        
+        // Process each uploaded file
+        for (const file of req.files) {
+            console.log(`Processing standalone attachment: ${file.originalname}, size: ${file.size}, type: ${file.mimetype}`);
+            logger.info(`Processing standalone attachment: ${file.originalname}, size: ${file.size}, type: ${file.mimetype}`);
+            
+            // Create attachment record in database
+            const attachment = await prisma.platformAttachment.create({
+                data: {
+                    filename: file.filename,
+                    originalName: file.originalname,
+                    mimeType: file.mimetype,
+                    size: file.size,
+                    path: `/uploads/platform/attachments/${file.filename}`,
+                    // No platformId since this is a standalone upload
+                }
+            });
+            
+            attachments.push({
+                id: attachment.id,
+                filename: attachment.filename,
+                originalName: attachment.originalName,
+                path: attachment.path,
+                url: attachment.path
+            });
+        }
+        
+        return res.status(200).json({
+            success: true,
+            message: `${attachments.length} files uploaded successfully`,
+            attachments
+        });
+    } catch (error) {
+        console.error('Error uploading attachments:', error);
+        logger.error(`Error uploading attachments: ${error.message}`);
+        return res.status(500).json({
+            success: false,
+            message: `Failed to upload attachments: ${error.message}`
+        });
     }
 };

@@ -5,6 +5,35 @@ const { promisify } = require('util');
 const mkdirAsync = promisify(fs.mkdir);
 const logger = require('../config/logger');
 
+// Get allowed file types from environment variables or use defaults
+const ALLOWED_PAGE_ATTACHMENT_TYPES = process.env.ALLOWED_PAGE_ATTACHMENT_TYPES || 'jpg,jpeg,png,gif,pdf,doc,docx,xls,xlsx,mp4';
+const MAX_PAGE_ATTACHMENT_SIZE = parseInt(process.env.MAX_PAGE_ATTACHMENT_SIZE) || 50 * 1024 * 1024; // 50MB default
+
+// Parse allowed types
+const allowedExtensions = ALLOWED_PAGE_ATTACHMENT_TYPES.split(',').map(ext => `.${ext.trim().toLowerCase()}`);
+
+// Map of common file extensions to MIME types
+const mimeTypeMap = {
+    // Images
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png',
+    '.gif': 'image/gif',
+    // Documents
+    '.pdf': 'application/pdf',
+    '.doc': 'application/msword',
+    '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    '.xls': 'application/vnd.ms-excel',
+    '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    // Videos
+    '.mp4': 'video/mp4'
+};
+
+// Generate allowed MIME types based on allowed extensions
+const allowedMimeTypes = allowedExtensions
+    .map(ext => mimeTypeMap[ext])
+    .filter(Boolean);
+
 // Configure multer storage for page attachments
 const storage = multer.diskStorage({
     destination: async (req, file, cb) => {
@@ -36,26 +65,14 @@ const storage = multer.diskStorage({
 
 // File filter to only allow certain file types
 const fileFilter = (req, file, cb) => {
-    // Allowed file types
-    const allowedTypes = [
-        // Images
-        'image/jpeg',
-        'image/png',
-        'image/gif',
-        // Documents
-        'application/pdf',
-        'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/vnd.ms-excel',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        // Videos
-        'video/mp4'
-    ];
+    const ext = path.extname(file.originalname).toLowerCase();
+    const isValidExtension = allowedExtensions.includes(ext);
+    const isValidMimeType = allowedMimeTypes.includes(file.mimetype);
     
-    if (allowedTypes.includes(file.mimetype)) {
+    if (isValidExtension && isValidMimeType) {
         cb(null, true);
     } else {
-        cb(new Error('Invalid file type. Allowed types: JPG, PNG, PDF, Word, Excel, MP4'));
+        cb(new Error(`Invalid file type. Allowed types: ${ALLOWED_PAGE_ATTACHMENT_TYPES.toUpperCase()}`));
     }
 };
 
@@ -63,7 +80,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage,
     limits: {
-        fileSize: process.env.MAX_FILE_SIZE || 50 * 1024 * 1024 // 50MB default
+        fileSize: MAX_PAGE_ATTACHMENT_SIZE
     },
     fileFilter
 });
