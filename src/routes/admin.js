@@ -120,6 +120,7 @@ router.post('/banners', hasRole(['super_admin', 'admin']), bannerUpload, bannerC
 router.get('/banners/edit/:id', hasRole(['super_admin', 'admin']), bannerController.renderEditBanner);
 router.post('/banners/:id', hasRole(['super_admin', 'admin']), bannerUpload, bannerController.updateBanner);
 router.post('/banners/:id/delete', hasRole(['super_admin', 'admin']), bannerController.deleteBanner);
+router.delete('/banners/:id', hasRole(['super_admin', 'admin']), bannerController.deleteBanner);
 
 // Page routes
 const pageAttachmentUpload = require('../middleware/pageAttachmentUpload');

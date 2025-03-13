@@ -1,249 +1,269 @@
 <%- contentFor('body') %>
 
-<!-- No rich text editor needed for news items -->
+    <!-- No rich text editor needed for news items -->
 
-<div class="container px-6 mx-auto grid">
-    <h2 class="my-6 text-2xl font-semibold text-gray-700">
-        <%= newsItem ? 'Edit News Item' : 'Create News Item' %>
-    </h2>
+    <div class="container px-6 mx-auto grid">
+        <h2 class="my-6 text-2xl font-semibold text-gray-700">
+            <%= newsItem ? 'Edit News Item' : 'Create News Item' %>
+        </h2>
 
-    <!-- CTA -->
-    <div class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-purple-100 bg-purple-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple">
-        <div class="flex items-center">
-            <span><%= newsItem ? 'Edit an existing news item.' : 'Create a new news item for your website.' %></span>
+        <!-- CTA -->
+        <div
+            class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-purple-100 bg-purple-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple">
+            <div class="flex items-center">
+                <span>
+                    <%= newsItem ? 'Edit an existing news item.' : 'Create a new news item for your website.' %>
+                </span>
+            </div>
+            <a href="/admin/news/items"
+                class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-800 border border-transparent rounded-lg active:bg-purple-900 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                <i class="fas fa-arrow-left mr-2"></i> Back to News Items
+            </a>
         </div>
-        <a href="/admin/news/items" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-800 border border-transparent rounded-lg active:bg-purple-900 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-            <i class="fas fa-arrow-left mr-2"></i> Back to News Items
-        </a>
-    </div>
 
-    <!-- Flash Messages -->
-    <% if(typeof error_msg !== 'undefined' && error_msg.length > 0) { %>
-        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
-            <%= error_msg %>
-        </div>
-    <% } %>
-
-    <!-- Form -->
-    <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
-        <form action="<%= newsItem ? `/admin/news/items/${newsItem.id}` : '/admin/news/items' %>" method="POST" enctype="multipart/form-data" id="newsForm">
-            
-            <!-- Language Tabs -->
-            <div class="mb-6">
-                <div class="border-b border-gray-200">
-                    <nav class="-mb-px flex">
-                        <button type="button" class="language-tab active-tab py-2 px-4 border-b-2 border-blue-500 font-medium text-sm leading-5 text-blue-600 focus:outline-none" data-lang="en">English</button>
-                        <button type="button" class="language-tab py-2 px-4 border-b-2 border-transparent font-medium text-sm leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none" data-lang="tw">中文</button>
-                    </nav>
-                </div>
+        <!-- Flash Messages -->
+        <% if(typeof error_msg !=='undefined' && error_msg.length> 0) { %>
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+                <%= error_msg %>
             </div>
-            
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    // Add click event listeners to language tabs
-                    document.querySelectorAll('.language-tab').forEach(tab => {
-                        tab.addEventListener('click', function() {
-                            const lang = this.getAttribute('data-lang');
-                            
-                            // Hide all language content sections
-                            document.querySelectorAll('.language-content').forEach(el => {
-                                el.classList.add('hidden');
-                            });
-                            
-                            // Show the selected language content
-                            document.querySelectorAll(`.language-content-${lang}`).forEach(el => {
-                                el.classList.remove('hidden');
-                            });
-                            
-                            // Update active tab styling
-                            document.querySelectorAll('.language-tab').forEach(t => {
-                                t.classList.remove('active-tab', 'border-blue-500', 'text-blue-600');
-                                t.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-                            });
-                            
-                            this.classList.add('active-tab', 'border-blue-500', 'text-blue-600');
-                            this.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-                        });
-                    });
-                    
-                    // Initialize - show English content by default
-                    document.querySelectorAll('.language-content').forEach(el => {
-                        if (!el.classList.contains('language-content-en')) {
-                            el.classList.add('hidden');
-                        }
-                    });
-                });
-            </script>
+            <% } %>
 
-            <!-- English Content -->
-            <div class="language-content language-content-en">
-                <!-- Title -->
-                <div class="mb-6">
-                    <label for="title_en" class="block text-sm font-medium text-gray-700 mb-2">Title (English)</label>
-                    <input type="text" id="title_en" name="title_en"
-                        value="<%= newsItem ? newsItem.title_en : '' %>" required
-                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
+                <!-- Form -->
+                <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
+                    <form action="<%= newsItem ? `/admin/news/items/${newsItem.id}` : '/admin/news/items' %>"
+                        method="POST" enctype="multipart/form-data" id="newsForm">
 
-
-
-                <!-- Summary -->
-                <div class="mb-6">
-                    <label for="summary_en" class="block text-sm font-medium text-gray-700 mb-2">
-                        Summary (English)
-                        <span class="text-gray-500 text-xs">(Optional)</span>
-                    </label>
-                    <textarea id="summary_en" name="summary_en" rows="3"
-                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"><%= newsItem ? newsItem.summary_en : '' %></textarea>
-                </div>
-            </div>
-
-            <!-- Traditional Chinese Content -->
-            <div class="language-content language-content-tw hidden">
-                <!-- Title -->
-                <div class="mb-6">
-                    <label for="title_tw" class="block text-sm font-medium text-gray-700 mb-2">標題 (中文)</label>
-                    <input type="text" id="title_tw" name="title_tw" value="<%= newsItem ? newsItem.title_tw : '' %>"
-                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-
-
-
-                <!-- Summary -->
-                <div class="mb-6">
-                    <label for="summary_tw" class="block text-sm font-medium text-gray-700 mb-2">
-                        摘要 (中文)
-                        <span class="text-gray-500 text-xs">(選填)</span>
-                    </label>
-                    <textarea id="summary_tw" name="summary_tw" rows="3"
-                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"><%= newsItem ? newsItem.summary_tw : '' %></textarea>
-                </div>
-            </div>
-
-            <!-- Common Fields -->
-            <div class="border-t pt-4">
-                <!-- Category -->
-                <div class="mb-6">
-                    <label for="categoryId" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                    <select id="categoryId" name="categoryId"
-                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Select Category</option>
-                        <% categories.forEach(function(category) { %>
-                            <option value="<%= category.id %>" <%= newsItem && newsItem.categoryId == category.id ? 'selected' : '' %>>
-                                <%= category.name_en %>
-                            </option>
-                        <% }); %>
-                    </select>
-                </div>
-
-                <!-- Image Upload -->
-                <div class="mb-6">
-                    <label for="image" class="block text-sm font-medium text-gray-700 mb-2">
-                        Featured Image
-                        <span class="text-gray-500 text-xs">(Optional)</span>
-                    </label>
-                    <input type="file" id="image" name="image" accept="image/*"
-                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    
-                    <% if (newsItem && newsItem.imagePath) { %>
-                        <div class="mt-2">
-                            <p class="text-sm text-gray-600 mb-2">Current Image:</p>
-                            <img src="/<%= newsItem.imagePath %>" alt="Current image" class="h-32 w-auto object-cover rounded">
-                            <div class="mt-1">
-                                <label class="inline-flex items-center">
-                                    <input type="checkbox" name="removeImage" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                    <span class="ml-2 text-sm text-gray-600">Remove current image</span>
-                                </label>
+                        <!-- Language Tabs -->
+                        <div class="mb-6">
+                            <div class="border-b border-gray-200">
+                                <nav class="-mb-px flex">
+                                    <button type="button"
+                                        class="language-tab active-tab py-2 px-4 border-b-2 border-blue-500 font-medium text-sm leading-5 text-blue-600 focus:outline-none"
+                                        data-lang="en">English</button>
+                                    <button type="button"
+                                        class="language-tab py-2 px-4 border-b-2 border-transparent font-medium text-sm leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none"
+                                        data-lang="tw">中文</button>
+                                </nav>
                             </div>
                         </div>
-                    <% } %>
-                </div>
 
-                <!-- URL -->
-                <div class="mb-6">
-                    <label for="url" class="block text-sm font-medium text-gray-700 mb-2">
-                        External URL
-                        <span class="text-gray-500 text-xs">(Optional)</span>
-                    </label>
-                    <input type="url" id="url" name="url" value="<%= newsItem ? newsItem.url : '' %>"
-                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <p class="text-xs text-gray-500 mt-1">If provided, clicking on the news item will redirect to this URL</p>
-                </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                // Add click event listeners to language tabs
+                                document.querySelectorAll('.language-tab').forEach(tab => {
+                                    tab.addEventListener('click', function () {
+                                        const lang = this.getAttribute('data-lang');
 
-                <!-- Published Date -->
-                <div class="mb-6">
-                    <label for="publishedDate" class="block text-sm font-medium text-gray-700 mb-2">Published Date</label>
-                    <input type="date" id="publishedDate" name="publishedDate" 
-                        value="<%= newsItem && newsItem.publishedDate ? new Date(newsItem.publishedDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0] %>"
-                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
+                                        // Hide all language content sections
+                                        document.querySelectorAll('.language-content').forEach(el => {
+                                            el.classList.add('hidden');
+                                        });
 
-                <!-- Status -->
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                    <div class="mt-2 space-y-2">
-                        <div class="flex items-center">
-                            <input id="status-draft" name="status" type="radio" value="draft" 
-                                <%= !newsItem || newsItem.status === 'draft' ? 'checked' : '' %>
-                                class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
-                            <label for="status-draft" class="ml-3 block text-sm font-medium text-gray-700">
-                                Draft
-                            </label>
+                                        // Show the selected language content
+                                        document.querySelectorAll(`.language-content-${lang}`).forEach(el => {
+                                            el.classList.remove('hidden');
+                                        });
+
+                                        // Update active tab styling
+                                        document.querySelectorAll('.language-tab').forEach(t => {
+                                            t.classList.remove('active-tab', 'border-blue-500', 'text-blue-600');
+                                            t.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                                        });
+
+                                        this.classList.add('active-tab', 'border-blue-500', 'text-blue-600');
+                                        this.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                                    });
+                                });
+
+                                // Initialize - show English content by default
+                                document.querySelectorAll('.language-content').forEach(el => {
+                                    if (!el.classList.contains('language-content-en')) {
+                                        el.classList.add('hidden');
+                                    }
+                                });
+                            });
+                        </script>
+
+                        <!-- English Content -->
+                        <div class="language-content language-content-en">
+                            <!-- Title -->
+                            <div class="mb-6">
+                                <label for="title_en" class="block text-sm font-medium text-gray-700 mb-2">Title
+                                    (English)</label>
+                                <input type="text" id="title_en" name="title_en"
+                                    value="<%= newsItem ? newsItem.title_en : '' %>" required
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+
+
+                            <!-- Summary -->
+                            <div class="mb-6">
+                                <label for="summary_en" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Summary (English)
+                                    <span class="text-gray-500 text-xs">(Optional)</span>
+                                </label>
+                                <textarea id="summary_en" name="summary_en" rows="3"
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"><%= newsItem ? newsItem.summary_en : '' %></textarea>
+                            </div>
                         </div>
-                        <div class="flex items-center">
-                            <input id="status-published" name="status" type="radio" value="published" 
-                                <%= newsItem && newsItem.status === 'published' ? 'checked' : '' %>
-                                class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
-                            <label for="status-published" class="ml-3 block text-sm font-medium text-gray-700">
-                                Published
-                            </label>
-                        </div>
-                        <div class="flex items-center">
-                            <input id="status-archived" name="status" type="radio" value="archived" 
-                                <%= newsItem && newsItem.status === 'archived' ? 'checked' : '' %>
-                                class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
-                            <label for="status-archived" class="ml-3 block text-sm font-medium text-gray-700">
-                                Archived
-                            </label>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Submit Button -->
-                <div class="flex justify-end">
-                    <button type="submit"
-                        class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                        <%= newsItem ? 'Update' : 'Create' %> News Item
-                    </button>
+                        <!-- Traditional Chinese Content -->
+                        <div class="language-content language-content-tw hidden">
+                            <!-- Title -->
+                            <div class="mb-6">
+                                <label for="title_tw" class="block text-sm font-medium text-gray-700 mb-2">標題
+                                    (中文)</label>
+                                <input type="text" id="title_tw" name="title_tw"
+                                    value="<%= newsItem ? newsItem.title_tw : '' %>"
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+
+
+                            <!-- Summary -->
+                            <div class="mb-6">
+                                <label for="summary_tw" class="block text-sm font-medium text-gray-700 mb-2">
+                                    摘要 (中文)
+                                    <span class="text-gray-500 text-xs">(選填)</span>
+                                </label>
+                                <textarea id="summary_tw" name="summary_tw" rows="3"
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"><%= newsItem ? newsItem.summary_tw : '' %></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Common Fields -->
+                        <div class="border-t pt-4">
+                            <!-- Category -->
+                            <div class="mb-6">
+                                <label for="categoryId"
+                                    class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                                <select id="categoryId" name="categoryId"
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select Category</option>
+                                    <% categories.forEach(function(category) { %>
+                                        <option value="<%= category.id %>" <%=newsItem &&
+                                            newsItem.categoryId==category.id ? 'selected' : '' %>>
+                                            <%= category.name_en %>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                            </div>
+
+                            <!-- Image Upload -->
+                            <div class="mb-6">
+                                <label for="image" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Featured Image
+                                    <span class="text-gray-500 text-xs">(Optional)</span>
+                                </label>
+                                <input type="file" id="image" name="image" accept="image/*"
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                                <% if (newsItem && newsItem.imagePath) { %>
+                                    <div class="mt-2">
+                                        <p class="text-sm text-gray-600 mb-2">Current Image:</p>
+                                        <img src="<%= newsItem.imagePath %>" alt="Current image"
+                                            class="h-32 w-auto object-cover rounded">
+                                        <div class="mt-1">
+                                            <label class="inline-flex items-center">
+                                                <input type="checkbox" name="removeImage"
+                                                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                                <span class="ml-2 text-sm text-gray-600">Remove current image</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                            </div>
+
+                            <!-- URL -->
+                            <div class="mb-6">
+                                <label for="url" class="block text-sm font-medium text-gray-700 mb-2">
+                                    External URL
+                                    <span class="text-gray-500 text-xs">(Optional)</span>
+                                </label>
+                                <input type="url" id="url" name="url" value="<%= newsItem ? newsItem.url : '' %>"
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <p class="text-xs text-gray-500 mt-1">If provided, clicking on the news item will
+                                    redirect to this URL</p>
+                            </div>
+
+                            <!-- Published Date -->
+                            <div class="mb-6">
+                                <label for="publishedDate"
+                                    class="block text-sm font-medium text-gray-700 mb-2">Published Date</label>
+                                <input type="date" id="publishedDate" name="publishedDate"
+                                    value="<%= newsItem && newsItem.publishedDate ? new Date(newsItem.publishedDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0] %>"
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <!-- Status -->
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                                <div class="mt-2 space-y-2">
+                                    <div class="flex items-center">
+                                        <input id="status-draft" name="status" type="radio" value="draft" <%=!newsItem
+                                            || newsItem.status==='draft' ? 'checked' : '' %>
+                                        class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                        <label for="status-draft" class="ml-3 block text-sm font-medium text-gray-700">
+                                            Draft
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input id="status-published" name="status" type="radio" value="published"
+                                            <%=newsItem && newsItem.status==='published' ? 'checked' : '' %>
+                                        class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                        <label for="status-published"
+                                            class="ml-3 block text-sm font-medium text-gray-700">
+                                            Published
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input id="status-archived" name="status" type="radio" value="archived"
+                                            <%=newsItem && newsItem.status==='archived' ? 'checked' : '' %>
+                                        class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                        <label for="status-archived"
+                                            class="ml-3 block text-sm font-medium text-gray-700">
+                                            Archived
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="flex justify-end">
+                                <button type="submit"
+                                    class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                    <%= newsItem ? 'Update' : 'Create' %> News Item
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </div>
-        </form>
     </div>
-</div>
 
-<!-- No rich text editor needed for news items -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Language tab switching
-        const tabs = document.querySelectorAll('.language-tab');
-        const contents = document.querySelectorAll('.language-content');
-        
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const lang = tab.getAttribute('data-lang');
-                
-                // Update tabs
-                tabs.forEach(t => t.classList.remove('active-tab', 'border-blue-500', 'text-blue-600'));
-                tabs.forEach(t => t.classList.add('border-transparent', 'text-gray-500'));
-                tab.classList.add('active-tab', 'border-blue-500', 'text-blue-600');
-                tab.classList.remove('border-transparent', 'text-gray-500');
-                
-                // Update content
-                contents.forEach(content => content.classList.add('hidden'));
-                document.querySelector(`.language-content-${lang}`).classList.remove('hidden');
+    <!-- No rich text editor needed for news items -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Language tab switching
+            const tabs = document.querySelectorAll('.language-tab');
+            const contents = document.querySelectorAll('.language-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const lang = tab.getAttribute('data-lang');
+
+                    // Update tabs
+                    tabs.forEach(t => t.classList.remove('active-tab', 'border-blue-500', 'text-blue-600'));
+                    tabs.forEach(t => t.classList.add('border-transparent', 'text-gray-500'));
+                    tab.classList.add('active-tab', 'border-blue-500', 'text-blue-600');
+                    tab.classList.remove('border-transparent', 'text-gray-500');
+
+                    // Update content
+                    contents.forEach(content => content.classList.add('hidden'));
+                    document.querySelector(`.language-content-${lang}`).classList.remove('hidden');
+                });
             });
+
+            // No form submission handler needed as we're using standard form submission
         });
-        
-        // No form submission handler needed as we're using standard form submission
-    });
-</script>
+    </script>

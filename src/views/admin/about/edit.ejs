@@ -268,7 +268,7 @@
           // Function to truncate content if needed
           function truncateContent(content, maxLength) {
             // Use 16MB as the maximum length for LongText fields
-            const MAX_LONGTEXT_LENGTH = 16 * 1024 * 1024; // 16MB
+            const MAX_LONGTEXT_LENGTH = 100 * 1024 * 1024; // 100MB
 
             // If maxLength is not provided, use the maximum LongText length
             const limit = maxLength || MAX_LONGTEXT_LENGTH;
@@ -372,7 +372,7 @@
 
     // Add a function to check content length before submission
     function checkContentLength() {
-      const MAX_CONTENT_LENGTH = 16 * 1024 * 1024; // 16MB
+      const MAX_CONTENT_LENGTH = 100 * 1024 * 1024; // 16MB
       const contentEn = document.getElementById('content_en').value;
       const contentTw = document.getElementById('content_tw').value;
 

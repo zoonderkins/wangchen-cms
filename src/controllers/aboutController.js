@@ -7,7 +7,11 @@ const unlinkAsync = promisify(fs.unlink);
 const multer = require('multer');
 
 // Configure multer for image uploads
-const storage = multer.diskStorage({
+const storage = multer.diskStorage(
+    {
+  limits: { fieldSize: 50 * 1024 * 1024 }
+},{
+   
     destination: function (req, file, cb) {
         const uploadPath = path.join(__dirname, '../../public/uploads/about');
         // Create directory if it doesn't exist
