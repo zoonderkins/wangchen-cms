@@ -1,6 +1,6 @@
-# Role Permissions in Wangchen CMS
+# Role Permissions in 大南方新矽谷
 
-This document outlines the permissions assigned to each role in the Wangchen CMS system.
+This document outlines the permissions assigned to each role in the 大南方新矽谷 system.
 
 ## Roles Overview
 
