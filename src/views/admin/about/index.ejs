@@ -77,7 +77,7 @@
                           onclick="document.getElementById('deleteModal<%= item.id %>').classList.add('hidden')">
                           取消
                         </button>
-                        <form action="/admin/about/delete/<%= item.id %>" method="POST">
+                        <form action="/admin/about/<%= item.id %>/delete" method="POST">
                           <button type="submit"
                             class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                             刪除

@@ -9,7 +9,7 @@
     </div>
 
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-      <form action="/admin/about/edit/<%= item.id %>" method="POST" enctype="multipart/form-data">
+      <form action="/admin/about/<%= item.id %>" method="POST" enctype="multipart/form-data" id="aboutForm">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
             <label class="block text-gray-700 text-sm font-bold mb-2" for="title_en">
@@ -74,10 +74,7 @@
                 <img src="<%= item.imagePath %>" alt="當前圖片" class="w-full">
                 <div class="px-6 py-4 bg-gray-100">
                   <div class="font-bold text-xl mb-2">當前圖片</div>
-                  <div class="flex items-center mt-2">
-                    <input type="checkbox" id="removeImage" name="removeImage" value="true" class="mr-2">
-                    <label for="removeImage" class="text-gray-700">移除此圖片</label>
-                  </div>
+                  <p class="text-gray-600 text-sm">只允許一張圖片。上傳新圖片將替換當前圖片。</p>
                 </div>
               </div>
               <input type="hidden" id="existingImage" name="existingImage" value="<%= item.imagePath %>">
@@ -87,22 +84,20 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="content_en">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="editor_en">
               內容（英文） <span class="text-red-500">*</span>
             </label>
-            <textarea
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="content_en" name="content_en" rows="6" required><%= item.content_en %></textarea>
-            <p class="text-gray-600 text-xs italic mt-1">對於項目符號，每行輸入一個項目。</p>
+            <div id="editor_en" class="h-64 mt-1"></div>
+            <input type="hidden" name="content_en" id="content_en" value="<%= item.content_en %>">
+            <p class="text-gray-600 text-xs italic mt-1">對於項目符號，使用工具列中的項目符號按鈕。</p>
           </div>
           <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="content_tw">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="editor_tw">
               內容（中文） <span class="text-red-500">*</span>
             </label>
-            <textarea
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="content_tw" name="content_tw" rows="6" required><%= item.content_tw %></textarea>
-            <p class="text-gray-600 text-xs italic mt-1">對於項目符號，每行輸入一個項目。</p>
+            <div id="editor_tw" class="h-64 mt-1"></div>
+            <input type="hidden" name="content_tw" id="content_tw" value="<%= item.content_tw %>">
+            <p class="text-gray-600 text-xs italic mt-1">對於項目符號，使用工具列中的項目符號按鈕。</p>
           </div>
         </div>
 
@@ -127,33 +122,306 @@
     </div>
   </div>
 
-  <%- contentFor('script') %>
-    <script>
-      $(document).ready(function () {
-        // Handle checkbox for removing image when changing content type
-        $('#type').change(function () {
-          if ($(this).val() !== 'image') {
-            // Check the remove image checkbox if changing from image to another type
-            if ($('#removeImage').length) {
-              $('#removeImage').prop('checked', true);
+  <script>
+    // Include jQuery and Quill.js dynamically
+    (function () {
+      // Add jQuery
+      var jquery = document.createElement('script');
+      jquery.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
+      jquery.type = 'text/javascript';
+      document.head.appendChild(jquery);
+
+      // Add Quill.js after jQuery loads
+      jquery.onload = function () {
+        // Add Quill.js script
+        var quillScript = document.createElement('script');
+        quillScript.src = 'https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js';
+        quillScript.type = 'text/javascript';
+        document.head.appendChild(quillScript);
+
+        // Add Quill.js CSS
+        var quillCss = document.createElement('link');
+        quillCss.href = 'https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css';
+        quillCss.rel = 'stylesheet';
+        document.head.appendChild(quillCss);
+
+        // Initialize Quill after script loads
+        quillScript.onload = function () {
+          // Clear any existing content
+          $('#editor_en').html('');
+          $('#editor_tw').html('');
+
+          // Initialize English editor with simple configuration
+          var quillEn = new Quill('#editor_en', {
+            theme: 'snow',
+            modules: {
+              toolbar: [
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                ['blockquote', 'code-block'],
+                [{ 'header': 1 }, { 'header': 2 }],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                [{ 'indent': '-1' }, { 'indent': '+1' }],
+                ['link', 'image'],
+                ['clean']
+              ]
+            },
+            placeholder: 'Enter the content in English...'
+          });
+
+          // Initialize Traditional Chinese editor with simple configuration
+          var quillTw = new Quill('#editor_tw', {
+            theme: 'snow',
+            modules: {
+              toolbar: [
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                ['blockquote', 'code-block'],
+                [{ 'header': 1 }, { 'header': 2 }],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                [{ 'indent': '-1' }, { 'indent': '+1' }],
+                ['link', 'image'],
+                ['clean']
+              ]
+            },
+            placeholder: '請輸入中文內容...'
+          });
+
+          // Set initial content based on item type
+          if ('<%= item.type %>' === 'bullet_points') {
+            try {
+              // For bullet points, we need to parse the content if it's stored as a string
+              let contentEn, contentTw;
+
+              // Get the content from hidden inputs that were populated by the server
+              const contentEnRaw = $('#content_en').val();
+              const contentTwRaw = $('#content_tw').val();
+
+              try {
+                contentEn = JSON.parse(contentEnRaw);
+                contentTw = JSON.parse(contentTwRaw);
+
+                // Set the contents to the editors
+                quillEn.setContents(contentEn);
+                quillTw.setContents(contentTw);
+              } catch (parseError) {
+                console.error('Error parsing bullet points:', parseError);
+                // If parsing fails, set empty content
+                quillEn.setText('');
+                quillTw.setText('');
+              }
+            } catch (e) {
+              console.error('Error setting bullet points:', e);
+              quillEn.setText('');
+              quillTw.setText('');
             }
           } else {
-            // Uncheck the remove image checkbox if changing to image type
-            if ($('#removeImage').length) {
-              $('#removeImage').prop('checked', false);
+            // For plain text, set the HTML content directly
+            try {
+              // Get content from hidden inputs
+              const htmlEn = $('#content_en').val();
+              const htmlTw = $('#content_tw').val();
+
+              // Set the HTML content
+              quillEn.root.innerHTML = htmlEn || '';
+              quillTw.root.innerHTML = htmlTw || '';
+            } catch (e) {
+              console.error('Error setting HTML content:', e);
+              quillEn.setText('');
+              quillTw.setText('');
             }
           }
-        });
 
-        // Form validation before submit
-        $('form').on('submit', function (e) {
-          // If type is image and there's no existing image and no new image selected
-          if ($('#type').val() === 'image' && !$('#existingImage').length && !$('#image').val()) {
-            e.preventDefault();
-            alert('請選擇一個圖片文件。');
-            return false;
+          // Show/hide image upload based on type
+          function toggleContentFields() {
+            const type = $('#type').val();
+
+            if (type === 'image') {
+              $('#imageUploadGroup').show();
+              // Hide content editors for image type
+              $('#editor_en').closest('.grid').hide();
+              // Remove required indicator from content fields
+              $('label[for="editor_en"] .text-red-500').hide();
+              $('label[for="editor_tw"] .text-red-500').hide();
+              // Hide help text about bullet points
+              $('.text-gray-600.text-xs.italic.mt-1').hide();
+            } else {
+              $('#imageUploadGroup').hide();
+              // Show content editors for non-image types
+              $('#editor_en').closest('.grid').show();
+              // Show required indicator for content fields
+              $('label[for="editor_en"] .text-red-500').show();
+              $('label[for="editor_tw"] .text-red-500').show();
+              // Show help text about bullet points
+              $('.text-gray-600.text-xs.italic.mt-1').show();
+            }
           }
-          return true;
-        });
-      });
-    </script>
+
+          // Initial toggle
+          toggleContentFields();
+
+          // Toggle on type change
+          $('#type').change(function () {
+            toggleContentFields();
+          });
+
+          // Function to truncate content if needed
+          function truncateContent(content, maxLength) {
+            // Use 100MB as the maximum length for LongText fields
+            const MAX_LONGTEXT_LENGTH = 100 * 1024 * 1024; // 100MB
+
+            // If maxLength is not provided, use the maximum LongText length
+            const limit = maxLength || MAX_LONGTEXT_LENGTH;
+
+            if (content && content.length > limit) {
+              console.warn(`Content truncated from ${content.length} to ${limit} characters`);
+              return content.substring(0, limit);
+            }
+            return content;
+          }
+
+          // Form validation before submit
+          $('#aboutForm').on('submit', function (e) {
+            // If type is image and there's no existing image and no new image selected
+            if ($('#type').val() === 'image' && !$('#existingImage').length && !$('#image').val()) {
+              e.preventDefault();
+              alert('請選擇一個圖片文件。');
+              return false;
+            }
+
+            // Update hidden inputs with Quill content
+            if ($('#type').val() === 'plain_text') {
+              // For plain text, store the HTML content
+              const htmlEn = quillEn.root.innerHTML;
+              const htmlTw = quillTw.root.innerHTML;
+
+              // Using LongText field now, so we can store much more content
+              $('#content_en').val(truncateContent(htmlEn));
+              $('#content_tw').val(truncateContent(htmlTw));
+            } else if ($('#type').val() === 'bullet_points') {
+              // For bullet points, store the Quill Delta as JSON
+              const deltaEn = JSON.stringify(quillEn.getContents());
+              const deltaTw = JSON.stringify(quillTw.getContents());
+
+              // Using LongText field now, so we can store much more content
+              $('#content_en').val(truncateContent(deltaEn));
+              $('#content_tw').val(truncateContent(deltaTw));
+            } else if ($('#type').val() === 'image') {
+              // For image type, set empty content if not provided
+              if (!$('#content_en').val()) {
+                $('#content_en').val(' ');
+              }
+              if (!$('#content_tw').val()) {
+                $('#content_tw').val(' ');
+              }
+            }
+
+            return true;
+          });
+
+          // Add image handler for English editor
+          const imageHandlerEn = () => {
+            const input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.click();
+
+            input.onchange = () => {
+              const file = input.files[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                  const base64 = reader.result;
+                  const range = quillEn.getSelection(true);
+                  quillEn.insertEmbed(range.index, 'image', base64);
+                };
+                reader.readAsDataURL(file);
+              }
+            };
+          };
+
+          // Attach image handler to English editor toolbar
+          quillEn.getModule('toolbar').addHandler('image', imageHandlerEn);
+
+          // Add image handler for Traditional Chinese editor
+          const imageHandlerTw = () => {
+            const input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.click();
+
+            input.onchange = () => {
+              const file = input.files[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                  const base64 = reader.result;
+                  const range = quillTw.getSelection(true);
+                  quillTw.insertEmbed(range.index, 'image', base64);
+                };
+                reader.readAsDataURL(file);
+              }
+            };
+          };
+
+          // Attach image handler to Traditional Chinese editor toolbar
+          quillTw.getModule('toolbar').addHandler('image', imageHandlerTw);
+        };
+      };
+    })();
+
+    // Add a function to check content length before submission
+    function checkContentLength() {
+      const MAX_CONTENT_LENGTH = 100 * 1024 * 1024; // 100MB limit to match Multer fieldSize limit
+      const contentEn = document.getElementById('content_en').value;
+      const contentTw = document.getElementById('content_tw').value;
+
+      let warningMessage = '';
+
+      if (contentEn && contentEn.length > MAX_CONTENT_LENGTH) {
+        warningMessage += `English content is too large (${(contentEn.length / (1024 * 1024)).toFixed(2)}MB). It will be truncated to 100MB.\n`;
+      }
+
+      if (contentTw && contentTw.length > MAX_CONTENT_LENGTH) {
+        warningMessage += `Traditional Chinese content is too large (${(contentTw.length / (1024 * 1024)).toFixed(2)}MB). It will be truncated to 100MB.\n`;
+      }
+
+      if (warningMessage) {
+        return confirm(warningMessage + 'Do you want to continue?');
+      }
+
+      return true;
+    }
+
+    // Update the form to use the check function
+    document.getElementById('aboutForm').onsubmit = function () {
+      return checkContentLength();
+    };
+  </script>
+
+  <style>
+    /* Custom styles for Quill editors */
+    #editor_en,
+    #editor_tw {
+      height: 300px;
+      margin-bottom: 30px;
+    }
+
+    /* Fix toolbar positioning */
+    .ql-toolbar.ql-snow {
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+      padding: 8px;
+    }
+
+    .ql-container.ql-snow {
+      border: 1px solid #ccc;
+      border-top: 0px;
+    }
+
+    /* Ensure editor has proper height */
+    .ql-editor {
+      min-height: 200px;
+    }
+  </style>

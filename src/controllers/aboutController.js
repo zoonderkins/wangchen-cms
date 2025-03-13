@@ -24,7 +24,10 @@ const storage = multer.diskStorage({
 
 exports.upload = multer({
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    limits: { 
+        fileSize: 5 * 1024 * 1024, // 5MB limit for uploaded files
+        fieldSize: 100 * 1024 * 1024 // 100MB limit for form fields (for base64 encoded images in Quill editor)
+    },
     fileFilter: function (req, file, cb) {
         // Accept images only
         if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
@@ -76,14 +79,22 @@ exports.createItem = async (req, res) => {
     try {
         const { title_en, title_tw, type, content_en, content_tw, order } = req.body;
         
-        // Process bullet points if type is bullet_points
+        // Process content based on type
         let processedContentEn = content_en;
         let processedContentTw = content_tw;
         
-        if (type === 'bullet_points') {
-            // Convert line breaks to JSON array for bullet points
-            processedContentEn = JSON.stringify(content_en.split('\n').filter(line => line.trim()));
-            processedContentTw = JSON.stringify(content_tw.split('\n').filter(line => line.trim()));
+        // Check content length and truncate if necessary
+        // MySQL LONGTEXT can store up to 4GB, but we'll use a more reasonable limit
+        const MAX_CONTENT_LENGTH = 100 * 1024 * 1024; // 100MB limit to match Multer fieldSize limit
+        
+        if (processedContentEn && processedContentEn.length > MAX_CONTENT_LENGTH) {
+            logger.warn(`Content_en for "${title_en}" was truncated from ${processedContentEn.length} to ${MAX_CONTENT_LENGTH} bytes`);
+            processedContentEn = processedContentEn.substring(0, MAX_CONTENT_LENGTH);
+        }
+        
+        if (processedContentTw && processedContentTw.length > MAX_CONTENT_LENGTH) {
+            logger.warn(`Content_tw for "${title_tw}" was truncated from ${processedContentTw.length} to ${MAX_CONTENT_LENGTH} bytes`);
+            processedContentTw = processedContentTw.substring(0, MAX_CONTENT_LENGTH);
         }
         
         // Handle image upload
@@ -129,26 +140,39 @@ exports.renderEditItem = async (req, res) => {
             return res.redirect('/admin/about');
         }
         
-        // If bullet points, convert JSON array back to newline-separated text
-        let displayContentEn = item.content_en;
-        let displayContentTw = item.content_tw;
+        // Process content for Quill.js
+        let processedItem = { ...item };
         
+        // For bullet points, ensure content is valid JSON
         if (item.type === 'bullet_points') {
             try {
-                displayContentEn = JSON.parse(item.content_en).join('\n');
-                displayContentTw = JSON.parse(item.content_tw).join('\n');
+                // If content is already a string, make sure it's valid JSON
+                if (typeof item.content_en === 'string') {
+                    // Try to parse and re-stringify to ensure valid JSON
+                    const parsedEn = JSON.parse(item.content_en);
+                    processedItem.content_en = JSON.stringify(parsedEn);
+                } else {
+                    // If it's an object, stringify it
+                    processedItem.content_en = JSON.stringify(item.content_en);
+                }
+                
+                if (typeof item.content_tw === 'string') {
+                    const parsedTw = JSON.parse(item.content_tw);
+                    processedItem.content_tw = JSON.stringify(parsedTw);
+                } else {
+                    processedItem.content_tw = JSON.stringify(item.content_tw);
+                }
             } catch (e) {
-                logger.error('Error parsing bullet points:', e);
+                logger.error('Error processing bullet points for edit:', e);
+                // Provide empty valid JSON if parsing fails
+                processedItem.content_en = JSON.stringify({ ops: [] });
+                processedItem.content_tw = JSON.stringify({ ops: [] });
             }
         }
         
         res.render('admin/about/edit', {
             title: 'Edit About Item',
-            item: {
-                ...item,
-                content_en: displayContentEn,
-                content_tw: displayContentTw
-            }
+            item: processedItem
         });
     } catch (error) {
         logger.error('Error rendering edit about item form:', error);
@@ -161,7 +185,7 @@ exports.renderEditItem = async (req, res) => {
 exports.updateItem = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title_en, title_tw, type, content_en, content_tw, order, removeImage } = req.body;
+        const { title_en, title_tw, type, content_en, content_tw, order } = req.body;
         
         // Get the existing item
         const existingItem = await prisma.aboutItem.findUnique({
@@ -173,21 +197,29 @@ exports.updateItem = async (req, res) => {
             return res.redirect('/admin/about');
         }
         
-        // Process bullet points if type is bullet_points
+        // Process content based on type
         let processedContentEn = content_en;
         let processedContentTw = content_tw;
         
-        if (type === 'bullet_points') {
-            // Convert line breaks to JSON array for bullet points
-            processedContentEn = JSON.stringify(content_en.split('\n').filter(line => line.trim()));
-            processedContentTw = JSON.stringify(content_tw.split('\n').filter(line => line.trim()));
+        // Check content length and truncate if necessary
+        // MySQL LONGTEXT can store up to 4GB, but we'll use a more reasonable limit
+        const MAX_CONTENT_LENGTH = 100 * 1024 * 1024; // 100MB limit to match Multer fieldSize limit
+        
+        if (processedContentEn && processedContentEn.length > MAX_CONTENT_LENGTH) {
+            logger.warn(`Content_en for "${title_en}" was truncated from ${processedContentEn.length} to ${MAX_CONTENT_LENGTH} bytes`);
+            processedContentEn = processedContentEn.substring(0, MAX_CONTENT_LENGTH);
+        }
+        
+        if (processedContentTw && processedContentTw.length > MAX_CONTENT_LENGTH) {
+            logger.warn(`Content_tw for "${title_tw}" was truncated from ${processedContentTw.length} to ${MAX_CONTENT_LENGTH} bytes`);
+            processedContentTw = processedContentTw.substring(0, MAX_CONTENT_LENGTH);
         }
         
         // Handle image upload or removal
         let imagePath = existingItem.imagePath;
         
-        // Remove existing image if requested or if type changed from image
-        if ((removeImage === 'true' || type !== 'image') && existingItem.imagePath) {
+        // Remove existing image if type changed from image
+        if (type !== 'image' && existingItem.imagePath) {
             const filePath = path.join(__dirname, '../../public', existingItem.imagePath);
             try {
                 await unlinkAsync(filePath);
@@ -299,12 +331,81 @@ exports.showAboutPage = async (req, res) => {
             // Process bullet points
             if (item.type === 'bullet_points') {
                 try {
-                    processedItem.content_en = JSON.parse(item.content_en);
-                    processedItem.content_tw = JSON.parse(item.content_tw);
+                    // Ensure content is parsed as JSON if it's a string
+                    if (typeof item.content_en === 'string') {
+                        processedItem.content_en = JSON.parse(item.content_en);
+                    }
+                    if (typeof item.content_tw === 'string') {
+                        processedItem.content_tw = JSON.parse(item.content_tw);
+                    }
                 } catch (e) {
                     logger.error('Error parsing bullet points:', e);
-                    processedItem.content_en = [];
-                    processedItem.content_tw = [];
+                    processedItem.content_en = { ops: [] };
+                    processedItem.content_tw = { ops: [] };
+                }
+            } else if (item.type === 'plain_text') {
+                // For plain text, ensure the HTML content is properly sanitized but preserves formatting
+                // No need to modify, as it will be rendered with <%- %> in the template
+                // But we need to make sure it's a string
+                if (typeof processedItem.content_en !== 'string') {
+                    processedItem.content_en = String(processedItem.content_en || '');
+                }
+                if (typeof processedItem.content_tw !== 'string') {
+                    processedItem.content_tw = String(processedItem.content_tw || '');
+                }
+                
+                // Check if the content might be Quill Delta JSON that was mistakenly saved as plain text
+                try {
+                    // If content starts with { and contains "ops", it might be a Quill Delta object
+                    if (processedItem.content_en.trim().startsWith('{') && processedItem.content_en.includes('"ops"')) {
+                        const deltaObj = JSON.parse(processedItem.content_en);
+                        if (deltaObj && deltaObj.ops) {
+                            // It's a Delta object, convert it to HTML
+                            const tempDiv = document.createElement('div');
+                            const quill = new Quill(tempDiv);
+                            quill.setContents(deltaObj);
+                            processedItem.content_en = tempDiv.querySelector('.ql-editor').innerHTML;
+                        }
+                    }
+                    
+                    if (processedItem.content_tw.trim().startsWith('{') && processedItem.content_tw.includes('"ops"')) {
+                        const deltaObj = JSON.parse(processedItem.content_tw);
+                        if (deltaObj && deltaObj.ops) {
+                            // It's a Delta object, convert it to HTML
+                            const tempDiv = document.createElement('div');
+                            const quill = new Quill(tempDiv);
+                            quill.setContents(deltaObj);
+                            processedItem.content_tw = tempDiv.querySelector('.ql-editor').innerHTML;
+                        }
+                    }
+                } catch (e) {
+                    // If parsing fails, it's likely already HTML content, so we can ignore this error
+                    logger.debug('Content appears to be HTML already, not Delta JSON:', e.message);
+                }
+                
+                // Check if the content might be Quill Delta JSON that was mistakenly saved as plain text
+                try {
+                    // If content starts with { and contains "ops", it might be a Quill Delta object
+                    if (processedItem.content_en.trim().startsWith('{') && processedItem.content_en.includes('"ops"')) {
+                        const deltaObj = JSON.parse(processedItem.content_en);
+                        if (deltaObj && deltaObj.ops) {
+                            // It's a Delta object, we'll pass it as is and let the frontend handle it
+                            // We'll add a flag to indicate it's a Delta object
+                            processedItem._content_en_is_delta = true;
+                        }
+                    }
+                    
+                    if (processedItem.content_tw.trim().startsWith('{') && processedItem.content_tw.includes('"ops"')) {
+                        const deltaObj = JSON.parse(processedItem.content_tw);
+                        if (deltaObj && deltaObj.ops) {
+                            // It's a Delta object, we'll pass it as is and let the frontend handle it
+                            // We'll add a flag to indicate it's a Delta object
+                            processedItem._content_tw_is_delta = true;
+                        }
+                    }
+                } catch (e) {
+                    // If parsing fails, it's likely already HTML content, so we can ignore this error
+                    logger.debug('Content appears to be HTML already, not Delta JSON:', e.message);
                 }
             }
             
@@ -314,7 +415,8 @@ exports.showAboutPage = async (req, res) => {
         res.render('frontend/about', {
             title: language === 'en' ? 'About Us' : '關於我們',
             items: processedItems,
-            layout: 'layouts/frontend'
+            layout: 'layouts/frontend',
+            currentLanguage: language || 'en'
         });
     } catch (error) {
         logger.error('Error displaying about page:', error);

@@ -13,18 +13,17 @@
                 <h2 class="text-lg font-semibold mb-2">目前媒體</h2>
                 <div class="border rounded p-4 flex justify-center">
                     <% if (banner.mediaType==='image' ) { %>
-                        <img src="<%= banner.mediaPath.replace(/^public/, '') %>" alt="<%= banner.title_en %>"
-                            class="max-h-64 object-contain">
+                        <img src="<%= banner.mediaPath %>" alt="<%= banner.title_en %>" class="max-h-64 object-contain">
                         <% } else { %>
                             <video class="max-h-64" controls>
-                                <source src="<%= banner.mediaPath.replace(/^public/, '') %>" type="video/mp4">
+                                <source src="<%= banner.mediaPath %>" type="video/mp4">
                                 您的瀏覽器不支援影片標籤。
                             </video>
                             <% } %>
                 </div>
             </div>
 
-            <form action="/admin/banners/edit/<%= banner.id %>" method="POST" enctype="multipart/form-data">
+            <form action="/admin/banners/<%= banner.id %>" method="POST" enctype="multipart/form-data">
                 <!-- Language Tabs -->
                 <%- include('../../partials/admin-language-switcher', { title: '內容語言' , activeTab: 'en' }) %>
 
@@ -115,14 +114,6 @@
                         </div>
 
                         <div class="flex items-center justify-between">
-                            <form action="/admin/banners/<%= banner.id %>?_method=DELETE" method="POST" class="inline"
-                                onsubmit="return confirm('您確定要刪除此橫幅嗎？');">
-                                <button type="submit"
-                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                    刪除橫幅
-                                </button>
-                            </form>
-
                             <button
                                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                                 type="submit">
@@ -130,6 +121,15 @@
                             </button>
                         </div>
                     </div>
+            </form>
+
+            <form action="/admin/banners/<%= banner.id %>" method="POST" class="inline mt-4"
+                onsubmit="return confirm('您確定要刪除此橫幅嗎？');">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit"
+                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    刪除橫幅
+                </button>
             </form>
         </div>
     </div>

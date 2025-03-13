@@ -393,8 +393,8 @@ model AboutItem {
   title_en    String
   title_tw    String
   type        String   // "plain_text", "image", "bullet_points"
-  content_en  String   @db.Text
-  content_tw  String   @db.Text
+  content_en  String   @db.LongText
+  content_tw  String   @db.LongText
   imagePath   String?  // For image type items
   order       Int      @default(0)
   createdAt   DateTime @default(now())

@@ -120,6 +120,7 @@ router.post('/banners', hasRole(['super_admin', 'admin']), bannerUpload, bannerC
 router.get('/banners/edit/:id', hasRole(['super_admin', 'admin']), bannerController.renderEditBanner);
 router.post('/banners/:id', hasRole(['super_admin', 'admin']), bannerUpload, bannerController.updateBanner);
 router.post('/banners/:id/delete', hasRole(['super_admin', 'admin']), bannerController.deleteBanner);
+router.delete('/banners/:id', hasRole(['super_admin', 'admin']), bannerController.deleteBanner);
 
 // Page routes
 const pageAttachmentUpload = require('../middleware/pageAttachmentUpload');
@@ -225,9 +226,9 @@ router.post('/promotions/items/:id/delete', hasRole(['super_admin', 'admin']), p
 // About Routes
 router.get('/about', hasRole(['super_admin', 'admin']), aboutController.listItems);
 router.get('/about/create', hasRole(['super_admin', 'admin']), aboutController.renderCreateItem);
-router.post('/about', hasRole(['super_admin', 'admin']), aboutController.createItem);
+router.post('/about', hasRole(['super_admin', 'admin']), aboutController.upload, aboutController.createItem);
 router.get('/about/edit/:id', hasRole(['super_admin', 'admin']), aboutController.renderEditItem);
-router.post('/about/:id', hasRole(['super_admin', 'admin']), aboutController.updateItem);
+router.post('/about/:id', hasRole(['super_admin', 'admin']), aboutController.upload, aboutController.updateItem);
 router.post('/about/:id/delete', hasRole(['super_admin', 'admin']), aboutController.deleteItem);
 
 // Contact Category Routes
