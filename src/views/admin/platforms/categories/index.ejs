@@ -2,14 +2,14 @@
 
   <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold">Platform Categories</h1>
+      <h1 class="text-3xl font-bold">平台分類</h1>
       <div class="flex">
         <a href="/admin/platforms/categories/create"
           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
-          <i class="fas fa-plus mr-2"></i> Add New Category
+          <i class="fas fa-plus mr-2"></i> 新增分類
         </a>
         <a href="/admin/platforms" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-          <i class="fas fa-arrow-left mr-2"></i> Back to Platform Items
+          <i class="fas fa-arrow-left mr-2"></i> 返回平台項目
         </a>
       </div>
     </div>
@@ -20,13 +20,13 @@
           <table class="min-w-full bg-white" id="dataTable">
             <thead>
               <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
-                <th class="py-3 px-6 text-left">Order</th>
-                <th class="py-3 px-6 text-left">Name (EN)</th>
-                <th class="py-3 px-6 text-left">Name (TW)</th>
-                <th class="py-3 px-6 text-left">Description (EN)</th>
-                <th class="py-3 px-6 text-left">Description (TW)</th>
-                <th class="py-3 px-6 text-left">Items</th>
-                <th class="py-3 px-6 text-center">Actions</th>
+                <th class="py-3 px-6 text-left">排序</th>
+                <th class="py-3 px-6 text-left">名稱 (英文)</th>
+                <th class="py-3 px-6 text-left">名稱 (中文)</th>
+                <th class="py-3 px-6 text-left">描述 (英文)</th>
+                <th class="py-3 px-6 text-left">描述 (中文)</th>
+                <th class="py-3 px-6 text-left">項目數</th>
+                <th class="py-3 px-6 text-center">操作</th>
               </tr>
             </thead>
             <tbody class="text-gray-600 text-sm">
@@ -56,18 +56,18 @@
                     <div class="flex item-center justify-center">
                       <a href="/admin/platforms/categories/edit/<%= category.id %>"
                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded mr-2">
-                        <i class="fas fa-edit"></i> Edit
+                        <i class="fas fa-edit"></i> 編輯
                       </a>
                       <% if (!category.platforms || category.platforms.length===0) { %>
                         <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
                           onclick="document.getElementById('deleteModal<%= category.id %>').classList.remove('hidden')">
-                          <i class="fas fa-trash"></i> Delete
+                          <i class="fas fa-trash"></i> 刪除
                         </button>
                         <% } else { %>
                           <button
                             class="bg-red-300 text-white font-bold py-1 px-3 rounded opacity-50 cursor-not-allowed"
-                            title="Cannot delete category with existing items">
-                            <i class="fas fa-trash"></i> Delete
+                            title="無法刪除含有項目的分類">
+                            <i class="fas fa-trash"></i> 刪除
                           </button>
                           <% } %>
                     </div>
@@ -79,22 +79,22 @@
                   class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
                   <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
                     <div class="mt-3 text-center">
-                      <h3 class="text-lg leading-6 font-medium text-gray-900">Confirm Delete</h3>
+                      <h3 class="text-lg leading-6 font-medium text-gray-900">確認刪除</h3>
                       <div class="mt-2 px-7 py-3">
                         <p class="text-sm text-gray-500">
-                          Are you sure you want to delete the category "<%= category.name_en %>"?
+                          您確定要刪除分類 "<%= category.name_tw %>" 嗎？
                         </p>
                       </div>
                       <div class="flex justify-center mt-4 px-4 py-3">
                         <button type="button"
                           class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2"
                           onclick="document.getElementById('deleteModal<%= category.id %>').classList.add('hidden')">
-                          Cancel
+                          取消
                         </button>
                         <form action="/admin/platforms/categories/<%= category.id %>/delete" method="POST">
                           <button type="submit"
                             class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                            Delete
+                            刪除
                           </button>
                         </form>
                       </div>
@@ -107,10 +107,10 @@
         </div>
         <% } else { %>
           <div class="text-center py-8">
-            <p class="text-gray-500 mb-4">No platform categories found.</p>
+            <p class="text-gray-500 mb-4">尚未建立任何平台分類。</p>
             <a href="/admin/platforms/categories/create"
               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-              <i class="fas fa-plus mr-2"></i> Add First Category
+              <i class="fas fa-plus mr-2"></i> 新增第一個分類
             </a>
           </div>
           <% } %>

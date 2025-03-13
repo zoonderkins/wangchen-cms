@@ -28,6 +28,7 @@ const contactCategoryController = require('../controllers/contactCategoryControl
 const contactController = require('../controllers/contactController');
 const linksController = require('../controllers/linksController');
 const platformController = require('../controllers/platformController');
+const platformUpload = require('../middleware/platformImageUpload');
 
 // Multer configuration
 const storage = multer.diskStorage({
@@ -245,16 +246,22 @@ router.post('/contact/:id/delete', hasRole(['super_admin', 'admin']), contactCon
 // Platform Routes
 router.get('/platforms', hasRole(['super_admin', 'admin']), platformController.listItems);
 router.get('/platforms/create', hasRole(['super_admin', 'admin']), platformController.renderCreateItem);
-router.post('/platforms', hasRole(['super_admin', 'admin']), platformController.createItem);
+router.post('/platforms', hasRole(['super_admin', 'admin']), platformUpload.fields([
+    { name: 'image', maxCount: 1 },
+    { name: 'attachments', maxCount: 10 }
+]), platformController.createItem);
 router.get('/platforms/categories', hasRole(['super_admin', 'admin']), platformController.listCategories);
 router.get('/platforms/categories/create', hasRole(['super_admin', 'admin']), platformController.renderCreateCategory);
 router.post('/platforms/categories', hasRole(['super_admin', 'admin']), platformController.createCategory);
 router.get('/platforms/categories/edit/:id', hasRole(['super_admin', 'admin']), platformController.renderEditCategory);
 router.post('/platforms/categories/:id', hasRole(['super_admin', 'admin']), platformController.updateCategory);
 router.post('/platforms/categories/:id/delete', hasRole(['super_admin', 'admin']), platformController.deleteCategory);
-router.post('/platforms/attachments', hasRole(['super_admin', 'admin']), platformController.uploadAttachment);
+router.post('/platforms/attachments', hasRole(['super_admin', 'admin']), platformUpload.array('attachments', 10), platformController.uploadAttachment);
 router.get('/platforms/edit/:id', hasRole(['super_admin', 'admin']), platformController.renderEditItem);
-router.post('/platforms/:id', hasRole(['super_admin', 'admin']), platformController.updateItem);
+router.post('/platforms/:id', hasRole(['super_admin', 'admin']), platformUpload.fields([
+    { name: 'image', maxCount: 1 },
+    { name: 'attachments', maxCount: 10 }
+]), platformController.updateItem);
 router.post('/platforms/:id/delete', hasRole(['super_admin', 'admin']), platformController.deleteItem);
 
 // Links Routes

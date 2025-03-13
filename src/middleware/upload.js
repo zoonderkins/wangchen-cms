@@ -3,10 +3,43 @@ const path = require('path');
 const fs = require('fs');
 const logger = require('../config/logger');
 
+// Get allowed file types from environment variables or use defaults
+const ALLOWED_UPLOAD_TYPES = process.env.ALLOWED_UPLOAD_TYPES || 'jpg,jpeg,png,gif,mp4,mov,avi,pdf,docx,xlsx,xml,zip';
+const MAX_UPLOAD_SIZE = parseInt(process.env.MAX_UPLOAD_SIZE) || 50 * 1024 * 1024; // 50MB default
+
+// Parse allowed types
+const allowedExtensions = ALLOWED_UPLOAD_TYPES.split(',').map(ext => `.${ext.trim().toLowerCase()}`);
+
+// Map of common file extensions to MIME types
+const mimeTypeMap = {
+    // Images
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png',
+    '.gif': 'image/gif',
+    // Videos
+    '.mp4': 'video/mp4',
+    '.mov': 'video/quicktime',
+    '.avi': 'video/x-msvideo',
+    // Documents
+    '.pdf': 'application/pdf',
+    '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    '.xml': 'application/xml',
+    // Archives
+    '.zip': 'application/zip'
+};
+
+// Generate allowed MIME types based on allowed extensions
+const allowedMimeTypes = allowedExtensions
+    .map(ext => mimeTypeMap[ext])
+    .filter(Boolean);
+
 // Create upload directory if it doesn't exist
 const uploadDir = path.join(process.cwd(), process.env.UPLOAD_PATH || 'uploads');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
+    logger.info(`Created directory: ${uploadDir}`);
 }
 
 // Configure storage
@@ -28,24 +61,14 @@ const storage = multer.diskStorage({
 
 // File filter
 const fileFilter = (req, file, cb) => {
-    const allowedMimes = [
-        // Images
-        'image/jpeg', 'image/png', 'image/gif',
-        // Videos
-        'video/mp4', 'video/quicktime', 'video/x-msvideo',
-        // Documents
-        'application/pdf',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'application/xml',
-        // Archives
-        'application/zip'
-    ];
-
-    if (allowedMimes.includes(file.mimetype)) {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const isValidExtension = allowedExtensions.includes(ext);
+    const isValidMimeType = allowedMimeTypes.includes(file.mimetype);
+    
+    if (isValidExtension && isValidMimeType) {
         cb(null, true);
     } else {
-        cb(new Error('Invalid file type'), false);
+        cb(new Error(`Invalid file type. Allowed types: ${ALLOWED_UPLOAD_TYPES.toUpperCase()}`), false);
     }
 };
 
@@ -54,7 +77,7 @@ const upload = multer({
     storage: storage,
     fileFilter: fileFilter,
     limits: {
-        fileSize: parseInt(process.env.MAX_FILE_SIZE) || 50 * 1024 * 1024 // Default 50MB
+        fileSize: MAX_UPLOAD_SIZE
     }
 });
 
@@ -63,8 +86,7 @@ const handleUploadError = (err, req, res, next) => {
     if (err instanceof multer.MulterError) {
         if (err.code === 'LIMIT_FILE_SIZE') {
             return res.status(400).json({
-                error: 'File size too large. Maximum size is ' + 
-                    (parseInt(process.env.MAX_FILE_SIZE) / (1024 * 1024)) + 'MB'
+                error: `File size too large. Maximum size is ${MAX_UPLOAD_SIZE / (1024 * 1024)}MB`
             });
         }
         logger.error('Multer error:', err);

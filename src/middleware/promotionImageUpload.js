@@ -3,10 +3,32 @@ const path = require('path');
 const fs = require('fs');
 const logger = require('../config/logger');
 
+// Get allowed file types from environment variables or use defaults
+const ALLOWED_PROMOTION_IMAGE_TYPES = process.env.ALLOWED_PROMOTION_IMAGE_TYPES || 'jpg,jpeg,png,gif,webp';
+const MAX_PROMOTION_IMAGE_SIZE = parseInt(process.env.MAX_PROMOTION_IMAGE_SIZE) || 5 * 1024 * 1024; // 5MB default
+
+// Parse allowed types
+const allowedExtensions = ALLOWED_PROMOTION_IMAGE_TYPES.split(',').map(ext => `.${ext.trim().toLowerCase()}`);
+
+// Map of common file extensions to MIME types
+const mimeTypeMap = {
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png',
+    '.gif': 'image/gif',
+    '.webp': 'image/webp'
+};
+
+// Generate allowed MIME types based on allowed extensions
+const allowedMimeTypes = allowedExtensions
+    .map(ext => mimeTypeMap[ext])
+    .filter(Boolean);
+
 // Create uploads directory if it doesn't exist
 const uploadDir = path.join(__dirname, '../../public/uploads/promotions');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
+    logger.info(`Created directory: ${uploadDir}`);
 }
 
 // Define the URL path for serving the images (without 'public' prefix)
@@ -37,11 +59,14 @@ const storage = multer.diskStorage({
 
 // File filter to only allow images
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (allowedTypes.includes(file.mimetype)) {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const isValidExtension = allowedExtensions.includes(ext);
+    const isValidMimeType = allowedMimeTypes.includes(file.mimetype);
+    
+    if (isValidExtension && isValidMimeType) {
         cb(null, true);
     } else {
-        cb(new Error('Only image files are allowed!'), false);
+        cb(new Error(`Only image files (${ALLOWED_PROMOTION_IMAGE_TYPES.toUpperCase()}) are allowed!`), false);
     }
 };
 
@@ -49,7 +74,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage,
     limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB
+        fileSize: MAX_PROMOTION_IMAGE_SIZE
     },
     fileFilter
 });

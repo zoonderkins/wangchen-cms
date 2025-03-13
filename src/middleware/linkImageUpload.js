@@ -1,11 +1,20 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const logger = require('../config/logger');
+
+// Get allowed file types from environment variables or use defaults
+const ALLOWED_LINK_IMAGE_TYPES = process.env.ALLOWED_LINK_IMAGE_TYPES || 'jpg,jpeg,png,gif,webp';
+const MAX_LINK_IMAGE_SIZE = parseInt(process.env.MAX_LINK_IMAGE_SIZE) || 5 * 1024 * 1024; // 5MB default
+
+// Parse allowed types
+const allowedExtensions = ALLOWED_LINK_IMAGE_TYPES.split(',').map(ext => `.${ext.trim().toLowerCase()}`);
 
 // Create uploads directory if it doesn't exist
 const uploadDir = path.join(__dirname, '../../public/uploads/links');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
+    logger.info(`Created directory: ${uploadDir}`);
 }
 
 // Configure storage
@@ -22,24 +31,28 @@ const storage = multer.diskStorage({
 
 // Check file type
 const fileFilter = (req, file, cb) => {
-    // Allowed file extensions
-    const filetypes = /jpeg|jpg|png|gif|webp/;
     // Check extension
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    const ext = path.extname(file.originalname).toLowerCase();
+    const isValidExtension = allowedExtensions.includes(ext);
+    
     // Check mime type
-    const mimetype = filetypes.test(file.mimetype);
+    const isValidMimeType = file.mimetype.startsWith('image/') && 
+        ALLOWED_LINK_IMAGE_TYPES.split(',').some(type => 
+            file.mimetype === `image/${type}` || 
+            (type === 'jpg' && file.mimetype === 'image/jpeg')
+        );
 
-    if (mimetype && extname) {
+    if (isValidMimeType && isValidExtension) {
         return cb(null, true);
     } else {
-        cb(new Error('Error: Images Only! (jpeg, jpg, png, gif, webp)'));
+        cb(new Error(`Error: Images Only! (${ALLOWED_LINK_IMAGE_TYPES.toUpperCase()})`));
     }
 };
 
 // Initialize upload
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 5000000 }, // 5MB max file size
+    limits: { fileSize: MAX_LINK_IMAGE_SIZE },
     fileFilter: fileFilter
 });
 
@@ -51,7 +64,7 @@ const uploadLinkImage = (req, res, next) => {
         if (err) {
             if (err instanceof multer.MulterError) {
                 if (err.code === 'LIMIT_FILE_SIZE') {
-                    req.flash('error_msg', 'File size is too large. Maximum size is 5MB.');
+                    req.flash('error_msg', `File size is too large. Maximum size is ${MAX_LINK_IMAGE_SIZE / (1024 * 1024)}MB.`);
                 } else {
                     req.flash('error_msg', `Multer upload error: ${err.message}`);
                 }

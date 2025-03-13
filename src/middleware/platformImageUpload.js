@@ -3,6 +3,14 @@ const path = require('path');
 const fs = require('fs');
 const logger = require('../config/logger');
 
+// Get allowed file types from environment variables or use defaults
+const ALLOWED_IMAGE_TYPES = process.env.ALLOWED_IMAGE_TYPES || 'jpg,jpeg,png,gif,webp';
+const ALLOWED_ATTACHMENT_TYPES = process.env.ALLOWED_ATTACHMENT_TYPES || 'pdf,doc,docx,xls,xlsx,ppt,pptx,txt,zip,rar';
+
+// Parse the comma-separated lists into arrays
+const allowedImageExtensions = ALLOWED_IMAGE_TYPES.split(',').map(ext => `.${ext.trim().toLowerCase()}`);
+const allowedAttachmentExtensions = ALLOWED_ATTACHMENT_TYPES.split(',').map(ext => `.${ext.trim().toLowerCase()}`);
+
 // Create uploads directories if they don't exist
 const uploadDir = path.join(__dirname, '../../public/uploads/platform');
 const attachmentDir = path.join(uploadDir, 'attachments');
@@ -30,50 +38,60 @@ const storage = multer.diskStorage({
   }
 });
 
+// Map of common file extensions to MIME types
+const mimeTypeMap = {
+  // Image types
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.png': 'image/png',
+  '.gif': 'image/gif',
+  '.webp': 'image/webp',
+  
+  // Document types
+  '.pdf': 'application/pdf',
+  '.doc': 'application/msword',
+  '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  '.xls': 'application/vnd.ms-excel',
+  '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  '.ppt': 'application/vnd.ms-powerpoint',
+  '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  '.txt': 'text/plain',
+  '.zip': 'application/zip',
+  '.rar': 'application/x-rar-compressed'
+};
+
+// Generate allowed MIME types based on allowed extensions
+const allowedImageMimeTypes = allowedImageExtensions
+  .map(ext => mimeTypeMap[ext])
+  .filter(Boolean);
+
+const allowedAttachmentMimeTypes = allowedAttachmentExtensions
+  .map(ext => mimeTypeMap[ext])
+  .filter(Boolean);
+
 // File filter for images
 const imageFilter = (req, file, cb) => {
-  const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-  const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
-  
   const ext = path.extname(file.originalname).toLowerCase();
-  const isValidExtension = allowedExtensions.includes(ext);
-  const isValidMimeType = allowedMimeTypes.includes(file.mimetype);
+  const isValidExtension = allowedImageExtensions.includes(ext);
+  const isValidMimeType = allowedImageMimeTypes.includes(file.mimetype);
   
   if (isValidExtension && isValidMimeType) {
     cb(null, true);
   } else {
-    cb(new Error('Only image files (jpg, jpeg, png, gif, webp) are allowed!'), false);
+    cb(new Error(`Only image files (${ALLOWED_IMAGE_TYPES}) are allowed!`), false);
   }
 };
 
 // File filter for attachments
 const attachmentFilter = (req, file, cb) => {
-  const allowedMimeTypes = [
-    'application/pdf',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/vnd.ms-excel',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    'application/vnd.ms-powerpoint',
-    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-    'text/plain',
-    'application/zip',
-    'application/x-rar-compressed'
-  ];
-  
-  const allowedExtensions = [
-    '.pdf', '.doc', '.docx', '.xls', '.xlsx',
-    '.ppt', '.pptx', '.txt', '.zip', '.rar'
-  ];
-  
   const ext = path.extname(file.originalname).toLowerCase();
-  const isValidExtension = allowedExtensions.includes(ext);
-  const isValidMimeType = allowedMimeTypes.includes(file.mimetype);
+  const isValidExtension = allowedAttachmentExtensions.includes(ext);
+  const isValidMimeType = allowedAttachmentMimeTypes.includes(file.mimetype);
   
   if (isValidExtension && isValidMimeType) {
     cb(null, true);
   } else {
-    cb(new Error('Invalid file type. Allowed types: PDF, Word, Excel, PowerPoint, TXT, ZIP, RAR'), false);
+    cb(new Error(`Invalid file type. Allowed types: ${ALLOWED_ATTACHMENT_TYPES.toUpperCase()}`), false);
   }
 };
 
@@ -91,8 +109,10 @@ const upload = multer({
   },
   limits: {
     fileSize: file => {
-      // 5MB for images, 50MB for attachments
-      return file.fieldname === 'attachments' ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
+      // Use environment variables for file size limits or default to 5MB for images, 50MB for attachments
+      const maxImageSize = parseInt(process.env.MAX_IMAGE_SIZE) || 5 * 1024 * 1024;
+      const maxAttachmentSize = parseInt(process.env.MAX_ATTACHMENT_SIZE) || 50 * 1024 * 1024;
+      return file.fieldname === 'attachments' ? maxAttachmentSize : maxImageSize;
     }
   }
 });

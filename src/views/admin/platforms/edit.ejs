@@ -2,9 +2,9 @@
 
   <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold">Edit Platform Item</h1>
+      <h1 class="text-3xl font-bold">編輯平台項目</h1>
       <a href="/admin/platforms" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-        <i class="fas fa-arrow-left mr-2"></i> Back to List
+        <i class="fas fa-arrow-left mr-2"></i> 返回列表
       </a>
     </div>
 
@@ -15,7 +15,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label class="block text-gray-700 text-sm font-bold mb-2" for="title_en">
-                Title (English) <span class="text-red-500">*</span>
+                標題 (英文) <span class="text-red-500">*</span>
               </label>
               <input
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -23,7 +23,7 @@
             </div>
             <div>
               <label class="block text-gray-700 text-sm font-bold mb-2" for="title_tw">
-                Title (Traditional Chinese) <span class="text-red-500">*</span>
+                標題 (繁體中文) <span class="text-red-500">*</span>
               </label>
               <input
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -35,12 +35,12 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label class="block text-gray-700 text-sm font-bold mb-2" for="categoryId">
-                Category <span class="text-red-500 category-required">*</span>
+                類別 <span class="text-red-500 category-required">*</span>
               </label>
               <select
                 class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="categoryId" name="categoryId" required>
-                <option value="">Select a category</option>
+                <option value="">選擇類別</option>
                 <% categories.forEach(function(category) { %>
                   <option value="<%= category.id %>" <%=item.categoryId===category.id ? 'selected' : '' %>>
                     <%= category.name_en %> / <%= category.name_tw %>
@@ -50,15 +50,14 @@
             </div>
             <div>
               <label class="block text-gray-700 text-sm font-bold mb-2" for="type">
-                Content Type <span class="text-red-500">*</span>
+                內容類型 <span class="text-red-500">*</span>
               </label>
               <select
                 class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="type" name="type" required onchange="toggleContentFields()">
-                <option value="plain_text" <%=item.type==='plain_text' ? 'selected' : '' %>>Plain Text</option>
-                <option value="image" <%=item.type==='image' ? 'selected' : '' %>>Image with Caption</option>
-                <option value="attachment_only" <%=item.type==='attachment_only' ? 'selected' : '' %>>Attachment Only
-                </option>
+                <option value="plain_text" <%=item.type==='plain_text' ? 'selected' : '' %>>純文字</option>
+                <option value="image" <%=item.type==='image' ? 'selected' : '' %>>圖片與說明</option>
+                <option value="attachment_only" <%=item.type==='attachment_only' ? 'selected' : '' %>>僅附件</option>
                 <option value="partners" <%=item.type==='partners' ? 'selected' : '' %>>合作夥伴</option>
               </select>
             </div>
@@ -69,7 +68,7 @@
             <div>
               <div class="content-field" id="content_en_field">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="content_en">
-                  Content (English) <span class="text-red-500 content-required">*</span>
+                  內容 (英文) <span class="text-red-500 content-required">*</span>
                 </label>
                 <textarea
                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -79,7 +78,7 @@
             <div>
               <div class="content-field" id="content_tw_field">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="content_tw">
-                  Content (Traditional Chinese) <span class="text-red-500 content-required">*</span>
+                  內容 (繁體中文) <span class="text-red-500 content-required">*</span>
                 </label>
                 <textarea
                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -95,21 +94,21 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                   <label class="block text-gray-700 text-sm font-bold mb-2" for="suppliers_en">
-                    Suppliers List (English)
+                    供應商列表 (英文)
                   </label>
                   <textarea
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     id="suppliers_en" name="suppliers_en" rows="5"><%= item.suppliers_en || '' %></textarea>
-                  <p class="text-gray-600 text-xs italic mt-1">Enter one company per line</p>
+                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
                 </div>
                 <div>
                   <label class="block text-gray-700 text-sm font-bold mb-2" for="suppliers_tw">
-                    Suppliers List (Traditional Chinese)
+                    供應商列表 (繁體中文)
                   </label>
                   <textarea
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     id="suppliers_tw" name="suppliers_tw" rows="5"><%= item.suppliers_tw || '' %></textarea>
-                  <p class="text-gray-600 text-xs italic mt-1">Enter one company per line</p>
+                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
                 </div>
               </div>
             </div>
@@ -119,21 +118,21 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                   <label class="block text-gray-700 text-sm font-bold mb-2" for="buyers_en">
-                    Buyers List (English)
+                    需求商列表 (英文)
                   </label>
                   <textarea
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     id="buyers_en" name="buyers_en" rows="5"><%= item.buyers_en || '' %></textarea>
-                  <p class="text-gray-600 text-xs italic mt-1">Enter one company per line</p>
+                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
                 </div>
                 <div>
                   <label class="block text-gray-700 text-sm font-bold mb-2" for="buyers_tw">
-                    Buyers List (Traditional Chinese)
+                    需求商列表 (繁體中文)
                   </label>
                   <textarea
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     id="buyers_tw" name="buyers_tw" rows="5"><%= item.buyers_tw || '' %></textarea>
-                  <p class="text-gray-600 text-xs italic mt-1">Enter one company per line</p>
+                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
                 </div>
               </div>
             </div>
@@ -142,7 +141,7 @@
           <!-- Partners Sub-Type Selection (only visible for partners type) -->
           <div id="partners-subtype-section" class="mb-4 hidden">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="partners_subtype">
-              Partner Type <span class="text-red-500">*</span>
+              夥伴類型 <span class="text-red-500">*</span>
             </label>
             <select
               class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -151,7 +150,7 @@
               </option>
               <option value="buyer" <%=item.partners_subtype==='buyer' ? 'selected' : '' %>>需求商 (Buyer)</option>
             </select>
-            <p class="text-gray-600 text-xs italic mt-1">Select whether these are suppliers or buyers</p>
+            <p class="text-gray-600 text-xs italic mt-1">選擇這些是供應商還是需求商</p>
           </div>
 
           <!-- Current Image -->
@@ -160,13 +159,13 @@
               <% if (item.imagePath) { %>
                 <div class="mb-4" id="current-image-section">
                   <div class="bg-gray-100 rounded p-4">
-                    <h6 class="font-bold mb-2">Current Image</h6>
+                    <h6 class="font-bold mb-2">目前圖片</h6>
                     <div class="flex items-center">
                       <img src="<%= item.imagePath %>" alt="Current image"
                         class="h-24 w-auto object-contain mr-4 border rounded">
                       <div class="flex items-center">
                         <input type="checkbox" id="removeImage" name="removeImage" value="true" class="mr-2">
-                        <label for="removeImage">Remove this image</label>
+                        <label for="removeImage">移除此圖片</label>
                       </div>
                     </div>
                   </div>
@@ -177,22 +176,25 @@
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
                       <label class="block text-gray-700 text-sm font-bold mb-2" for="image">
-                        <%= item.imagePath ? 'Replace Image' : 'Image' %>
+                        <%= item.imagePath ? '替換圖片' : '圖片' %>
                       </label>
                       <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         id="image" name="image" type="file" accept="image/*">
-                      <p class="text-gray-600 text-xs italic mt-1">Max size: 5MB. Supported formats: JPG, PNG, GIF, WebP
+                      <p class="text-gray-600 text-xs italic mt-1">最大尺寸：<%= process.env.MAX_IMAGE_SIZE ?
+                          (process.env.MAX_IMAGE_SIZE / (1024 * 1024)).toFixed(0) : 5 %>MB。支援格式：<%=
+                            process.env.ALLOWED_IMAGE_TYPES ? process.env.ALLOWED_IMAGE_TYPES.toUpperCase()
+                            : 'JPG, PNG, GIF, WebP' %>
                       </p>
                     </div>
                     <div>
                       <label class="block text-gray-700 text-sm font-bold mb-2" for="url">
-                        External URL
+                        外部連結
                       </label>
                       <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         id="url" name="url" type="url" value="<%= item.url || '' %>">
-                      <p class="text-gray-600 text-xs italic mt-1">Optional: Link to external website</p>
+                      <p class="text-gray-600 text-xs italic mt-1">選填：連結到外部網站</p>
                     </div>
                   </div>
 
@@ -204,14 +206,14 @@
                     <div
                       class="mb-4 <%= item.type === 'attachment_only' ? 'border-2 border-blue-300 p-4 rounded-lg' : '' %>">
                       <h3 class="text-xl font-bold mb-4 <%= item.type === 'attachment_only' ? 'text-blue-600' : '' %>">
-                        <%= item.type==='attachment_only' ? 'Attachments (Required)' : 'Attachments' %>
+                        <%= item.type==='attachment_only' ? '附件 (必填)' : '附件' %>
                       </h3>
 
                       <!-- Current Attachments -->
                       <% if (item.attachments && item.attachments.length> 0) { %>
                         <div class="mb-4">
                           <div class="bg-gray-100 rounded p-4">
-                            <h6 class="font-bold mb-2">Current Attachments</h6>
+                            <h6 class="font-bold mb-2">目前附件</h6>
                             <div class="divide-y divide-gray-200">
                               <% item.attachments.forEach(function(attachment) { %>
                                 <div class="flex justify-between items-center py-2">
@@ -225,7 +227,7 @@
                                   <div class="flex items-center">
                                     <input type="checkbox" name="removeAttachments" value="<%= attachment.id %>"
                                       class="mr-2">
-                                    <label>Remove</label>
+                                    <label>移除</label>
                                   </div>
                                 </div>
                                 <% }); %>
@@ -236,9 +238,7 @@
                           <div class="mb-4">
                             <p
                               class="text-gray-500 <%= item.type === 'attachment_only' ? 'text-red-500 font-bold' : '' %>">
-                              <%= item.type==='attachment_only'
-                                ? 'No attachments found. Please add at least one attachment.'
-                                : 'No attachments found for this item.' %>
+                              <%= item.type==='attachment_only' ? '未找到附件。請至少添加一個附件。' : '此項目未找到附件。' %>
                             </p>
                           </div>
                           <% } %>
@@ -246,7 +246,7 @@
                             <!-- New Attachments -->
                             <div class="mb-4">
                               <label class="block text-gray-700 text-sm font-bold mb-2" for="attachments">
-                                Add New Attachments
+                                添加新附件
                                 <% if (item.type==='attachment_only' ) { %>
                                   <span class="text-red-500">*</span>
                                   <% } %>
@@ -260,9 +260,10 @@
                               <% } %>
                                 >
                                 <p class="text-gray-600 text-xs italic mt-1">
-                                  Max size: 50MB per file. Supported formats: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT,
-                                  ZIP,
-                                  RAR
+                                  每個檔案最大尺寸：<%= process.env.MAX_ATTACHMENT_SIZE ? (process.env.MAX_ATTACHMENT_SIZE /
+                                    (1024 * 1024)).toFixed(0) : 50 %>MB。支援格式：<%= process.env.ALLOWED_ATTACHMENT_TYPES ?
+                                      process.env.ALLOWED_ATTACHMENT_TYPES.toUpperCase()
+                                      : 'PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, ZIP, RAR' %>
                                 </p>
                             </div>
                     </div>
@@ -271,7 +272,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                       <div>
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="order">
-                          Display Order
+                          顯示順序
                         </label>
                         <input
                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -279,19 +280,18 @@
                       </div>
                       <div>
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="status">
-                          Status <span class="text-red-500">*</span>
+                          狀態 <span class="text-red-500">*</span>
                         </label>
                         <select
                           class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                           id="status" name="status" required>
-                          <option value="draft" <%=item.status==='draft' ? 'selected' : '' %>>Draft</option>
-                          <option value="published" <%=item.status==='published' ? 'selected' : '' %>>Published
-                          </option>
+                          <option value="draft" <%=item.status==='draft' ? 'selected' : '' %>>草稿</option>
+                          <option value="published" <%=item.status==='published' ? 'selected' : '' %>>已發布</option>
                         </select>
                       </div>
                       <div>
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="publishedDate">
-                          Published Date <span class="text-red-500">*</span>
+                          發布日期 <span class="text-red-500">*</span>
                         </label>
                         <input
                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -303,11 +303,11 @@
                     <div class="flex items-center justify-end">
                       <button type="reset"
                         class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2">
-                        Reset
+                        重置
                       </button>
                       <button type="submit"
                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        Update Platform Item
+                        更新平台項目
                       </button>
                     </div>
         </form>
@@ -319,6 +319,8 @@
     <script>
       function toggleContentFields() {
         const type = document.getElementById('type').value;
+        console.log('Selected type:', type);
+
         const contentEnField = document.getElementById('content_en');
         const contentTwField = document.getElementById('content_tw');
         const categoryField = document.getElementById('categoryId');
@@ -332,9 +334,59 @@
         const imageUploadSection = document.getElementById('image-upload-section');
         const urlSection = document.getElementById('url-section');
         const attachmentsSection = document.getElementById('attachments-section');
+        const contentFieldsSection = document.getElementById('content_en_field').parentNode.parentNode;
+        const addNewAttachmentsSection = document.getElementById('add-new-attachments-section');
 
-        if (type === 'attachment_only') {
+        console.log('Sections found:', {
+          currentImageSection: !!currentImageSection,
+          imageUploadSection: !!imageUploadSection,
+          urlSection: !!urlSection,
+          attachmentsSection: !!attachmentsSection,
+          contentFieldsSection: !!contentFieldsSection,
+          addNewAttachmentsSection: !!addNewAttachmentsSection
+        });
+
+        // Reset all sections to visible first
+        if (currentImageSection) currentImageSection.style.display = 'block';
+        if (imageUploadSection) imageUploadSection.style.display = 'block';
+        if (urlSection) urlSection.style.display = 'block';
+        if (attachmentsSection) attachmentsSection.style.display = 'block';
+        contentFieldsSection.style.display = 'grid';
+        if (addNewAttachmentsSection) addNewAttachmentsSection.style.display = 'block';
+
+        // Hide partners sections by default
+        partnersSubtypeSection.classList.add('hidden');
+        partnersFieldsSection.classList.add('hidden');
+
+        // Handle specific types
+        if (type === 'image') {
+          console.log('Handling image with caption type');
+          // This is "image with caption" type
           // Make content fields optional
+          contentEnField.required = false;
+          contentTwField.required = false;
+          categoryField.required = true;
+
+          // Update content labels to show they're optional
+          document.querySelector('label[for="content_en"]').innerHTML = '內容 (英文)';
+          document.querySelector('label[for="content_tw"]').innerHTML = '內容 (繁體中文)';
+
+          // Hide required marks for content
+          contentRequiredMarks.forEach(mark => mark.style.display = 'none');
+          categoryRequiredMarks.forEach(mark => mark.style.display = 'inline');
+
+          // Hide attachments section
+          if (addNewAttachmentsSection) addNewAttachmentsSection.style.display = 'none';
+        }
+        else if (type === 'attachment_only') {
+          console.log('Handling attachment only type');
+          // Hide content fields, image, and URL
+          contentFieldsSection.style.display = 'none';
+          if (currentImageSection) currentImageSection.style.display = 'none';
+          if (imageUploadSection) imageUploadSection.style.display = 'none';
+          if (urlSection) urlSection.style.display = 'none';
+
+          // Make content fields not required
           contentEnField.required = false;
           contentTwField.required = false;
           categoryField.required = false;
@@ -342,22 +394,11 @@
           // Hide required marks
           contentRequiredMarks.forEach(mark => mark.style.display = 'none');
           categoryRequiredMarks.forEach(mark => mark.style.display = 'none');
-
-          // Hide partners sections
-          partnersSubtypeSection.classList.add('hidden');
-          partnersFieldsSection.classList.add('hidden');
-
-          // Show image, URL, and attachments sections
-          if (currentImageSection) currentImageSection.style.display = 'block';
-          if (imageUploadSection) imageUploadSection.style.display = 'block';
-          if (urlSection) urlSection.style.display = 'block';
-          if (attachmentsSection) attachmentsSection.style.display = 'block';
-
-          // Show content fields
-          document.getElementById('content_en_field').parentNode.parentNode.style.display = 'grid';
-        } else if (type === 'partners') {
+        }
+        else if (type === 'partners') {
+          console.log('Handling partners type');
           // Hide content fields
-          document.getElementById('content_en_field').parentNode.parentNode.style.display = 'none';
+          contentFieldsSection.style.display = 'none';
 
           // Make content fields not required
           contentEnField.required = false;
@@ -368,18 +409,17 @@
           contentRequiredMarks.forEach(mark => mark.style.display = 'none');
           categoryRequiredMarks.forEach(mark => mark.style.display = 'inline');
 
-          // Hide old partners sub-type section
-          partnersSubtypeSection.classList.add('hidden');
-
           // Show partners fields section
           partnersFieldsSection.classList.remove('hidden');
 
-          // Hide image, URL, and attachments sections
+          // Hide image, URL, and add new attachments sections
           if (currentImageSection) currentImageSection.style.display = 'none';
           if (imageUploadSection) imageUploadSection.style.display = 'none';
           if (urlSection) urlSection.style.display = 'none';
-          if (attachmentsSection) attachmentsSection.style.display = 'none';
-        } else {
+          if (addNewAttachmentsSection) addNewAttachmentsSection.style.display = 'none';
+        }
+        else if (type === 'plain_text') {
+          console.log('Handling plain text type');
           // Make content fields required
           contentEnField.required = true;
           contentTwField.required = true;
@@ -389,60 +429,132 @@
           contentRequiredMarks.forEach(mark => mark.style.display = 'inline');
           categoryRequiredMarks.forEach(mark => mark.style.display = 'inline');
 
-          // Hide partners sections
-          partnersSubtypeSection.classList.add('hidden');
-          partnersFieldsSection.classList.add('hidden');
-
-          // Show image, URL, and attachments sections
-          if (currentImageSection) currentImageSection.style.display = 'block';
-          if (imageUploadSection) imageUploadSection.style.display = 'block';
-          if (urlSection) urlSection.style.display = 'block';
-          if (attachmentsSection) attachmentsSection.style.display = 'block';
-
-          // Show content fields
-          document.getElementById('content_en_field').parentNode.parentNode.style.display = 'grid';
-
-          // Reset labels to default
+          // Update content labels to show they're required
           document.querySelector('label[for="content_en"]').innerHTML =
-            'Content (English) <span class="text-red-500 content-required">*</span>';
+            '內容 (英文) <span class="text-red-500 content-required">*</span>';
           document.querySelector('label[for="content_tw"]').innerHTML =
-            'Content (Traditional Chinese) <span class="text-red-500 content-required">*</span>';
+            '內容 (繁體中文) <span class="text-red-500 content-required">*</span>';
+
+          // Hide the entire attachment container - multiple approaches for better compatibility
+          // 1. Find by heading
+          const headings = document.querySelectorAll('h3');
+          for (const heading of headings) {
+            if (heading.textContent.includes('附件')) {
+              const container = heading.closest('.mb-4');
+              if (container) {
+                container.style.display = 'none';
+                console.log('Hiding attachment container with heading:', heading.textContent);
+              }
+            }
+          }
+
+          // 2. Direct selector for the container div
+          const attachmentDiv = document.querySelector('div.mb-4[class*="border-blue-300"]');
+          if (attachmentDiv) {
+            attachmentDiv.style.display = 'none';
+            console.log('Hiding attachment div with border-blue-300 class');
+          }
+
+          // 3. Hide by ID
+          if (attachmentsSection) {
+            attachmentsSection.style.display = 'none';
+            console.log('Hiding attachments section by ID');
+          }
+
+          // 4. Hide the "Add New Attachments" section
+          if (addNewAttachmentsSection) {
+            addNewAttachmentsSection.style.display = 'none';
+            console.log('Hiding add new attachments section');
+          }
+
+          // 5. Hide current attachments section if it exists
+          const currentAttachmentsSection = document.querySelector('.mb-4 .bg-gray-100');
+          if (currentAttachmentsSection) {
+            currentAttachmentsSection.closest('.mb-4').style.display = 'none';
+            console.log('Hiding current attachments section');
+          }
+
+          // 6. Direct approach - hide all attachment-related elements
+          document.querySelectorAll('input[name="attachments"], label[for="attachments"]').forEach(el => {
+            const container = el.closest('.mb-4');
+            if (container) {
+              container.style.display = 'none';
+              console.log('Hiding element by direct selector:', el);
+            }
+          });
         }
+
+        console.log('Toggle complete');
       }
 
       // Set initial state
       document.addEventListener('DOMContentLoaded', function () {
+        console.log('DOM loaded, initializing form controls');
+
         // Add IDs to sections for easier toggling
         const imageUploadRow = document.querySelector('input[name="image"]').closest('.grid');
         imageUploadRow.id = 'image-upload-section';
+        console.log('Image upload section identified:', imageUploadRow);
 
         const urlField = document.querySelector('input[name="url"]');
         if (urlField) {
           urlField.closest('div').id = 'url-section';
+          console.log('URL section identified:', urlField.closest('div'));
         }
 
-        // Find attachments section
+        // Find attachments section - this is the entire attachments container
         const attachmentsHeadings = document.querySelectorAll('h3');
         let attachmentsSection = null;
 
         for (const heading of attachmentsHeadings) {
-          if (heading.textContent.includes('Attachments')) {
+          if (heading.textContent.includes('附件')) {
             attachmentsSection = heading.closest('.mb-4');
+            console.log('Attachments section found via heading:', heading.textContent);
             break;
           }
         }
 
         if (!attachmentsSection) {
-          attachmentsSection = document.querySelector('input[name="attachments"]');
-          if (attachmentsSection) {
-            attachmentsSection = attachmentsSection.closest('.mb-4');
+          // Find the container div that has the "附件" class
+          const attachmentContainer = document.querySelector('div.mb-4.border-blue-300');
+          if (attachmentContainer) {
+            attachmentsSection = attachmentContainer;
+            console.log('Attachments section found via container class');
+          } else {
+            // Fallback to finding via input
+            const attachmentsInput = document.querySelector('input[name="attachments"]');
+            if (attachmentsInput) {
+              // Go up multiple levels to find the entire attachments section
+              attachmentsSection = attachmentsInput.closest('.mb-4').parentNode;
+              console.log('Attachments section found via input');
+            }
           }
         }
 
         if (attachmentsSection) {
           attachmentsSection.id = 'attachments-section';
+          console.log('Attachments section identified:', attachmentsSection);
+        } else {
+          console.warn('Could not find attachments section');
         }
 
-        toggleContentFields();
+        // Specifically identify the "Add New Attachments" section
+        const addNewAttachmentsLabel = document.querySelector('label[for="attachments"]');
+        if (addNewAttachmentsLabel) {
+          const addNewAttachmentsSection = addNewAttachmentsLabel.closest('.mb-4');
+          if (addNewAttachmentsSection) {
+            addNewAttachmentsSection.id = 'add-new-attachments-section';
+            console.log('Add New Attachments section identified:', addNewAttachmentsSection);
+          }
+        }
+
+        // Set up change event listener for type select
+        document.getElementById('type').addEventListener('change', function () {
+          console.log('Type changed to:', this.value);
+          toggleContentFields();
+        });
+
+        // Add a small delay to ensure all elements are properly initialized
+        setTimeout(toggleContentFields, 100);
       });
     </script>

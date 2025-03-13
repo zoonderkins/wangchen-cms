@@ -5,6 +5,36 @@ const { promisify } = require('util');
 const mkdirAsync = promisify(fs.mkdir);
 const logger = require('../config/logger');
 
+// Get allowed file types from environment variables or use defaults
+const ALLOWED_DOWNLOAD_TYPES = process.env.ALLOWED_DOWNLOAD_TYPES || 'pdf,doc,docx,xls,xlsx,jpg,jpeg,png,gif,zip,rar';
+const MAX_DOWNLOAD_SIZE = parseInt(process.env.MAX_DOWNLOAD_SIZE) || 50 * 1024 * 1024; // 50MB default
+
+// Parse allowed types
+const allowedExtensions = ALLOWED_DOWNLOAD_TYPES.split(',').map(ext => `.${ext.trim().toLowerCase()}`);
+
+// Map of common file extensions to MIME types
+const mimeTypeMap = {
+    // Document types
+    '.pdf': 'application/pdf',
+    '.doc': 'application/msword',
+    '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    '.xls': 'application/vnd.ms-excel',
+    '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    // Images
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png',
+    '.gif': 'image/gif',
+    // Archives
+    '.zip': 'application/zip',
+    '.rar': 'application/x-rar-compressed'
+};
+
+// Generate allowed MIME types based on allowed extensions
+const allowedMimeTypes = allowedExtensions
+    .map(ext => mimeTypeMap[ext])
+    .filter(Boolean);
+
 // Configure multer storage for downloads
 const storage = multer.diskStorage({
     destination: async (req, file, cb) => {
@@ -28,27 +58,14 @@ const storage = multer.diskStorage({
 
 // File filter to only allow certain file types
 const fileFilter = (req, file, cb) => {
-    // Allowed file types
-    const allowedTypes = [
-        // Documents
-        'application/pdf',
-        'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/vnd.ms-excel',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        // Images
-        'image/jpeg',
-        'image/png',
-        'image/gif',
-        // Archives
-        'application/zip',
-        'application/x-rar-compressed'
-    ];
+    const ext = path.extname(file.originalname).toLowerCase();
+    const isValidExtension = allowedExtensions.includes(ext);
+    const isValidMimeType = allowedMimeTypes.includes(file.mimetype);
     
-    if (allowedTypes.includes(file.mimetype)) {
+    if (isValidExtension && isValidMimeType) {
         cb(null, true);
     } else {
-        cb(new Error('Invalid file type. Allowed types: PDF, Word, Excel, JPG, PNG, ZIP, RAR'));
+        cb(new Error(`Invalid file type. Allowed types: ${ALLOWED_DOWNLOAD_TYPES.toUpperCase()}`));
     }
 };
 
@@ -56,7 +73,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage,
     limits: {
-        fileSize: process.env.MAX_DOWNLOAD_SIZE || 50 * 1024 * 1024 // 50MB default
+        fileSize: MAX_DOWNLOAD_SIZE
     },
     fileFilter
 });
