@@ -172,6 +172,8 @@
                 });
             });
 
+            ///////////////////////////////////////////////////////////
+
             // 滾動偏移量設定（可調整）
             const scrollOffset = 120;
             // 獲取所有 subtitle 元素
@@ -180,7 +182,7 @@
             subtitles.forEach(subtitle => {
                 subtitle.addEventListener('click', function(e) {
                     // 阻止默認的錨點行為
-                    e.preventDefault();
+                    // e.preventDefault();
                     
                     // 移除所有 subtitle 的活動樣式
                     subtitles.forEach(s => {
@@ -205,6 +207,45 @@
                     }
                 });
             });
+
+            ///////////////////////////////////////////////////////////
+
+            const navBar = document.getElementById('scrollable-nav');
+            const leftButton = document.getElementById('scroll-left');
+            const rightButton = document.getElementById('scroll-right');
+            const scrollAmount = 200; // 每次滾動的像素量
+
+            // 左箭頭按鈕點擊事件
+            leftButton.addEventListener('click', function() {
+            navBar.scrollLeft -= scrollAmount;
+            });
+            // 右箭頭按鈕點擊事件
+            rightButton.addEventListener('click', function() {
+            navBar.scrollLeft += scrollAmount;
+            });
+            // 檢查是否需要顯示箭頭按鈕
+            function checkScrollButtons() {
+                // 隱藏/顯示左箭頭
+                if (navBar.scrollLeft <= 0) {
+                    leftButton.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    leftButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+                // 隱藏/顯示右箭頭
+                if (navBar.scrollLeft + navBar.clientWidth >= navBar.scrollWidth) {
+                    rightButton.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    rightButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            }
+            // 綁定滾動事件
+            navBar.addEventListener('scroll', checkScrollButtons);
+            // 頁面載入時執行一次
+            checkScrollButtons();
+            // 視窗調整大小時檢查
+            window.addEventListener('resize', checkScrollButtons);
+            
+            ///////////////////////////////////////////////////////////
 
             // 獲取所有 accordion 元素
             const accordions = document.querySelectorAll('.accordion');
