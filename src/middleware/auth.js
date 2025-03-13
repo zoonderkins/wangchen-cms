@@ -10,7 +10,7 @@ const isAuthenticated = async (req, res, next) => {
     }
 
     if (!req.session.user) {
-        req.flash('error_msg', 'Please log in to access this resource');
+        req.flash('error_msg', '請登錄以訪問此資源');
         return res.redirect('/admin/login');
     }
 
@@ -24,7 +24,7 @@ const isAuthenticated = async (req, res, next) => {
 
         if (!user) {
             req.session.destroy();
-            req.flash('error_msg', 'Please log in to access this resource');
+            req.flash('error_msg', '請登錄以訪問此資源');
             return res.redirect('/admin/login');
         }
 
@@ -42,7 +42,7 @@ const isAuthenticated = async (req, res, next) => {
         next();
     } catch (error) {
         logger.error('Error authenticating user:', error);
-        req.flash('error_msg', 'An error occurred. Please try again.');
+        req.flash('error_msg', '發生錯誤，請重試。');
         return res.redirect('/admin/login');
     }
 };
@@ -51,7 +51,7 @@ const isAuthenticated = async (req, res, next) => {
 const hasRole = (roles) => {
     return (req, res, next) => {
         if (!req.session.user) {
-            req.flash('error_msg', 'Please log in to access this resource');
+            req.flash('error_msg', '請登錄以訪問此資源');
             return res.redirect('/admin/login');
         }
 
@@ -61,7 +61,7 @@ const hasRole = (roles) => {
         const requiredRoles = Array.isArray(roles) ? roles : [roles];
         
         if (!requiredRoles.includes(userRole)) {
-            req.flash('error_msg', 'You do not have permission to access this resource');
+            req.flash('error_msg', '您沒有權限訪問此資源');
             return res.redirect('/admin/dashboard');
         }
         
@@ -73,7 +73,7 @@ const hasRole = (roles) => {
 const hasPermission = (permission) => {
     return (req, res, next) => {
         if (!req.session.user) {
-            req.flash('error_msg', 'Please log in to access this resource');
+            req.flash('error_msg', '請登錄以訪問此資源');
             return res.redirect('/admin/login');
         }
 
@@ -86,12 +86,12 @@ const hasPermission = (permission) => {
         }
 
         if (!userPermissions.includes(permission)) {
-            req.flash('error_msg', 'You do not have permission to access this resource');
+            req.flash('error_msg', '您沒有權限訪問此資源');
             
             // Avoid redirect loop - if we're already on dashboard, redirect to a different page
             if (req.path === '/dashboard' && permission === 'access:dashboard') {
                 return res.render('admin/access-denied', {
-                    title: 'Access Denied',
+                    title: '拒絕訪問',
                     layout: 'layouts/admin',
                     user: req.session.user
                 });
@@ -108,7 +108,7 @@ const hasPermission = (permission) => {
 const isOwnerOrHasPermission = (permission, getResourceOwnerId) => {
     return async (req, res, next) => {
         if (!req.session.user) {
-            req.flash('error_msg', 'Please log in to access this resource');
+            req.flash('error_msg', '請登錄以訪問此資源');
             return res.redirect('/admin/login');
         }
 
@@ -131,14 +131,14 @@ const isOwnerOrHasPermission = (permission, getResourceOwnerId) => {
 
             // If not owner, check if they have the required permission
             if (!userPermissions.includes(permission)) {
-                req.flash('error_msg', 'You do not have permission to access this resource');
+                req.flash('error_msg', '您沒有權限訪問此資源');
                 return res.redirect('/admin/dashboard');
             }
 
             next();
         } catch (error) {
             logger.error('Error checking resource ownership:', error);
-            req.flash('error_msg', 'An error occurred while checking permissions');
+            req.flash('error_msg', '檢查權限時發生錯誤');
             return res.redirect('/admin/dashboard');
         }
     };
