@@ -7,11 +7,7 @@ const unlinkAsync = promisify(fs.unlink);
 const multer = require('multer');
 
 // Configure multer for image uploads
-const storage = multer.diskStorage(
-    {
-  limits: { fieldSize: 50 * 1024 * 1024 }
-},{
-   
+const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const uploadPath = path.join(__dirname, '../../public/uploads/about');
         // Create directory if it doesn't exist
@@ -28,7 +24,10 @@ const storage = multer.diskStorage(
 
 exports.upload = multer({
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    limits: { 
+        fileSize: 5 * 1024 * 1024, // 5MB limit for uploaded files
+        fieldSize: 100 * 1024 * 1024 // 100MB limit for form fields (for base64 encoded images in Quill editor)
+    },
     fileFilter: function (req, file, cb) {
         // Accept images only
         if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
@@ -86,7 +85,7 @@ exports.createItem = async (req, res) => {
         
         // Check content length and truncate if necessary
         // MySQL LONGTEXT can store up to 4GB, but we'll use a more reasonable limit
-        const MAX_CONTENT_LENGTH = 16 * 1024 * 1024; // 16MB
+        const MAX_CONTENT_LENGTH = 100 * 1024 * 1024; // 100MB limit to match Multer fieldSize limit
         
         if (processedContentEn && processedContentEn.length > MAX_CONTENT_LENGTH) {
             logger.warn(`Content_en for "${title_en}" was truncated from ${processedContentEn.length} to ${MAX_CONTENT_LENGTH} bytes`);
@@ -204,7 +203,7 @@ exports.updateItem = async (req, res) => {
         
         // Check content length and truncate if necessary
         // MySQL LONGTEXT can store up to 4GB, but we'll use a more reasonable limit
-        const MAX_CONTENT_LENGTH = 16 * 1024 * 1024; // 16MB
+        const MAX_CONTENT_LENGTH = 100 * 1024 * 1024; // 100MB limit to match Multer fieldSize limit
         
         if (processedContentEn && processedContentEn.length > MAX_CONTENT_LENGTH) {
             logger.warn(`Content_en for "${title_en}" was truncated from ${processedContentEn.length} to ${MAX_CONTENT_LENGTH} bytes`);
