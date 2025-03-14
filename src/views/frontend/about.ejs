@@ -1,843 +1,93 @@
 <%- contentFor('body') %>
-    <section class="relative">
-        <picture class="block w-full h-full">
-            <source media="(min-width: 1024px)" srcset="../images/desktop/aboutbg_desktop.png">
-            <source media="(min-width: 640px)" srcset="../images/tablet/aboutbg_tablet.png">
-            <img class="w-full h-full object-cover" src="../images/mobile/aboutbg_mobile.png" alt="響應式圖片">
-        </picture>
-        <div class="absolute inset-0 flex flex-col justify-center px-6 sm:px-16 lg:px-32">
-            <h1 class="h2 text-black"><%= title %></h1>
-            <p class="text-black">/ <%= currentLanguage==='en' ? 'Home' : '首頁' %> - <%= title %> /</p>
-        </div>
-    </section>
-
-    <!-- Navigation Tabs -->
-    <nav class="flex my-4 px-6 sm:px-16 lg:px-32 overflow-auto">
-        <% if (items && items.length> 0) { %>
-            <% items.forEach(function(item) { %>
-                <a href="#<%= item.title_en %>" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-blue"><%= currentLanguage==='en' ? item.title_en : item.title_tw %></a>
-            <% }); %>
-        <% } %>
-    </nav>
-
-    <!-- Divider -->
-    <div class="w-screen relative" style="left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
-        <hr class="border-t-2 border-gray-200 mb-16">
+  <section class="relative">
+    <picture class="block w-full h-full">
+      <source media="(min-width: 1024px)" srcset="../images/desktop/aboutbg_desktop.png">
+      <source media="(min-width: 640px)" srcset="../images/tablet/aboutbg_tablet.png">
+      <img class="w-full h-full object-cover" src="../images/mobile/aboutbg_mobile.png" alt="響應式圖片">
+    </picture>
+    <div class="absolute inset-0 flex flex-col justify-center px-6 sm:px-16 lg:px-32">
+      <h2 class="text-white">
+        <%= title %>
+      </h2>
+      <p class="text-white">/ <%= currentLanguage==='en' ? 'Home' : '首頁' %> - <%= title %> /</p>
     </div>
+  </section>
 
+  <!-- Navigation Tabs -->
+  <nav class="flex my-4 px-6 sm:px-16 lg:px-32 overflow-auto">
     <% if (items && items.length> 0) { %>
-        <% items.forEach(function(item) { %>
-            <section id="<%= item.title_en %>" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-                <h2 class="h4 text-left mb-8"><%= currentLanguage==='en' ? item.title_en : item.title_tw %></h2>
-                <% if (item.type==='plain_text' ) { %>
-                    <div class="w-full mb-8 prose max-w-none quill-content">
-                        <div class="ql-container ql-snow" style="border: none;">
-                            <div class="ql-editor quill-content-wrapper" <% if ((currentLanguage==='en' &&
-                                item._content_en_is_delta) || (currentLanguage==='tw' && item._content_tw_is_delta)) { %>
-                                data-is-delta="true"
-                                <% } %>
-                                id="quill-content-<%= item.id %>-<%= currentLanguage %>">
-                                    <%- currentLanguage==='en' ? item.content_en : item.content_tw %>
-                            </div>
-                        </div>
-                    </div>
-                <% } else if (item.type==='image' ) { %>
-                    <% if (item.imagePath) { %>
-                        <div class="mb-8 rounded-lg overflow-hidden">
-                            <img src="<%= item.imagePath %>"
-                              alt="<%= currentLanguage === 'en' ? item.title_en : item.title_tw %>"
-                              class="w-full object-cover">
-                        </div>
-                        <div class="mb-8 text-center text-gray-700 quill-content">
-                            <div class="ql-container ql-snow" style="border: none;">
-                                <div class="ql-editor">
-                                    <%- currentLanguage==='en' ? item.content_en : item.content_tw %>
-                                </div>
-                            </div>
-                        </div>
-                    <% } %>
-                <% } %>
-            </section>
-
-            <!-- Divider -->
-            <div class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-                <hr class="border-t-2 border-gray-200">
-            </div>
+      <% items.forEach(function(item) { %>
+        <a href="#<%= item.title_en %>" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-blue">
+          <%= currentLanguage==='en' ? item.title_en : item.title_tw %>
+        </a>
         <% }); %>
-    <% } %>
-
-  <%- contentFor('head') %>
-    <!-- Include Quill.js 2.0.3 styles for rendering -->
-    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
-    <style>
-      /* Custom styles for Quill content */
-      .quill-content {
-        font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-        line-height: 1.6;
-      }
-
-      /* Fix for empty headings or headings with just <br> */
-      h1:empty,
-      h2:empty,
-      h3:empty,
-      h4:empty,
-      h1>br:only-child,
-      h2>br:only-child,
-      h3>br:only-child,
-      h4>br:only-child {
-        min-height: 1em;
-        display: block !important;
-      }
-
-      /* Improved heading styles with higher specificity */
-      .quill-content h1,
-      .quill-content .ql-editor h1,
-      .ql-container .ql-editor h1,
-      .quill-content-wrapper h1,
-      div.ql-editor h1,
-      #quill-content-5-tw h1 {
-        font-size: 2em !important;
-        margin-top: 1em !important;
-        margin-bottom: 0.5em !important;
-        font-weight: bold !important;
-        line-height: 1.2 !important;
-        color: #333 !important;
-        display: block !important;
-      }
-
-      .quill-content h2,
-      .quill-content .ql-editor h2,
-      .ql-container .ql-editor h2,
-      .quill-content-wrapper h2,
-      div.ql-editor h2 {
-        font-size: 1.5em !important;
-        margin-top: 0.83em !important;
-        margin-bottom: 0.5em !important;
-        font-weight: bold !important;
-        line-height: 1.2 !important;
-        color: #333 !important;
-        display: block !important;
-      }
-
-      .quill-content h3,
-      .quill-content .ql-editor h3,
-      .ql-container .ql-editor h3,
-      .quill-content-wrapper h3,
-      div.ql-editor h3 {
-        font-size: 1.3em !important;
-        margin-top: 1em !important;
-        margin-bottom: 0.5em !important;
-        font-weight: bold !important;
-        line-height: 1.2 !important;
-        color: #333 !important;
-        display: block !important;
-      }
-
-      .quill-content h4,
-      .quill-content .ql-editor h4,
-      .ql-container .ql-editor h4,
-      .quill-content-wrapper h4,
-      div.ql-editor h4 {
-        font-size: 1.1em !important;
-        margin-top: 1.33em !important;
-        margin-bottom: 0.5em !important;
-        font-weight: bold !important;
-        line-height: 1.2 !important;
-        color: #333 !important;
-        display: block !important;
-      }
-
-      /* Fix for header attributes */
-      .ql-editor [class*="ql-header"],
-      .ql-editor p[class*="ql-header"] {
-        font-weight: bold !important;
-        display: block !important;
-      }
-
-      .ql-editor [class*="ql-header-1"],
-      .ql-editor p.ql-header-1,
-      .ql-editor .ql-header-1 {
-        font-size: 2em !important;
-        margin-top: 1em !important;
-        margin-bottom: 0.5em !important;
-        color: #333 !important;
-      }
-
-      .ql-editor [class*="ql-header-2"],
-      .ql-editor p.ql-header-2,
-      .ql-editor .ql-header-2 {
-        font-size: 1.5em !important;
-        margin-top: 0.83em !important;
-        margin-bottom: 0.5em !important;
-        color: #333 !important;
-      }
-
-      /* Direct style overrides for Tailwind */
-      [class*="ql-color-"] {
-        color: var(--ql-color) !important;
-      }
-
-      .ql-color-red,
-      span.ql-color-red {
-        --ql-color: #e60000 !important;
-        color: #e60000 !important;
-      }
-
-      .ql-color-orange,
-      span.ql-color-orange {
-        --ql-color: #f90 !important;
-        color: #f90 !important;
-      }
-
-      .ql-color-yellow,
-      span.ql-color-yellow {
-        --ql-color: #ff0 !important;
-        color: #ff0 !important;
-      }
-
-      .ql-color-green,
-      span.ql-color-green {
-        --ql-color: #008a00 !important;
-        color: #008a00 !important;
-      }
-
-      .ql-color-blue,
-      span.ql-color-blue {
-        --ql-color: #06c !important;
-        color: #06c !important;
-      }
-
-      .ql-color-purple,
-      span.ql-color-purple {
-        --ql-color: #93f !important;
-        color: #93f !important;
-      }
-
-      /* Direct style overrides for background colors */
-      [class*="ql-bg-"] {
-        background-color: var(--ql-bg-color) !important;
-      }
-
-      .ql-bg-red,
-      span.ql-bg-red {
-        --ql-bg-color: #e60000 !important;
-        background-color: #e60000 !important;
-      }
-
-      .ql-bg-orange,
-      span.ql-bg-orange {
-        --ql-bg-color: #f90 !important;
-        background-color: #f90 !important;
-      }
-
-      .ql-bg-yellow,
-      span.ql-bg-yellow {
-        --ql-bg-color: #ff0 !important;
-        background-color: #ff0 !important;
-      }
-
-      .ql-bg-green,
-      span.ql-bg-green {
-        --ql-bg-color: #008a00 !important;
-        background-color: #008a00 !important;
-      }
-
-      .ql-bg-blue,
-      span.ql-bg-blue {
-        --ql-bg-color: #06c !important;
-        background-color: #06c !important;
-      }
-
-      .ql-bg-purple,
-      span.ql-bg-purple {
-        --ql-bg-color: #93f !important;
-        background-color: #93f !important;
-      }
-
-      /* Text formatting */
-      .quill-content strong,
-      .quill-content b,
-      .quill-content .ql-editor strong,
-      .quill-content .ql-editor b {
-        font-weight: bold !important;
-      }
-
-      .quill-content em,
-      .quill-content i,
-      .quill-content .ql-editor em,
-      .quill-content .ql-editor i {
-        font-style: italic !important;
-      }
-
-      .quill-content u,
-      .quill-content .ql-editor u {
-        text-decoration: underline !important;
-      }
-
-      .quill-content s,
-      .quill-content .ql-editor s {
-        text-decoration: line-through !important;
-      }
-
-      /* Paragraph and spacing */
-      .quill-content p,
-      .quill-content .ql-editor p {
-        margin-bottom: 1em !important;
-      }
-
-      /* Lists */
-      .quill-content ul,
-      .quill-content ol,
-      .quill-content .ql-editor ul,
-      .quill-content .ql-editor ol {
-        margin-bottom: 1em !important;
-        padding-left: 2em !important;
-      }
-
-      .quill-content ul,
-      .quill-content .ql-editor ul {
-        list-style-type: disc !important;
-      }
-
-      .quill-content ol,
-      .quill-content .ql-editor ol {
-        list-style-type: decimal !important;
-      }
-
-      .quill-content li,
-      .quill-content .ql-editor li {
-        margin-bottom: 0.5em !important;
-      }
-
-      /* Links */
-      .quill-content a,
-      .quill-content .ql-editor a {
-        color: #0066cc !important;
-        text-decoration: underline !important;
-      }
-
-      /* Blockquotes */
-      .quill-content blockquote,
-      .quill-content .ql-editor blockquote {
-        border-left: 4px solid #ccc !important;
-        padding-left: 16px !important;
-        margin-bottom: 1em !important;
-        font-style: italic !important;
-      }
-
-      /* Images */
-      .quill-content img,
-      .quill-content .ql-editor img {
-        max-width: 100% !important;
-        height: auto !important;
-      }
-
-      /* Code blocks */
-      .quill-content pre,
-      .quill-content .ql-editor pre,
-      .quill-content .ql-syntax {
-        background-color: #23241f !important;
-        color: #f8f8f2 !important;
-        overflow: visible !important;
-        white-space: pre-wrap !important;
-        margin-bottom: 1em !important;
-        padding: 1em !important;
-        border-radius: 3px !important;
-        font-family: Monaco, Courier New, monospace !important;
-      }
-
-      /* Font families */
-      .quill-content .ql-font-serif {
-        font-family: Georgia, Times New Roman, serif !important;
-      }
-
-      .quill-content .ql-font-monospace {
-        font-family: Monaco, Courier New, monospace !important;
-      }
-
-      /* Font sizes */
-      .quill-content .ql-size-small {
-        font-size: 0.75em !important;
-      }
-
-      .quill-content .ql-size-large {
-        font-size: 1.5em !important;
-      }
-
-      .quill-content .ql-size-huge {
-        font-size: 2.5em !important;
-      }
-
-      /* Text alignment */
-      .quill-content .ql-align-center {
-        text-align: center !important;
-      }
-
-      .quill-content .ql-align-right {
-        text-align: right !important;
-      }
-
-      .quill-content .ql-align-justify {
-        text-align: justify !important;
-      }
-
-      /* Ensure Quill editor content is visible */
-      .ql-editor {
-        min-height: auto !important;
-        padding: 0 !important;
-        overflow: visible !important;
-      }
-
-      /* Remove border from container in frontend */
-      .ql-container.ql-snow {
-        border: none !important;
-      }
-
-      /* Ensure Quill editor content is visible */
-      .ql-editor {
-        min-height: auto !important;
-        padding: 0 !important;
-        overflow: visible !important;
-      }
-
-      /* Remove border from container in frontend */
-      .ql-container.ql-snow {
-        border: none !important;
-      }
-
-      /* Fix for Quill.js specific elements */
-      .ql-ui {
-        display: none !important;
-      }
-
-      /* Fix for bullet lists */
-      .ql-editor li[data-list="bullet"] {
-        list-style-type: disc !important;
-        padding-left: 0.5em !important;
-        margin-left: 1.5em !important;
-      }
-
-      /* Fix for ordered lists */
-      .ql-editor li[data-list="ordered"] {
-        list-style-type: decimal !important;
-        padding-left: 0.5em !important;
-        margin-left: 1.5em !important;
-      }
-
-      /* Fix for emphasis */
-      .ql-editor em {
-        font-style: italic !important;
-      }
-
-      /* Fix for strong */
-      .ql-editor strong {
-        font-weight: bold !important;
-      }
-
-      /* Additional fixes for Quill.js content */
-      .quill-content-wrapper {
-        font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif !important;
-        line-height: 1.6 !important;
-      }
-
-      /* Fix for nested formatting */
-      .ql-editor h1 strong,
-      .ql-editor h1 em,
-      .ql-editor h2 strong,
-      .ql-editor h2 em {
-        font-weight: inherit !important;
-        font-style: inherit !important;
-      }
-
-      /* Fix for nested strong and em */
-      .ql-editor strong em,
-      .ql-editor em strong {
-        font-weight: bold !important;
-        font-style: italic !important;
-      }
-
-      /* Fix for list spacing */
-      .ql-editor ul,
-      .ql-editor ol {
-        padding-left: 1.5em !important;
-        margin-bottom: 1em !important;
-      }
-
-      /* Fix for list item markers */
-      .ql-editor li::before {
-        display: none !important;
-      }
-
-      /* Fix for contenteditable attribute */
-      .ql-editor [contenteditable="false"] {
-        display: none !important;
-      }
-
-      /* Support for custom colors with higher specificity */
-      .quill-content .ql-editor span[style*="color"] {
-        color: var(--custom-color, inherit) !important;
-      }
-
-      .quill-content .ql-editor span[style*="background"] {
-        background-color: var(--custom-bg-color, inherit) !important;
-      }
-
-      /* Fix for ordered lists with higher specificity */
-      .quill-content .ql-editor ol {
-        list-style-type: decimal !important;
-        padding-left: 1.5em !important;
-        margin-left: 1em !important;
-      }
-
-      .quill-content .ql-editor ol li {
-        display: list-item !important;
-        list-style-position: outside !important;
-        padding-left: 0.5em !important;
-      }
-
-      /* Fix for bullet lists with higher specificity */
-      .quill-content .ql-editor ul {
-        list-style-type: disc !important;
-        padding-left: 1.5em !important;
-        margin-left: 1em !important;
-      }
-
-      .quill-content .ql-editor ul li {
-        display: list-item !important;
-        list-style-position: outside !important;
-        padding-left: 0.5em !important;
-      }
-
-      /* Override Quill's default list styling */
-      .quill-content .ql-editor li::before {
-        display: none !important;
-        content: none !important;
-      }
-    </style>
-
-    <%- contentFor('scripts') %>
-      <!-- Include Quill.js for proper rendering -->
-      <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.min.js"></script>
-      <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          // Special fix for specific content ID mentioned in the example
-          const specificContent = document.getElementById('quill-content-5-tw');
-          if (specificContent) {
-            // Force h1 tags to have proper styling
-            const h1Tags = specificContent.querySelectorAll('h1');
-            h1Tags.forEach(function (h1) {
-              h1.style.display = 'block';
-              h1.style.fontSize = '2em';
-              h1.style.fontWeight = 'bold';
-              h1.style.marginTop = '1em';
-              h1.style.marginBottom = '0.5em';
-              h1.style.lineHeight = '1.2';
-              h1.style.color = '#333';
-
-              // If it's empty or just has a <br>, add a non-breaking space
-              if (h1.innerHTML.trim() === '' || h1.innerHTML.trim() === '<br>') {
-                h1.innerHTML = '&nbsp;';
-              }
-            });
-          }
-
-          // Handle Delta objects
-          const deltaEditors = document.querySelectorAll('.ql-editor[data-is-delta="true"]');
-          deltaEditors.forEach(function (editor) {
-            try {
-              // Get the content which should be a Delta JSON string
-              const deltaContent = editor.innerHTML.trim();
-              // Parse the Delta JSON
-              const delta = JSON.parse(deltaContent);
-
-              // Clear the editor
-              editor.innerHTML = '';
-
-              // Create a new Quill instance
-              const quill = new Quill(editor, {
-                readOnly: true,
-                theme: 'snow',
-                modules: {
-                  toolbar: false
-                }
-              });
-
-              // Set the contents from the Delta
-              quill.setContents(delta);
-            } catch (e) {
-              console.error('Error rendering Delta content:', e);
-              // If there's an error, just leave the content as is
-            }
-          });
-
-          // Process all Quill editor content
-          const quillContents = document.querySelectorAll('.quill-content .ql-editor:not([data-is-delta="true"])');
-
-          quillContents.forEach(function (content) {
-            // Fix Quill.js specific elements
-
-            // 1. Process list items with data-list attributes
-            const listItems = content.querySelectorAll('li[data-list]');
-            listItems.forEach(function (item) {
-              // Remove the ql-ui span if it exists
-              const uiSpans = item.querySelectorAll('.ql-ui');
-              uiSpans.forEach(span => span.remove());
-
-              // Make sure the list item has the correct styling
-              if (item.getAttribute('data-list') === 'bullet') {
-                // If the item is not in a UL, create one
-                if (item.parentNode.tagName !== 'UL') {
-                  const ul = document.createElement('ul');
-                  ul.className = 'ql-list ql-list-bullet';
-                  item.parentNode.replaceChild(ul, item);
-                  ul.appendChild(item);
-                }
-              } else if (item.getAttribute('data-list') === 'ordered') {
-                // If the item is not in an OL, create one
-                if (item.parentNode.tagName !== 'OL') {
-                  const ol = document.createElement('ol');
-                  ol.className = 'ql-list ql-list-ordered';
-                  item.parentNode.replaceChild(ol, item);
-                  ol.appendChild(item);
-                }
-              }
-            });
-
-            // 2. Process headings - ensure they have proper styling and structure
-            const headings = content.querySelectorAll('h1, h2, h3, h4');
-            headings.forEach(function (heading) {
-              // Make sure headings have proper styling
-              if (heading.tagName === 'H1') {
-                heading.classList.add('ql-size-huge');
-                // Force display block and other important styles
-                heading.style.display = 'block';
-                heading.style.fontSize = '2em';
-                heading.style.fontWeight = 'bold';
-                heading.style.marginTop = '1em';
-                heading.style.marginBottom = '0.5em';
-                heading.style.lineHeight = '1.2';
-              } else if (heading.tagName === 'H2') {
-                heading.classList.add('ql-size-large');
-                // Force display block and other important styles
-                heading.style.display = 'block';
-                heading.style.fontSize = '1.5em';
-                heading.style.fontWeight = 'bold';
-                heading.style.marginTop = '0.83em';
-                heading.style.marginBottom = '0.5em';
-                heading.style.lineHeight = '1.2';
-              }
-            });
-
-            // Process header attributes
-            const headerElements = content.querySelectorAll('[class*="ql-header"]');
-            headerElements.forEach(function (el) {
-              // Extract header level from class
-              const headerClass = Array.from(el.classList).find(cls => cls.startsWith('ql-header-'));
-              if (headerClass) {
-                const level = headerClass.split('-')[2];
-                // Add appropriate heading tag if not already a heading
-                if (!['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(el.tagName)) {
-                  const headingTag = document.createElement(`h${level}`);
-                  headingTag.innerHTML = el.innerHTML;
-                  headingTag.className = el.className;
-                  // Force display block and other important styles
-                  headingTag.style.display = 'block';
-                  headingTag.style.fontWeight = 'bold';
-
-                  if (level === '1') {
-                    headingTag.style.fontSize = '2em';
-                    headingTag.style.marginTop = '1em';
-                    headingTag.style.marginBottom = '0.5em';
-                  } else if (level === '2') {
-                    headingTag.style.fontSize = '1.5em';
-                    headingTag.style.marginTop = '0.83em';
-                    headingTag.style.marginBottom = '0.5em';
-                  }
-
-                  el.parentNode.replaceChild(headingTag, el);
-                }
-              }
-            });
-
-            // Special handling for empty headings or headings with just <br>
-            const emptyHeadings = content.querySelectorAll('h1:empty, h2:empty, h3:empty, h4:empty, h1:only-child > br, h2:only-child > br, h3:only-child > br, h4:only-child > br');
-            emptyHeadings.forEach(function (heading) {
-              // If it's completely empty or just has a <br>, add a non-breaking space
-              if (heading.innerHTML.trim() === '' || heading.innerHTML.trim() === '<br>') {
-                heading.innerHTML = '&nbsp;';
-              }
-            });
-
-            // 3. Process emphasis and strong
-            const emphasisElements = content.querySelectorAll('em');
-            emphasisElements.forEach(function (em) {
-              em.style.fontStyle = 'italic';
-            });
-
-            const strongElements = content.querySelectorAll('strong');
-            strongElements.forEach(function (strong) {
-              strong.style.fontWeight = 'bold';
-            });
-
-            // 4. Process links
-            const links = content.querySelectorAll('a');
-            links.forEach(function (link) {
-              if (!link.classList.contains('ql-link')) {
-                link.classList.add('ql-link');
-              }
-            });
-
-            // 5. Fix color spans - ensure color styles are applied correctly
-            const colorSpans = content.querySelectorAll('span[style*="color"]');
-            colorSpans.forEach(function (span) {
-              // Extract the color value from the style attribute
-              const styleAttr = span.getAttribute('style');
-              const colorMatch = styleAttr.match(/color:\s*([^;]+)/i);
-              if (colorMatch && colorMatch[1]) {
-                // Create a custom CSS variable to store the color
-                span.style.setProperty('--custom-color', colorMatch[1]);
-                // Add a class for easier targeting
-                span.classList.add('custom-color');
-                // Force the color to be applied
-                span.setAttribute('style', `color: ${colorMatch[1]} !important; --custom-color: ${colorMatch[1]};`);
-              }
-            });
-
-            // 6. Fix background color spans
-            const bgColorSpans = content.querySelectorAll('span[style*="background"]');
-            bgColorSpans.forEach(function (span) {
-              // Extract the background color value from the style attribute
-              const styleAttr = span.getAttribute('style');
-              const bgColorMatch = styleAttr.match(/background-color:\s*([^;]+)/i);
-              if (bgColorMatch && bgColorMatch[1]) {
-                // Create a custom CSS variable to store the background color
-                span.style.setProperty('--custom-bg-color', bgColorMatch[1]);
-                // Add a class for easier targeting
-                span.classList.add('custom-bg-color');
-                // Force the background color to be applied
-                span.setAttribute('style', `background-color: ${bgColorMatch[1]} !important; --custom-bg-color: ${bgColorMatch[1]};`);
-              }
-            });
-
-            // 7. Fix Quill color classes
-            const quillColorClasses = [
-              { className: 'ql-color-red', color: '#e60000' },
-              { className: 'ql-color-orange', color: '#f90' },
-              { className: 'ql-color-yellow', color: '#ff0' },
-              { className: 'ql-color-green', color: '#008a00' },
-              { className: 'ql-color-blue', color: '#06c' },
-              { className: 'ql-color-purple', color: '#93f' }
-            ];
-
-            quillColorClasses.forEach(function (colorInfo) {
-              const elements = content.querySelectorAll('.' + colorInfo.className);
-              elements.forEach(function (el) {
-                el.style.color = colorInfo.color + ' !important';
-              });
-            });
-
-            // 8. Fix Quill background color classes
-            const quillBgColorClasses = [
-              { className: 'ql-bg-red', color: '#e60000' },
-              { className: 'ql-bg-orange', color: '#f90' },
-              { className: 'ql-bg-yellow', color: '#ff0' },
-              { className: 'ql-bg-green', color: '#008a00' },
-              { className: 'ql-bg-blue', color: '#06c' },
-              { className: 'ql-bg-purple', color: '#93f' }
-            ];
-
-            quillBgColorClasses.forEach(function (colorInfo) {
-              const elements = content.querySelectorAll('.' + colorInfo.className);
-              elements.forEach(function (el) {
-                el.style.backgroundColor = colorInfo.color + ' !important';
-              });
-            });
-
-            // 9. Fix ordered lists to ensure numbers display correctly
-            const orderedLists = content.querySelectorAll('ol');
-            orderedLists.forEach(function (ol) {
-              // Ensure the list has the proper list-style-type
-              ol.style.listStyleType = 'decimal';
-              ol.style.paddingLeft = '1.5em';
-              ol.style.marginLeft = '1em';
-
-              // Make sure each list item is properly styled
-              const items = ol.querySelectorAll('li');
-              items.forEach(function (li, index) {
-                // Remove any counter-reset that might interfere with numbering
-                li.style.counterReset = 'none';
-                // Remove any ::before pseudo-elements that might be hiding the numbers
-                li.classList.add('show-numbers');
-                // Set explicit value attribute for correct numbering
-                li.setAttribute('value', index + 1);
-                // Remove any ::before content
-                li.style.setProperty('--tw-before-content', 'none', 'important');
-                // Ensure the list item displays as a list item
-                li.style.display = 'list-item';
-                li.style.listStylePosition = 'outside';
-              });
-            });
-
-            // 10. Fix bullet lists
-            const bulletLists = content.querySelectorAll('ul');
-            bulletLists.forEach(function (ul) {
-              // Ensure the list has the proper list-style-type
-              ul.style.listStyleType = 'disc';
-              ul.style.paddingLeft = '1.5em';
-              ul.style.marginLeft = '1em';
-
-              // Make sure each list item is properly styled
-              const items = ul.querySelectorAll('li');
-              items.forEach(function (li) {
-                // Remove any ::before pseudo-elements that might be hiding the bullets
-                li.classList.add('show-bullets');
-                // Remove any ::before content
-                li.style.setProperty('--tw-before-content', 'none', 'important');
-                // Ensure the list item displays as a list item
-                li.style.display = 'list-item';
-                li.style.listStylePosition = 'outside';
-              });
-            });
-
-            // 11. Handle base64 images
-            const images = content.querySelectorAll('img');
-            images.forEach(function (img) {
-              // Add loading="lazy" attribute to improve page load performance
-              img.setAttribute('loading', 'lazy');
-
-              // Check if it's a base64 image
-              if (img.src && img.src.startsWith('data:image')) {
-                // Add error handling in case the image fails to load
-                img.onerror = function () {
-                  console.error('Failed to load base64 image');
-                  // Replace with a placeholder
-                  img.src = '/images/placeholder.png';
-                  img.alt = 'Image failed to load';
-                };
-
-                // If the image is very large, add a click-to-load feature
-                if (img.src.length > 500000) { // 500KB
-                  const originalSrc = img.src;
-                  const placeholder = document.createElement('div');
-                  placeholder.className = 'base64-image-placeholder';
-                  placeholder.style.width = '100%';
-                  placeholder.style.height = '200px';
-                  placeholder.style.backgroundColor = '#f0f0f0';
-                  placeholder.style.display = 'flex';
-                  placeholder.style.alignItems = 'center';
-                  placeholder.style.justifyContent = 'center';
-                  placeholder.style.cursor = 'pointer';
-                  placeholder.innerHTML = '<span>Click to load image (large size)</span>';
-
-                  placeholder.onclick = function () {
-                    img.src = originalSrc;
-                    placeholder.parentNode.replaceChild(img, placeholder);
-                  };
-
-                  img.parentNode.replaceChild(placeholder, img);
-                }
-              }
-            });
-          });
-        });
-      </script>
+          <% } %>
+  </nav>
+
+  <!-- Divider -->
+  <div class="w-screen relative" style="left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
+    <hr class="border-t-2 border-gray-200 mb-16">
+  </div>
+
+  <% if (items && items.length> 0) { %>
+    <div class="space-y-12">
+      <% items.forEach(function(item) { %>
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div class="p-6">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800">
+              <%= currentLanguage==='en' ? item.title_en : item.title_tw %>
+            </h2>
+
+            <% if (item.type==='plain_text' ) { %>
+              <div class="prose max-w-none quill-content">
+                <div class="ql-container ql-snow" style="border: none;">
+                  <div class="ql-editor quill-content-wrapper" <% if ((currentLanguage==='en' &&
+                    item._content_en_is_delta) || (currentLanguage==='tw' && item._content_tw_is_delta)) { %>
+                    data-is-delta="true"
+                    <% } %>
+                      id="quill-content-<%= item.id %>-<%= currentLanguage %>">
+                          <%- currentLanguage==='en' ? item.content_en : item.content_tw %>
+                  </div>
+                </div>
+              </div>
+              <% } else if (item.type==='image' ) { %>
+                <% if (item.imagePath) { %>
+                  <div class="mt-4 flex justify-center">
+                    <img src="<%= item.imagePath %>"
+                      alt="<%= currentLanguage === 'en' ? item.title_en : item.title_tw %>"
+                      class="max-w-full h-auto rounded-lg shadow-sm">
+                  </div>
+                  <div class="mt-4 text-center text-gray-700 quill-content">
+                    <div class="ql-container ql-snow" style="border: none;">
+                      <div class="ql-editor">
+                        <%- currentLanguage==='en' ? item.content_en : item.content_tw %>
+                      </div>
+                    </div>
+                  </div>
+                  <% } else { %>
+                    <div class="bg-gray-100 p-4 rounded-lg text-center text-gray-500">
+                      <%= currentLanguage==='en' ? 'Image not available' : '圖片不可用' %>
+                    </div>
+                    <% } %>
+                      <% } %>
+          </div>
+        </div>
+        <% }); %>
+    </div>
+    <% } else { %>
+      <div class="bg-white rounded-lg shadow-md p-8 text-center">
+        <p class="text-gray-500">
+          <%= currentLanguage==='en' ? 'No about content available yet.' : '尚無關於我們的內容。' %>
+        </p>
+      </div>
+      <% } %>
+        </div>
+        </div>
+
+        <%- contentFor('head') %>
+          <!-- Include Quill.js 2.0.3 styles for rendering -->
+          <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+
+          <%- contentFor('scripts') %>
+            <!-- Include Quill.js for proper rendering -->
+            <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.min.js"></script>
