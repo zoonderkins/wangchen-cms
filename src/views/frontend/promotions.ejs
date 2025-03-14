@@ -6,8 +6,8 @@
         <img class="w-full h-full object-cover" src="../images/mobile/promotionbg_mobile.png" alt="響應式圖片">
     </picture>
     <div class="absolute inset-0 flex flex-col justify-center px-6 sm:px-16 lg:px-32">
-        <h2 class="text-white"><%= title %></h2>
-        <p class="text-white">/ <%= currentLanguage==='en' ? 'Home' : '首頁' %> - <%= title %> /</p>
+        <h1 class="h2 text-black"><%= title %></h1>
+        <p class="text-black">/ <%= currentLanguage==='en' ? 'Home' : '首頁' %> - <%= title %> /</p>
     </div>
 </section>
 
@@ -16,7 +16,7 @@
 <div class="relative flex items-center my-4 px-6 sm:px-16 lg:px-32">
     <!-- 導航欄 -->
     <nav id="scrollable-nav" class="flex overflow-auto scrollbar-hide scroll-smooth">
-        <a href="#platform" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-blue">臺灣智慧系統整合製造平台</a>
+        <!-- <a href="#platform" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-blue">臺灣智慧系統整合製造平台</a> -->
         <% categories.forEach(category=> { %>
         <a href="/<%= language %>/promotions?category=<%= category.slug %>" 
             class="<%= selectedCategory === category.slug ? 'active' : '' %> subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-blue">
@@ -25,13 +25,13 @@
     </nav>
     <!-- 左箭頭按鈕 -->
     <button id="scroll-left" class="absolute left-0 sm:left-10 z-10 px-2 py-2 text-gray-600 bg-white rounded-full shadow-md hover:bg-gray-100 focus:outline-none">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" alt="<%= currentLanguage==='en' ? 'Left Arrow' : '左箭頭' %>">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
     </button>
     <!-- 右箭頭按鈕 -->
     <button id="scroll-right" class="absolute right-0 sm:right-10 z-10 px-2 py-2 text-gray-600 bg-white rounded-full shadow-md hover:bg-gray-100 focus:outline-none">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" alt="<%= currentLanguage==='en' ? 'Right Arrow' : '右箭頭' %>">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
     </button>
@@ -46,7 +46,7 @@
 <% if (items && items.length> 0) { %>
 <% items.forEach(item=> { %>
 <section id="datacenter" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-    <h4 class="mb-8"><%= language==='en' ? item.title_en : item.title_tw %></h4>
+    <h2 class="h4 mb-8"><%= language==='en' ? item.title_en : item.title_tw %></h2>
     <!-- Hero Image -->
     <div class="relative rounded-3xl overflow-hidden mb-8">
         <img src="/<%= item.imagePath %>" alt="<%= language === 'en' ? item.title_en : item.title_tw %>" class="w-full h-64 md:h-96 object-cover">
