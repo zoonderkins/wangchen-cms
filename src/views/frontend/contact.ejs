@@ -6,8 +6,8 @@
             <img class="w-full h-full object-cover" src="../images/mobile/contact_mobile.png" alt="響應式圖片">
         </picture>
         <div class="absolute inset-0 flex flex-col justify-center px-6 sm:px-16 lg:px-32">
-            <h2 class="text-white"><%= title %></h2>
-            <p class="text-white">/ <%= currentLanguage==='en' ? 'Home' : '首頁' %> - <%= title %> /</p>
+            <h1 class="h2 text-black"><%= title %></h1>
+            <p class="text-black">/ <%= currentLanguage==='en' ? 'Home' : '首頁' %> - <%= title %> /</p>
         </div>
     </section>
 
@@ -19,11 +19,11 @@
     <!-- User information -->
     <section id="userInfo" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
         <form action="/<%= currentLanguage %>/contact" method="POST">
-            <h4 class="text-left mb-12"><%= currentLanguage==='en' ? 'Contact information' : '聯絡資料' %></h4>
+            <h2 class="h4 text-left mb-12"><%= currentLanguage==='en' ? 'Contact information' : '聯絡資料' %></h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                    <label for="name" class=""><%= currentLanguage==='en' ? 'Name' : '姓名' %><span class="text-red-500">*</span></label>
+                    <label for="name" class=""><%= currentLanguage==='en' ? 'Name' : '姓名' %><span class="text-red-700">*</span></label>
                     <input class="w-full px-6 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500"
                         id="name" name="name" type="text" placeholder="<%= currentLanguage==='en' ? 'Name' : '姓名' %>"
                         value="<%= typeof formData !== 'undefined' ? formData.name || '' : '' %>" required>
@@ -37,7 +37,7 @@
                 </div>
 
                 <div>
-                    <label for="email" class=""><%= currentLanguage==='en' ? 'Email' : '電子信箱' %><span class="text-red-500">*</span></label>
+                    <label for="email" class=""><%= currentLanguage==='en' ? 'Email' : '電子信箱' %><span class="text-red-700">*</span></label>
                     <input class="w-full px-6 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500"
                         id="email" name="email" type="email" placeholder="<%= currentLanguage==='en' ? 'Email' : '電子信箱' %>" 
                         value="<%= typeof formData !== 'undefined' ? formData.email || '' : '' %>" required>
@@ -51,9 +51,9 @@
                 </div>
             </div>
 
-            <h4 class="text-left my-12"><%= currentLanguage==='en' ? 'Requirement' : '需求' %></h4>
+            <h2 class="h4text-left my-12"><%= currentLanguage==='en' ? 'Requirement' : '需求' %></h2>
             
-            <label for="categoryId" class=""><%= currentLanguage==='en' ? 'Requirements category' : '需求分類' %><span class="text-red-500">*</span></label>
+            <label for="categoryId" class=""><%= currentLanguage==='en' ? 'Requirements category' : '需求分類' %><span class="text-red-700">*</span></label>
             <div class="p-2 mt-4 mb-4 relative rounded-xl border">
                 <select class="w-full  text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none"
                     id="categoryId" name="categoryId" required>
@@ -75,12 +75,12 @@
                 </div>
             </div>
             
-            <label for="message" class=""><%= currentLanguage==='en' ? 'Requirements description' : '需求說明' %><span class="text-red-500">*</span></label>
+            <label for="message" class=""><%= currentLanguage==='en' ? 'Requirements description' : '需求說明' %><span class="text-red-700">*</span></label>
             <textarea name="message" id="message" rows="6" placeholder="<%= currentLanguage==='en' ? 'Requirements description' : '需求說明' %>" class="w-full px-3 py-2 mt-4 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500 resize-y"></textarea>
 
-            <h4 class="text-left my-12">
+            <h2 class="h4 ext-left my-12">
                 <%= currentLanguage==='en' ? 'ＥＥＥＥ財團法人工業技術研究院 個人資料蒐集、處理及利用之告知暨同意書' : '財團法人工業技術研究院 個人資料蒐集、處理及利用之告知暨同意書' %>
-                </h4>
+            </h2>
             <div class="p-16 h-80 border border-gray-300 rounded-3xl overflow-auto">
                 <p>
                     告知事項
