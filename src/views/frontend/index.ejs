@@ -21,12 +21,12 @@
                                 <div class="absolute bottom-40 lg:inset-y-0 left-8 sm:left-16 flex items-center">
                                     <div class="relative">
                                         <!-- h1 貼齊隱形線上緣 -->
-                                        <h1 class="absolute bottom-0 mb-4 w-full text-black"><%= banner.title %></h1>
+                                        <h1 class="absolute bottom-0 mb-4 w-full text-white"><%= banner.title %></h1>
                                         <!-- 隱形線 -->
                                         <div class="" style="width: 70vw;"></div>
                                         <!-- p 貼齊隱形線下緣 -->
                                         <% if (banner.description) { %>
-                                            <h2 class="h3 absolute top-0 mt-0 w-full text-black"><%= banner.description %></h2>
+                                            <h2 class="h3 absolute top-0 mt-0 w-full text-white"><%= banner.description %></h2>
                                         <% } %>
                                     </div>
                                 </div>
@@ -140,7 +140,7 @@
 
     <!-- Partners Section -->
     <section class="bg-partner bg-no-repeat bg-cover bg-bottom sm:bg-cover sm:bg-center px-6 py-12 sm:px-16 sm:py-20 lg:px-64 lg:py-28" id="partners">
-        <h3 class="mb-4 sm:mb-8 text-center"><span class="text-black"><%= currentLanguage==='en' ? 'Taiwan Smart System Integrated Manufacturing Platform' : '臺灣智慧系統整合製造平台' %></span> <%= currentLanguage==='en' ? 'Partners' : '合作伙伴' %></h3>
+        <h3 class="mb-4 sm:mb-8 text-center"><span class="text-white"><%= currentLanguage==='en' ? 'Taiwan Smart System Integrated Manufacturing Platform' : '臺灣智慧系統整合製造平台' %></span> <%= currentLanguage==='en' ? 'Partners' : '合作伙伴' %></h3>
         <div class="flex flex-col sm:flex-row">
             <!-- 手機版下拉選單 -->
             <div class="block w-full sm:hidden mb-6 p-2 relative rounded-xl border">
@@ -251,9 +251,9 @@
                     <!-- 需求商列表 -->
                     <div class="demanderList py-6 hidden grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4">
                         <!-- 需求商卡片 -->
-                        <div class="partner-card h-full flex items-center justify-center">
+                        <!-- <div class="partner-card h-full flex items-center justify-center">
                             <p class="text-center">需求商卡片</p>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
