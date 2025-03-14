@@ -36,8 +36,13 @@
                 </ul>
             </div>
             <div class="absolute bottom-0 w-full flex flex-col md:flex-row justify-center">
-                <button class="px-3 py-1 mx-2 sm:px-12 sm:py-2 sm:mx-4 w-auto md:w-1/2 mb-2 md:mb-0 bg-custom-yellow">全區進駐服務</button>
-                <button class="px-3 py-1 mx-2 sm:px-12 sm:py-2 sm:mx-4 w-auto md:w-1/2 bg-custom-lightgreen ">產業推廣合作</button>
+                <button class="px-3 py-1 mx-2 sm:px-12 sm:py-2 sm:mx-4 w-auto md:w-1/2 mb-2 md:mb-0 bg-custom-yellow">
+                    <%= currentLanguage==='en' ? 'Nationwide On-Site Services' : '全區進駐服務' %>
+                    
+                </button>
+                <button class="px-3 py-1 mx-2 sm:px-12 sm:py-2 sm:mx-4 w-auto md:w-1/2 bg-custom-lightgreen ">
+                    <%= currentLanguage==='en' ? 'Industry Promotion Cooperation' : '產業推廣合作' %>
+                </button>
             </div>
         </section>
     <% } %>
@@ -101,7 +106,9 @@
             </div>
             <!-- Right: News List -->
             <div class="w-full sm:w-1/2">
-                <h3 class="mb-8 text-center sm:text-left">最新消息</h3>
+                <h3 class="mb-8 text-center sm:text-left">
+                    <%= currentLanguage==='en' ? 'Latest News' : '最新消息' %>
+                </h3>
                 <div class="h-[75vw] md:h-[50vw] sm:h-[35vw] overflow-y-auto pr-2">
                     <!-- News Item -->
                     <div class="relative border-b border-gray-300 py-2 mb-4">
@@ -133,18 +140,32 @@
 
     <!-- Partners Section -->
     <section class="bg-partner bg-no-repeat bg-cover bg-bottom sm:bg-cover sm:bg-center px-6 py-12 sm:px-16 sm:py-20 lg:px-64 lg:py-28" id="partners">
-        <h3 class="mb-4 sm:mb-8 text-center"><span class="text-black">臺灣智慧系統整合製造平台</span>合作伙伴</h3>
+        <h3 class="mb-4 sm:mb-8 text-center"><span class="text-black"><%= currentLanguage==='en' ? 'Taiwan Smart System Integrated Manufacturing Platform' : '臺灣智慧系統整合製造平台' %></span> <%= currentLanguage==='en' ? 'Partners' : '合作伙伴' %></h3>
         <div class="flex flex-col sm:flex-row">
             <!-- 手機版下拉選單 -->
-            <div class="block w-full sm:hidden mb-6 p-2 relative bg-white rounded-xl border">
-                <label for="platform-select">產業</label>
+            <div class="block w-full sm:hidden mb-6 p-2 relative rounded-xl border">
                 <select id="platform-select" class="w-full  text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none">
-                    <option value="metal" selected>金屬加工</option>
-                    <option value="plastic">塑膠製造</option>
-                    <option value="shoes">智慧鞋業</option>
-                    <option value="health">智慧健康</option>
-                    <option value="hospitality">餐飲/住宿</option>
-                    <option value="retail">智慧零售</option>
+                    <option value="metal" selected>
+                        <%= currentLanguage==='en' ? 'Metal Processing' : '金屬加工' %>
+                    </option>
+                    <option value="plastic">
+                        <%= currentLanguage==='en' ? 'Smart Footwear' : '智慧鞋業' %>
+                    </option>
+                    <option value="shoes">
+                        <%= currentLanguage==='en' ? 'Smart Healthcare' : '智慧健康' %>
+                    </option>
+                    <option value="health">
+                        <%= currentLanguage==='en' ? 'Food & Hospitality' : '餐飲/住宿' %>
+                    </option>
+                    <option value="hospitality">
+                        <%= currentLanguage==='en' ? 'Semiconductor' : '半導體' %>
+                    </option>
+                    <option value="retail">
+                        <%= currentLanguage==='en' ? 'Smart manufacturing' : '智慧製造' %>
+                    </option>
+                    <option value="retail">
+                        <%= currentLanguage==='en' ? 'Smart energy' : '智慧能源' %>
+                    </option>
                 </select>
                 <!-- 自定義下拉箭頭 -->
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
@@ -153,27 +174,45 @@
                     </svg>
                 </div>
             </div>
-
+    
             <!-- 左側選單 (Desktop) -->
             <div class="hidden sm:block sm:w-3/12 mr-6">
                 <ul class="">
                     <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-white border-l-4 border-custom-blue" type="button">金屬加工</button>
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 border-l-4 border-custom-blue" type="button">
+                            <%= currentLanguage==='en' ? 'Metal Processing' : '金屬加工' %>
+                        </button>
                     </li>
                     <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-white text-gray-500" type="button">塑膠製造</button>
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
+                            <%= currentLanguage==='en' ? 'Smart Footwear' : '智慧鞋業' %>
+                        </button>
                     </li>
                     <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-white text-gray-500" type="button">智慧鞋業</button>
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
+                            <%= currentLanguage==='en' ? 'Smart Healthcare' : '智慧健康' %>
+                        </button>
                     </li>
                     <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-white text-gray-500" type="button">智慧健康</button>
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
+                            <%= currentLanguage==='en' ? 'Food & Hospitality' : '餐飲/住宿' %>
+                        </button>
+                    </li>
+                    
+                    <li class="">
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
+                            <%= currentLanguage==='en' ? 'Semiconductor' : '半導體' %>
+                        </button>
                     </li>
                     <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-white text-gray-500" type="button">餐飲/住宿</button>
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
+                            <%= currentLanguage==='en' ? 'Smart manufacturing' : '智慧製造' %>
+                        </button>
                     </li>
                     <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-white text-gray-500" type="button">智慧零售</button>
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
+                            <%= currentLanguage==='en' ? 'Smart energy' : '智慧能源' %>
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -183,24 +222,18 @@
                 <!-- 頂部標籤頁 -->
                 <div class="bg-white border-2 rounded-xl border-gray-100 p-4 mb-6 min-h-full">
                     <div class="flex justify-center">
-                        <button class="companyTab px-4 py-2 border-b-2 border-custom-blue text-custom-blue font-medium">供應商</button>
-                        <button class="companyTab px-4 py-2 border-b-2 border-gray-100 text-gray-500">需求商</button>
+                        <button class="companyTab px-4 py-2 border-b-2 border-custom-blue text-custom-blue font-medium">
+                            <%= currentLanguage==='en' ? 'Suppliers' : '供應商' %>
+                        </button>
+                        <button class="companyTab px-4 py-2 border-b-2 border-gray-100 text-gray-500">
+                            <%= currentLanguage==='en' ? 'Buyers' : '需求商' %></button>
                     </div>
     
                     <!-- 供應商列表 -->
                     <div class="supplierList py-6 grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4">
                         <!-- 供應商卡片 -->
                         <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">弘慧系統整合科技有限公司</p>
-                        </div>
-                        <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">邁森科技股份有限公司</p>
-                        </div>
-                        <div class="partner-card h-full flex items-center justify-center">
                             <p class="text-center">廣杰精機股份有限公司</p>
-                        </div>
-                        <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">達詳自動化股份有限公司</p>
                         </div>
                         <div class="partner-card h-full flex items-center justify-center">
                             <p class="text-center">艾肯林科技股份有限公司</p>
@@ -209,36 +242,15 @@
                             <p class="text-center">怡邦精密有限公司</p>
                         </div>
                         <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">達明機器人</p>
+                            <p class="text-center">達明機器人股份有限公司</p>
                         </div>
                         <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">上銀科技股份有限公司</p>
+                            <p class="text-center">帆宣系統科技股份有限公司</p>
                         </div>
                     </div>
                     <!-- 需求商列表 -->
                     <div class="demanderList py-6 hidden grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4">
                         <!-- 需求商卡片 -->
-                        <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">需求商卡片</p>
-                        </div>
-                        <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">需求商卡片</p>
-                        </div>
-                        <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">需求商卡片</p>
-                        </div>
-                        <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">需求商卡片</p>
-                        </div>
-                        <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">需求商卡片</p>
-                        </div>
-                        <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">需求商卡片</p>
-                        </div>
-                        <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">需求商卡片</p>
-                        </div>
                         <div class="partner-card h-full flex items-center justify-center">
                             <p class="text-center">需求商卡片</p>
                         </div>
@@ -292,7 +304,7 @@
 
     <!-- Related Links Section -->
     <section class="py-12 px-5 lg:px-8">
-        <h3 class="text-center mb-10">相關連結</h3>
+        <h3 class="text-center mb-10"><%= currentLanguage==='en' ? 'Related Links' : '相關連結' %></h3>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-6">
             <!-- Link Item -->
             <a href="https://www.nstc.gov.tw" class="block no-underline" target="_blank">

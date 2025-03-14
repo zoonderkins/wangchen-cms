@@ -120,12 +120,27 @@
         <!-- 手機版下拉選單 -->
         <div class="block w-full sm:hidden mb-6 p-2 relative rounded-xl border">
             <select id="platform-select" class="w-full  text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none">
-                <option value="metal" selected>金屬加工</option>
-                <option value="plastic">智慧鞋業</option>
-                <option value="shoes">智慧鞋業</option>
-                <option value="health">智慧健康</option>
-                <option value="hospitality">餐飲/住宿</option>
-                <option value="retail">智慧零售</option>
+                <option value="metal" selected>
+                    <%= currentLanguage==='en' ? 'Metal Processing' : '金屬加工' %>
+                </option>
+                <option value="plastic">
+                    <%= currentLanguage==='en' ? 'Smart Footwear' : '智慧鞋業' %>
+                </option>
+                <option value="shoes">
+                    <%= currentLanguage==='en' ? 'Smart Healthcare' : '智慧健康' %>
+                </option>
+                <option value="health">
+                    <%= currentLanguage==='en' ? 'Food & Hospitality' : '餐飲/住宿' %>
+                </option>
+                <option value="hospitality">
+                    <%= currentLanguage==='en' ? 'Semiconductor' : '半導體' %>
+                </option>
+                <option value="retail">
+                    <%= currentLanguage==='en' ? 'Smart manufacturing' : '智慧製造' %>
+                </option>
+                <option value="retail">
+                    <%= currentLanguage==='en' ? 'Smart energy' : '智慧能源' %>
+                </option>
             </select>
             <!-- 自定義下拉箭頭 -->
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
