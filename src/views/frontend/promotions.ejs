@@ -16,12 +16,24 @@
 <div class="relative flex items-center my-4 px-6 sm:px-16 lg:px-32">
     <!-- 導航欄 -->
     <nav id="scrollable-nav" class="flex overflow-auto scrollbar-hide scroll-smooth">
-        <!-- <a href="#platform" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-blue">臺灣智慧系統整合製造平台</a> -->
-        <% categories.forEach(category=> { %>
-        <a href="/<%= language %>/promotions?category=<%= category.slug %>" 
-            class="<%= selectedCategory === category.slug ? 'active' : '' %> subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-blue">
-            <%= getContent(category, 'name' ) %></a>
-        <% }); %>
+        <a href="#platform" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-blue">
+            <%= currentLanguage==='en' ? 'Taiwan Smart System Integrated Manufacturing Platform' : '臺灣智慧系統整合製造平台' %>
+        </a>
+        <a href="#datacenter" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-blue">
+            <%= currentLanguage==='en' ? 'AI Computing Data Center Construction' : 'AI運算資料中心建置' %>
+        </a>
+        <a href="#health" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-blue">
+            <%= currentLanguage==='en' ? 'Smart Healthcare Industry Innovation Park' : '智慧健康產業創新園區' %>
+        </a>
+        <a href="#green" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-blue">
+            <%= currentLanguage==='en' ? 'Net-Zero Green Energy Demonstration Zone' : '淨零綠能示範場域' %>
+        </a>
+        <a href="#security" class="subtitle px-6 py-2 rounded-full min-w-max custom-button-blue">
+            <%= currentLanguage==='en' ? 'Cybersecurity and Smart Technology Zone' : '資安暨智慧科技專區' %>
+        </a>
+        <a href="#forest" class="subtitle px-6 py-2 rounded-full min-w-max custom-button-blue">
+            <%= currentLanguage==='en' ? 'Smart Rainforest Industry Regeneration' : '智慧雨林產業創生' %>
+        </a>
     </nav>
     <!-- 左箭頭按鈕 -->
     <button id="scroll-left" class="absolute left-0 sm:left-10 z-10 px-2 py-2 text-gray-600 bg-white rounded-full shadow-md hover:bg-gray-100 focus:outline-none">
@@ -41,33 +53,285 @@
 <div class="w-screen relative" style="left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
     <hr class="border-t-2 border-gray-200 mb-16">
 </div>
-
-<!-- datacenter -->
-<% if (items && items.length> 0) { %>
-<% items.forEach(item=> { %>
-<section id="datacenter" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-    <h2 class="h4 mb-8"><%= language==='en' ? item.title_en : item.title_tw %></h2>
+<!-- Aboutplatform -->
+<section id="platform" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
+    <h4 class="mb-8">
+        <%= currentLanguage==='en' ? 'Taiwan Smart System Integrated Manufacturing Platform' : '臺灣智慧系統整合製造平台' %>
+    </h4>
     <!-- Hero Image -->
     <div class="relative rounded-3xl overflow-hidden mb-8">
-        <img src="/<%= item.imagePath %>" alt="<%= language === 'en' ? item.title_en : item.title_tw %>" class="w-full h-64 md:h-96 object-cover">
+        <img src="../images/desktop/platformbg.jpg" alt="Green Innovation" class="w-full h-64 md:h-96 object-cover">
+    </div>
+    <!-- Intro -->
+    <h4 class="mb-6">
+        <%= currentLanguage==='en' ? 'Introduction' : '介紹' %>
+    </h4>
+
+    <div class="space-y-4 text-gray-700">
+        <p class="">
+            <%= currentLanguage==='en' ? 
+            'To assist small and medium-sized enterprises (SMEs) and traditional industries in their digital transformation and intelligent development, the National Science and Technology Council has launched the "Greater Southern Silicon Valley Promotion Plan." As part of this initiative, the Taiwan Smart System Integration and Manufacturing Platform was established to focus on key areas such as AI technology innovation, system integration capabilities, and industrial intelligence enhancement. This platform serves as a bridge between northern and southern Taiwan’s AI-driven industries, connecting resources across different regions.' : 
+            '為協助中小微企業、傳產等產業進行數位化及智慧化發展轉型，國科會宣布「大南方新矽谷推動方案」，旨在推動臺灣具備「AI科技的研發能力」、「系統整合能力」、「協助產業運用AI提升價值」，均衡臺灣南北發展建立「臺灣智慧系統整合製造平台」，鏈結台灣AI、半導體及電子資通訊能量，為百工百業提供技術整合與加值服務，協助產業升級。' %>
+        </p>
+        
+        <p class="">
+            <%= currentLanguage==='en' ? 
+            'This platform primarily targets advanced manufacturing industries, offering technical support and solutions. The key services include system software and hardware integration, embedded software and firmware development, and intelligent control systems. By combining AI-driven automation and smart technologies, the platform helps businesses accelerate their transition into smart manufacturing and intelligent production. The platform operates as an open hub, integrating cross-industry applications and smart manufacturing solutions. It provides customized technology matchmaking to connect SMEs with technology providers, fulfilling the demand for industrial upgrades and enhancing their global competitiveness.' : 
+            '本平台針對跨領域共通性產業需求，提供產業所需之服務，主要項目包括「系統規格制訂」、「軟體客制化開發」、「硬體客制化設計」、「系統試製與雛形驗證」等，致力於協助產業開發可落地之應用，並成為典範案例帶動產業擴散，讓多元產業皆受惠。本平台採開放式精神，納入不同產業供應端解決方案，透過本平台進行整合及提供加值服務，以期改善供需對接效率，滿足少量多樣客製化需求，助力國內產業從硬體製造導向邁向自主創新應用，掌握AI系統設計能力。' %>            
+        </p>
+    </div>
+    <!-- Divider -->
+    <div class="my-8">
+        <hr class="border-t-2 border-gray-200">
+    </div>
+
+    <!-- Client -->
+    <h4 class="mb-6">
+        <%= currentLanguage==='en' ? 'Target Clients' : '服務對象' %>
+    </h4>
+    <p class="">
+        <%= currentLanguage==='en' ? 'The platform is designed for businesses that do not yet have system integration capabilities but require AI-enabled smart system applications or software-hardware integration solutions (including system architecture, chip design, and embedded software development). It primarily serves small and medium-sized enterprises (SMEs), traditional industries, and innovation-driven startups in Taiwan’s industrial ecosystem.' : 
+        '現有供應鏈無法或沒有意願服務，但有「AI/智慧系統應用」或「軟硬體模組開發（含系統模組與晶片設計）」需求的中小、傳產/新創/跨域系統業者。' %>
+    </p>
+    <!-- Divider -->
+    <div class="my-8">
+        <hr class="border-t-2 border-gray-200">
+    </div>
+
+
+    <!-- Services -->
+    <h4 class="mb-6">
+        <%= currentLanguage==='en' ? 'Platform Structure and Services' : '平台架構與服務項目' %>
+    </h4>
+    
+    <!-- Hero Image -->
+    <div class="relative rounded-lg overflow-hidden mb-8">
+        <img src="../images/platformArchitecture.png" alt="Green Innovation" class="w-full object-contain">
+    </div>
+
+    <!-- Divider -->
+    <div class="my-8">
+        <hr class="border-t-2 border-gray-200">
+    </div>
+
+    <!-- Partners Section -->
+    <h4 class="mb-6"><%= currentLanguage==='en' ? 'Partners' : '合作伙伴' %></h4>
+    <div class="flex flex-col sm:flex-row">
+        <!-- 手機版下拉選單 -->
+        <div class="block w-full sm:hidden mb-6 p-2 relative rounded-xl border">
+            <select id="platform-select" class="w-full  text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none">
+                <option value="metal" selected>金屬加工</option>
+                <option value="plastic">智慧鞋業</option>
+                <option value="shoes">智慧鞋業</option>
+                <option value="health">智慧健康</option>
+                <option value="hospitality">餐飲/住宿</option>
+                <option value="retail">智慧零售</option>
+            </select>
+            <!-- 自定義下拉箭頭 -->
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- 左側選單 (Desktop) -->
+        <div class="hidden sm:block sm:w-3/12 mr-6">
+            <ul class="">
+                <li class="">
+                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 border-l-4 border-custom-blue" type="button">
+                        <%= currentLanguage==='en' ? 'Metal Processing' : '金屬加工' %>
+                    </button>
+                </li>
+                <li class="">
+                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
+                        <%= currentLanguage==='en' ? 'Smart Footwear' : '智慧鞋業' %>
+                    </button>
+                </li>
+                <li class="">
+                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
+                        <%= currentLanguage==='en' ? 'Smart Healthcare' : '智慧健康' %>
+                    </button>
+                </li>
+                <li class="">
+                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
+                        <%= currentLanguage==='en' ? 'Food & Hospitality' : '餐飲/住宿' %>
+                    </button>
+                </li>
+                
+                <li class="">
+                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
+                        <%= currentLanguage==='en' ? 'Semiconductor' : '半導體' %>
+                    </button>
+                </li>
+                <li class="">
+                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
+                        <%= currentLanguage==='en' ? 'Smart manufacturing' : '智慧製造' %>
+                    </button>
+                </li>
+                <li class="">
+                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
+                        <%= currentLanguage==='en' ? 'Smart energy' : '智慧能源' %>
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 主內容區 -->
+        <div class="w-full sm:w-9/12">
+            <!-- 頂部標籤頁 -->
+            <div class="bg-white border-2 rounded-xl border-gray-100 p-4 mb-6 min-h-full">
+                <div class="flex justify-center">
+                    <button class="companyTab px-4 py-2 border-b-2 border-custom-blue text-custom-blue font-medium">
+                        <%= currentLanguage==='en' ? 'Suppliers' : '供應商' %>
+                    </button>
+                    <button class="companyTab px-4 py-2 border-b-2 border-gray-100 text-gray-500">
+                        <%= currentLanguage==='en' ? 'Buyers' : '需求商' %></button>
+                </div>
+
+                <!-- 供應商列表 -->
+                <div class="supplierList py-6 grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4">
+                    <!-- 供應商卡片 -->
+                    <div class="partner-card h-full flex items-center justify-center">
+                        <p class="text-center">廣杰精機股份有限公司</p>
+                    </div>
+                    <div class="partner-card h-full flex items-center justify-center">
+                        <p class="text-center">艾肯林科技股份有限公司</p>
+                    </div>
+                    <div class="partner-card h-full flex items-center justify-center">
+                        <p class="text-center">怡邦精密有限公司</p>
+                    </div>
+                    <div class="partner-card h-full flex items-center justify-center">
+                        <p class="text-center">達明機器人股份有限公司</p>
+                    </div>
+                    <div class="partner-card h-full flex items-center justify-center">
+                        <p class="text-center">帆宣系統科技股份有限公司</p>
+                    </div>
+                </div>
+                <!-- 需求商列表 -->
+                <div class="demanderList py-6 hidden grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4">
+                    <!-- 需求商卡片 -->
+                    <div class="partner-card h-full flex items-center justify-center">
+                        <p class="text-center">需求商卡片</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 簡單的標籤切換功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryTabs = document.querySelectorAll('.categoryTab');
+            const companyTabs = document.querySelectorAll('.companyTab');
+            const supplierList = document.querySelector('.supplierList');
+            const demanderList = document.querySelector('.demanderList');
+            
+            categoryTabs.forEach(categoryTab => {
+                categoryTab.addEventListener('click', function() {
+                    // 移除所有標籤的活動狀態
+                    categoryTabs.forEach(t => {
+                        t.classList.remove('border-custom-blue', 'border-l-4');
+                        t.classList.add('text-gray-500');
+                    });
+                    
+                    // 設置當前標籤為活動狀態
+                    this.classList.remove('text-gray-500');
+                    this.classList.add('border-custom-blue', 'border-l-4');
+                });
+            });
+
+            companyTabs.forEach((companyTab, index) => {
+                companyTab.addEventListener('click', function() {
+                    companyTabs.forEach(tab => {
+                        // 切換標籤樣式
+                        tab.classList.toggle('border-custom-blue', tab === this);
+                        tab.classList.toggle('text-custom-blue', tab === this);
+                        tab.classList.toggle('text-gray-500', tab !== this);
+                        tab.classList.toggle('border-gray-100', tab !== this);
+                    });
+                    // 切換內容顯示
+                    const isSupplierTab = index === 0;
+                    supplierList.classList.toggle('grid', isSupplierTab);
+                    supplierList.classList.toggle('hidden', !isSupplierTab);
+                    demanderList.classList.toggle('grid', !isSupplierTab);
+                    demanderList.classList.toggle('hidden', isSupplierTab);
+                });
+            });
+        });
+    </script>
+
+    <!-- Divider -->
+    <div class="my-8">
+        <hr class="border-t-2 border-gray-200">
+    </div>
+
+    <!-- Apply -->
+    <h4 class="mb-6">
+        <%= currentLanguage==='en' ? 'Online Application & Membership' : '線上申請加入' %>
+    </h4>
+    <p class="">
+        <%= currentLanguage==='en' ? 'We welcome businesses to submit collaborative R&D needs and common industry challenges so that we can co-develop solutions and standardize services to address industrial pain points, reduce costs, add value, and expand into new markets.' : 
+        '歡迎企業提出共通性需求和痛點，共同針對需求提出解決方案與訂定規格，解決產業問題助力降低成本、加值升級或創造新市場。' %>
+        <br>
+        <br>
+        <%= currentLanguage==='en' ? 'Contact Information' : '計畫聯絡窗口' %>
+        <br>
+        <%= currentLanguage==='en' ? 'Industrial Technology Research Institute (ITRI) - Smart Optical System Department' : '' %>
+        <br>
+        <%= currentLanguage==='en' ? 'Mr. JM' : '工研院電光所 盧俊銘副所長' %>：  jm@itri.org.tw  (03)591-9019 
+        <br>
+        <%= currentLanguage==='en' ? 'Ms. Wang Chihua' : '工研院電光所 王秋華經理' %>：  wangchiuhua@itri.org.tw  (06)363-6728
+    </p>
+
+    <!-- Divider -->
+    <div class="my-8">
+        <hr class="border-t-2 border-gray-200">
+    </div>
+
+    <!-- Intro -->
+    <h4 class="mb-6"><%= currentLanguage==='en' ? 'File Download' : '檔案下載' %></h4>
+    <!-- 橫幅卡片 -->
+    <div class="bg-gray-100 rounded-2xl">
+        <div class="flex items-center justify-between px-6 py-2">
+            <!-- 標題部分 -->
+            <p class="">
+                <%= currentLanguage==='en' ? 'Taiwan Smart System Integration and Manufacturing Platform Introduction' : '臺灣智慧系統整合製造平台介紹' %>
+            </p>
+            
+            <!-- 下載按鈕部分 -->
+            <a href="https://drive.google.com/file/d/1PjEGjovLQCdiwx4V_SX2OEInv2Af9vby/view" target="_blank" class="inline-flex items-center px-0 sm:px-5 py-0">
+                <img src="../images/downloadcloud.png" alt="下載雲" class="h-8 mr-0 sm:mr-2 object-contain">
+                <span class="hidden sm:block">
+                    <%= currentLanguage==='en' ? 'File Download' : '檔案下載' %>
+                </span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- datacenter -->
+<section id="datacenter" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
+    <h4 class="mb-8">
+        <%= currentLanguage==='en' ? 'AI Computing Data Center Construction' : 'AI運算資料中心建置' %>
+    </h4>
+    <!-- Hero Image -->
+    <div class="relative rounded-3xl overflow-hidden mb-8">
+        <img src="../images/promotion_ai.png" alt="Green Innovation" class="w-full h-64 md:h-96 object-cover">
     </div>
     <!-- Description and CTA in flex layout -->
     <div class="flex flex-col lg:flex-row lg:space-x-6">
         <!-- Description on left - 8/12 width on desktop -->
         <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
             <p class="">
-                <% const content=language==='en' ? item.content_en : item.content_tw; const
-                    plainText=content.replace(/<[^>]*>/g, '');
-                    const summary = plainText.length > 150 ? plainText.substring(0, 150) + '...' : plainText;
-                    %>
-                    <%= summary %>
+                <!-- 本推動方案將建設數位基礎環境，提供大南方產業生態系所需的高品質與高安全運算資源與協作環境，並提供運算資源挹注新創與企業。本中心規劃引進高速運算主機，滿足AI運算對資料與算力的高度需求，並打造新世代智慧節能IDC機房。機房採用綠能設施，如燃氣發電機、釩液流儲能系統與太陽能發電系統，建構智慧防災微電網，進一步降低PUE能耗，以實現節能減碳與淨零排放的永續發展目標。AI運算資料中心將成為國內AI發展的重要基礎設施，推動產業創新與科技應用，加速智慧化時代的來臨。 -->
             </p>
         </div>
         
         <!-- CTA Button on right - 4/12 width on desktop -->
         <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
-            <a href="<%= item.url || '#' %>" class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
-                <span><%= language==='en' ? 'Enter ' + item.title_en : '進入 ' + item.title_tw %></span>
+            <a href="#" class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
+                <span>進入AI運算資料中心建置</span>
                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
@@ -75,5 +339,123 @@
         </div>
     </div>
 </section>
-<% }); %>
-<% } %>
+
+<!-- health -->
+<section id="health" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
+    <h4 class="mb-8">
+        <%= currentLanguage==='en' ? 'Smart Healthcare Industry Innovation Park' : '智慧健康產業創新園區' %>
+    </h4>
+    <!-- Hero Image -->
+    <div class="relative rounded-3xl overflow-hidden mb-8">
+        <img src="../images/promotion_health.png" alt="Green Innovation" class="w-full h-64 md:h-96 object-cover">
+    </div>
+    <!-- Description and CTA in flex layout -->
+    <div class="flex flex-col lg:flex-row lg:space-x-6">
+        <!-- Description on left - 8/12 width on desktop -->
+        <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
+            <p class="">
+                <!-- 本推動方案將建設數位基礎環境，提供大南方產業生態系所需的高品質與高安全運算資源與協作環境，並提供運算資源挹注新創與企業。本中心規劃引進高速運算主機，滿足AI運算對資料與算力的高度需求，並打造新世代智慧節能IDC機房。機房採用綠能設施，如燃氣發電機、釩液流儲能系統與太陽能發電系統，建構智慧防災微電網，進一步降低PUE能耗，以實現節能減碳與淨零排放的永續發展目標。AI運算資料中心將成為國內AI發展的重要基礎設施，推動產業創新與科技應用，加速智慧化時代的來臨。 -->
+            </p>
+        </div>
+        
+        <!-- CTA Button on right - 4/12 width on desktop -->
+        <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
+            <a href="#" class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
+                <span>進入智慧健康產業創新園區</span>
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- green -->
+<section id="green" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
+    <h4 class="mb-8">
+        <%= currentLanguage==='en' ? 'Net-Zero Green Energy Demonstration Zone' : '淨零綠能示範場域' %>
+    </h4>
+    <!-- Hero Image -->
+    <div class="relative rounded-3xl overflow-hidden mb-8">
+        <img src="../images/desktop/promotionbg.png" alt="Green Innovation" class="w-full h-64 md:h-96 object-cover">
+    </div>
+    <!-- Description and CTA in flex layout -->
+    <div class="flex flex-col lg:flex-row lg:space-x-6">
+        <!-- Description on left - 8/12 width on desktop -->
+        <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
+            <p class="">
+                <!-- 本推動方案將建設數位基礎環境，提供大南方產業生態系所需的高品質與高安全運算資源與協作環境，並提供運算資源挹注新創與企業。本中心規劃引進高速運算主機，滿足AI運算對資料與算力的高度需求，並打造新世代智慧節能IDC機房。機房採用綠能設施，如燃氣發電機、釩液流儲能系統與太陽能發電系統，建構智慧防災微電網，進一步降低PUE能耗，以實現節能減碳與淨零排放的永續發展目標。AI運算資料中心將成為國內AI發展的重要基礎設施，推動產業創新與科技應用，加速智慧化時代的來臨。 -->
+            </p>
+        </div>
+        
+        <!-- CTA Button on right - 4/12 width on desktop -->
+        <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
+            <a href="#" class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
+                <span>進入淨零綠能示範場域</span>
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- security -->
+<section id="security" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
+    <h4 class="mb-8">
+        <%= currentLanguage==='en' ? 'Cybersecurity and Smart Technology Zone' : '資安暨智慧科技專區' %>
+    </h4>
+    <!-- Hero Image -->
+    <div class="relative rounded-3xl overflow-hidden mb-8">
+        <img src="../images/desktop/promotionbg.png" alt="Green Innovation" class="w-full h-64 md:h-96 object-cover">
+    </div>
+    <!-- Description and CTA in flex layout -->
+    <div class="flex flex-col lg:flex-row lg:space-x-6">
+        <!-- Description on left - 8/12 width on desktop -->
+        <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
+            <p class="">
+                <!-- 本推動方案將建設數位基礎環境，提供大南方產業生態系所需的高品質與高安全運算資源與協作環境，並提供運算資源挹注新創與企業。本中心規劃引進高速運算主機，滿足AI運算對資料與算力的高度需求，並打造新世代智慧節能IDC機房。機房採用綠能設施，如燃氣發電機、釩液流儲能系統與太陽能發電系統，建構智慧防災微電網，進一步降低PUE能耗，以實現節能減碳與淨零排放的永續發展目標。AI運算資料中心將成為國內AI發展的重要基礎設施，推動產業創新與科技應用，加速智慧化時代的來臨。 -->
+            </p>
+        </div>
+        
+        <!-- CTA Button on right - 4/12 width on desktop -->
+        <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
+            <a href="#" class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
+                <span>進入資安暨智慧科技專區</span>
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- forest -->
+<section id="forest" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
+    <h4 class="mb-8">
+        <%= currentLanguage==='en' ? 'Smart Rainforest Industry Regeneration' : '智慧雨林產業創生' %>
+    </h4>
+    <!-- Hero Image -->
+    <div class="relative rounded-3xl overflow-hidden mb-8">
+        <img src="../images/promotion_forest.png" alt="Green Innovation" class="w-full h-64 md:h-96 object-cover">
+    </div>
+    <!-- Description and CTA in flex layout -->
+    <div class="flex flex-col lg:flex-row lg:space-x-6">
+        <!-- Description on left - 8/12 width on desktop -->
+        <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
+            <p class="">
+                <!-- 本推動方案將建設數位基礎環境，提供大南方產業生態系所需的高品質與高安全運算資源與協作環境，並提供運算資源挹注新創與企業。本中心規劃引進高速運算主機，滿足AI運算對資料與算力的高度需求，並打造新世代智慧節能IDC機房。機房採用綠能設施，如燃氣發電機、釩液流儲能系統與太陽能發電系統，建構智慧防災微電網，進一步降低PUE能耗，以實現節能減碳與淨零排放的永續發展目標。AI運算資料中心將成為國內AI發展的重要基礎設施，推動產業創新與科技應用，加速智慧化時代的來臨。 -->
+            </p>
+        </div>
+        
+        <!-- CTA Button on right - 4/12 width on desktop -->
+        <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
+            <a href="#" class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
+                <span>進入智慧雨林產業創生</span>
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
