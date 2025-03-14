@@ -119,7 +119,7 @@ h4, .h4 {
     letter-spacing: 2.8px;
     color: var(--color-custom-blue);
 }
-h5 {
+h5, .h5 {
     font-size: 0.875rem;
     color: var(--color-custom-blue);
 }
@@ -215,7 +215,7 @@ main {
     h4, .h4 {
         font-size: 1.875rem;
     }
-    h5 {
+    h5, .h5 {
         font-size: 1.25rem;
     }
     p, label {
@@ -266,7 +266,7 @@ main {
         font-size: 1.75rem;
 
     }
-    h5 {
+    h5, .h5 {
         font-size: 1.25rem;
     }
     p, label {
