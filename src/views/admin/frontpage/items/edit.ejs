@@ -1,0 +1,211 @@
+<%- contentFor('header') %>
+  <div class="bg-white shadow">
+    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      <h1 class="text-3xl font-bold text-gray-900">編輯首頁項目</h1>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div class="px-4 py-6 sm:px-0">
+      <div class="bg-white shadow overflow-hidden sm:rounded-lg p-6">
+        <form action="/admin/frontpage/items/<%= item.id %>" method="POST" enctype="multipart/form-data">
+          <div class="mb-4">
+            <label for="type" class="block text-sm font-medium text-gray-700 mb-2">類型</label>
+            <select id="type" name="type"
+              class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required>
+              <option value="plain_text" <%=item.type==='plain_text' ? 'selected' : '' %>>純文字</option>
+              <option value="picture" <%=item.type==='picture' ? 'selected' : '' %>>圖片</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label for="categoryId" class="block text-sm font-medium text-gray-700 mb-2">分類</label>
+            <select id="categoryId" name="categoryId"
+              class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required>
+              <% categories.forEach(function(category) { %>
+                <option value="<%= category.id %>" <%=item.categoryId===category.id ? 'selected' : '' %>><%=
+                    category.name_tw %>
+                </option>
+                <% }); %>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label for="title_tw" class="block text-sm font-medium text-gray-700 mb-2">標題 (中文)</label>
+            <input type="text" id="title_tw" name="title_tw" value="<%= item.title_tw %>"
+              class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required>
+          </div>
+
+          <div class="mb-4">
+            <label for="title_en" class="block text-sm font-medium text-gray-700 mb-2">標題 (英文)</label>
+            <input type="text" id="title_en" name="title_en" value="<%= item.title_en %>"
+              class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required>
+          </div>
+
+          <div id="content-fields" class="mb-4 <%= item.type === 'picture' ? 'hidden' : '' %>">
+            <div class="mb-4">
+              <label for="content_tw" class="block text-sm font-medium text-gray-700 mb-2">內容 (中文)</label>
+              <textarea id="content_tw" name="content_tw" rows="5"
+                class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"><%= item.content_tw || '' %></textarea>
+            </div>
+
+            <div class="mb-4">
+              <label for="content_en" class="block text-sm font-medium text-gray-700 mb-2">內容 (英文)</label>
+              <textarea id="content_en" name="content_en" rows="5"
+                class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"><%= item.content_en || '' %></textarea>
+            </div>
+          </div>
+
+          <div id="image-upload" class="mb-4 <%= item.type === 'plain_text' ? 'hidden' : '' %>">
+            <% if (item.images && item.images.length> 0) { %>
+              <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">現有圖片</label>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <% item.images.forEach(function(image, index) { %>
+                    <div class="relative border rounded p-2">
+                      <img src="<%= image.path %>" alt="Image <%= index + 1 %>" class="w-full h-32 object-cover">
+                      <div class="mt-2 flex justify-between items-center">
+                        <span class="text-sm text-gray-500">排序: <%= image.order %></span>
+                        <div>
+                          <input type="hidden" name="existingImages[]" value="<%= image.id %>">
+                          <input type="number" name="imageOrders[<%= image.id %>]" value="<%= image.order %>" min="0"
+                            class="w-16 py-1 px-2 border border-gray-300 rounded text-sm">
+                          <button type="button" class="delete-image ml-2 text-red-500 hover:text-red-700"
+                            data-id="<%= image.id %>">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <% }); %>
+                </div>
+              </div>
+              <% } %>
+
+                <label class="block text-sm font-medium text-gray-700 mb-2">新增圖片 (最多10張)</label>
+                <div id="image-container" class="grid grid-cols-2 gap-4 mb-4">
+                  <div class="image-upload-item">
+                    <input type="file" name="images[]" accept="image/*"
+                      class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                  </div>
+                </div>
+                <button type="button" id="add-image"
+                  class="mt-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  新增圖片
+                </button>
+          </div>
+
+          <div class="mb-4">
+            <label for="order" class="block text-sm font-medium text-gray-700 mb-2">排序</label>
+            <input type="number" id="order" name="order" value="<%= item.order %>" min="0"
+              class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          </div>
+
+          <div class="mb-4">
+            <label for="status" class="block text-sm font-medium text-gray-700 mb-2">狀態</label>
+            <select id="status" name="status"
+              class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              <option value="draft" <%=item.status==='draft' ? 'selected' : '' %>>草稿</option>
+              <option value="published" <%=item.status==='published' ? 'selected' : '' %>>發布</option>
+            </select>
+          </div>
+
+          <div class="flex justify-end">
+            <a href="/admin/frontpage"
+              class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2">
+              取消
+            </a>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              更新
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const typeSelect = document.getElementById('type');
+      const contentFields = document.getElementById('content-fields');
+      const imageUpload = document.getElementById('image-upload');
+      const addImageBtn = document.getElementById('add-image');
+      const imageContainer = document.getElementById('image-container');
+
+      // Toggle fields based on selected type
+      typeSelect.addEventListener('change', function () {
+        if (this.value === 'plain_text') {
+          contentFields.classList.remove('hidden');
+          imageUpload.classList.add('hidden');
+        } else if (this.value === 'picture') {
+          contentFields.classList.add('hidden');
+          imageUpload.classList.remove('hidden');
+        }
+      });
+
+      // Add more image upload fields
+      let imageCount = 1;
+      const existingImagesCount = <%= item.images ?item.images.length: 0 %>;
+
+      addImageBtn.addEventListener('click', function () {
+        if (imageCount + existingImagesCount < 10) {
+          const newImageInput = document.createElement('div');
+          newImageInput.className = 'image-upload-item';
+          newImageInput.innerHTML = `
+                    <div class="flex items-center">
+                        <input type="file" name="images[]" accept="image/*" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <button type="button" class="remove-image ml-2 text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+          imageContainer.appendChild(newImageInput);
+          imageCount++;
+
+          // Add event listener to remove button
+          const removeBtn = newImageInput.querySelector('.remove-image');
+          removeBtn.addEventListener('click', function () {
+            imageContainer.removeChild(newImageInput);
+            imageCount--;
+
+            if (imageCount + existingImagesCount < 10) {
+              addImageBtn.disabled = false;
+            }
+          });
+        }
+
+        if (imageCount + existingImagesCount >= 10) {
+          addImageBtn.disabled = true;
+        }
+      });
+
+      // Delete existing images
+      const deleteButtons = document.querySelectorAll('.delete-image');
+      deleteButtons.forEach(button => {
+        button.addEventListener('click', function () {
+          const imageId = this.getAttribute('data-id');
+          const imageContainer = this.closest('.relative');
+
+          // Add a hidden input to mark this image for deletion
+          const deleteInput = document.createElement('input');
+          deleteInput.type = 'hidden';
+          deleteInput.name = 'deleteImages[]';
+          deleteInput.value = imageId;
+          document.querySelector('form').appendChild(deleteInput);
+
+          // Hide the image container
+          imageContainer.style.display = 'none';
+
+          // Update the count
+          existingImagesCount--;
+          if (imageCount + existingImagesCount < 10) {
+            addImageBtn.disabled = false;
+          }
+        });
+      });
+    });
+  </script>

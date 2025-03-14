@@ -110,6 +110,9 @@ router.get('/:language', async (req, res, next) => {
             take: 6 // Limit to 6 links for the homepage
         });
 
+        // Get frontpage items
+        const { plainTextItems, pictureItems } = await frontendController.getFrontpageItems();
+
         // Debug banner information
         logger.info(`Banners found: ${banners.length}`);
         if (banners.length > 0) {
@@ -143,6 +146,8 @@ router.get('/:language', async (req, res, next) => {
             banners: processedBanners,
             navigationPages: navigationPages,
             links: links,
+            plainTextItems: plainTextItems,
+            pictureItems: pictureItems,
             currentLanguage: currentLanguage,
             getContent: getContent,
             layout: 'layouts/frontend'
@@ -168,6 +173,8 @@ router.get('/:language', async (req, res, next) => {
             banners: [],
             navigationPages: [],
             links: [],
+            plainTextItems: [],
+            pictureItems: [],
             currentLanguage: currentLanguage,
             getContent: (item, field) => '',
             layout: 'layouts/frontend'

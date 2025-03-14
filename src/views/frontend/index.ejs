@@ -287,58 +287,116 @@
                 </div>
             </div>
 
-            <!-- Related Links Section -->
-            <% if (links && links.length> 0) { %>
-                <div class="container mx-auto px-4 py-8 mb-12">
-                    <div class="max-w-6xl mx-auto">
-                        <h2 class="text-2xl font-bold mb-6 text-center">
-                            <%= currentLanguage==='en' ? 'Related Links' : '相關連結' %>
-                        </h2>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <% links.forEach(function(link) { %>
-                                <a href="<%= link.url %>" target="_blank" rel="noopener noreferrer" class="block group">
-                                    <div
-                                        class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 transform hover:-translate-y-1 hover:shadow-lg">
-                                        <% if (link.image) { %>
-                                            <div class="h-40 overflow-hidden">
-                                                <img src="<%= link.image %>"
-                                                    alt="<%= currentLanguage==='en' ? link.title_en : link.title_tw %>"
-                                                    class="w-full h-full object-cover transition-transform duration-500 transform group-hover:scale-105">
-                                            </div>
-                                            <% } else { %>
-                                                <div class="h-40 bg-gray-200 flex items-center justify-center">
-                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                        class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24"
-                                                        stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
-                                                        </path>
-                                                    </svg>
-                                                </div>
-                                                <% } %>
-                                                    <div class="p-4">
-                                                        <h3
-                                                            class="text-lg font-semibold text-gray-800 mb-2 group-hover:text-blue-600">
-                                                            <%= currentLanguage==='en' ? link.title_en : link.title_tw
-                                                                %>
-                                                        </h3>
-                                                        <div class="flex items-center text-gray-600 text-sm">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1"
-                                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                                    stroke-width="2"
-                                                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
-                                                                </path>
-                                                            </svg>
-                                                            <%= currentLanguage==='en' ? 'Visit Link' : '訪問連結' %>
-                                                        </div>
-                                                    </div>
+            <!-- Frontpage Plain Text Items Section -->
+            <% if (plainTextItems && plainTextItems.length> 0) { %>
+                <div class="bg-gray-50 py-12">
+                    <div class="container mx-auto px-4">
+                        <div class="grid grid-cols-1 gap-8">
+                            <% plainTextItems.forEach(function(item) { %>
+                                <div
+                                    class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                                    <div class="p-6">
+                                        <h3 class="text-xl font-semibold mb-4">
+                                            <%= currentLanguage==='en' ? item.title_en : item.title_tw %>
+                                        </h3>
+                                        <div class="text-gray-600 whitespace-pre-line">
+                                            <%- currentLanguage==='en' ? item.content_en : item.content_tw %>
+                                        </div>
                                     </div>
-                                </a>
+                                </div>
                                 <% }); %>
                         </div>
                     </div>
                 </div>
                 <% } %>
+
+                    <!-- Frontpage Picture Items Section -->
+                    <% if (pictureItems && pictureItems.length> 0) { %>
+                        <div class="py-12">
+                            <div class="container mx-auto px-4">
+                                <% pictureItems.forEach(function(item) { %>
+                                    <div class="mb-16">
+                                        <h2 class="text-2xl font-bold mb-8 text-center">
+                                            <%= currentLanguage==='en' ? item.title_en : item.title_tw %>
+                                        </h2>
+
+                                        <% if (item.images && item.images.length> 0) { %>
+                                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                                                <% item.images.forEach(function(image) { %>
+                                                    <div
+                                                        class="overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                                                        <img src="<%= image.path %>"
+                                                            alt="<%= currentLanguage=== 'en' ? item.title_en : item.title_tw %>"
+                                                            class="w-full h-48 object-cover">
+                                                    </div>
+                                                    <% }); %>
+                                            </div>
+                                            <% } %>
+                                    </div>
+                                    <% }); %>
+                            </div>
+                        </div>
+                        <% } %>
+
+                            <!-- Related Links Section -->
+                            <% if (links && links.length> 0) { %>
+                                <div class="container mx-auto px-4 py-8 mb-12">
+                                    <div class="max-w-6xl mx-auto">
+                                        <h2 class="text-2xl font-bold mb-6 text-center">
+                                            <%= currentLanguage==='en' ? 'Related Links' : '相關連結' %>
+                                        </h2>
+
+                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                            <% links.forEach(function(link) { %>
+                                                <a href="<%= link.url %>" target="_blank" rel="noopener noreferrer"
+                                                    class="block group">
+                                                    <div
+                                                        class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+                                                        <% if (link.image) { %>
+                                                            <div class="h-40 overflow-hidden">
+                                                                <img src="<%= link.image %>"
+                                                                    alt="<%= currentLanguage==='en' ? link.title_en : link.title_tw %>"
+                                                                    class="w-full h-full object-cover transition-transform duration-500 transform group-hover:scale-105">
+                                                            </div>
+                                                            <% } else { %>
+                                                                <div
+                                                                    class="h-40 bg-gray-200 flex items-center justify-center">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        class="h-12 w-12 text-gray-400" fill="none"
+                                                                        viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                                                                        </path>
+                                                                    </svg>
+                                                                </div>
+                                                                <% } %>
+                                                                    <div class="p-4">
+                                                                        <h3
+                                                                            class="text-lg font-semibold text-gray-800 mb-2 group-hover:text-blue-600">
+                                                                            <%= currentLanguage==='en' ? link.title_en :
+                                                                                link.title_tw %>
+                                                                        </h3>
+                                                                        <div
+                                                                            class="flex items-center text-gray-600 text-sm">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                class="h-4 w-4 mr-1" fill="none"
+                                                                                viewBox="0 0 24 24"
+                                                                                stroke="currentColor">
+                                                                                <path stroke-linecap="round"
+                                                                                    stroke-linejoin="round"
+                                                                                    stroke-width="2"
+                                                                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
+                                                                                </path>
+                                                                            </svg>
+                                                                            <%= currentLanguage==='en' ? 'Visit Link'
+                                                                                : '訪問連結' %>
+                                                                        </div>
+                                                                    </div>
+                                                    </div>
+                                                </a>
+                                                <% }); %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% } %>
