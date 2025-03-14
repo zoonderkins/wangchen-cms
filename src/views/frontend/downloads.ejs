@@ -25,8 +25,7 @@
                 <form action="/<%= language %>/downloads" method="GET" class="flex gap-2">
                 <label for="category" class=""><%= language === 'en' ? 'Category' : '分類' %></label>
                 <select id="category" name="category"
-                    class="w-full  text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none"
-                    onchange="this.form.submit()">
+                    class="w-full  text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none">
                     <option value=""><%= language === 'tw' ? '全部分類' : 'All Categories' %></option>
                     <% categories.forEach(function(category) { %>
                         <option value="<%= category.id %>"
@@ -35,6 +34,7 @@
                         </option>
                         <% }); %>
                 </select>
+                <button class="absolute right-10 top-5" type="submit"><%= language === 'en' ? 'Filter' : '篩選' %></button>
                 </form>
                 <!-- 自定義下拉箭頭 -->
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
