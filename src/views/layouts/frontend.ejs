@@ -112,36 +112,36 @@
             <div class="mb-2">
                 <img src="../images/logo/logo-STSVPOwide.png" alt="大南方新矽谷推動辦公室頁尾標誌" class="h-10 mb-3">
                 <p class="mb-1">
-                    <%= currentLanguage==='en' ? 'STSVPO' : '「大南方新矽谷」推動辦公室 (STSVPO)' %>
+                    <%= currentLanguage==='en' ? 'Greater Southern Silicon Valley Promotion Office (STSVPO)' : '「大南方新矽谷」推動辦公室 (STSVPO)' %>
                 </p>
                 <p class="mb-1">
-                    <%= currentLanguage==='en' ? 'Address：711臺南市歸仁區歸仁十三路一段6號5樓D503-1室' : '地址：711臺南市歸仁區歸仁十三路一段6號5樓D503-1室' %>
+                    <%= currentLanguage==='en' ? 'Address: Room 5-03-1, 5th Floor, No. 6, Section 1, Guiren 13th Road, Guiren District, Tainan City, 711, Taiwan' : '地址：711臺南市歸仁區歸仁十三路一段6號5樓D503-1室' %>
                 </p>
                 <p class="mb-1">
-                    <%= currentLanguage==='en' ? 'Telphone：(06) 303-2260 分機523' : '電話：(06) 303-2260 分機523' %>
+                    <%= currentLanguage==='en' ? 'Phone: (06) 303-2260 ext. 523' : '電話：(06) 303-2260 分機523' %>
                 </p>
                 <p class="mb-1">
-                    <%= currentLanguage==='en' ? 'Email：service@stsvpo.org.tw' : '服務信箱：service@stsvpo.org.tw' %>
+                    <%= currentLanguage==='en' ? 'Service Email: service@stsvpo.org.tw' : '服務信箱：service@stsvpo.org.tw' %>
                 </p>
                 <p class="mb-1">
-                    <%= currentLanguage==='en' ? 'PeopleCount： 9 / 9999' : '瀏覽人次： 9 / 9999' %>
+                    <%= currentLanguage==='en' ? 'Website Views: 9 / 9999' : '瀏覽人次： 9 / 9999' %>
                 </p>
                 <p class="mb-0">
                     <a href="security.html">
-                        <%= currentLanguage==='en' ? 'InternetPolicy' : '網站安全政策' %>
+                        <%= currentLanguage==='en' ? 'Website Security Policy' : '網站安全政策' %>
                     </a>　|　
                     <a href="privacy.html">
-                        <%= currentLanguage==='en' ? 'Privacy' : '隱私權政策' %>
+                        <%= currentLanguage==='en' ? 'Privacy Policy' : '隱私權政策' %>
                     </a>　|　
                     <a href="opneinfo.html">
-                        <%= currentLanguage==='en' ? 'Open Information' : '政府網站資料開放宣告' %>
+                        <%= currentLanguage==='en' ? 'Government Website Open Data Declaration' : '政府網站資料開放宣告' %>
                     </a>
                 </p>
             </div>
 
             <!-- Browser Support Info -->
             <p class="text-right mb-0">
-                <%= currentLanguage==='en' ? 'Reccommond Browser Chrome 120 / Edge 120 / Firefox 120 / Safari 17 以上版本瀏覽，Resolution 1,280 × 800 以上' : '建議使用 Chrome 120 / Edge 120 / Firefox 120 / Safari 17 以上版本瀏覽，最佳瀏覽解析度為 1,280 × 800 以上' %>
+                <%= currentLanguage==='en' ? 'Recommended Browsers: Chrome 120 / Edge 120 / Firefox 120 / Safari 17 or later, with an optimal resolution of 1280 × 800 or higher.' : '建議使用 Chrome 120 / Edge 120 / Firefox 120 / Safari 17 以上版本瀏覽，最佳瀏覽解析度為 1,280 × 800 以上' %>
                 
             </p>
 
@@ -152,7 +152,7 @@
             <div class="flex flex-col sm:flex-row justify-between">
                 <span>© 2025 All Rights Reserved.</span>
                 <span>
-                    <%= currentLanguage==='en' ? 'STSVPO Copyright' : '本平台由「大南方新矽谷」推動辦公室委辦維護管理 版權所有' %>
+                    <%= currentLanguage==='en' ? 'This platform is maintained and managed by the Greater Southern Silicon Valley Promotion Office.' : '本平台由「大南方新矽谷」推動辦公室委辦維護管理 版權所有' %>
                 </span>
             </div>
         </div>
@@ -182,6 +182,16 @@
 
             ///////////////////////////////////////////////////////////
 
+            // 獲取所有 section 元素
+            const sections = document.querySelectorAll('section[id]');
+            // 預設顯示第一個標籤內容，隱藏其他
+            sections.forEach((section, index) => {
+                if (index === 0) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
             // 滾動偏移量設定（可調整）
             const scrollOffset = 120;
             // 獲取所有 subtitle 元素
@@ -201,8 +211,18 @@
                     // 為被點擊的元素添加活動樣式
                     this.classList.add('active');
                     
-                    // 如果需要，可以滾動到目標區域
                     const targetId = this.getAttribute('href').substring(1);
+                    
+                    // 顯示目標內容，隱藏其他內容
+                    sections.forEach(section => {
+                        if (section.id === targetId) {
+                            section.classList.remove('hidden');
+                        } else {
+                            section.classList.add('hidden');
+                        }
+                    });
+
+                    // 如果需要，可以滾動到目標區域
                     const targetElement = document.getElementById(targetId);
                     if (targetElement) {
                         const elementPosition = targetElement.getBoundingClientRect().top;
