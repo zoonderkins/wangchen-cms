@@ -474,3 +474,67 @@
         </div>
     </div>
 </section>
+
+<script>
+    // 等待DOM完全加載
+    document.addEventListener('DOMContentLoaded', function() {
+    // 獲取所有 section 元素
+    const sections = document.querySelectorAll('section[id]');
+            // 預設顯示第一個標籤內容，隱藏其他
+            sections.forEach((section, index) => {
+                if (index === 0) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+            
+        ///////////////////////////////////////////////////////////
+
+        // 滾動偏移量設定（可調整）
+        const scrollOffset = 120;
+        // 獲取所有 subtitle 元素
+        const subtitles = document.querySelectorAll('.subtitle');
+        // 為每個 subtitle 添加點擊事件監聽器
+        subtitles.forEach(subtitle => {
+            subtitle.addEventListener('click', function(e) {
+                // 阻止默認的錨點行為
+                // e.preventDefault();
+                
+                // 移除所有 subtitle 的活動樣式
+                subtitles.forEach(s => {
+                    // 移除活動樣式
+                    s.classList.remove('active');
+                });
+
+                // 為被點擊的元素添加活動樣式
+                this.classList.add('active');
+                
+                const targetId = this.getAttribute('href').substring(1);
+
+                // 顯示目標內容，隱藏其他內容
+                sections.forEach(section => {
+                    if (section.id === targetId) {
+                        section.classList.remove('hidden');
+                    } else {
+                        section.classList.add('hidden');
+                    }
+                });
+
+                // 如果需要，可以滾動到目標區域
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - scrollOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        ///////////////////////////////////////////////////////////
+    });
+</script>
