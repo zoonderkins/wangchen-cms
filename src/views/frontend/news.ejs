@@ -1,98 +1,85 @@
 <%- contentFor('body') %>
-
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-6">
-            <%= title %>
-        </h1>
-
-        <!-- Simple Search Form -->
-        <div class="mb-8 bg-white p-4 rounded-lg shadow">
-            <form action="/<%= language %>/news" method="GET" class="flex flex-col md:flex-row gap-4">
-                <div class="flex-grow">
-                    <input type="text" name="search"
-                        placeholder="<%= language === 'tw' ? '搜尋最新消息...' : 'Search news...' %>" value="<%= search %>"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div>
-                    <button type="submit"
-                        class="w-full md:w-auto px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <%= language==='tw' ? '搜尋' : 'Search' %>
-                    </button>
-                </div>
-            </form>
+    <section class="relative">
+        <picture class="block w-full h-full">
+            <source media="(min-width: 1024px)" srcset="../images/desktop/aboutbg_desktop.png">
+            <source media="(min-width: 640px)" srcset="../images/tablet/aboutbg_tablet.png">
+            <img class="w-full h-full object-cover" src="../images/mobile/aboutbg_mobile.png" alt="響應式圖片">
+        </picture>
+        <div class="absolute inset-0 flex flex-col justify-center px-6 sm:px-16 lg:px-32">
+            <h2 class="text-white"><%= title %></h2>
+            <p class="text-white">/ <%= currentLanguage==='en' ? 'Home' : '首頁' %> - <%= title %> /</p>
         </div>
+    </section>
+    <!-- Navigation Tabs -->
+    <nav class="flex my-4 px-6 sm:px-16 lg:px-32 overflow-auto">
+        <a href="#trends" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-blue active">產業動態</a>
+        <a href="#information" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-blue">活動訊息</a>
+    </nav>
+    <!-- Divider -->
+    <div class="w-screen relative" style="left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
+        <hr class="border-t-2 border-gray-200 mb-16">
+    </div>
 
-        <!-- Simple News List -->
-        <div class="space-y-6">
-            <% if (newsItems && newsItems.length> 0) { %>
-                <% newsItems.forEach(function(item) { %>
-                    <div class="bg-white p-4 rounded-lg shadow-md">
-                        <div class="flex flex-col md:flex-row gap-4">
-                            <% if (item.imageUrl) { %>
-                                <div class="md:w-1/4">
-                                    <img src="<%= item.imageUrl %>" alt="<%= item.title %>"
-                                        class="w-full h-auto object-cover rounded">
-                                </div>
-                                <% } %>
-                                    <div class="<%= item.imageUrl ? 'md:w-3/4' : 'w-full' %>">
-                                        <h2 class="text-xl font-semibold mb-2">
-                                            <%= item.title %>
-                                        </h2>
-                                        <div class="flex flex-wrap gap-2 mb-3">
-                                            <span class="text-gray-500 text-sm">
-                                                <%= new Date(item.publishedDate).toLocaleDateString(language==='tw'
-                                                    ? 'zh-TW' : 'en-US' ) %>
-                                            </span>
-                                            <% if (item.category) { %>
-                                                <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
-                                                    <%= item.category.name %>
-                                                </span>
-                                                <% } %>
-                                        </div>
-                                        <% if (item.url) { %>
-                                            <a href="<%= item.url %>" target="_blank"
-                                                class="text-blue-600 hover:underline">
-                                                <%= language==='tw' ? '閱讀更多' : 'Read More' %> →
-                                            </a>
-                                            <% } %>
-                                    </div>
+    <!-- Search Bar -->
+    <div class="relative mx-6 mb-8 sm:mx-16 sm:mb-16 lg:mx-32">
+        <form action="/<%= language %>/news" method="GET" class="flex flex-col md:flex-row gap-4">
+            <input type="text" name="search" placeholder="<%= language === 'tw' ? '搜尋最新消息...' : 'Search news...' %>" value="<%= search %>"
+                class="w-full px-4 py-2 border rounded-lg">
+            <button class="absolute right-3 top-2" type="submit">
+                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="#38B9A1" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </button>
+        </form>
+    </div>
+
+    <!-- News Grid -->
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-8 px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32" id="information">
+        <% if (newsItems && newsItems.length> 0) { %>
+            <% newsItems.forEach(function(item) { %>
+            <!-- News Card 1 -->
+            <a href="<%= item.url %>" target="_blank" class="block">
+                <div class="overflow-hidden">
+                    <img src="<%= item.imageUrl %>" alt="News Image" class="w-full h-48 object-cover rounded-2xl">
+                    <div class="py-4">
+                        <div class="flex justify-between items-center">
+                            <span class="bg-custom-blue text-white text-xs px-2 py-1 rounded"><%= item.category.name %></span>
+                            <p class="text-gray-500 text-sm">
+                                <%= new Date(item.publishedDate).toLocaleDateString(language==='tw' ? 'zh-TW' : 'en-US' ) %>
+                            </p>
                         </div>
+                        <p class="mt-2 line-clamp-2"><%= item.title %></p>
                     </div>
-                    <% }); %>
-                        <% } else { %>
-                            <div class="bg-gray-50 p-8 rounded-lg text-center">
-                                <p class="text-gray-600 text-lg">
-                                    <%= language==='tw' ? '目前沒有可用的最新消息項目。' : 'No news items available yet.' %>
-                                </p>
-                            </div>
-                            <% } %>
-        </div>
+                </div>
+            </a>
+            <% }) %>
+        <% } %>
+    </section>
 
-        <!-- Pagination -->
-        <% if (totalPages> 1) { %>
-            <div class="mt-8 flex justify-center">
-                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                    <% if (currentPage> 1) { %>
-                        <a href="?page=<%= currentPage - 1 %><%= search ? '&search=' + search : '' %>"
-                            class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                            <%= language==='tw' ? '上一頁' : 'Previous' %>
+    <!-- Pagination -->
+    <% if (totalPages> 1) { %>
+    <div class="mb-16 flex justify-center">
+        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            <% if (currentPage> 1) { %>
+                <a href="?page=<%= currentPage - 1 %><%= search ? '&search=' + search : '' %>"
+                    class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    <%= language==='tw' ? '上一頁' : 'Previous' %>
+                </a>
+                <% } %>
+
+                    <% for(let i=1; i <=totalPages; i++) { %>
+                        <a href="?page=<%= i %><%= search ? '&search=' + search : '' %>"
+                            class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium <%= currentPage === i ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:bg-gray-50' %>">
+                            <%= i %>
                         </a>
                         <% } %>
 
-                            <% for(let i=1; i <=totalPages; i++) { %>
-                                <a href="?page=<%= i %><%= search ? '&search=' + search : '' %>"
-                                    class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium <%= currentPage === i ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:bg-gray-50' %>">
-                                    <%= i %>
+                            <% if (currentPage < totalPages) { %>
+                                <a href="?page=<%= currentPage + 1 %><%= search ? '&search=' + search : '' %>"
+                                    class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <%= language==='tw' ? '下一頁' : 'Next' %>
                                 </a>
                                 <% } %>
-
-                                    <% if (currentPage < totalPages) { %>
-                                        <a href="?page=<%= currentPage + 1 %><%= search ? '&search=' + search : '' %>"
-                                            class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                            <%= language==='tw' ? '下一頁' : 'Next' %>
-                                        </a>
-                                        <% } %>
-                </nav>
-            </div>
-            <% } %>
+        </nav>
     </div>
+    <% } %>

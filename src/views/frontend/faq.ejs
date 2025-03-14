@@ -4,8 +4,70 @@
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 
     <%- contentFor('body') %>
+    <section class="relative">
+        <picture class="block w-full h-full">
+            <source media="(min-width: 1024px)" srcset="../images/desktop/aboutbg_desktop.png">
+            <source media="(min-width: 640px)" srcset="../images/tablet/aboutbg_tablet.png">
+            <img class="w-full h-full object-cover" src="../images/mobile/aboutbg_mobile.png" alt="響應式圖片">
+        </picture>
+        <div class="absolute inset-0 flex flex-col justify-center px-6 sm:px-16 lg:px-32">
+            <h2 class="text-white"><%= title %></h2>
+            <p class="text-white">/ <%= currentLanguage==='en' ? 'Home' : '首頁' %> - <%= title %> /</p>
+        </div>
+    </section>
 
-        <div class="container mx-auto px-4 py-8">
+    <!-- Navigation Tabs -->
+    <% if (categories && categories.length> 0) { %>
+    <nav class="flex my-4 px-6 sm:px-16 lg:px-32 overflow-auto">
+        <% categories.forEach(function(category, index) { %>
+        <a href="#platform" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-blue active">
+            <%= currentLanguage==='en' ? category.name_en : category.name_tw %>
+        </a>
+        <% }); %>
+    </nav>
+    <% } %>
+
+    <!-- Divider -->
+    <div class="w-screen relative" style="left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
+        <hr class="border-t-2 border-gray-200 mb-16">
+    </div>
+
+    <!-- Search Bar -->
+    <div class="relative mx-6 mb-8 sm:mx-16 sm:mb-16 lg:mx-32">
+        <input type="text" placeholder="請輸入關鍵字" class="w-full px-4 py-4 border rounded-xl">
+        <button class="absolute right-3 top-4">
+            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- platform -->
+    <% categories.forEach(function(category, index) { %>
+        <% if (category.faqItems && category.faqItems.length> 0) { %>
+        <section id="platform" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32">
+            <% category.faqItems.forEach(function(item, itemIndex) { %>
+            <div class="accordion">
+                <button class="accordion-header w-full mb-6 flex justify-between items-center" type="button">
+                    <h4 class=""><%= currentLanguage==='en' ? item.title_en : item.title_tw %></h4>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="accordion-icon h-6 w-6 chevron-icon text-custom-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <p class="accordion-content overflow-hidden">
+                    國內產業在數位化與智慧化轉型過程中，規模較小的企業因少量多樣的需求，面臨供應鏈服務不足的困境。「臺灣智慧系統整合製造平台」針對產業共通需求，將鏈結產學研發展具共通可擴散之平台軟硬體技術方案，針對企業轉型過程中所需之晶片暨系統整合設計需求，提供一站式服務及多元解決方案，縮短供應端與需求端的落差，促使整體產業生態更加均衡發展，讓多元產業受惠。
+                </p>
+            </div>
+            <!-- Divider -->
+            <div class="my-8">
+                <hr class="border-t-2 border-gray-200">
+            </div>
+            <% }); %>
+        </section>
+        <% } %>
+    <% }); %>
+    
+        <div class="container mx-auto px-4 py-8 hidden">
             <div class="max-w-4xl mx-auto">
                 <h1 class="text-3xl font-bold mb-6">
                     <%= currentLanguage==='en' ? 'Frequently Asked Questions' : '常見問題' %>

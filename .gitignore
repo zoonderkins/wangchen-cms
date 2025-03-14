@@ -1,7 +1,7 @@
 # 
 check-banners.js
 # Public
-public/
+#public/
 # uploads
 uploads/
 
@@ -141,3 +141,4 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+.DS_Store

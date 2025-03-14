@@ -5,124 +5,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        <%= typeof title !=='undefined' ? title + ' - ' : '' %>Your Website Name
+        <%= typeof title !=='undefined' ? title + ' - ' : '' %>「大南方新矽谷」推動辦公室
     </title>
+    
+    <!-- splidejs -->
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../main.css">
+
     <%- defineContent('head') %>
 </head>
 
 <body class="bg-white">
     <!-- Header -->
-    <header class="bg-white shadow-sm">
-        <nav class="container mx-auto px-6 py-3">
-            <div class="flex justify-between items-center">
-                <div class="text-2xl font-bold">
-                    <a href="/<%= currentLanguage %>">Your Website</a>
-                </div>
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="/<%= currentLanguage %>" class="text-gray-700 hover:text-gray-900">
-                        <%= currentLanguage==='en' ? 'Home' : '首頁' %>
-                    </a>
-
-                    <% if (navigationPages && navigationPages.length> 0) { %>
-                        <% navigationPages.forEach(function(page) { %>
-                            <a href="/<%= currentLanguage %>/page/<%= page.slug %>"
-                                class="text-gray-700 hover:text-gray-900">
-                                <%= getContent(page, 'title' ) %>
+    <header class="fixed top-0 left-0 w-full bg-white shadow-sm z-50">
+        <nav class="px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="/<%= currentLanguage %>" class="flex items-center">
+                    <img src="../images/logo/logo-STSVPO_v2.png" alt="大南方新矽谷推動辦公室標誌" class="h-8 lg:h-8">
+                </a>
+                <div class="flex">
+                    <!-- Combined Navigation Links -->
+                    <div id="nav-menu" class="hidden absolute top-full left-0 w-full bg-white lg:static lg:flex lg:w-auto lg:items-center lg:space-x-8">
+                        <div class="p-0 space-y-1 lg:flex lg:space-x-8 lg:space-y-0 lg:p-0">
+                            <a href="/<%= currentLanguage %>" class="headerLink active">
+                                <%= currentLanguage==='en' ? 'Home' : '首頁' %>
                             </a>
-                            <% }); %>
-                                <% } %>
-                                    <a href="/<%= currentLanguage %>/about" class="text-gray-700 hover:text-gray-900">
-                                        <%= currentLanguage==='en' ? 'About Us' : '關於我們' %>
-                                    </a>
-                                    <a href="/<%= currentLanguage %>/news" class="text-gray-700 hover:text-gray-900">
-                                        <%= currentLanguage==='en' ? 'News' : '最新消息' %>
-                                    </a>
-                                    <a href="/<%= currentLanguage %>/promotions"
-                                        class="text-gray-700 hover:text-gray-900">
-                                        <%= currentLanguage==='en' ? 'Promotions' : '推動方案' %>
-                                    </a>
-                                    <a href="/<%= currentLanguage %>/faq" class="text-gray-700 hover:text-gray-900">
-                                        <%= currentLanguage==='en' ? 'FAQ' : '常見問題' %>
-                                    </a>
-                                    <a href="/<%= currentLanguage %>/downloads"
-                                        class="text-gray-700 hover:text-gray-900">
-                                        <%= currentLanguage==='en' ? 'Downloads' : '下載' %>
-                                    </a>
-                                    <a href="/<%= currentLanguage %>/platforms"
-                                        class="text-gray-700 hover:text-gray-900">
-                                        <%= currentLanguage==='en' ? 'Manufacturing Platforms' : '製造平台' %>
-                                    </a>
-                                    <a href="/<%= currentLanguage %>/contact" class="text-gray-700 hover:text-gray-900">
-                                        <%= currentLanguage==='en' ? 'Contact' : '聯絡我們' %>
-                                    </a>
-
-                                    <!-- Language Switcher -->
-                                    <%- include('../partials/language-switcher') %>
-                </div>
-                <!-- Mobile Menu Button -->
-                <button class="md:hidden">
-                    <svg class="h-6 w-6 fill-current text-gray-700" viewBox="0 0 24 24">
-                        <path
-                            d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z" />
-                    </svg>
-                </button>
-            </div>
-            <!-- Mobile Menu -->
-            <div class="md:hidden hidden">
-                <div class="flex flex-col mt-4 space-y-4">
-                    <a href="/<%= currentLanguage %>" class="text-gray-700 hover:text-gray-900">
-                        <%= currentLanguage==='en' ? 'Home' : '首頁' %>
-                    </a>
-
-                    <% if (navigationPages && navigationPages.length> 0) { %>
-                        <% navigationPages.forEach(function(page) { %>
-                            <a href="/<%= currentLanguage %>/page/<%= page.slug %>"
-                                class="text-gray-700 hover:text-gray-900">
-                                <%= getContent(page, 'title' ) %>
+                            <a href="/<%= currentLanguage %>/about" class="headerLink">
+                                <%= currentLanguage==='en' ? 'About Us' : '關於我們' %>
                             </a>
-                            <% }); %>
-                                <% } %>
-                                    <a href="/<%= currentLanguage %>/about" class="text-gray-700 hover:text-gray-900">
-                                        <%= currentLanguage==='en' ? 'About Us' : '關於我們' %>
-                                    </a>
-                                    <a href="/<%= currentLanguage %>/news" class="text-gray-700 hover:text-gray-900">
-                                        <%= currentLanguage==='en' ? 'News' : '最新消息' %>
-                                    </a>
-                                    <a href="/<%= currentLanguage %>/promotions"
-                                        class="text-gray-700 hover:text-gray-900">
-                                        <%= currentLanguage==='en' ? 'Promotions' : '推動方案' %>
-                                    </a>
-                                    <a href="/<%= currentLanguage %>/faq" class="text-gray-700 hover:text-gray-900">
-                                        <%= currentLanguage==='en' ? 'FAQ' : '常見問題' %>
-                                    </a>
-                                    <a href="/<%= currentLanguage %>/downloads"
-                                        class="text-gray-700 hover:text-gray-900">
-                                        <%= currentLanguage==='en' ? 'Downloads' : '下載' %>
-                                    </a>
-                                    <a href="/<%= currentLanguage %>/platforms"
-                                        class="text-gray-700 hover:text-gray-900">
-                                        <%= currentLanguage==='en' ? 'Manufacturing Platforms' : '製造平台' %>
-                                    </a>
-                                    <a href="/<%= currentLanguage %>/contact" class="text-gray-700 hover:text-gray-900">
-                                        <%= currentLanguage==='en' ? 'Contact' : '聯絡我們' %>
-                                    </a>
-                                    <a href="/<%= currentLanguage %>/links" class="text-gray-700 hover:text-gray-900">
-                                        <%= currentLanguage==='en' ? 'Related Links' : '相關連結' %>
-                                    </a>
-
-                                    <!-- Language Switcher -->
-                                    <%- include('../partials/language-switcher') %>
+                            <a href="/<%= currentLanguage %>/promotions" class="headerLink">
+                                <%= currentLanguage==='en' ? 'Promotions' : '推動方案' %>
+                            </a>
+                            <a href="/<%= currentLanguage %>/news" class="headerLink">
+                                <%= currentLanguage==='en' ? 'News' : '最新消息' %>
+                            </a>
+                            <a href="/<%= currentLanguage %>/downloads" class="headerLink">
+                                <%= currentLanguage==='en' ? 'Downloads' : '下載專區' %>
+                            </a>
+                            <a href="/<%= currentLanguage %>/faq" class="headerLink">
+                                <%= currentLanguage==='en' ? 'FAQ' : '常見問題' %>
+                            </a>
+                            <a href="/<%= currentLanguage %>/contact" class="headerLink">
+                                <%= currentLanguage==='en' ? 'Contact' : '聯絡我們' %>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Language Switcher -->
+                    <%- include('../partials/language-switcher') %>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button 
+                    class="lg:hidden w-10 h-10 flex items-center justify-center" 
+                    onclick="document.getElementById('nav-menu').classList.toggle('hidden')"
+                    type="button"
+                    >
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </nav>
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-6 py-8">
+    <main class="">
         <!-- Flash Messages -->
         <% if (typeof success_msg !=='undefined' && success_msg.length> 0) { %>
             <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
@@ -140,48 +101,176 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white">
-        <div class="container mx-auto px-6 py-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">
-                        <%= currentLanguage==='en' ? 'About Us' : '關於我們' %>
-                    </h3>
-                    <p class="text-gray-400">
-                        <%= currentLanguage==='en' ? 'Brief description about your website or company.'
-                            : '關於您的網站或公司的簡短描述。' %>
-                    </p>
-                </div>
-
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">
-                        <%= currentLanguage==='en' ? 'Contact Info' : '聯絡資訊' %>
-                    </h3>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><i class="fas fa-envelope mr-2"></i> email@example.com</li>
-                        <li><i class="fas fa-phone mr-2"></i> +1 234 567 890</li>
-                        <li><i class="fas fa-map-marker-alt mr-2"></i>
-                            <%= currentLanguage==='en' ? 'Your Address' : '您的地址' %>
-                        </li>
-                    </ul>
-                </div>
+    <footer class="bg-gray-100 px-8 py-6 rounded-t-3xl">
+        <div class="relative">
+            <!-- Accessibility Tag -->
+            <div class="absolute top-0 right-0 bg-gray-300 px-1 py-1 sm:px-3 sm:py-2">
+                <span class="text-black">無障礙網頁檢測中</span>
             </div>
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; <%= new Date().getFullYear() %>
-                        <%= currentLanguage==='en' ? 'Your Website. All rights reserved.' : '您的網站。保留所有權利。' %>
+
+            <!-- Organization Info -->
+            <div class="mb-2">
+                <img src="../images/logo/logo-STSVPOwide.png" alt="大南方新矽谷推動辦公室標誌" class="h-10 mb-3">
+                <p class="mb-1">
+                    <%= currentLanguage==='en' ? 'STSVPO' : '「大南方新矽谷」推動辦公室 (STSVPO)' %>
                 </p>
+                <p class="mb-1">
+                    <%= currentLanguage==='en' ? 'Address：711臺南市歸仁區歸仁十三路一段6號5樓D503-1室' : '地址：711臺南市歸仁區歸仁十三路一段6號5樓D503-1室' %>
+                </p>
+                <p class="mb-1">
+                    <%= currentLanguage==='en' ? 'Telphone：(06) 303-2260 分機523' : '電話：(06) 303-2260 分機523' %>
+                </p>
+                <p class="mb-1">
+                    <%= currentLanguage==='en' ? 'Email：service@stsvpo.org.tw' : '服務信箱：service@stsvpo.org.tw' %>
+                </p>
+                <p class="mb-1">
+                    <%= currentLanguage==='en' ? 'PeopleCount： 9 / 9999' : '瀏覽人次： 9 / 9999' %>
+                </p>
+                <p class="mb-0">
+                    <a href="policy.html">
+                        <%= currentLanguage==='en' ? 'InternetPolicy' : '網站安全政策' %>
+                    </a>　|　
+                    <a href="policy.html">
+                        <%= currentLanguage==='en' ? 'Privacy' : '隱私權政策' %>
+                    </a>　|　
+                    <a href="policy.html">
+                        <%= currentLanguage==='en' ? 'OpenDataPolicy' : '政府網站資料開放宣告' %>
+                    </a>
+                </p>
+            </div>
+
+            <!-- Browser Support Info -->
+            <p class="text-right mb-0">
+                <%= currentLanguage==='en' ? 'Reccommond Browser Chrome 120 / Edge 120 / Firefox 120 / Safari 17 以上版本瀏覽，Resolution 1,280 × 800 以上' : '建議使用 Chrome 120 / Edge 120 / Firefox 120 / Safari 17 以上版本瀏覽，最佳瀏覽解析度為 1,280 × 800 以上' %>
+                
+            </p>
+
+            <!-- Divider -->
+            <div class="border-t border-gray-300 my-4"></div>
+
+            <!-- Copyright Info -->
+            <div class="flex flex-col sm:flex-row justify-between">
+                <span>© 2025 All Rights Reserved.</span>
+                <span>
+                    <%= currentLanguage==='en' ? 'STSVPO Copyright' : '本平台由「大南方新矽谷」推動辦公室委辦維護管理 版權所有' %>
+                </span>
             </div>
         </div>
     </footer>
 
     <!-- JavaScript -->
     <script>
-        // Mobile menu toggle
-        const menuButton = document.querySelector('button.md\\:hidden');
-        const mobileMenu = document.querySelector('div.md\\:hidden');
+        // 等待DOM完全加載
+        document.addEventListener('DOMContentLoaded', function() {
+            // 獲取所有 headerLink 元素
+            const headerLinks = document.querySelectorAll('.headerLink');
+            // 為每個 headerLink 添加點擊事件監聽器
+            headerLinks.forEach(headerLink => {
+                headerLink.addEventListener('click', function(e) {
+                    // 阻止默認的錨點行為
+                    // e.preventDefault();
+                    // 移除所有 headerLink 的活動樣式
+                    headerLinks.forEach(s => {
+                        // 移除活動樣式
+                        s.classList.remove('active');
+                    });
 
-        menuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
+                    // 為被點擊的元素添加活動樣式
+                    this.classList.add('active');
+                });
+            });
+
+            ///////////////////////////////////////////////////////////
+
+            // 滾動偏移量設定（可調整）
+            const scrollOffset = 120;
+            // 獲取所有 subtitle 元素
+            const subtitles = document.querySelectorAll('.subtitle');
+            // 為每個 subtitle 添加點擊事件監聽器
+            subtitles.forEach(subtitle => {
+                subtitle.addEventListener('click', function(e) {
+                    // 阻止默認的錨點行為
+                    // e.preventDefault();
+                    
+                    // 移除所有 subtitle 的活動樣式
+                    subtitles.forEach(s => {
+                        // 移除活動樣式
+                        s.classList.remove('active');
+                    });
+
+                    // 為被點擊的元素添加活動樣式
+                    this.classList.add('active');
+                    
+                    // 如果需要，可以滾動到目標區域
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - scrollOffset;
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            ///////////////////////////////////////////////////////////
+
+            const navBar = document.getElementById('scrollable-nav');
+            const leftButton = document.getElementById('scroll-left');
+            const rightButton = document.getElementById('scroll-right');
+            const scrollAmount = 200; // 每次滾動的像素量
+
+            // 左箭頭按鈕點擊事件
+            leftButton.addEventListener('click', function() {
+            navBar.scrollLeft -= scrollAmount;
+            });
+            // 右箭頭按鈕點擊事件
+            rightButton.addEventListener('click', function() {
+            navBar.scrollLeft += scrollAmount;
+            });
+            // 檢查是否需要顯示箭頭按鈕
+            function checkScrollButtons() {
+                // 隱藏/顯示左箭頭
+                if (navBar.scrollLeft <= 0) {
+                    leftButton.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    leftButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+                // 隱藏/顯示右箭頭
+                if (navBar.scrollLeft + navBar.clientWidth >= navBar.scrollWidth) {
+                    rightButton.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    rightButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            }
+            // 綁定滾動事件
+            navBar.addEventListener('scroll', checkScrollButtons);
+            // 頁面載入時執行一次
+            checkScrollButtons();
+            // 視窗調整大小時檢查
+            window.addEventListener('resize', checkScrollButtons);
+            
+            ///////////////////////////////////////////////////////////
+
+            // 獲取所有 accordion 元素
+            const accordions = document.querySelectorAll('.accordion');
+            
+            accordions.forEach(accordion => {
+                const header = accordion.querySelector('.accordion-header');
+                const content = accordion.querySelector('.accordion-content');
+                const icon = accordion.querySelector('.accordion-icon');
+                
+                header.addEventListener('click', function() {
+                    // 簡單地切換內容的顯示/隱藏狀態
+                    content.classList.toggle('hidden');
+                    // 切換箭頭方向
+                    icon.classList.toggle('rotate-180');
+                });
+            });
+
         });
     </script>
     <%- defineContent('script') %>

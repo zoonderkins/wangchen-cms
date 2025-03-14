@@ -1,111 +1,131 @@
 <%- contentFor('body') %>
-
-  <div class="container mx-auto px-4 py-8">
-    <div class="max-w-4xl mx-auto">
-      <h1 class="text-3xl font-bold mb-6 text-center">
-        <%= currentLanguage==='en' ? 'Contact Us' : '聯絡我們' %>
-      </h1>
-
-      <% if (typeof error !=='undefined' && error && error.length> 0) { %>
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
-          <span class="block sm:inline">
-            <%= error %>
-          </span>
+    <section class="relative">
+        <picture class="block w-full h-full">
+            <source media="(min-width: 1024px)" srcset="../images/desktop/aboutbg_desktop.png">
+            <source media="(min-width: 640px)" srcset="../images/tablet/aboutbg_tablet.png">
+            <img class="w-full h-full object-cover" src="../images/mobile/aboutbg_mobile.png" alt="響應式圖片">
+        </picture>
+        <div class="absolute inset-0 flex flex-col justify-center px-6 sm:px-16 lg:px-32">
+            <h2 class="text-white"><%= title %></h2>
+            <p class="text-white">/ <%= currentLanguage==='en' ? 'Home' : '首頁' %> - <%= title %> /</p>
         </div>
-        <% } %>
+    </section>
 
-          <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            <form action="/<%= currentLanguage %>/contact" method="POST">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
-                    <%= currentLanguage==='en' ? 'Name' : '姓名' %> <span class="text-red-500">*</span>
-                  </label>
-                  <input
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="name" name="name" type="text"
-                    value="<%= typeof formData !== 'undefined' ? formData.name || '' : '' %>" required>
-                </div>
-                <div>
-                  <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
-                    <%= currentLanguage==='en' ? 'Email' : '電子郵件' %> <span class="text-red-500">*</span>
-                  </label>
-                  <input
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="email" name="email" type="email"
-                    value="<%= typeof formData !== 'undefined' ? formData.email || '' : '' %>" required>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label class="block text-gray-700 text-sm font-bold mb-2" for="company">
-                    <%= currentLanguage==='en' ? 'Company' : '公司' %>
-                  </label>
-                  <input
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="company" name="company" type="text"
-                    value="<%= typeof formData !== 'undefined' ? formData.company || '' : '' %>">
-                </div>
-                <div>
-                  <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">
-                    <%= currentLanguage==='en' ? 'Phone' : '電話' %>
-                  </label>
-                  <input
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="phone" name="phone" type="tel"
-                    value="<%= typeof formData !== 'undefined' ? formData.phone || '' : '' %>">
-                </div>
-              </div>
-
-              <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="categoryId">
-                  <%= currentLanguage==='en' ? 'Category' : '類別' %>
-                </label>
-                <select
-                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="categoryId" name="categoryId">
-                  <option value="">
-                    <%= currentLanguage==='en' ? '-- Select Category --' : '-- 選擇類別 --' %>
-                  </option>
-                  <% categories.forEach(function(category) { %>
-                    <option value="<%= category.id %>" <%=typeof formData !=='undefined' &&
-                      formData.categoryId==category.id ? 'selected' : '' %>>
-                      <%= currentLanguage==='en' ? category.name_en : category.name_tw %>
-                    </option>
-                    <% }); %>
-                </select>
-              </div>
-
-              <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="message">
-                  <%= currentLanguage==='en' ? 'Message' : '訊息' %> <span class="text-red-500">*</span>
-                </label>
-                <textarea
-                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="message" name="message" rows="6"
-                  required><%= typeof formData !== 'undefined' ? formData.message || '' : '' %></textarea>
-              </div>
-
-              <div class="mb-6">
-                <div class="flex items-center">
-                  <input type="checkbox" id="agreeTerms" name="agreeTerms" class="mr-2" required>
-                  <label for="agreeTerms" class="text-gray-700 text-sm">
-                    <%= currentLanguage==='en' ? 'I agree to the terms and conditions and privacy policy' : '我同意條款和隱私政策'
-                      %>
-                      <span class="text-red-500">*</span>
-                  </label>
-                </div>
-              </div>
-
-              <div class="flex items-center justify-center">
-                <button
-                  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline"
-                  type="submit">
-                  <%= currentLanguage==='en' ? 'Submit' : '提交' %>
-                </button>
-              </div>
-            </form>
-          </div>
+    <!-- Divider -->
+    <div class="w-screen relative" style="left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
+        <hr class="border-t-2 border-gray-200 mb-16">
     </div>
-  </div>
+
+    <!-- User information -->
+    <section id="userInfo" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
+        <form action="/<%= currentLanguage %>/contact" method="POST">
+            <h4 class="text-left mb-12"><%= currentLanguage==='en' ? 'Contact information' : '聯絡資料' %></h4>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="name" class=""><%= currentLanguage==='en' ? 'Name' : '姓名' %><span class="text-red-500">*</span></label>
+                    <input class="w-full px-6 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                        id="name" name="name" type="text" placeholder="<%= currentLanguage==='en' ? 'Name' : '姓名' %>"
+                        value="<%= typeof formData !== 'undefined' ? formData.name || '' : '' %>" required>
+                </div>
+                
+                <div>
+                    <label for="company" class=""><%= currentLanguage==='en' ? 'Company' : '公司名稱' %></label>
+                    <input class="w-full px-6 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                        id="company" name="company" type="text" placeholder="<%= currentLanguage==='en' ? 'Company' : '公司名稱' %>" 
+                        value="<%= typeof formData !== 'undefined' ? formData.company || '' : '' %>">
+                </div>
+
+                <div>
+                    <label for="email" class=""><%= currentLanguage==='en' ? 'Email' : '電子信箱' %><span class="text-red-500">*</span></label>
+                    <input class="w-full px-6 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                        id="email" name="email" type="email" placeholder="<%= currentLanguage==='en' ? 'Email' : '電子信箱' %>" 
+                        value="<%= typeof formData !== 'undefined' ? formData.email || '' : '' %>" required>
+                </div>
+                
+                <div>
+                    <label for="phone" class=""><%= currentLanguage==='en' ? 'Phone' : '聯絡電話' %></label>
+                    <input class="w-full px-6 py-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500" 
+                        id="phone" name="phone" type="tel" placeholder="<%= currentLanguage==='en' ? 'Phone' : '聯絡電話' %>" 
+                        value="<%= typeof formData !== 'undefined' ? formData.phone || '' : '' %>">
+                </div>
+            </div>
+
+            <h4 class="text-left my-12"><%= currentLanguage==='en' ? 'Requirement' : '需求' %></h4>
+            
+            <label for="categoryId" class=""><%= currentLanguage==='en' ? 'Requirements category' : '需求分類' %><span class="text-red-500">*</span></label>
+            <div class="p-2 mt-4 mb-4 relative rounded-xl border">
+                <select class="w-full  text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none"
+                    id="categoryId" name="categoryId" required>
+                    <option value="">
+                        <%= currentLanguage==='en' ? '-- Select Category --' : '-- 選擇類別 --' %>
+                      </option>
+                      <% categories.forEach(function(category) { %>
+                        <option value="<%= category.id %>" <%=typeof formData !=='undefined' &&
+                          formData.categoryId==category.id ? 'selected' : '' %>>
+                          <%= currentLanguage==='en' ? category.name_en : category.name_tw %>
+                        </option>
+                        <% }); %>
+                </select>
+                <!-- 自定義下拉箭頭 -->
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+            </div>
+            
+            <label for="message" class=""><%= currentLanguage==='en' ? 'Requirements description' : '需求說明' %><span class="text-red-500">*</span></label>
+            <textarea name="message" id="message" rows="6" placeholder="<%= currentLanguage==='en' ? 'Requirements description' : '需求說明' %>" class="w-full px-3 py-2 mt-4 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-cyan-500 resize-y"></textarea>
+
+            <h4 class="text-left my-12">
+                <%= currentLanguage==='en' ? 'ＥＥＥＥ財團法人工業技術研究院 個人資料蒐集、處理及利用之告知暨同意書' : '財團法人工業技術研究院 個人資料蒐集、處理及利用之告知暨同意書' %>
+                </h4>
+            <div class="p-16 h-80 border border-gray-300 rounded-3xl overflow-auto">
+                <p>
+                    告知事項
+                    <br>
+                    <br>
+                    財團法人工業技術研究院（下稱本院）為了執行沙崙人工智慧產業專區先期規劃計畫，將蒐集、處理及利用您的個人資料（下稱個資），謹先告知下列事項：
+                    <br>
+                    一、蒐集目的：「006工業行政」、「008中小企業及其他產業之輔導」、「078計畫、管制考核與其他研考管理」、「110產學合作」、「130 會議管理」、「157調查、統計與研究分析」及「182 其他諮詢與顧問服務」等相關事宜。
+                    <br>
+                    二、個資類別：「C001識別個人者」、「C003政府資料中之辨識者」、「C038職業」、「C052資格或技術」、「C053職業團體會員資格」、「C061現行之受雇情形」及「C067工會及員工之會員資格」等。
+                    <br>
+                    三、利用期間：至蒐集目的消失為止。
+                    <br>
+                    四、利用地區：中華民國地區及本院駐點及辦事處所在地區。
+                    <br>
+                    五、利用者：本院及其他與本院有業務往來之公務及非公務機關。
+                    <br>
+                    六、利用方式：在不違反蒐集目的的前提下，以網際網路、電子郵件、書面、傳真及其他合法方式利用之。
+                    <br>
+                    七、您得以書面主張下列權利：
+                    <br>
+                    （一）查詢或請求閱覽。
+                    <br>
+                </p>
+            </div>
+            <div class="flex items-start my-8">
+                <div class="flex items-center h-5">
+                    <input id="agreeTerms" name="agreeTerms" type="checkbox" class="h-4 w-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500" required>
+                </div>
+                <div class="ml-3">
+                    <label for="agreeTerms" class="">
+                        <%= currentLanguage==='en' ? 
+                        'ＥＥＥＥ本人已閱讀並瞭解個資同意書之 告知事項，並同意大南方推動辦公室，蒐集、處理及利用本人的個資，本項同意得以電子文件方式表達。' : 
+                        '本人已閱讀並瞭解個資同意書之 告知事項，並同意大南方推動辦公室，蒐集、處理及利用本人的個資，本項同意得以電子文件方式表達。' %>
+                    </label>
+                </div>
+            </div>
+            <div class="flex justify-center my-8">
+                <button type="submit" class="px-12 py-2 border rounded-3xl custom-button-green">
+                    <%= currentLanguage==='en' ? 'Submit' : '送出' %>
+                </button>
+            </div>
+            
+
+        </form>
+
+        
+    </section>

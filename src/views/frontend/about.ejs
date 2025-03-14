@@ -1,65 +1,70 @@
 <%- contentFor('body') %>
-
-  <div class="container mx-auto px-4 py-8">
-    <div class="max-w-4xl mx-auto">
-      <h1 class="text-3xl font-bold mb-8 text-center">
-        <%= currentLanguage==='en' ? 'About Us' : '關於我們' %>
-      </h1>
-
-      <% if (items && items.length> 0) { %>
-        <div class="space-y-12">
-          <% items.forEach(function(item) { %>
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-              <div class="p-6">
-                <h2 class="text-2xl font-semibold mb-4 text-gray-800">
-                  <%= currentLanguage==='en' ? item.title_en : item.title_tw %>
-                </h2>
-
-                <% if (item.type==='plain_text' ) { %>
-                  <div class="prose max-w-none quill-content">
-                    <div class="ql-container ql-snow" style="border: none;">
-                      <div class="ql-editor quill-content-wrapper" <% if ((currentLanguage==='en' &&
-                        item._content_en_is_delta) || (currentLanguage==='tw' && item._content_tw_is_delta)) { %>
-                        data-is-delta="true"
-                        <% } %>
-                          id="quill-content-<%= item.id %>-<%= currentLanguage %>">
-                              <%- currentLanguage==='en' ? item.content_en : item.content_tw %>
-                      </div>
-                    </div>
-                  </div>
-                  <% } else if (item.type==='image' ) { %>
-                    <% if (item.imagePath) { %>
-                      <div class="mt-4 flex justify-center">
-                        <img src="<%= item.imagePath %>"
-                          alt="<%= currentLanguage === 'en' ? item.title_en : item.title_tw %>"
-                          class="max-w-full h-auto rounded-lg shadow-sm">
-                      </div>
-                      <div class="mt-4 text-center text-gray-700 quill-content">
-                        <div class="ql-container ql-snow" style="border: none;">
-                          <div class="ql-editor">
-                            <%- currentLanguage==='en' ? item.content_en : item.content_tw %>
-                          </div>
-                        </div>
-                      </div>
-                      <% } else { %>
-                        <div class="bg-gray-100 p-4 rounded-lg text-center text-gray-500">
-                          <%= currentLanguage==='en' ? 'Image not available' : '圖片不可用' %>
-                        </div>
-                        <% } %>
-                          <% } %>
-              </div>
-            </div>
-            <% }); %>
+    <section class="relative">
+        <picture class="block w-full h-full">
+            <source media="(min-width: 1024px)" srcset="../images/desktop/aboutbg_desktop.png">
+            <source media="(min-width: 640px)" srcset="../images/tablet/aboutbg_tablet.png">
+            <img class="w-full h-full object-cover" src="../images/mobile/aboutbg_mobile.png" alt="響應式圖片">
+        </picture>
+        <div class="absolute inset-0 flex flex-col justify-center px-6 sm:px-16 lg:px-32">
+            <h2 class="text-white"><%= title %></h2>
+            <p class="text-white">/ <%= currentLanguage==='en' ? 'Home' : '首頁' %> - <%= title %> /</p>
         </div>
-        <% } else { %>
-          <div class="bg-white rounded-lg shadow-md p-8 text-center">
-            <p class="text-gray-500">
-              <%= currentLanguage==='en' ? 'No about content available yet.' : '尚無關於我們的內容。' %>
-            </p>
-          </div>
-          <% } %>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="flex my-4 px-6 sm:px-16 lg:px-32 overflow-auto">
+        <% if (items && items.length> 0) { %>
+            <% items.forEach(function(item) { %>
+                <a href="#<%= item.title_en %>" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-blue"><%= currentLanguage==='en' ? item.title_en : item.title_tw %></a>
+            <% }); %>
+        <% } %>
+    </nav>
+
+    <!-- Divider -->
+    <div class="w-screen relative" style="left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
+        <hr class="border-t-2 border-gray-200 mb-16">
     </div>
-  </div>
+
+    <% if (items && items.length> 0) { %>
+        <% items.forEach(function(item) { %>
+            <section id="<%= item.title_en %>" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
+                <h4 class="text-left mb-8"><%= currentLanguage==='en' ? item.title_en : item.title_tw %></h4>
+                <% if (item.type==='plain_text' ) { %>
+                    <div class="w-full mb-8 prose max-w-none quill-content">
+                        <div class="ql-container ql-snow" style="border: none;">
+                            <div class="ql-editor quill-content-wrapper" <% if ((currentLanguage==='en' &&
+                                item._content_en_is_delta) || (currentLanguage==='tw' && item._content_tw_is_delta)) { %>
+                                data-is-delta="true"
+                                <% } %>
+                                id="quill-content-<%= item.id %>-<%= currentLanguage %>">
+                                    <%- currentLanguage==='en' ? item.content_en : item.content_tw %>
+                            </div>
+                        </div>
+                    </div>
+                <% } else if (item.type==='image' ) { %>
+                    <% if (item.imagePath) { %>
+                        <div class="mb-8 rounded-lg overflow-hidden">
+                            <img src="<%= item.imagePath %>"
+                              alt="<%= currentLanguage === 'en' ? item.title_en : item.title_tw %>"
+                              class="w-full object-cover">
+                        </div>
+                        <div class="mb-8 text-center text-gray-700 quill-content">
+                            <div class="ql-container ql-snow" style="border: none;">
+                                <div class="ql-editor">
+                                    <%- currentLanguage==='en' ? item.content_en : item.content_tw %>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                <% } %>
+            </section>
+
+            <!-- Divider -->
+            <div class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
+                <hr class="border-t-2 border-gray-200">
+            </div>
+        <% }); %>
+    <% } %>
 
   <!-- Additional inline script to ensure styles are applied after everything else -->
 
