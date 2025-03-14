@@ -2,9 +2,9 @@
 :root {
     --header-height: 64px; /* 導覽列高度 */
     --color-custom-lightblue: #FAFCFC;
-    --color-custom-blue: #2A8CA9;
+    --color-custom-blue: #156f8b;
     --color-custom-lightgreen: #9CFFE6;
-    --color-custom-green: #38B9A1;
+    --color-custom-green: #127b68;
     --color-custom-yellow: #FFE082;
 }
 
@@ -178,13 +178,13 @@ main {
     background-image: url(images/方案LGBG.png);
 }
 .bg-plan {
-    background-image: url(images/內容LGBG.png);
+    background-image: url(images/mobile/planbg_mobile.png);
 }
 .bg-news {
-    background-image: url(images/newsBG.png);
+    background-image: url(images/mobile/newsBG.png);
 }
 .bg-partner {
-    background-image: url(images/mobile/16.png);
+    background-image: url(images/mobile/partner_mobile.png);
 }
 
 .headerLink {
@@ -237,8 +237,11 @@ main {
     .bg-news {
         background-image: none;
     }
+    .bg-plan {
+        background-image: url(images/tablet/planbg_tablet.png);
+    }
     .bg-partner {
-        background-image: url(images/tablet/15.png);
+        background-image: url(images/tablet/partner_tablet.png);
     }
 }
 
@@ -280,8 +283,11 @@ main {
     .custom-button-blue {
         font-size: 1rem;
     }
+    .bg-plan {
+        background-image: url(images/desktop/planbg_desktop.png);
+    }
     .bg-partner {
-        background-image: url(images/desktop/pb-14.png);
+        background-image: url(images/desktop/partner_desktop.png);
     }
     
     .headerLink {

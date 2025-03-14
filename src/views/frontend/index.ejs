@@ -1,7 +1,7 @@
 <%- contentFor('body') %>
     <% if (banners && banners.length> 0) { %>
         <!-- Slide Section -->
-        <section class="splide" aria-labelledby="carousel-heading">      
+        <section class="splide">      
             <div class="splide__track">
                 <ul class="splide__list">
                     <% banners.forEach((banner, index)=> { %>
@@ -21,12 +21,12 @@
                                 <div class="absolute bottom-40 lg:inset-y-0 left-8 sm:left-16 flex items-center">
                                     <div class="relative">
                                         <!-- h1 貼齊隱形線上緣 -->
-                                        <h1 class="absolute bottom-0 mb-4 w-full text-white"><%= banner.title %></h1>
+                                        <h1 class="absolute bottom-0 mb-4 w-full text-black"><%= banner.title %></h1>
                                         <!-- 隱形線 -->
                                         <div class="" style="width: 70vw;"></div>
                                         <!-- p 貼齊隱形線下緣 -->
                                         <% if (banner.description) { %>
-                                            <h3 class="absolute top-0 mt-0 w-full text-white"><%= banner.description %></h3>
+                                            <h3 class="absolute top-0 mt-0 w-full text-black"><%= banner.description %></h3>
                                         <% } %>
                                     </div>
                                 </div>
@@ -64,7 +64,7 @@
                     </div>
                 </div>
                 <div class="w-full">
-                    <p class="text-justify"><%- currentLanguage==='en' ? item.content_en : item.content_tw %></p>
+                    <p class=""><%- currentLanguage==='en' ? item.content_en : item.content_tw %></p>
                 </div>
             </section>
         <% }); %>
@@ -96,7 +96,7 @@
             <!-- Left: Image (hidden on mobile) -->
             <div class="hidden sm:block sm:w-1/2 flex items-center justify-center">
                 <div class="flex items-center justify-center h-full">
-                    <img src="../images/newsLGBG.png" alt="最新活動照片" class="w-full h-auto rounded-lg">
+                    <img src="../images/tablet/newsLGBG.png" alt="最新活動照片" class="w-full h-auto rounded-lg">
                 </div>
             </div>
             <!-- Right: News List -->
@@ -132,11 +132,11 @@
     </section>
 
     <!-- Partners Section -->
-    <section class="bg-partner bg-no-repeat bg-contain bg-bottom sm:bg-cover sm:bg-center px-6 py-12 sm:px-16 sm:py-20 lg:px-64 lg:py-28" id="partners">
-        <h3 class="mb-4 sm:mb-8 text-center"><span class="text-custom-blue">臺灣智慧系統整合製造平台</span>合作伙伴</h3>
+    <section class="bg-partner bg-no-repeat bg-cover bg-bottom sm:bg-cover sm:bg-center px-6 py-12 sm:px-16 sm:py-20 lg:px-64 lg:py-28" id="partners">
+        <h3 class="mb-4 sm:mb-8 text-center"><span class="text-black">臺灣智慧系統整合製造平台</span>合作伙伴</h3>
         <div class="flex flex-col sm:flex-row">
             <!-- 手機版下拉選單 -->
-            <div class="block w-full sm:hidden mb-6 p-2 relative rounded-xl border">
+            <div class="block w-full sm:hidden mb-6 p-2 relative bg-white rounded-xl border">
                 <select id="platform-select" class="w-full  text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none">
                     <option value="metal" selected>金屬加工</option>
                     <option value="plastic">塑膠製造</option>
@@ -157,22 +157,22 @@
             <div class="hidden sm:block sm:w-3/12 mr-6">
                 <ul class="">
                     <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 border-l-4 border-custom-blue" type="button">金屬加工</button>
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-white border-l-4 border-custom-blue" type="button">金屬加工</button>
                     </li>
                     <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">塑膠製造</button>
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-white text-gray-500" type="button">塑膠製造</button>
                     </li>
                     <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">智慧鞋業</button>
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-white text-gray-500" type="button">智慧鞋業</button>
                     </li>
                     <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">智慧健康</button>
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-white text-gray-500" type="button">智慧健康</button>
                     </li>
                     <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">餐飲/住宿</button>
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-white text-gray-500" type="button">餐飲/住宿</button>
                     </li>
                     <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">智慧零售</button>
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-white text-gray-500" type="button">智慧零售</button>
                     </li>
                 </ul>
             </div>
