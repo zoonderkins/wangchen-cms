@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Base64 Image Test</title>
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    #editor {
+      height: 300px;
+      margin-bottom: 20px;
+    }
+
+    #output {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-top: 20px;
+      white-space: pre-wrap;
+    }
+
+    .info {
+      background-color: #f0f0f0;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Base64 Image Test for Quill.js</h1>
+
+  <div class="info">
+    <p>This page demonstrates embedding base64 images in Quill.js editor. The content is now stored in a LongText field
+      in the database, which can handle up to 4GB of data.</p>
+    <p>Steps to test:</p>
+    <ol>
+      <li>Use the image button in the toolbar to upload an image</li>
+      <li>The image will be converted to base64 and embedded in the editor</li>
+      <li>Click "Get Content" to see the HTML and size</li>
+    </ol>
+  </div>
+
+  <div id="editor"></div>
+
+  <button id="getContent">Get Content</button>
+  <button id="clearEditor">Clear Editor</button>
+
+  <div>
+    <h3>Content Size:</h3>
+    <div id="contentSize"></div>
+  </div>
+
+  <div>
+    <h3>HTML Content:</h3>
+    <div id="output"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Initialize Quill editor
+      var quill = new Quill('#editor', {
+        theme: 'snow',
+        modules: {
+          toolbar: [
+            ['bold', 'italic', 'underline', 'strike'],
+            ['blockquote', 'code-block'],
+            [{ 'header': 1 }, { 'header': 2 }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            [{ 'indent': '-1' }, { 'indent': '+1' }],
+            ['link', 'image'],
+            ['clean']
+          ]
+        },
+        placeholder: 'Write something or insert an image...'
+      });
+
+      // Add image handler
+      const imageHandler = () => {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = () => {
+          const file = input.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+              const base64 = reader.result;
+              const range = quill.getSelection(true);
+              quill.insertEmbed(range.index, 'image', base64);
+            };
+            reader.readAsDataURL(file);
+          }
+        };
+      };
+
+      // Attach image handler to toolbar
+      quill.getModule('toolbar').addHandler('image', imageHandler);
+
+      // Get content button
+      document.getElementById('getContent').addEventListener('click', function () {
+        const content = quill.root.innerHTML;
+        document.getElementById('output').textContent = content;
+
+        // Display content size
+        const sizeInBytes = new Blob([content]).size;
+        let sizeDisplay = '';
+
+        if (sizeInBytes < 1024) {
+          sizeDisplay = sizeInBytes + ' bytes';
+        } else if (sizeInBytes < 1024 * 1024) {
+          sizeDisplay = (sizeInBytes / 1024).toFixed(2) + ' KB';
+        } else {
+          sizeDisplay = (sizeInBytes / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+
+        document.getElementById('contentSize').textContent = sizeDisplay + ' (' + sizeInBytes + ' bytes)';
+
+        // Show warning if size is large
+        if (sizeInBytes > 1024 * 1024) {
+          document.getElementById('contentSize').innerHTML += '<br><strong style="color: orange;">Warning: Large content size may affect performance.</strong>';
+        }
+
+        // Show error if size exceeds MySQL LongText limit
+        if (sizeInBytes > 4 * 1024 * 1024 * 1024) {
+          document.getElementById('contentSize').innerHTML += '<br><strong style="color: red;">Error: Content exceeds MySQL LongText limit of 4GB.</strong>';
+        }
+      });
+
+      // Clear editor button
+      document.getElementById('clearEditor').addEventListener('click', function () {
+        quill.setText('');
+        document.getElementById('output').textContent = '';
+        document.getElementById('contentSize').textContent = '';
+      });
+    });
+  </script>
+</body>
+
+</html>
