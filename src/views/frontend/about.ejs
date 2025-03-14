@@ -6,8 +6,8 @@
             <img class="w-full h-full object-cover" src="../images/mobile/aboutbg_mobile.png" alt="響應式圖片">
         </picture>
         <div class="absolute inset-0 flex flex-col justify-center px-6 sm:px-16 lg:px-32">
-            <h2 class="text-white"><%= title %></h2>
-            <p class="text-white">/ <%= currentLanguage==='en' ? 'Home' : '首頁' %> - <%= title %> /</p>
+            <h1 class="h2 text-black"><%= title %></h1>
+            <p class="text-black">/ <%= currentLanguage==='en' ? 'Home' : '首頁' %> - <%= title %> /</p>
         </div>
     </section>
 
@@ -28,7 +28,7 @@
     <% if (items && items.length> 0) { %>
         <% items.forEach(function(item) { %>
             <section id="<%= item.title_en %>" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-                <h4 class="text-left mb-8"><%= currentLanguage==='en' ? item.title_en : item.title_tw %></h4>
+                <h2 class="h4 text-left mb-8"><%= currentLanguage==='en' ? item.title_en : item.title_tw %></h2>
                 <% if (item.type==='plain_text' ) { %>
                     <div class="w-full mb-8 prose max-w-none quill-content">
                         <div class="ql-container ql-snow" style="border: none;">
