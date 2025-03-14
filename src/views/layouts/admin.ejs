@@ -48,16 +48,32 @@
                                     class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Media</a>
                                 <a href="/admin/categories"
                                     class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Categories</a> -->
-                                <a href="/admin/banners"
-                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">橫幅</a>
                                 <a href="/admin/downloads"
-                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">下載</a>
+                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">下載專區</a>
                                 <a href="/admin/news"
-                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">新聞</a>
+                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">最新消息</a>
                                 <a href="/admin/promotions"
-                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">促銷</a>
-                                <a href="/admin/about"
-                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">關於</a>
+                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">推動方案</a>
+                                <div class="relative inline-block text-left dropdown">
+                                    <button type="button"
+                                        class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium dropdown-toggle">
+                                        前台首頁 <i class="fas fa-chevron-down ml-1"></i>
+                                    </button>
+                                    <div
+                                        class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 dropdown-menu">
+                                        <div class="py-1" role="menu" aria-orientation="vertical">
+                                            <a href="/admin/banners"
+                                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                role="menuitem">橫幅</a>
+                                            <a href="/admin/about"
+                                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                role="menuitem">關於我們</a>
+                                            <a href="/admin/links"
+                                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                role="menuitem">相關連結</a>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="relative inline-block text-left dropdown">
                                     <button type="button"
                                         class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium dropdown-toggle">
@@ -92,10 +108,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <a href="/admin/links"
-                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">連結</a>
                                 <a href="/admin/platforms"
-                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">平台</a>
+                                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">推廣平台</a>
                                 <% if (user.role && user.role==='super_admin' ) { %>
                                     <a href="/admin/users"
                                         class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">用戶</a>
