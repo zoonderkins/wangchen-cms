@@ -1,402 +1,361 @@
 <%- contentFor('body') %>
-
     <% if (banners && banners.length> 0) { %>
-        <!-- Banner Carousel -->
-        <div class="relative w-full overflow-hidden bg-gray-100 mb-8" style="height: 400px;">
-            <!-- Banner Container -->
-            <div id="banner-carousel" class="relative w-full h-full">
-                <% banners.forEach((banner, index)=> { %>
-                    <div class="banner-slide absolute inset-0 w-full h-full"
-                        style="display: <%= index === 0 ? 'block' : 'none' %>;" data-index="<%= index %>">
-                        <% if (banner.mediaType==='image' ) { %>
-                            <% if (banner.url) { %>
-                                <a href="<%= banner.url %>" target="_blank" rel="noopener noreferrer"
-                                    class="block w-full h-full">
-                                    <img src="<%= banner.mediaPath %>" alt="<%= banner.title %>"
-                                        class="w-full h-full object-cover">
-                                </a>
-                                <% } else { %>
-                                    <img src="<%= banner.mediaPath %>" alt="<%= banner.title %>"
-                                        class="w-full h-full object-cover">
+        <!-- Slide Section -->
+        <section class="splide" aria-labelledby="carousel-heading">      
+            <div class="splide__track">
+                <ul class="splide__list">
+                    <% banners.forEach((banner, index)=> { %>
+                        <!-- Slide 1 -->
+                        <li class="splide__slide">
+                            <div class="slide flex relative">
+                                <div class="w-full">
+                                    <% if (banner.mediaType==='image' ) { %>
+                                        <picture class="block w-full h-full">
+                                            <source media="(min-width: 1024px)" srcset="<%= banner.mediaPath %>">
+                                            <source media="(min-width: 640px)" srcset="<%= banner.mediaPath %>">
+                                            <img class="w-full h-full object-cover" src="<%= banner.mediaPath %>" alt="響應式圖片">
+                                        </picture>
                                     <% } %>
-                                        <% } else if (banner.mediaType==='video' ) { %>
-                                            <video id="video-<%= index %>" autoplay muted loop playsinline
-                                                class="w-full h-full object-cover">
-                                                <source src="<%= banner.mediaPath %>" type="video/mp4">
-                                                Your browser does not support the video tag.
-                                            </video>
-                                            <% } %>
-                                                <div
-                                                    class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-4">
-                                                    <h2 class="text-xl font-bold">
-                                                        <%= banner.title %>
-                                                    </h2>
-                                                    <% if (banner.description) { %>
-                                                        <p class="mt-2">
-                                                            <%= banner.description %>
-                                                        </p>
-                                                        <% } %>
-                                                            <% if (banner.url && banner.mediaType !=='image' ) { %>
-                                                                <a href="<%= banner.url %>" target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    class="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Learn
-                                                                    More</a>
-                                                                <% } %>
-                                                </div>
-                    </div>
-                    <% }); %>
-
-                        <% if (banners.length> 1) { %>
-                            <!-- Navigation Arrows -->
-                            <a href="#" id="prev-banner"
-                                class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-70 text-white p-3 rounded-full z-20 hover:bg-opacity-90 focus:outline-none cursor-pointer"
-                                style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 19l-7-7 7-7" />
-                                </svg>
-                            </a>
-                            <a href="#" id="next-banner"
-                                class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-70 text-white p-3 rounded-full z-20 hover:bg-opacity-90 focus:outline-none cursor-pointer"
-                                style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 5l7 7-7 7" />
-                                </svg>
-                            </a>
-
-                            <!-- Indicators -->
-                            <div class="absolute bottom-20 left-0 right-0 flex justify-center space-x-3 z-20">
-                                <% banners.forEach((_, index)=> { %>
-                                    <a href="#"
-                                        class="banner-indicator h-4 w-4 rounded-full <%= index === 0 ? 'bg-white' : 'bg-gray-400' %> hover:bg-white focus:outline-none cursor-pointer"
-                                        data-index="<%= index %>"></a>
-                                    <% }); %>
+                                </div>
+                                <!-- 隱形線包含文字內容，垂直置中 -->
+                                <div class="absolute bottom-40 lg:inset-y-0 left-8 sm:left-16 flex items-center">
+                                    <div class="relative">
+                                        <!-- h1 貼齊隱形線上緣 -->
+                                        <h1 class="absolute bottom-0 mb-4 w-full text-white"><%= banner.title %></h1>
+                                        <!-- 隱形線 -->
+                                        <div class="" style="width: 70vw;"></div>
+                                        <!-- p 貼齊隱形線下緣 -->
+                                        <% if (banner.description) { %>
+                                            <h3 class="absolute top-0 mt-0 w-full text-white"><%= banner.description %></h3>
+                                        <% } %>
+                                    </div>
+                                </div>
                             </div>
-                            <% } %>
+                        </li>
+                    <% }); %>
+                </ul>
+            </div>
+            <div class="absolute bottom-0 w-full flex flex-col md:flex-row justify-center">
+                <button class="px-3 py-1 mx-2 sm:px-12 sm:py-2 sm:mx-4 w-auto md:w-1/2 mb-2 md:mb-0 bg-custom-yellow">全區進駐服務</button>
+                <button class="px-3 py-1 mx-2 sm:px-12 sm:py-2 sm:mx-4 w-auto md:w-1/2 bg-custom-lightgreen ">產業推廣合作</button>
+            </div>
+        </section>
+    <% } %>
+    <script>
+        document.addEventListener( 'DOMContentLoaded', function() {
+            var splide = new Splide( '.splide' ,{
+                type   : 'loop',
+            });
+        splide.mount();
+        });
+    </script>
+
+    <!-- Content Section -->
+    <% if (plainTextItems && plainTextItems.length> 0) { %>
+        <% plainTextItems.forEach(function(item) { %>
+            <section class="bg-promotion bg-center bg-cover py-12 md:py-24 px-8 md:px-16 lg:px-24">
+                <div class="flex flex-col lg:flex-row items-center mb-6">
+                    <div class="w-full lg:w-1/2 mb-0">
+                        <h2 class="mb-4 text-center lg:text-left"><%= currentLanguage==='en' ? item.title_en : item.title_tw %></h2>
+                        <div class="gradient-line w-24 h-2 mx-auto lg:mx-0 mb-12"></div>
+                    </div>
+                    <div class="w-full lg:w-1/2 flex justify-center">
+                        <img src="../images/contentImg.jpg" alt="">
+                    </div>
+                </div>
+                <div class="w-full">
+                    <p class="text-justify"><%- currentLanguage==='en' ? item.content_en : item.content_tw %></p>
+                </div>
+            </section>
+        <% }); %>
+    <% } %>
+
+    <% if (pictureItems && pictureItems.length> 0) { %>
+        <% pictureItems.forEach(function(item) { %>
+            <!-- Features Section -->
+            <section class="bg-plan bg-center bg-cover py-16 px-6 md:px-16">
+                <h3 class="text-center mb-10"><%= currentLanguage==='en' ? item.title_en : item.title_tw %></h3>
+                <% if (item.images && item.images.length> 0) { %>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-14 gap-y-24 sm:gap-10">
+                        <% item.images.forEach(function(image) { %>
+                            <div class="flex justify-center">
+                                <div class="w-[90%] md:w-full rounded-2xl transform transition-transform hover:-translate-y-1 cursor-pointer">
+                                    <img src="<%= image.path %>" alt="<%= currentLanguage=== 'en' ? item.title_en : item.title_tw %>" class="w-full">
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } %>
+            </section>
+        <% }); %>
+    <% } %>
+
+    <!-- News Section -->
+    <section class="bg-news bg-cover py-16 px-6 md:px-16 sm:bg-none">
+        <div class="flex flex-col sm:flex-row gap-8">
+            <!-- Left: Image (hidden on mobile) -->
+            <div class="hidden sm:block sm:w-1/2 flex items-center justify-center">
+                <div class="flex items-center justify-center h-full">
+                    <img src="../images/newsLGBG.png" alt="最新活動照片" class="w-full h-auto rounded-lg">
+                </div>
+            </div>
+            <!-- Right: News List -->
+            <div class="w-full sm:w-1/2">
+                <h3 class="mb-8 text-center sm:text-left">最新消息</h3>
+                <div class="h-[75vw] md:h-[50vw] sm:h-[35vw] overflow-y-auto pr-2">
+                    <!-- News Item -->
+                    <div class="relative border-b border-gray-300 py-2 mb-4">
+                        <span class="absolute top-1 right-0 bg-custom-blue text-white px-2 py-0.5 rounded text-xs">活動訊息</span>
+                        <p class="mb-2">2025/02/10</p>
+                        <a href="https://money.udn.com/money/story/5635/8538031" target="_blank" class="no-underline">
+                            <p class="">大南方新矽谷：台南沙崙成就台灣AI產業新典範</p>
+                        </a>
+                    </div>
+                    <!-- News Item -->
+                    <div class="relative border-b border-gray-300 py-2 mb-4">
+                        <span class="absolute top-1 right-0 bg-custom-green text-white px-2 py-0.5 rounded text-xs">產業動態</span>
+                        <p class="mb-2">2025/01/02</p>
+                        <a href="https://money.udn.com/money/story/7307/8463862" target="_blank" class="no-underline">
+                            <p class="">政院拍板大南方新矽谷方案　4策略為全產業注入AI能量_經濟日報</p>
+                        </a>
+                    </div>
+                    <div class="relative border-b border-gray-300 py-2 mb-4">
+                        <span class="absolute top-1 right-0 bg-custom-green text-white px-2 py-0.5 rounded text-xs">產業動態</span>
+                        <p class="mb-2">2024/12/20</p>
+                        <a href="https://money.udn.com/money/story/11799/8437079?from=edn_search_result" target="_blank" class="no-underline">
+                            <p class="">第12次全科會 助力打造均衡臺灣_經濟日報</p>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <!-- Banner Carousel Script -->
-        <script>
-            // Wait for the DOM to be fully loaded
-            document.addEventListener('DOMContentLoaded', function () {
-                // Get all the elements we need
-                var slides = document.querySelectorAll('.banner-slide');
-                var prevButton = document.getElementById('prev-banner');
-                var nextButton = document.getElementById('next-banner');
-                var indicators = document.querySelectorAll('.banner-indicator');
-
-                // Only proceed if we have multiple slides
-                if (slides.length <= 1) return;
-
-                console.log('Carousel initialized with', slides.length, 'slides');
-
-                var currentIndex = 0;
-                var interval;
-
-                // Function to show a specific slide
-                function showSlide(index) {
-                    console.log('Showing slide', index);
-
-                    // Hide all slides
-                    for (var i = 0; i < slides.length; i++) {
-                        slides[i].style.display = 'none';
-                    }
-
-                    // Show the selected slide
-                    slides[index].style.display = 'block';
-
-                    // Update indicators
-                    for (var j = 0; j < indicators.length; j++) {
-                        indicators[j].classList.remove('bg-white');
-                        indicators[j].classList.add('bg-gray-400');
-                    }
-
-                    indicators[index].classList.remove('bg-gray-400');
-                    indicators[index].classList.add('bg-white');
-
-                    // Pause all videos
-                    var videos = document.querySelectorAll('.banner-slide video');
-                    for (var k = 0; k < videos.length; k++) {
-                        videos[k].pause();
-                    }
-
-                    // Play video if current slide has one
-                    var currentVideo = slides[index].querySelector('video');
-                    if (currentVideo) {
-                        currentVideo.play();
-                    }
-
-                    currentIndex = index;
-                }
-
-                // Function to show the previous slide
-                function showPrevSlide() {
-                    clearInterval(interval);
-                    var prevIndex = (currentIndex - 1 + slides.length) % slides.length;
-                    showSlide(prevIndex);
-                    startAutoRotation();
-                }
-
-                // Function to show the next slide
-                function showNextSlide() {
-                    clearInterval(interval);
-                    var nextIndex = (currentIndex + 1) % slides.length;
-                    showSlide(nextIndex);
-                    startAutoRotation();
-                }
-
-                // Function to start automatic rotation
-                function startAutoRotation() {
-                    interval = setInterval(function () {
-                        var nextIndex = (currentIndex + 1) % slides.length;
-                        showSlide(nextIndex);
-                    }, 6000);
-                }
-
-                // Add event listeners to the previous and next buttons
-                if (prevButton) {
-                    prevButton.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        console.log('Previous button clicked');
-                        showPrevSlide();
-                        return false;
-                    });
-                }
-
-                if (nextButton) {
-                    nextButton.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        console.log('Next button clicked');
-                        showNextSlide();
-                        return false;
-                    });
-                }
-
-                // Add event listeners to the indicators
-                for (var l = 0; l < indicators.length; l++) {
-                    (function (index) {
-                        indicators[index].addEventListener('click', function (e) {
-                            e.preventDefault();
-                            console.log('Indicator', index, 'clicked');
-                            clearInterval(interval);
-                            showSlide(index);
-                            startAutoRotation();
-                            return false;
-                        });
-                    })(l);
-                }
-
-                // Start automatic rotation
-                startAutoRotation();
-            });
-        </script>
-        <% } %>
-
-            <div class="container mx-auto px-4 py-8">
-                <!-- Welcome Section -->
-                <div class="text-center mb-12">
-                    <h1 class="text-3xl font-bold mb-4">
-                        <%= currentLanguage==='en' ? 'Welcome to Our Website' : '歡迎來到我們的網站' %>
-                    </h1>
-                    <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-                        <%= currentLanguage==='en' ? 'Discover our latest updates, news, and promotions.'
-                            : '探索我們最新的更新、最新消息和推動方案。' %>
-                    </p>
-                </div>
-
-                <!-- Featured Content Section -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                    <!-- News Card -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                        <div class="h-48 bg-blue-100 flex items-center justify-center">
-                            <svg class="w-16 h-16 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
-                                </path>
-                            </svg>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-semibold mb-2">
-                                <%= currentLanguage==='en' ? 'Latest News' : '最新消息' %>
-                            </h3>
-                            <p class="text-gray-600 mb-4">
-                                <%= currentLanguage==='en' ? 'Stay updated with our latest news and announcements.'
-                                    : '了解我們最新的最新消息和公告。' %>
-                            </p>
-                            <a href="/<%= currentLanguage %>/news"
-                                class="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-                                <%= currentLanguage==='en' ? 'View News' : '查看最新消息' %>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Promotions Card -->
-                    <!-- <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                        <div class="h-48 bg-green-100 flex items-center justify-center">
-                            <svg class="w-16 h-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7">
-                                </path>
-                            </svg>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-semibold mb-2">
-                                <%= currentLanguage==='en' ? 'Special Promotions' : '特別推動' %>
-                            </h3>
-                            <p class="text-gray-600 mb-4">
-                                <%= currentLanguage==='en' ? 'Check out our current promotions and special offers.'
-                                    : '查看我們當前的推動和特別優惠。' %>
-                            </p>
-                            <a href="/<%= currentLanguage %>/promotions"
-                                class="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
-                                <%= currentLanguage==='en' ? 'View Promotions' : '查看推動' %>
-                            </a>
-                        </div>
-                    </div> -->
-
-                    <!-- FAQ Card -->
-                    <!-- <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                        <div class="h-48 bg-purple-100 flex items-center justify-center">
-                            <svg class="w-16 h-16 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                                </path>
-                            </svg>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-semibold mb-2">
-                                <%= currentLanguage==='en' ? 'Frequently Asked Questions' : '常見問題' %>
-                            </h3>
-                            <p class="text-gray-600 mb-4">
-                                <%= currentLanguage==='en' ? 'Find answers to commonly asked questions.' : '找到常見問題的答案。'
-                                    %>
-                            </p>
-                            <a href="/<%= currentLanguage %>/faq"
-                                class="inline-block px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors">
-                                <%= currentLanguage==='en' ? 'View FAQ' : '查看常見問題' %>
-                            </a>
-                        </div>
-                    </div> -->
+    <!-- Partners Section -->
+    <section class="bg-partner bg-no-repeat bg-contain bg-bottom sm:bg-cover sm:bg-center px-6 py-12 sm:px-16 sm:py-20 lg:px-64 lg:py-28" id="partners">
+        <h3 class="mb-4 sm:mb-8 text-center"><span class="text-custom-blue">臺灣智慧系統整合製造平台</span>合作伙伴</h3>
+        <div class="flex flex-col sm:flex-row">
+            <!-- 手機版下拉選單 -->
+            <div class="block w-full sm:hidden mb-6 p-2 relative rounded-xl border">
+                <select id="platform-select" class="w-full  text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none">
+                    <option value="metal" selected>金屬加工</option>
+                    <option value="plastic">塑膠製造</option>
+                    <option value="shoes">智慧鞋業</option>
+                    <option value="health">智慧健康</option>
+                    <option value="hospitality">餐飲/住宿</option>
+                    <option value="retail">智慧零售</option>
+                </select>
+                <!-- 自定義下拉箭頭 -->
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
                 </div>
             </div>
 
-            <!-- Frontpage Plain Text Items Section -->
-            <% if (plainTextItems && plainTextItems.length> 0) { %>
-                <div class="bg-gray-50 py-12">
-                    <div class="container mx-auto px-4">
-                        <div class="grid grid-cols-1 gap-8">
-                            <% plainTextItems.forEach(function(item) { %>
-                                <div
-                                    class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                                    <div class="p-6">
-                                        <h3 class="text-xl font-semibold mb-4">
-                                            <%= currentLanguage==='en' ? item.title_en : item.title_tw %>
-                                        </h3>
-                                        <div class="text-gray-600 whitespace-pre-line">
-                                            <%- currentLanguage==='en' ? item.content_en : item.content_tw %>
-                                        </div>
-                                    </div>
-                                </div>
-                                <% }); %>
+            <!-- 左側選單 (Desktop) -->
+            <div class="hidden sm:block sm:w-3/12 mr-6">
+                <ul class="">
+                    <li class="">
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 border-l-4 border-custom-blue" type="button">金屬加工</button>
+                    </li>
+                    <li class="">
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">塑膠製造</button>
+                    </li>
+                    <li class="">
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">智慧鞋業</button>
+                    </li>
+                    <li class="">
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">智慧健康</button>
+                    </li>
+                    <li class="">
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">餐飲/住宿</button>
+                    </li>
+                    <li class="">
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">智慧零售</button>
+                    </li>
+                </ul>
+            </div>
+    
+            <!-- 主內容區 -->
+            <div class="w-full sm:w-9/12">
+                <!-- 頂部標籤頁 -->
+                <div class="bg-white border-2 rounded-xl border-gray-100 p-4 mb-6 min-h-full">
+                    <div class="flex justify-center">
+                        <button class="companyTab px-4 py-2 border-b-2 border-custom-blue text-custom-blue font-medium">供應商</button>
+                        <button class="companyTab px-4 py-2 border-b-2 border-gray-100 text-gray-500">需求商</button>
+                    </div>
+    
+                    <!-- 供應商列表 -->
+                    <div class="supplierList py-6 grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4">
+                        <!-- 供應商卡片 -->
+                        <div class="partner-card h-full flex items-center justify-center">
+                            <p class="text-center">弘慧系統整合科技有限公司</p>
+                        </div>
+                        <div class="partner-card h-full flex items-center justify-center">
+                            <p class="text-center">邁森科技股份有限公司</p>
+                        </div>
+                        <div class="partner-card h-full flex items-center justify-center">
+                            <p class="text-center">廣杰精機股份有限公司</p>
+                        </div>
+                        <div class="partner-card h-full flex items-center justify-center">
+                            <p class="text-center">達詳自動化股份有限公司</p>
+                        </div>
+                        <div class="partner-card h-full flex items-center justify-center">
+                            <p class="text-center">艾肯林科技股份有限公司</p>
+                        </div>
+                        <div class="partner-card h-full flex items-center justify-center">
+                            <p class="text-center">怡邦精密有限公司</p>
+                        </div>
+                        <div class="partner-card h-full flex items-center justify-center">
+                            <p class="text-center">達明機器人</p>
+                        </div>
+                        <div class="partner-card h-full flex items-center justify-center">
+                            <p class="text-center">上銀科技股份有限公司</p>
+                        </div>
+                    </div>
+                    <!-- 需求商列表 -->
+                    <div class="demanderList py-6 hidden grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4">
+                        <!-- 需求商卡片 -->
+                        <div class="partner-card h-full flex items-center justify-center">
+                            <p class="text-center">需求商卡片</p>
+                        </div>
+                        <div class="partner-card h-full flex items-center justify-center">
+                            <p class="text-center">需求商卡片</p>
+                        </div>
+                        <div class="partner-card h-full flex items-center justify-center">
+                            <p class="text-center">需求商卡片</p>
+                        </div>
+                        <div class="partner-card h-full flex items-center justify-center">
+                            <p class="text-center">需求商卡片</p>
+                        </div>
+                        <div class="partner-card h-full flex items-center justify-center">
+                            <p class="text-center">需求商卡片</p>
+                        </div>
+                        <div class="partner-card h-full flex items-center justify-center">
+                            <p class="text-center">需求商卡片</p>
+                        </div>
+                        <div class="partner-card h-full flex items-center justify-center">
+                            <p class="text-center">需求商卡片</p>
+                        </div>
+                        <div class="partner-card h-full flex items-center justify-center">
+                            <p class="text-center">需求商卡片</p>
                         </div>
                     </div>
                 </div>
-                <% } %>
+            </div>
+        </div>
+    </section>
 
-                    <!-- Frontpage Picture Items Section -->
-                    <% if (pictureItems && pictureItems.length> 0) { %>
-                        <div class="py-12">
-                            <div class="container mx-auto px-4">
-                                <% pictureItems.forEach(function(item) { %>
-                                    <div class="mb-16">
-                                        <h2 class="text-2xl font-bold mb-8 text-center">
-                                            <%= currentLanguage==='en' ? item.title_en : item.title_tw %>
-                                        </h2>
+    <script>
+        // 簡單的標籤切換功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryTabs = document.querySelectorAll('.categoryTab');
+            const companyTabs = document.querySelectorAll('.companyTab');
+            const supplierList = document.querySelector('.supplierList');
+            const demanderList = document.querySelector('.demanderList');
+            
+            categoryTabs.forEach(categoryTab => {
+                categoryTab.addEventListener('click', function() {
+                    // 移除所有標籤的活動狀態
+                    categoryTabs.forEach(t => {
+                        t.classList.remove('border-custom-blue', 'border-l-4');
+                        t.classList.add('text-gray-500');
+                    });
+                    
+                    // 設置當前標籤為活動狀態
+                    this.classList.remove('text-gray-500');
+                    this.classList.add('border-custom-blue', 'border-l-4');
+                });
+            });
 
-                                        <% if (item.images && item.images.length> 0) { %>
-                                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                                                <% item.images.forEach(function(image) { %>
-                                                    <div
-                                                        class="overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                                                        <img src="<%= image.path %>"
-                                                            alt="<%= currentLanguage=== 'en' ? item.title_en : item.title_tw %>"
-                                                            class="w-full h-48 object-cover">
-                                                    </div>
-                                                    <% }); %>
-                                            </div>
-                                            <% } %>
-                                    </div>
-                                    <% }); %>
-                            </div>
-                        </div>
-                        <% } %>
+            companyTabs.forEach((companyTab, index) => {
+                companyTab.addEventListener('click', function() {
+                    companyTabs.forEach(tab => {
+                        // 切換標籤樣式
+                        tab.classList.toggle('border-custom-blue', tab === this);
+                        tab.classList.toggle('text-custom-blue', tab === this);
+                        tab.classList.toggle('text-gray-500', tab !== this);
+                        tab.classList.toggle('border-gray-100', tab !== this);
+                    });
+                    // 切換內容顯示
+                    const isSupplierTab = index === 0;
+                    supplierList.classList.toggle('grid', isSupplierTab);
+                    supplierList.classList.toggle('hidden', !isSupplierTab);
+                    demanderList.classList.toggle('grid', !isSupplierTab);
+                    demanderList.classList.toggle('hidden', isSupplierTab);
+                });
+            });
+        });
+    </script>
 
-                            <!-- Related Links Section -->
-                            <% if (links && links.length> 0) { %>
-                                <div class="container mx-auto px-4 py-8 mb-12">
-                                    <div class="max-w-6xl mx-auto">
-                                        <h2 class="text-2xl font-bold mb-6 text-center">
-                                            <%= currentLanguage==='en' ? 'Related Links' : '相關連結' %>
-                                        </h2>
-
-                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                            <% links.forEach(function(link) { %>
-                                                <a href="<%= link.url %>" target="_blank" rel="noopener noreferrer"
-                                                    class="block group">
-                                                    <div
-                                                        class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 transform hover:-translate-y-1 hover:shadow-lg">
-                                                        <% if (link.image) { %>
-                                                            <div class="h-40 overflow-hidden">
-                                                                <img src="<%= link.image %>"
-                                                                    alt="<%= currentLanguage==='en' ? link.title_en : link.title_tw %>"
-                                                                    class="w-full h-full object-cover transition-transform duration-500 transform group-hover:scale-105">
-                                                            </div>
-                                                            <% } else { %>
-                                                                <div
-                                                                    class="h-40 bg-gray-200 flex items-center justify-center">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                                        class="h-12 w-12 text-gray-400" fill="none"
-                                                                        viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path stroke-linecap="round"
-                                                                            stroke-linejoin="round" stroke-width="2"
-                                                                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
-                                                                        </path>
-                                                                    </svg>
-                                                                </div>
-                                                                <% } %>
-                                                                    <div class="p-4">
-                                                                        <h3
-                                                                            class="text-lg font-semibold text-gray-800 mb-2 group-hover:text-blue-600">
-                                                                            <%= currentLanguage==='en' ? link.title_en :
-                                                                                link.title_tw %>
-                                                                        </h3>
-                                                                        <div
-                                                                            class="flex items-center text-gray-600 text-sm">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                                                class="h-4 w-4 mr-1" fill="none"
-                                                                                viewBox="0 0 24 24"
-                                                                                stroke="currentColor">
-                                                                                <path stroke-linecap="round"
-                                                                                    stroke-linejoin="round"
-                                                                                    stroke-width="2"
-                                                                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
-                                                                                </path>
-                                                                            </svg>
-                                                                            <%= currentLanguage==='en' ? 'Visit Link'
-                                                                                : '訪問連結' %>
-                                                                        </div>
-                                                                    </div>
-                                                    </div>
-                                                </a>
-                                                <% }); %>
-                                        </div>
-                                    </div>
-                                </div>
-                                <% } %>
+    <!-- Related Links Section -->
+    <section class="py-12 px-5 lg:px-8">
+        <h3 class="text-center mb-10">相關連結</h3>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-6">
+            <!-- Link Item -->
+            <a href="https://www.nstc.gov.tw" class="block no-underline" target="_blank">
+            <div class="bg-gray-100 h-28 lg:h-36 rounded-xl flex items-center justify-center p-4 sm:p-6">
+                <div class="w-full flex items-center justify-center">
+                <img src="../images/logo/logo-NSTC.png" alt="國家科學及技術委員會" class="h-full w-full object-cover">
+                </div>
+            </div>
+            </a>
+            <!-- Link Item -->
+            <a href="https://www.ndc.gov.tw" class="block no-underline" target="_blank">
+            <div class="bg-gray-100 h-28 lg:h-36 rounded-xl flex items-center justify-center p-4 sm:p-6">
+                <div class="w-full flex items-center justify-center">
+                <img src="../images/logo/logo-NDC.png" alt="國家發展委員會" class="h-full w-full object-cover">
+                </div>
+            </div>
+            </a>
+            <!-- Link Item -->
+            <a href="https://moda.gov.tw/" class="block no-underline" target="_blank">
+            <div class="bg-gray-100 h-28 lg:h-36 rounded-xl flex items-center justify-center p-4 sm:p-6">
+                <div class="w-full flex items-center justify-center">
+                <img src="../images/logo/logo-MODA.png" alt="數位發展部" class="h-full w-full object-cover">
+                </div>
+            </div>
+            </a>
+            <!-- Link Item -->
+            <a href="https://www.moea.gov.tw" class="block no-underline" target="_blank">
+            <div class="bg-gray-100 h-28 lg:h-36 rounded-xl flex items-center justify-center p-4 sm:p-6">
+                <div class="w-full flex items-center justify-center">
+                <img src="../images/logo/logo-MEA.png" alt="經濟部" class="h-full w-full object-cover">
+                </div>
+            </div>
+            </a>
+            <!-- Link Item -->
+            <a href="https://www.edu.tw" class="block no-underline" target="_blank">
+            <div class="bg-gray-100 h-28 lg:h-36 rounded-xl flex items-center justify-center p-4 sm:p-6">
+                <div class="w-full flex items-center justify-center">
+                <img src="../images/logo/logo-ME.png" alt="教育部" class="h-full w-full object-cover">
+                </div>
+            </div>
+            </a>
+            <!-- Link Item -->
+            <a href="https://www.tainan.gov.tw" class="block no-underline" target="_blank">
+            <div class="bg-gray-100 h-28 lg:h-36 rounded-xl flex items-center justify-center p-4 sm:p-6">
+                <div class="w-full flex items-center justify-center">
+                <img src="../images/logo/logo-TNCG.png" alt="臺南市政府" class="h-full w-full object-cover">
+                </div>
+            </div>
+            </a>
+            <!-- Link Item -->
+            <a href="https://www.stsp.gov.tw" class="block no-underline" target="_blank">
+            <div class="bg-gray-100 h-28 lg:h-36 rounded-xl flex items-center justify-center p-4 sm:p-6">
+                <div class="w-full flex items-center justify-center">
+                <img src="../images/logo/logo-STSP.png" alt="南部科學園區" class="h-full w-full object-cover">
+                </div>
+            </div>
+            </a>
+            <!-- Link Item -->
+            <a href="https://www.narlabs.org.tw" class="block no-underline" target="_blank">
+            <div class="bg-gray-100 h-28 lg:h-36 rounded-xl flex items-center justify-center p-4 sm:p-6">
+                <div class="w-full flex items-center justify-center">
+                <img src="../images/logo/logo-NARLabs.png" alt="國家實驗研究所" class="h-full w-full object-cover">
+                </div>
+            </div>
+            </a>
+        </div>
+    </section>
