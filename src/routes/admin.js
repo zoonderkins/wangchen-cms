@@ -30,6 +30,9 @@ const linksController = require('../controllers/linksController');
 const platformController = require('../controllers/platformController');
 const platformUpload = require('../middleware/platformImageUpload');
 
+// Import frontpage routes
+const frontpageRoutes = require('./admin/frontpage');
+
 // Multer configuration
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -266,13 +269,15 @@ router.post('/platforms/:id', hasRole(['super_admin', 'admin']), platformUpload.
 router.post('/platforms/:id/delete', hasRole(['super_admin', 'admin']), platformController.deleteItem);
 
 // Links Routes
-router.get('/links', isAuthenticated, hasRole(['super_admin', 'admin']), linksController.index);
-router.get('/links/create', isAuthenticated, hasRole(['super_admin', 'admin']), linksController.createForm);
-router.post('/links', isAuthenticated, hasRole(['super_admin', 'admin']), linksController.create);
-router.get('/links/edit/:id', isAuthenticated, hasRole(['super_admin', 'admin']), linksController.editForm);
-router.post('/links/:id', isAuthenticated, hasRole(['super_admin', 'admin']), linksController.update);
-router.get('/links/delete/:id', isAuthenticated, hasRole(['super_admin', 'admin']), linksController.delete);
-router.get('/links/toggle/:id', isAuthenticated, hasRole(['super_admin', 'admin']), linksController.toggleActive);
+router.get('/links', hasRole(['super_admin', 'admin']), linksController.index);
+router.get('/links/create', hasRole(['super_admin', 'admin']), linksController.createForm);
+router.post('/links', hasRole(['super_admin', 'admin']), linksController.create);
+router.get('/links/edit/:id', hasRole(['super_admin', 'admin']), linksController.editForm);
+router.post('/links/:id', hasRole(['super_admin', 'admin']), linksController.update);
+router.post('/links/:id/delete', hasRole(['super_admin', 'admin']), linksController.delete);
+
+// Frontpage Routes
+router.use('/frontpage', hasRole(['super_admin', 'admin']), frontpageRoutes);
 
 // User Routes
 router.get('/users', hasRole(['super_admin', 'admin']), userController.listUsers);

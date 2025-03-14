@@ -20,18 +20,19 @@ model User {
   roleId    Int
 
   // Relations
-  role              Role              @relation(fields: [roleId], references: [id])
-  articles          Article[]
-  newsItems         NewsItem[]
-  promotionItems    PromotionItem[]
-  banners           Banner[]
-  platforms         Platform[]        // Added relation for platforms
-  uploads           Media[]           @relation("uploads")
+  role                Role                 @relation(fields: [roleId], references: [id])
+  articles            Article[]
+  newsItems           NewsItem[]
+  promotionItems      PromotionItem[]
+  banners             Banner[]
+  platforms           Platform[] // Added relation for platforms
+  uploads             Media[]              @relation("uploads")
   categoryPermissions CategoryPermission[] @relation("categoryPermissions")
-  pages             Page[]
-  faqItems          FaqItem[]
-  downloads         Download[]
-  aboutItems        AboutItem[]
+  pages               Page[]
+  faqItems            FaqItem[]
+  downloads           Download[]
+  aboutItems          AboutItem[]
+  FrontpageItem       FrontpageItem[]
 
   @@index([roleId], map: "Users_roleId_fkey")
   @@map("Users")
@@ -389,19 +390,19 @@ model PromotionItem {
 
 // About page items
 model AboutItem {
-  id          Int      @id @default(autoincrement())
-  title_en    String
-  title_tw    String
-  type        String   // "plain_text", "image", "bullet_points"
-  content_en  String   @db.LongText
-  content_tw  String   @db.LongText
-  imagePath   String?  // For image type items
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  deletedAt   DateTime?
-  authorId    Int?
-  author      User?    @relation(fields: [authorId], references: [id])
+  id         Int       @id @default(autoincrement())
+  title_en   String
+  title_tw   String
+  type       String // "plain_text", "image", "bullet_points"
+  content_en String    @db.LongText
+  content_tw String    @db.LongText
+  imagePath  String? // For image type items
+  order      Int       @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+  authorId   Int?
+  author     User?     @relation(fields: [authorId], references: [id])
 
   @@index([authorId], map: "AboutItems_authorId_fkey")
   @@map("AboutItems")
@@ -409,67 +410,67 @@ model AboutItem {
 
 // Contact categories
 model ContactCategory {
-  id          Int       @id @default(autoincrement())
-  name_en     String
-  name_tw     String
-  order       Int       @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-  contacts    Contact[]
+  id        Int       @id @default(autoincrement())
+  name_en   String
+  name_tw   String
+  order     Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  contacts  Contact[]
 
   @@map("ContactCategories")
 }
 
 // Contact submissions
 model Contact {
-  id           Int             @id @default(autoincrement())
-  name         String
-  email        String
-  company      String?
-  phone        String?
-  message      String          @db.Text
-  categoryId   Int?
-  category     ContactCategory? @relation(fields: [categoryId], references: [id])
-  agreeTerms   Boolean         @default(false)
-  status       String          @default("pending") // pending, processed, archived
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
-  deletedAt    DateTime?
+  id         Int              @id @default(autoincrement())
+  name       String
+  email      String
+  company    String?
+  phone      String?
+  message    String           @db.Text
+  categoryId Int?
+  category   ContactCategory? @relation(fields: [categoryId], references: [id])
+  agreeTerms Boolean          @default(false)
+  status     String           @default("pending") // pending, processed, archived
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  deletedAt  DateTime?
 
   @@index([categoryId], map: "Contacts_categoryId_fkey")
   @@map("Contacts")
 }
 
 model Link {
-  id          Int       @id @default(autoincrement())
-  title_en    String
-  title_tw    String
-  url         String
-  image       String?
-  order       Int       @default(0)
-  active      Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id        Int      @id @default(autoincrement())
+  title_en  String
+  title_tw  String
+  url       String
+  image     String?
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("Links")
 }
 
 // Platform categories
 model PlatformCategory {
-  id            Int       @id @default(autoincrement())
-  name_en       String    // English name
-  name_tw       String    // Traditional Chinese name
-  description_en String?  // English description
-  description_tw String?  // Traditional Chinese description
-  slug          String    @unique // URL-friendly identifier
-  order         Int       @default(0) // Display order
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  deletedAt     DateTime?
+  id             Int       @id @default(autoincrement())
+  name_en        String // English name
+  name_tw        String // Traditional Chinese name
+  description_en String? // English description
+  description_tw String? // Traditional Chinese description
+  slug           String    @unique // URL-friendly identifier
+  order          Int       @default(0) // Display order
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
 
   // Relations
-  platforms     Platform[] // Platforms in this category
+  platforms Platform[] // Platforms in this category
 
   @@map("PlatformCategories")
 }
@@ -492,36 +493,92 @@ model Platform {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   deletedAt     DateTime?
-  
+
   // Relations
-  category      PlatformCategory? @relation(fields: [categoryId], references: [id])
-  categoryId    Int?
-  author        User?            @relation(fields: [authorId], references: [id])
-  authorId      Int?
-  attachments   PlatformAttachment[]
+  category    PlatformCategory?    @relation(fields: [categoryId], references: [id])
+  categoryId  Int?
+  author      User?                @relation(fields: [authorId], references: [id])
+  authorId    Int?
+  attachments PlatformAttachment[]
 
   @@map("Platforms")
 }
 
 // Platform attachments
 model PlatformAttachment {
+  id             Int       @id @default(autoincrement())
+  filename       String
+  originalName   String
+  mimeType       String
+  size           Int
+  path           String
+  title_en       String? // English title
+  title_tw       String? // Traditional Chinese title
+  description_en String?   @db.Text // English description
+  description_tw String?   @db.Text // Traditional Chinese description
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  // Relations
+  platform   Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+  platformId Int
+
+  @@map("PlatformAttachments")
+}
+
+// Frontpage categories
+model FrontpageCategory {
+  id        Int       @id @default(autoincrement())
+  name_tw   String // Traditional Chinese name
+  order     Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  // Relations
+  frontpageItems FrontpageItem[]
+
+  @@map("FrontpageCategories")
+}
+
+// Frontpage items
+model FrontpageItem {
+  id         Int       @id @default(autoincrement())
+  title_tw   String // Traditional Chinese title
+  title_en   String // English title
+  content_tw String?   @db.LongText // Traditional Chinese content
+  content_en String?   @db.LongText // English content
+  type       String // "plain_text" or "picture"
+  order      Int       @default(0)
+  status     Status    @default(draft)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  // Relations
+  category   FrontpageCategory @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  author     User              @relation(fields: [authorId], references: [id])
+  authorId   Int
+  images     FrontpageImage[]
+
+  @@map("FrontpageItems")
+}
+
+// Frontpage images
+model FrontpageImage {
   id           Int      @id @default(autoincrement())
   filename     String
   originalName String
-  mimeType     String
-  size         Int
   path         String
-  title_en     String?  // English title
-  title_tw     String?  // Traditional Chinese title
-  description_en String? @db.Text // English description
-  description_tw String? @db.Text // Traditional Chinese description
+  order        Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  deletedAt    DateTime?
 
   // Relations
-  platform     Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
-  platformId   Int
+  item   FrontpageItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId Int
 
-  @@map("PlatformAttachments")
+  @@map("FrontpageImages")
 }
