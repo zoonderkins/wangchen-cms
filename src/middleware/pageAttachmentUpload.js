@@ -80,7 +80,8 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage,
     limits: {
-        fileSize: MAX_PAGE_ATTACHMENT_SIZE
+        fileSize: MAX_PAGE_ATTACHMENT_SIZE,
+        fieldSize: 200 * 1024 * 1024 // 200MB limit for form fields (for Quill editor content)
     },
     fileFilter
 });
@@ -93,7 +94,17 @@ const handlePageAttachmentUploadError = (err, req, res, next) => {
     if (err instanceof multer.MulterError) {
         // A Multer error occurred when uploading
         logger.error('Multer error during page attachment upload:', err);
-        req.flash('error_msg', `Upload error: ${err.message}`);
+        
+        let errorMessage = `Upload error: ${err.message}`;
+        
+        // Provide more specific error messages
+        if (err.code === 'LIMIT_FILE_SIZE') {
+            errorMessage = `File size too large. Maximum size is ${MAX_PAGE_ATTACHMENT_SIZE / (1024 * 1024)}MB`;
+        } else if (err.code === 'LIMIT_FIELD_VALUE') {
+            errorMessage = `Content size too large. Please reduce the size of your content or split it into multiple pages.`;
+        }
+        
+        req.flash('error_msg', errorMessage);
         
         // Redirect based on whether it's a create or edit operation
         if (req.params.id) {
