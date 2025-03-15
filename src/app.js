@@ -11,6 +11,7 @@ const cookieParser = require('cookie-parser');
 const { setLocals } = require('./middleware/viewMiddleware');
 const { languageMiddleware } = require('./middleware/languageMiddleware');
 const { languageRouteMiddleware, addLanguageHelpers } = require('./middleware/languageRouteMiddleware');
+const { attachPageImage } = require('./middleware/pageImageMiddleware');
 
 // Import routes
 const frontendRoutes = require('./routes/frontend');
@@ -70,6 +71,9 @@ app.use(languageMiddleware);
 
 // Add language helper functions to res.locals
 app.use(addLanguageHelpers);
+
+// Attach page image to frontend routes
+app.use(attachPageImage);
 
 // Global variables
 app.use((req, res, next) => {

@@ -33,6 +33,7 @@ model User {
   downloads           Download[]
   aboutItems          AboutItem[]
   FrontpageItem       FrontpageItem[]
+  pageImages          PageImage[]          @relation("pageImageCreator")
 
   @@index([roleId], map: "Users_roleId_fkey")
   @@map("Users")
@@ -211,6 +212,21 @@ model PageAttachment {
   pageId Int
 
   @@map("PageAttachments")
+}
+
+model PageImage {
+  id           Int      @id @default(autoincrement())
+  filename     String
+  originalName String
+  path         String
+  targetPage   String   // The page this image is for (e.g., "index", "about", "contact")
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  createdBy    User     @relation("pageImageCreator", fields: [userId], references: [id])
+  userId       Int
+
+  @@map("PageImages")
 }
 
 model FaqCategory {

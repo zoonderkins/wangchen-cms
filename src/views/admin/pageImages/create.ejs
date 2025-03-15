@@ -1,0 +1,63 @@
+<%- contentFor('body') %>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold">新增網頁橫幅</h1>
+            <a href="/admin/pageImages" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                <i class="fas fa-arrow-left mr-2"></i> 返回列表
+            </a>
+        </div>
+
+        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <form action="/admin/pageImages" method="POST" enctype="multipart/form-data">
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="targetPage">
+                        目標頁面 <span class="text-red-500">*</span>
+                    </label>
+                    <select
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="targetPage" name="targetPage" required>
+                        <option value="" disabled selected>選擇頁面</option>
+                        <% pages.forEach(function(page) { %>
+                            <option value="<%= page.name %>">
+                                <%= page.chineseName %>
+                            </option>
+                            <% }); %>
+                    </select>
+                    <p class="text-gray-600 text-xs italic mt-1">選擇要顯示此橫幅的頁面</p>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="image">
+                        橫幅圖片 <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="image" name="image" type="file" accept="image/*" required>
+                    <p class="text-gray-600 text-xs italic mt-1">上傳寬度為全頁面寬度的圖片，高度不超過300px</p>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                        狀態
+                    </label>
+                    <div class="flex items-center">
+                        <input type="radio" id="active" name="isActive" value="true" class="mr-2" checked>
+                        <label for="active" class="mr-4">啟用</label>
+
+                        <input type="radio" id="inactive" name="isActive" value="false" class="mr-2">
+                        <label for="inactive">停用</label>
+                    </div>
+                    <p class="text-gray-600 text-xs italic mt-1">設定為啟用時，橫幅將顯示在所選頁面</p>
+                </div>
+
+                <div class="flex items-center justify-end">
+                    <button
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        type="submit">
+                        建立網頁橫幅
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>

@@ -18,6 +18,7 @@ const categoryController = require('../controllers/categoryController');
 const categoryPermissionController = require('../controllers/categoryPermissionController');
 const bannerController = require('../controllers/bannerController');
 const pageController = require('../controllers/pageController');
+const pageImageController = require('../controllers/pageImageController');
 const faqController = require('../controllers/faqController');
 const downloadController = require('../controllers/downloadController');
 const downloadCategoryController = require('../controllers/downloadCategoryController');
@@ -127,6 +128,7 @@ router.delete('/banners/:id', hasRole(['super_admin', 'admin']), bannerControlle
 
 // Page routes
 const pageAttachmentUpload = require('../middleware/pageAttachmentUpload');
+const pageImageUpload = require('../middleware/pageImageUpload');
 
 router.get('/pages', hasRole(['super_admin', 'admin']), pageController.listPages);
 router.get('/pages/create', hasRole(['super_admin', 'admin']), pageController.renderCreatePage);
@@ -278,6 +280,15 @@ router.post('/links/:id/delete', hasRole(['super_admin', 'admin']), linksControl
 
 // Frontpage Routes
 router.use('/frontpage', hasRole(['super_admin', 'admin']), frontpageRoutes);
+
+// Page Image Routes
+router.get('/pageImages', hasRole(['super_admin', 'admin']), pageImageController.listPageImages);
+router.get('/pageImages/create', hasRole(['super_admin', 'admin']), pageImageController.renderCreateForm);
+router.post('/pageImages', hasRole(['super_admin', 'admin']), pageImageUpload, pageImageController.createPageImage);
+router.get('/pageImages/edit/:id', hasRole(['super_admin', 'admin']), pageImageController.renderEditForm);
+router.post('/pageImages/edit/:id', hasRole(['super_admin', 'admin']), pageImageUpload, pageImageController.updatePageImage);
+router.get('/pageImages/delete/:id', hasRole(['super_admin', 'admin']), pageImageController.deletePageImage);
+router.get('/pageImages/toggle/:id', hasRole(['super_admin', 'admin']), pageImageController.toggleStatus);
 
 // User Routes
 router.get('/users', hasRole(['super_admin', 'admin']), userController.listUsers);
