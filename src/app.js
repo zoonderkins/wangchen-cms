@@ -12,6 +12,7 @@ const { setLocals } = require('./middleware/viewMiddleware');
 const { languageMiddleware } = require('./middleware/languageMiddleware');
 const { languageRouteMiddleware, addLanguageHelpers } = require('./middleware/languageRouteMiddleware');
 const { attachPageImage } = require('./middleware/pageImageMiddleware');
+const { trackVisits } = require('./middleware/visitCounterMiddleware');
 
 // Import routes
 const frontendRoutes = require('./routes/frontend');
@@ -74,6 +75,9 @@ app.use(addLanguageHelpers);
 
 // Attach page image to frontend routes
 app.use(attachPageImage);
+
+// Track website visits
+app.use(trackVisits);
 
 // Global variables
 app.use((req, res, next) => {

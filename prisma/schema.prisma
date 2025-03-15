@@ -598,3 +598,9 @@ model FrontpageImage {
 
   @@map("FrontpageImages")
 }
+
+model VisitCounter {
+  id        Int      @id @default(autoincrement())
+  count     Int      @default(0)
+  updatedAt DateTime @updatedAt
+}
