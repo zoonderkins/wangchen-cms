@@ -154,6 +154,9 @@ main {
 .slide {
     height: calc(100vh - var(--header-height)) !important;
 }
+.banner-title {
+    width: 90vw;
+}
 
 /* custom scrollbar */
 .scrollbar-hide {
@@ -169,10 +172,20 @@ main {
 
 /* custom bg */
 .gradient-line {
-    width: 60px;  /* 或設定具體寬度，例如 200px */
+    width: 70px;  /* 或設定具體寬度，例如 200px */
     height: 8px;  /* 調整線條粗細 */
     border-radius: 4px;  /* 讓線條兩端變圓 */
-    background: linear-gradient(to right, #3AB5E0, #38B9A1);
+    background: linear-gradient(to right, var(--color-custom-green), var(--color-custom-green));
+}
+.yellow-line {
+    width: 160px;  /* 或設定具體寬度，例如 200px */
+    height: 8px;  /* 調整線條粗細 */
+    border-radius: 4px;  /* 讓線條兩端變圓 */
+    background: var(--color-custom-yellow);
+}
+.img-shadow {
+    border-radius: 50px;
+    box-shadow: 20px 20px var(--color-custom-yellow);
 }
 .bg-promotion {
     background-image: url(images/方案LGBG.png);
@@ -234,6 +247,11 @@ main {
     .custom-button-blue {
         font-size: 1rem;
     }
+
+    .banner-title {
+        width: 70vw;
+    }
+
     .bg-news {
         background-image: none;
     }
@@ -283,6 +301,11 @@ main {
     .custom-button-blue {
         font-size: 1rem;
     }
+
+    .banner-title {
+        width: 50vw;
+    }
+
     .bg-plan {
         background-image: url(images/desktop/planbg_desktop.png);
     }

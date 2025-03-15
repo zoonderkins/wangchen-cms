@@ -23,7 +23,7 @@
                                         <!-- h1 貼齊隱形線上緣 -->
                                         <h1 class="absolute bottom-0 mb-4 w-full text-white"><%= banner.title %></h1>
                                         <!-- 隱形線 -->
-                                        <div class="" style="width: 70vw;"></div>
+                                        <div class="banner-title"></div>
                                         <!-- p 貼齊隱形線下緣 -->
                                         <% if (banner.description) { %>
                                             <h2 class="h3 absolute top-0 mt-0 w-full text-white"><%= banner.description %></h2>
@@ -35,12 +35,12 @@
                     <% }); %>
                 </ul>
             </div>
-            <div class="absolute bottom-0 w-full flex flex-col md:flex-row justify-center">
-                <button class="px-3 py-1 mx-2 sm:px-12 sm:py-2 sm:mx-4 w-auto md:w-1/2 mb-2 md:mb-0 bg-custom-yellow">
+            <div class="absolute bottom-0 w-full flex flex-col sm:flex-row justify-center">
+                <button class="max-w-xl px-3 py-2 mx-2 sm:px-12 sm:py-3 sm:mx-4 sm:w-1/2 mb-2 sm:mb-0 bg-custom-yellow">
                     <%= currentLanguage==='en' ? 'Nationwide On-Site Services' : '全區進駐服務' %>
                     
                 </button>
-                <button class="px-3 py-1 mx-2 sm:px-12 sm:py-2 sm:mx-4 w-auto md:w-1/2 bg-custom-lightgreen ">
+                <button class="max-w-xl px-3 py-2 mx-2 sm:px-12 sm:py-3 sm:mx-4 sm:w-1/2 bg-custom-lightgreen ">
                     <%= currentLanguage==='en' ? 'Industry Promotion Cooperation' : '產業推廣合作' %>
                 </button>
             </div>
@@ -59,13 +59,13 @@
     <% if (plainTextItems && plainTextItems.length> 0) { %>
         <% plainTextItems.forEach(function(item) { %>
             <section class="bg-promotion bg-center bg-cover py-12 md:py-24 px-8 md:px-16 lg:px-24">
-                <div class="flex flex-col lg:flex-row items-center mb-6">
+                <div class="flex flex-col lg:flex-row items-center mb-16">
                     <div class="w-full lg:w-1/2 mb-0">
                         <h2 class="mb-4 text-center lg:text-left"><%= currentLanguage==='en' ? item.title_en : item.title_tw %></h2>
                         <div class="gradient-line w-24 h-2 mx-auto lg:mx-0 mb-12"></div>
                     </div>
                     <div class="w-full lg:w-1/2 flex justify-center">
-                        <img src="../images/contentImg.jpg" alt="">
+                        <img class="img-shadow" src="../images/contentImg.jpg" alt="">
                     </div>
                 </div>
                 <div class="w-full">
@@ -106,9 +106,10 @@
             </div>
             <!-- Right: News List -->
             <div class="w-full sm:w-1/2">
-                <h3 class="mb-8 text-center sm:text-left">
+                <h3 class="mb-2 text-center sm:text-left">
                     <%= currentLanguage==='en' ? 'Latest News' : '最新消息' %>
                 </h3>
+                <div class="yellow-line w-24 h-2 mx-auto lg:mx-0 mb-8"></div>
                 <div class="h-[75vw] md:h-[50vw] sm:h-[35vw] overflow-y-auto pr-2">
                     <!-- News Item -->
                     <div class="relative border-b border-gray-300 py-2 mb-4">
@@ -140,7 +141,7 @@
 
     <!-- Partners Section -->
     <section class="bg-partner bg-no-repeat bg-cover bg-bottom sm:bg-cover sm:bg-center px-6 py-12 sm:px-16 sm:py-20 lg:px-64 lg:py-28" id="partners">
-        <h3 class="mb-4 sm:mb-8 text-center"><span class="text-white"><%= currentLanguage==='en' ? 'Taiwan Smart System Integrated Manufacturing Platform' : '臺灣智慧系統整合製造平台' %></span> <%= currentLanguage==='en' ? 'Partners' : '合作伙伴' %></h3>
+        <h3 class="mb-4 sm:mb-8 text-center"><span class="text-white"><%= currentLanguage==='en' ? 'Taiwan Smart System Integrated Manufacturing Platform' : '臺灣智慧系統整合製造平台' %></span> <span class="text-custom-yellow"><%= currentLanguage==='en' ? 'Partners' : '合作伙伴' %></span></h3>
         <div class="flex flex-col sm:flex-row">
             <!-- 手機版下拉選單 -->
             <div class="block w-full sm:hidden mb-6 p-2 relative rounded-xl border">
@@ -179,7 +180,7 @@
             <div class="hidden sm:block sm:w-3/12 mr-6">
                 <ul class="">
                     <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 border-l-4 border-custom-blue" type="button">
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 border-l-4 border-custom-yellow" type="button">
                             <%= currentLanguage==='en' ? 'Metal Processing' : '金屬加工' %>
                         </button>
                     </li>
@@ -222,7 +223,7 @@
                 <!-- 頂部標籤頁 -->
                 <div class="bg-white border-2 rounded-xl border-gray-100 p-4 mb-6 min-h-full">
                     <div class="flex justify-center">
-                        <button class="companyTab px-4 py-2 border-b-2 border-custom-blue text-custom-blue font-medium">
+                        <button class="companyTab px-4 py-2 border-b-2 border-custom-yellow text-custom-blue font-medium">
                             <%= currentLanguage==='en' ? 'Suppliers' : '供應商' %>
                         </button>
                         <button class="companyTab px-4 py-2 border-b-2 border-gray-100 text-gray-500">
@@ -272,13 +273,13 @@
                 categoryTab.addEventListener('click', function() {
                     // 移除所有標籤的活動狀態
                     categoryTabs.forEach(t => {
-                        t.classList.remove('border-custom-blue', 'border-l-4');
+                        t.classList.remove('border-custom-yellow', 'border-l-4');
                         t.classList.add('text-gray-500');
                     });
                     
                     // 設置當前標籤為活動狀態
                     this.classList.remove('text-gray-500');
-                    this.classList.add('border-custom-blue', 'border-l-4');
+                    this.classList.add('border-custom-yellow', 'border-l-4');
                 });
             });
 
@@ -286,7 +287,7 @@
                 companyTab.addEventListener('click', function() {
                     companyTabs.forEach(tab => {
                         // 切換標籤樣式
-                        tab.classList.toggle('border-custom-blue', tab === this);
+                        tab.classList.toggle('border-custom-yellow', tab === this);
                         tab.classList.toggle('text-custom-blue', tab === this);
                         tab.classList.toggle('text-gray-500', tab !== this);
                         tab.classList.toggle('border-gray-100', tab !== this);
@@ -304,7 +305,8 @@
 
     <!-- Related Links Section -->
     <section class="py-12 px-5 lg:px-8">
-        <h3 class="text-center mb-10"><%= currentLanguage==='en' ? 'Related Links' : '相關連結' %></h3>
+        <h3 class="text-center mb-2"><%= currentLanguage==='en' ? 'Related Links' : '相關連結' %></h3>
+        <div class="yellow-line w-24 h-2 mx-auto mb-16 text-center"></div>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-6">
             <!-- Link Item -->
             <a href="https://www.nstc.gov.tw" class="block no-underline" target="_blank">
