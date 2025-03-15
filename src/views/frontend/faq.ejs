@@ -23,7 +23,7 @@
             <nav class="flex my-4 px-6 sm:px-16 lg:px-32 overflow-auto">
                 <% categories.forEach(function(category, index) { %>
                     <a href="#<%= category.slug %>"
-                        class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-blue active"
+                        class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow"
                         onclick="switchCategory(this, '<%= category.slug %>')">
                         <%= currentLanguage==='en' ? category.name_en : category.name_tw %>
                     </a>
@@ -37,8 +37,8 @@
         </div>
 
         <!-- Search Bar -->
-        <div class="relative mx-6 mb-8 sm:mx-16 sm:mb-16 lg:mx-32">
-            <label for="search" class="absolute top-4 -left-10">
+        <div class="relative flex mx-6 mb-8 sm:mx-16 sm:mb-16 lg:mx-32">
+            <label for="search" class="w-14">
                 <%= currentLanguage==='en' ? 'search' : '搜尋' %>
             </label>
             <input type="text" id="search" name="search" placeholder="請輸入關鍵字"
@@ -60,7 +60,7 @@
                         <div class="accordion">
                             <button class="accordion-header w-full mb-6 flex justify-between items-center"
                                 type="button">
-                                <h2 class="h4">
+                                <h2 class="h4 text-left">
                                     <%= currentLanguage==='en' ? item.title_en : item.title_tw %>
                                 </h2>
                                 <svg xmlns="http://www.w3.org/2000/svg"

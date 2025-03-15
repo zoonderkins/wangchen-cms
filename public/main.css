@@ -81,7 +81,7 @@
 }
 .custom-button-yellow.active {
     background-color: var(--color-custom-yellow);
-    color: #fff;
+    color: #000;
 }
 
 body {

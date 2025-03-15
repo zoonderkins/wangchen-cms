@@ -12,8 +12,8 @@
     </section>
     <!-- Navigation Tabs -->
     <nav class="flex my-4 px-6 sm:px-16 lg:px-32 overflow-auto">
-        <a href="#" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-blue active">產業動態</a>
-        <a href="#" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-blue">活動訊息</a>
+        <a href="#" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow">產業動態</a>
+        <a href="#" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow">活動訊息</a>
     </nav>
     <!-- Divider -->
     <div class="w-screen relative" style="left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
@@ -23,10 +23,10 @@
     <!-- Search Bar -->
     <div class="relative mx-6 mb-8 sm:mx-16 sm:mb-16 lg:mx-32">
         <form action="/<%= language %>/news" method="GET" class="flex flex-col md:flex-row gap-4">
-            <label for="search" class=""><%= language === 'en' ? 'Search' : '搜尋' %></label>
+            <label for="search" class="w-14"><%= language === 'en' ? 'Search' : '搜尋' %></label>
             <input type="text" id="search" name="search" placeholder="<%= language === 'tw' ? '搜尋最新消息...' : 'Search news...' %>" value="<%= search %>"
                 class="w-full px-4 py-2 border rounded-lg">
-            <button class="absolute right-3 top-2" type="submit">
+            <button class="absolute right-3 bottom-2" type="submit">
                 <svg class="w-6 h-6 text-gray-400" fill="none" stroke="#38B9A1" viewBox="0 0 24 24" alt="<%= language === 'en' ? 'Search' : '搜尋' %>">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
@@ -41,7 +41,7 @@
             <!-- News Card 1 -->
             <a href="<%= item.url %>" target="_blank" class="block">
                 <div class="overflow-hidden">
-                    <img src="<%= item.imageUrl %>" alt="<%= item.title %>" class="w-full h-48 object-cover rounded-2xl">
+                    <img src="<%= item.imageUrl %>" alt="<%= item.title %>" class="w-full h-60 object-cover rounded-2xl border-b-4 border-custom-yellow">
                     <div class="py-4">
                         <div class="flex justify-between items-center">
                             <span class="bg-custom-blue text-white text-xs px-2 py-1 rounded"><%= item.category.name %></span>
