@@ -2,7 +2,7 @@
 
     <div class="container px-6 mx-auto grid">
         <h2 class="my-6 text-2xl font-semibold text-gray-700">
-            Edit Page: <%= page.title %>
+            編輯頁面: <%= page.title %>
         </h2>
 
         <!-- Flash messages -->
@@ -29,68 +29,92 @@
                                 <!-- We can keep this for API clients, but it's not needed for our POST route now -->
                                 <!-- <input type="hidden" name="_method" value="PUT"> -->
 
-                                <!-- Title -->
-                                <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-700" for="title">
-                                        Page Title <span class="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                        type="text" id="title" name="title" value="<%= page.title %>"
-                                        placeholder="Enter page title" required>
+                                <!-- Language Tabs -->
+                                <div class="mb-6 border-b border-gray-200">
+                                    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="languageTabs"
+                                        role="tablist">
+                                        <li class="mr-2" role="presentation">
+                                            <button
+                                                class="inline-block p-4 border-b-2 border-blue-600 rounded-t-lg active"
+                                                id="english-tab" data-tabs-target="#english" type="button" role="tab"
+                                                aria-controls="english" aria-selected="true">
+                                                英文
+                                            </button>
+                                        </li>
+                                        <li class="mr-2" role="presentation">
+                                            <button
+                                                class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:border-gray-300"
+                                                id="chinese-tab" data-tabs-target="#chinese" type="button" role="tab"
+                                                aria-controls="chinese" aria-selected="false">
+                                                繁體中文
+                                            </button>
+                                        </li>
+                                    </ul>
                                 </div>
-                                <!-- Editor Mode Toggle -->
-                                <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                                        Editor Mode
-                                    </label>
-                                    <div class="flex">
-                                        <div class="flex items-center mr-4">
-                                            <input type="radio" id="editorMode-editor" name="editorMode" value="editor"
-                                                <%=page.editorMode==='editor' || !page.editorMode ? 'checked' : '' %>
-                                            class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                                            >
-                                            <label for="editorMode-editor" class="ml-2 block text-sm text-gray-700">
-                                                Rich Text Editor
-                                            </label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="radio" id="editorMode-html" name="editorMode" value="html"
-                                                <%=page.editorMode==='html' ? 'checked' : '' %>
-                                            class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                                            >
-                                            <label for="editorMode-html" class="ml-2 block text-sm text-gray-700">
-                                                Raw HTML
-                                            </label>
-                                        </div>
+
+                                <!-- English Content -->
+                                <div id="english" role="tabpanel" aria-labelledby="english-tab">
+                                    <!-- English Title -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700" for="title_en">
+                                            頁面標題 (英文) <span class="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            type="text" id="title_en" name="title_en" value="<%= page.title_en %>"
+                                            placeholder="輸入頁面標題" required>
+                                    </div>
+
+                                    <!-- English Content -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700" for="editor_en">
+                                            頁面內容 (英文) <span class="text-red-500">*</span>
+                                        </label>
+                                        <!-- Quill editor container -->
+                                        <div id="editor_en"
+                                            class="block w-full mt-1 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            style="min-height: 300px;"></div>
+
+                                        <!-- Hidden input to store content -->
+                                        <input type="hidden" name="content_en" id="content_en"
+                                            value="<%= page.content_en %>">
                                     </div>
                                 </div>
-                                <!-- Content -->
-                                <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-700" for="editor">
-                                        Page Content <span class="text-red-500">*</span>
-                                    </label>
-                                    <!-- Quill editor container -->
-                                    <div id="editor"
-                                        class="block w-full mt-1 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                        style="min-height: 300px;"></div>
-                                    <textarea id="htmlEditor"
-                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 hidden"
-                                        style="min-height: 300px; font-family: monospace;"
-                                        placeholder="Enter HTML content here"></textarea>
-                                    <!-- Hidden input to store Quill content -->
-                                    <input type="hidden" name="content" id="content" value="<%= page.content %>">
-                                    <p class="mt-1 text-xs text-gray-500">
-                                        You can use HTML, CSS, and JavaScript in your page content. All code will be
-                                        rendered on the frontend.
-                                    </p>
+
+                                <!-- Traditional Chinese Content -->
+                                <div id="chinese" class="hidden" role="tabpanel" aria-labelledby="chinese-tab">
+                                    <!-- Chinese Title -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700" for="title_tw">
+                                            頁面標題 (繁體中文) <span class="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            type="text" id="title_tw" name="title_tw" value="<%= page.title_tw %>"
+                                            placeholder="輸入頁面標題" required>
+                                    </div>
+
+                                    <!-- Chinese Content -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700" for="editor_tw">
+                                            頁面內容 (繁體中文) <span class="text-red-500">*</span>
+                                        </label>
+                                        <!-- Quill editor container -->
+                                        <div id="editor_tw"
+                                            class="block w-full mt-1 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            style="min-height: 300px;"></div>
+
+                                        <!-- Hidden input to store content -->
+                                        <input type="hidden" name="content_tw" id="content_tw"
+                                            value="<%= page.content_tw %>">
+                                    </div>
                                 </div>
 
                                 <!-- Existing Attachments -->
                                 <% if (page.attachments && page.attachments.length> 0) { %>
-                                    <div class="mb-4">
+                                    <div class="mb-4 mt-6 pt-4 border-t border-gray-200">
                                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                                            Existing Attachments
+                                            現有附件
                                         </label>
                                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                             <% page.attachments.forEach(attachment=> { %>
@@ -174,10 +198,10 @@
                                                                                         <div class="flex mt-1">
                                                                                             <a href="<%= attachment.path %>"
                                                                                                 target="_blank"
-                                                                                                class="text-xs text-blue-600 hover:underline mr-3">View</a>
+                                                                                                class="text-xs text-blue-600 hover:underline mr-3">查看</a>
                                                                                             <button type="button"
                                                                                                 class="text-xs text-red-600 hover:underline delete-attachment"
-                                                                                                data-id="<%= attachment.id %>">Delete</button>
+                                                                                                data-id="<%= attachment.id %>">刪除</button>
                                                                                         </div>
                                                                                     </div>
                                                     </div>
@@ -191,39 +215,38 @@
                                     <% } %>
 
                                         <!-- New Attachments -->
-                                        <div class="mb-4">
+                                        <div class="mb-4 mt-6 pt-4 border-t border-gray-200">
                                             <label class="block text-sm font-medium text-gray-700" for="attachments">
-                                                Add New Attachments
+                                                添加新附件
                                             </label>
                                             <input
                                                 class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                                                 type="file" id="attachments" name="attachments" multiple>
                                             <p class="mt-1 text-xs text-gray-500">
-                                                Allowed file types: JPG, PNG, PDF, Word, Excel, MP4. Max size: 50MB per
-                                                file.
+                                                允許的檔案類型：JPG、PNG、PDF、Word、Excel、MP4。每個檔案最大 50MB。
                                             </p>
                                         </div>
 
                                         <!-- Status -->
                                         <div class="mb-4">
                                             <label class="block text-sm font-medium text-gray-700" for="status">
-                                                Status <span class="text-red-500">*</span>
+                                                狀態 <span class="text-red-500">*</span>
                                             </label>
                                             <select
                                                 class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                                                 id="status" name="status" required>
                                                 <option value="draft" <%=page.status==='draft' ? 'selected' : '' %>
-                                                    >Draft</option>
+                                                    >草稿</option>
                                                 <option value="published" <%=page.status==='published' ? 'selected' : ''
-                                                    %>>Published</option>
+                                                    %>>已發布</option>
                                                 <option value="archived" <%=page.status==='archived' ? 'selected' : ''
-                                                    %>>Archived</option>
+                                                    %>>已封存</option>
                                             </select>
                                         </div>
 
                                         <!-- Navigation Settings -->
                                         <div class="mb-4 p-4 bg-gray-50 rounded-lg">
-                                            <h3 class="text-lg font-medium text-gray-700 mb-2">Navigation Settings</h3>
+                                            <h3 class="text-lg font-medium text-gray-700 mb-2">導航設定</h3>
 
                                             <div class="flex items-center mb-2">
                                                 <input type="checkbox" id="showInNavigation" name="showInNavigation"
@@ -231,62 +254,23 @@
                                                     <%=page.showInNavigation ? 'checked' : '' %>
                                                 >
                                                 <label class="ml-2 text-sm text-gray-700" for="showInNavigation">
-                                                    Show in website navigation
+                                                    在網站導航中顯示
                                                 </label>
                                             </div>
 
                                             <div class="ml-6">
                                                 <label class="block text-sm font-medium text-gray-700"
                                                     for="navigationOrder">
-                                                    Navigation Order
+                                                    導航順序
                                                 </label>
                                                 <input
                                                     class="block w-32 mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                                                     type="number" id="navigationOrder" name="navigationOrder" min="0"
                                                     value="<%= page.navigationOrder !== null ? page.navigationOrder : '' %>"
-                                                    placeholder="Order">
+                                                    placeholder="順序">
                                                 <p class="mt-1 text-xs text-gray-500">
-                                                    Lower numbers appear first in navigation.
+                                                    數字越小在導航中顯示越靠前。
                                                 </p>
-                                            </div>
-                                        </div>
-
-                                        <!-- SEO Settings -->
-                                        <div class="mb-4 p-4 bg-gray-50 rounded-lg">
-                                            <h3 class="text-lg font-medium text-gray-700 mb-2">SEO Settings</h3>
-
-                                            <div class="mb-2">
-                                                <label class="block text-sm font-medium text-gray-700" for="metaTitle">
-                                                    Meta Title
-                                                </label>
-                                                <input
-                                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                                    type="text" id="metaTitle" name="metaTitle"
-                                                    value="<%= page.metaTitle || '' %>"
-                                                    placeholder="Enter meta title (defaults to page title)">
-                                            </div>
-
-                                            <div class="mb-2">
-                                                <label class="block text-sm font-medium text-gray-700"
-                                                    for="metaDescription">
-                                                    Meta Description
-                                                </label>
-                                                <textarea
-                                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                                    id="metaDescription" name="metaDescription" rows="2"
-                                                    placeholder="Enter meta description"><%= page.metaDescription || '' %></textarea>
-                                            </div>
-
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700"
-                                                    for="metaKeywords">
-                                                    Meta Keywords
-                                                </label>
-                                                <input
-                                                    class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                                    type="text" id="metaKeywords" name="metaKeywords"
-                                                    value="<%= page.metaKeywords || '' %>"
-                                                    placeholder="Enter meta keywords (comma separated)">
                                             </div>
                                         </div>
 
@@ -294,18 +278,18 @@
                                         <div class="flex items-center justify-between">
                                             <a href="/admin/pages"
                                                 class="px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition-colors duration-150 bg-white border border-gray-300 rounded-lg active:bg-gray-100 hover:bg-gray-50 focus:outline-none focus:shadow-outline-gray">
-                                                Cancel
+                                                取消
                                             </a>
                                             <div class="flex space-x-2">
                                                 <% if (page.status==='published' ) { %>
                                                     <a href="/page/<%= page.slug %>" target="_blank"
                                                         class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green">
-                                                        View Page
+                                                        查看頁面
                                                     </a>
                                                     <% } %>
                                                         <button type="submit"
                                                             class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue">
-                                                            Update Page
+                                                            更新頁面
                                                         </button>
                                             </div>
                                         </div>
@@ -315,100 +299,230 @@
 
     <%- contentFor('head') %>
         <!-- Include Quill CSS -->
-        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+        <script>
+            // Initialize Quill editors
+            const quillOptions = {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'color': [] }, { 'background': [] }],
+                        [{ 'align': [] }],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        ['link', 'image', 'video'],
+                        ['clean'],
+                        ['code-block', 'blockquote']
+                    ]
+                },
+                placeholder: '撰寫內容...'
+            };
 
-        <%- contentFor('scripts') %>
-            <!-- Include Quill JS -->
-            <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-            <script>
-                // Initialize Quill editor
-                var quill = new Quill('#editor', {
-                    theme: 'snow',
-                    modules: {
-                        toolbar: [
-                            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                            ['bold', 'italic', 'underline', 'strike'],
-                            [{ 'color': [] }, { 'background': [] }],
-                            [{ 'align': [] }],
-                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                            ['link', 'image', 'video'],
-                            ['clean'],
-                            ['code-block']
-                        ]
-                    }
+            var quill_en = new Quill('#editor_en', quillOptions);
+            var quill_tw = new Quill('#editor_tw', { ...quillOptions, placeholder: '撰寫內容...' });
+
+            // Handle language tabs
+            const tabs = document.querySelectorAll('[data-tabs-target]');
+            const tabContents = document.querySelectorAll('[role="tabpanel"]');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = document.querySelector(tab.dataset.tabsTarget);
+
+                    tabContents.forEach(tabContent => {
+                        tabContent.classList.add('hidden');
+                    });
+
+                    tabs.forEach(tab => {
+                        tab.classList.remove('active', 'border-blue-600');
+                        tab.classList.add('border-transparent');
+                        tab.setAttribute('aria-selected', false);
+                    });
+
+                    tab.classList.add('active', 'border-blue-600');
+                    tab.classList.remove('border-transparent');
+                    tab.setAttribute('aria-selected', true);
+
+                    target.classList.remove('hidden');
                 });
+            });
 
-                // Get editor elements
-                const quillEditor = document.getElementById('editor');
-                const htmlEditor = document.getElementById('htmlEditor');
-                const editorMode = '<%= page.editorMode %>' || 'editor';
-
-                // Set initial content and editor mode
-                try {
-                    const content = document.getElementById('content').value;
-
-                    if (editorMode === 'html') {
-                        // Show HTML editor and hide Quill
-                        quillEditor.classList.add('hidden');
-                        htmlEditor.classList.remove('hidden');
-
-                        // Set the HTML content
-                        htmlEditor.value = content;
-                    } else {
-                        // Show Quill editor and hide HTML
-                        quillEditor.classList.remove('hidden');
-                        htmlEditor.classList.add('hidden');
-
-                        // Try to parse as JSON (Quill Delta format)
-                        if (content) {
-                            try {
-                                const delta = JSON.parse(content);
-                                quill.setContents(delta);
-                            } catch (e) {
-                                // If not valid JSON, set as HTML
-                                quill.clipboard.dangerouslyPasteHTML(content);
-                            }
-                        }
+            // Set initial content
+            try {
+                // English content
+                const content_en = document.getElementById('content_en').value;
+                if (content_en) {
+                    try {
+                        const delta_en = JSON.parse(content_en);
+                        quill_en.setContents(delta_en);
+                    } catch (e) {
+                        // If not valid JSON, set as HTML
+                        quill_en.clipboard.dangerouslyPasteHTML(content_en);
                     }
-                } catch (e) {
-                    console.error('Error setting editor content:', e);
                 }
 
-                // Handle editor mode toggle
-                const editorModeRadios = document.querySelectorAll('input[name="editorMode"]');
+                // Traditional Chinese content
+                const content_tw = document.getElementById('content_tw').value;
+                if (content_tw) {
+                    try {
+                        const delta_tw = JSON.parse(content_tw);
+                        quill_tw.setContents(delta_tw);
+                    } catch (e) {
+                        // If not valid JSON, set as HTML
+                        quill_tw.clipboard.dangerouslyPasteHTML(content_tw);
+                    }
+                }
+            } catch (e) {
+                console.error('Error setting editor content:', e);
+            }
 
-                editorModeRadios.forEach(radio => {
-                    radio.addEventListener('change', function () {
-                        if (this.value === 'editor') {
-                            quillEditor.classList.remove('hidden');
-                            htmlEditor.classList.add('hidden');
+            // Function to truncate content if needed
+            function truncateContent(content, maxLength) {
+                // Use 100MB as the maximum length for LongText fields
+                const MAX_LONGTEXT_LENGTH = 100 * 1024 * 1024; // 100MB
 
-                            // Transfer content from HTML to Quill if there's content
-                            if (htmlEditor.value.trim()) {
-                                quill.clipboard.dangerouslyPasteHTML(htmlEditor.value);
-                            }
-                        } else {
-                            quillEditor.classList.add('hidden');
-                            htmlEditor.classList.remove('hidden');
+                // If maxLength is not provided, use the maximum LongText length
+                const limit = maxLength || MAX_LONGTEXT_LENGTH;
 
-                            // Transfer content from Quill to HTML
-                            const quillHtml = quill.root.innerHTML;
-                            htmlEditor.value = quillHtml;
-                        }
-                    });
-                });
+                if (content && content.length > limit) {
+                    console.warn(`Content truncated from ${content.length} to ${limit} characters`);
+                    return content.substring(0, limit);
+                }
+                return content;
+            }
 
-                // When form is submitted, update the hidden input with the active editor's contents
-                document.getElementById('pageForm').addEventListener('submit', function () {
-                    const content = document.getElementById('content');
-                    const activeEditorMode = document.querySelector('input[name="editorMode"]:checked').value;
+            // Add a function to check content length before submission
+            function checkContentLength() {
+                const MAX_CONTENT_LENGTH = 100 * 1024 * 1024; // 100MB limit
+                const contentEn = document.getElementById('content_en').value;
+                const contentTw = document.getElementById('content_tw').value;
 
-                    if (activeEditorMode === 'editor') {
-                        // Store Quill content as Delta JSON
-                        content.value = JSON.stringify(quill.getContents());
-                    } else {
-                        // Store raw HTML content
-                        content.value = htmlEditor.value;
+                let warningMessage = '';
+
+                if (contentEn && contentEn.length > MAX_CONTENT_LENGTH) {
+                    warningMessage += `英文內容太大 (${(contentEn.length / (1024 * 1024)).toFixed(2)}MB)。將被截斷至 100MB。\n`;
+                }
+
+                if (contentTw && contentTw.length > MAX_CONTENT_LENGTH) {
+                    warningMessage += `中文內容太大 (${(contentTw.length / (1024 * 1024)).toFixed(2)}MB)。將被截斷至 100MB。\n`;
+                }
+
+                if (warningMessage) {
+                    return confirm(warningMessage + '是否要繼續？');
+                }
+
+                return true;
+            }
+
+            // When form is submitted, update the hidden input with the active editor's contents
+            document.getElementById('pageForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                // Add hidden field for editor mode
+                const editorModeInput = document.createElement('input');
+                editorModeInput.type = 'hidden';
+                editorModeInput.name = 'editorMode';
+                editorModeInput.value = 'editor';
+                this.appendChild(editorModeInput);
+
+                // Store Quill content as Delta JSON
+                document.getElementById('content_en').value = JSON.stringify(quill_en.getContents());
+                document.getElementById('content_tw').value = JSON.stringify(quill_tw.getContents());
+
+                // Check content length before submission
+                if (checkContentLength()) {
+                    this.submit();
+                }
+            });
+
+            // Add image handler for English editor
+            const imageHandlerEn = () => {
+                const input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+                input.click();
+
+                input.onchange = () => {
+                    const file = input.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                            const base64 = reader.result;
+                            const range = quill_en.getSelection(true);
+                            quill_en.insertEmbed(range.index, 'image', base64);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+            };
+
+            // Add image handler for Traditional Chinese editor
+            const imageHandlerTw = () => {
+                const input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+                input.click();
+
+                input.onchange = () => {
+                    const file = input.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                            const base64 = reader.result;
+                            const range = quill_tw.getSelection(true);
+                            quill_tw.insertEmbed(range.index, 'image', base64);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+            };
+
+            // Attach image handlers to editor toolbars
+            quill_en.getModule('toolbar').addHandler('image', imageHandlerEn);
+            quill_tw.getModule('toolbar').addHandler('image', imageHandlerTw);
+
+            // Handle attachment deletion
+            document.querySelectorAll('.delete-attachment').forEach(button => {
+                button.addEventListener('click', function () {
+                    const attachmentId = this.getAttribute('data-id');
+                    const attachmentItem = document.querySelector(`.attachment-item[data-id="${attachmentId}"]`);
+                    const checkbox = attachmentItem.querySelector('.attachment-delete-checkbox');
+
+                    if (confirm('確定要刪除此附件嗎？')) {
+                        checkbox.checked = true;
+                        attachmentItem.style.opacity = '0.5';
+                        this.textContent = '已標記刪除';
+                        this.disabled = true;
                     }
                 });
-            </script>
+            });
+        </script>
+
+        <style>
+            /* Custom styles for Quill editors */
+            #editor_en,
+            #editor_tw {
+                height: 300px;
+                margin-bottom: 30px;
+            }
+
+            /* Fix toolbar positioning */
+            .ql-toolbar.ql-snow {
+                border: 1px solid #ccc;
+                box-sizing: border-box;
+                font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+                padding: 8px;
+            }
+
+            .ql-container.ql-snow {
+                border: 1px solid #ccc;
+                border-top: 0px;
+            }
+
+            /* Ensure editor has proper height */
+            .ql-editor {
+                min-height: 200px;
+            }
+        </style>

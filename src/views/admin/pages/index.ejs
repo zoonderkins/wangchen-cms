@@ -59,8 +59,14 @@
                                                         <div class="flex items-center text-sm">
                                                             <div>
                                                                 <p class="font-semibold">
-                                                                    <%= page.title %>
+                                                                    <%= page.title_tw || page.title_en %>
                                                                 </p>
+                                                                <% if (page.title_en && page.title_tw && page.title_en
+                                                                    !==page.title_tw) { %>
+                                                                    <p class="text-xs text-gray-500">
+                                                                        <%= page.title_en %>
+                                                                    </p>
+                                                                    <% } %>
                                                             </div>
                                                         </div>
                                                     </td>

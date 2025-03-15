@@ -573,6 +573,21 @@ router.get('/:language/articles/:id', async (req, res) => {
     }
 });
 
+// Redirect from /page/:slug to /:language/page/:slug
+router.get('/page/:slug', (req, res) => {
+    const { slug } = req.params;
+    // Get language from middleware, cookie, or default to 'tw'
+    const language = res.locals.currentLanguage || req.cookies.language || 'tw';
+    res.redirect(`/${language}/page/${slug}`);
+});
+
+// Root redirect to default language
+router.get('/', (req, res) => {
+    // Get language from middleware, cookie, or default to 'tw'
+    const language = res.locals.currentLanguage || req.cookies.language || 'tw';
+    res.redirect(`/${language}`);
+});
+
 // Page route
 router.get('/:language/page/:slug', async (req, res) => {
     try {
@@ -642,15 +657,16 @@ router.get('/:language/page/:slug', async (req, res) => {
             metaDescription: processedPage.metaDescription,
             metaKeywords: processedPage.metaKeywords,
             page: processedPage,
+            currentLanguage: language,
             layout: 'layouts/frontend'
         });
     } catch (error) {
         logger.error(`Error rendering page ${req.params.slug}:`, error);
-        res.status(500).render('error', {
-            title: 'Error',
-            message: 'An unexpected error occurred',
-            error: process.env.NODE_ENV === 'development' ? error : {},
-            layout: 'layouts/frontend'
+        res.status(500).render('frontend/error', {
+            title: req.params.language === 'en' ? 'Error' : '錯誤',
+            message: req.params.language === 'en' ? 'An unexpected error occurred' : '發生意外錯誤',
+            layout: 'layouts/frontend',
+            currentLanguage: req.params.language
         });
     }
 });

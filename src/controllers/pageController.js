@@ -107,40 +107,42 @@ exports.createPage = async (req, res) => {
             title_en, title_tw, 
             content_en, content_tw, 
             status, showInNavigation, 
-            navigationOrder, 
-            metaTitle_en, metaTitle_tw, 
-            metaDescription_en, metaDescription_tw, 
-            metaKeywords_en, metaKeywords_tw,
-            editorMode
+            navigationOrder
         } = req.body;
 
-        // Process content based on editor mode
+        // Process content - convert Quill Delta to HTML
         let htmlContent_en = '';
         let htmlContent_tw = '';
         
-        if (editorMode === 'editor') {
-            // Convert Quill Delta to HTML
-            try {
-                if (content_en) {
-                    const delta_en = JSON.parse(content_en);
-                    const converter_en = new QuillDeltaToHtmlConverter(delta_en.ops, {});
-                    htmlContent_en = converter_en.convert();
-                }
+        // Check content length and truncate if necessary
+        const MAX_CONTENT_LENGTH = 100 * 1024 * 1024; // 100MB limit
+        
+        try {
+            if (content_en) {
+                const delta_en = JSON.parse(content_en);
+                const converter_en = new QuillDeltaToHtmlConverter(delta_en.ops, {});
+                htmlContent_en = converter_en.convert();
                 
-                if (content_tw) {
-                    const delta_tw = JSON.parse(content_tw);
-                    const converter_tw = new QuillDeltaToHtmlConverter(delta_tw.ops, {});
-                    htmlContent_tw = converter_tw.convert();
+                if (htmlContent_en.length > MAX_CONTENT_LENGTH) {
+                    logger.warn(`Content_en for "${title_en}" was truncated from ${htmlContent_en.length} to ${MAX_CONTENT_LENGTH} bytes`);
+                    htmlContent_en = htmlContent_en.substring(0, MAX_CONTENT_LENGTH);
                 }
-            } catch (e) {
-                logger.error('Error converting Quill content:', e);
-                req.flash('error_msg', 'Error processing editor content');
-                return res.redirect('/admin/pages/create');
             }
-        } else {
-            // Use raw HTML content
-            htmlContent_en = content_en;
-            htmlContent_tw = content_tw;
+            
+            if (content_tw) {
+                const delta_tw = JSON.parse(content_tw);
+                const converter_tw = new QuillDeltaToHtmlConverter(delta_tw.ops, {});
+                htmlContent_tw = converter_tw.convert();
+                
+                if (htmlContent_tw.length > MAX_CONTENT_LENGTH) {
+                    logger.warn(`Content_tw for "${title_tw}" was truncated from ${htmlContent_tw.length} to ${MAX_CONTENT_LENGTH} bytes`);
+                    htmlContent_tw = htmlContent_tw.substring(0, MAX_CONTENT_LENGTH);
+                }
+            }
+        } catch (e) {
+            logger.error('Error converting Quill content:', e);
+            req.flash('error_msg', 'Error processing editor content');
+            return res.redirect('/admin/pages/create');
         }
 
         // Generate slug from English title
@@ -166,17 +168,11 @@ exports.createPage = async (req, res) => {
                 title_tw,
                 content_en: htmlContent_en,
                 content_tw: htmlContent_tw,
-                editorMode: editorMode || 'editor',
+                editorMode: 'editor',
                 slug,
                 status: status || 'draft',
                 showInNavigation: showInNavigation === 'on',
                 navigationOrder: navigationOrder ? parseInt(navigationOrder) : null,
-                metaTitle_en: metaTitle_en || title_en,
-                metaTitle_tw: metaTitle_tw || title_tw,
-                metaDescription_en,
-                metaDescription_tw,
-                metaKeywords_en,
-                metaKeywords_tw,
                 author: {
                     connect: { id: req.session.user.id }
                 }
@@ -250,11 +246,7 @@ exports.updatePage = async (req, res) => {
             title_en, title_tw, 
             content_en, content_tw, 
             status, showInNavigation, 
-            navigationOrder, 
-            metaTitle_en, metaTitle_tw, 
-            metaDescription_en, metaDescription_tw, 
-            metaKeywords_en, metaKeywords_tw,
-            editorMode
+            navigationOrder
         } = req.body;
 
         // Get existing page
@@ -267,33 +259,39 @@ exports.updatePage = async (req, res) => {
             return res.redirect('/admin/pages');
         }
 
-        // Process content based on editor mode
+        // Process content - convert Quill Delta to HTML
         let htmlContent_en = '';
         let htmlContent_tw = '';
         
-        if (editorMode === 'editor') {
-            // Convert Quill Delta to HTML
-            try {
-                if (content_en) {
-                    const delta_en = JSON.parse(content_en);
-                    const converter_en = new QuillDeltaToHtmlConverter(delta_en.ops, {});
-                    htmlContent_en = converter_en.convert();
-                }
+        // Check content length and truncate if necessary
+        const MAX_CONTENT_LENGTH = 100 * 1024 * 1024; // 100MB limit
+        
+        try {
+            if (content_en) {
+                const delta_en = JSON.parse(content_en);
+                const converter_en = new QuillDeltaToHtmlConverter(delta_en.ops, {});
+                htmlContent_en = converter_en.convert();
                 
-                if (content_tw) {
-                    const delta_tw = JSON.parse(content_tw);
-                    const converter_tw = new QuillDeltaToHtmlConverter(delta_tw.ops, {});
-                    htmlContent_tw = converter_tw.convert();
+                if (htmlContent_en.length > MAX_CONTENT_LENGTH) {
+                    logger.warn(`Content_en for "${title_en}" was truncated from ${htmlContent_en.length} to ${MAX_CONTENT_LENGTH} bytes`);
+                    htmlContent_en = htmlContent_en.substring(0, MAX_CONTENT_LENGTH);
                 }
-            } catch (e) {
-                logger.error('Error converting Quill content:', e);
-                req.flash('error_msg', 'Error processing editor content');
-                return res.redirect(`/admin/pages/edit/${pageId}`);
             }
-        } else {
-            // Use raw HTML content
-            htmlContent_en = content_en;
-            htmlContent_tw = content_tw;
+            
+            if (content_tw) {
+                const delta_tw = JSON.parse(content_tw);
+                const converter_tw = new QuillDeltaToHtmlConverter(delta_tw.ops, {});
+                htmlContent_tw = converter_tw.convert();
+                
+                if (htmlContent_tw.length > MAX_CONTENT_LENGTH) {
+                    logger.warn(`Content_tw for "${title_tw}" was truncated from ${htmlContent_tw.length} to ${MAX_CONTENT_LENGTH} bytes`);
+                    htmlContent_tw = htmlContent_tw.substring(0, MAX_CONTENT_LENGTH);
+                }
+            }
+        } catch (e) {
+            logger.error('Error converting Quill content:', e);
+            req.flash('error_msg', 'Error processing editor content');
+            return res.redirect(`/admin/pages/edit/${pageId}`);
         }
 
         // Generate new slug if title changed
@@ -328,17 +326,11 @@ exports.updatePage = async (req, res) => {
                 title_tw,
                 content_en: htmlContent_en,
                 content_tw: htmlContent_tw,
-                editorMode,
+                editorMode: 'editor',
                 slug,
                 status,
                 showInNavigation: showInNavigation === 'on',
                 navigationOrder: navigationOrder ? parseInt(navigationOrder) : null,
-                metaTitle_en: metaTitle_en || title_en,
-                metaTitle_tw: metaTitle_tw || title_tw,
-                metaDescription_en,
-                metaDescription_tw,
-                metaKeywords_en,
-                metaKeywords_tw,
                 updatedAt: new Date()
             }
         });
