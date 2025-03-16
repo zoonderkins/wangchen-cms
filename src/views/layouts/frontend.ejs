@@ -42,7 +42,7 @@
                     <div id="nav-menu"
                         class="hidden absolute top-full left-0 w-full bg-white lg:static lg:flex lg:w-auto lg:items-center lg:space-x-8">
                         <div class="p-0 space-y-1 lg:flex lg:space-x-8 lg:space-y-0 lg:p-0">
-                            <a href="/<%= currentLanguage %>" class="headerLink active">
+                            <a href="/<%= currentLanguage %>" class="headerLink">
                                 <%= currentLanguage==='en' ? 'Home' : '首頁' %>
                             </a>
                             <a href="/<%= currentLanguage %>/about" class="headerLink">
@@ -179,22 +179,32 @@
             <script>
                 // 等待DOM完全加載
                 document.addEventListener('DOMContentLoaded', function () {
-                    // 獲取所有 headerLink 元素
+                    
+                    // 獲取當前頁面的路徑名稱
+                    const currentPath = window.location.pathname;
+                    // 從路徑中提取頁面名稱 (例如從 '/en/about' 提取 'about')
+                    const pathParts = currentPath.split('/').filter(Boolean);
+                    const pageName = pathParts.pop() || '';
+                    // 獲取所有導航連結
                     const headerLinks = document.querySelectorAll('.headerLink');
-                    // 為每個 headerLink 添加點擊事件監聽器
-                    headerLinks.forEach(headerLink => {
-                        headerLink.addEventListener('click', function (e) {
-                            // 阻止默認的錨點行為
-                            // e.preventDefault();
-                            // 移除所有 headerLink 的活動樣式
-                            headerLinks.forEach(s => {
-                                // 移除活動樣式
-                                s.classList.remove('active');
-                            });
-
-                            // 為被點擊的元素添加活動樣式
-                            this.classList.add('active');
-                        });
+                    // 檢查是否在首頁 (路徑為 '/' 或只有語言代碼)
+                    const isHomePage = pageName === '' || pathParts.length === 0;
+                    // 遍歷所有導航連結，設置 active 狀態
+                    headerLinks.forEach(link => {
+                        const href = link.getAttribute('href');
+                        const hrefParts = href.split('/').filter(Boolean);
+                        const hrefPageName = hrefParts.pop() || '';
+                        if (isHomePage) {
+                            // 首頁情況: 只激活 href 為 '/' 或 '/語言' 的連結
+                            if (hrefPageName === '' || hrefParts.length === 0) {
+                                link.classList.add('active');
+                            }
+                        } else {
+                            // 其他頁面: 當連結包含當前頁面名稱
+                            if (pageName === hrefPageName) {
+                                link.classList.add('active');
+                            }
+                        }
                     });
 
                     ///////////////////////////////////////////////////////////
