@@ -81,42 +81,110 @@
             <h2 class="h4 ext-left my-12">
                 <%= currentLanguage==='en' ? 'Institute for Information Industry - Personal Data Collection, Processing, and Usage Consent Form' : '財團法人工業技術研究院 個人資料蒐集、處理及利用之告知暨同意書' %>
             </h2>
-            <div class="p-8 sm:p-16 h-80 border border-gray-300 rounded-3xl overflow-auto">
+            <div id="termsContainer" class="p-8 sm:p-16 h-80 border border-gray-300 rounded-3xl overflow-auto">
                 <p>
-                    告知事項
+                    <%= currentLanguage==='en' ? 'Notification Statement' : '告知事項' %>
                     <br>
                     <br>
-                    財團法人工業技術研究院（下稱本院）為了執行沙崙人工智慧產業專區先期規劃計畫，將蒐集、處理及利用您的個人資料（下稱個資），謹先告知下列事項：
                     <br>
-                    一、蒐集目的：「006工業行政」、「008中小企業及其他產業之輔導」、「078計畫、管制考核與其他研考管理」、「110產學合作」、「130 會議管理」、「157調查、統計與研究分析」及「182 其他諮詢與顧問服務」等相關事宜。
+                    <%= currentLanguage==='en' ? 
+                    'The Industrial Technology Research Institute (hereinafter referred to as "the Institute") will collect, process, and use your personal data (hereinafter referred to as "personal data") to execute the Shalun Artificial Intelligence Industrial Zone Preliminary Planning Project. We hereby notify you of the following details: ' : 
+                    '財團法人工業技術研究院（下稱本院）為了執行沙崙人工智慧產業專區先期規劃計畫，將蒐集、處理及利用您的個人資料（下稱個資），謹先告知下列事項：' %>
                     <br>
-                    二、個資類別：「C001識別個人者」、「C003政府資料中之辨識者」、「C038職業」、「C052資格或技術」、「C053職業團體會員資格」、「C061現行之受雇情形」及「C067工會及員工之會員資格」等。
                     <br>
-                    三、利用期間：至蒐集目的消失為止。
+                    <%= currentLanguage==='en' ? 
+                    '1. Purpose of Collection Your personal data is collected for the following purposes: "006 Industrial Administration" "008 Assistance for SMEs and Other Industries" "078 Project, Control Evaluation, and Research Management" "110 Industry-Academic Collaboration" "130 Conference Management" "157 Surveys, Statistics, and Research Analysis" "182 Other Consulting and Advisory Services"' : 
+                    '一、蒐集目的：「006工業行政」、「008中小企業及其他產業之輔導」、「078計畫、管制考核與其他研考管理」、「110產學合作」、「130 會議管理」、「157調查、統計與研究分析」及「182 其他諮詢與顧問服務」等相關事宜。' %>
                     <br>
-                    四、利用地區：中華民國地區及本院駐點及辦事處所在地區。
                     <br>
-                    五、利用者：本院及其他與本院有業務往來之公務及非公務機關。
+                    <%= currentLanguage==='en' ? 
+                    '2. Categories of Personal Data Collected The following categories of personal data may be collected: C001: Identifiable Personal Information C003: Identifiable Government Data C038: Occupation C052: Professional Qualifications or Technical Certifications C053: Membership in Professional Associations C061: Current Employment Status C067: Membership in Trade Unions and Employee Associations ' : 
+                    '二、個資類別：「C001識別個人者」、「C003政府資料中之辨識者」、「C038職業」、「C052資格或技術」、「C053職業團體會員資格」、「C061現行之受雇情形」及「C067工會及員工之會員資格」等。' %>
+                    
+                    
                     <br>
-                    六、利用方式：在不違反蒐集目的的前提下，以網際網路、電子郵件、書面、傳真及其他合法方式利用之。
                     <br>
-                    七、您得以書面主張下列權利：
+                    <%= currentLanguage==='en' ? 
+                    '3. Data Retention Period Your data will be retained until the purpose of collection is fulfilled.' : 
+                    '三、利用期間：至蒐集目的消失為止。' %>
+                    
+                    
                     <br>
-                    （一）查詢或請求閱覽。
                     <br>
-                    （二）請求製給複製本。
+                    <%= currentLanguage==='en' ? 
+                    '4. Data Usage Location Your data will be used within the Republic of China (Taiwan) and at the Institute\'s locations and offices.' : 
+                    '四、利用地區：中華民國地區及本院駐點及辦事處所在地區。' %>
+                    
                     <br>
-                    （三）請求補充或更正。
                     <br>
-                    （四）請求停止蒐集、處理或利用。
+                    <%= currentLanguage==='en' ? 
+                    '5. Data Users Your data may be used by the Institute and other public and private entities with business relations with the Institute.' : 
+                    '五、利用者：本院及其他與本院有業務往來之公務及非公務機關。' %>
+                    
+                    
                     <br>
-                    （五）請求刪除。
                     <br>
-                    若有上述需求，請與承辦人員(電話：06-0000000；E-mail：service@stsvpo.org.tw)聯繫，本院將依法進行回覆。
+                    <%= currentLanguage==='en' ? 
+                    '6. Methods of Data Usage Your data may be used through the internet, email, written communication, fax, or other legally permitted means, provided it does not contradict the stated purpose of collection.' : 
+                    '六、利用方式：在不違反蒐集目的的前提下，以網際網路、電子郵件、書面、傳真及其他合法方式利用之。' %>
+                    
+                    
                     <br>
-                    八、您若不簽署本告知暨同意書，本院將無法提供您特定目的範圍內之相關服務。
                     <br>
-                    九、對本院所持有您的個資，本院會按照政府相關法規保密並予以妥善保管。
+                    <%= currentLanguage==='en' ? 
+                    '7. Your Rights You have the right to request the following in writing:' : 
+                    '七、您得以書面主張下列權利：' %>
+                    
+                    
+                    <br>
+                    <br>
+                    <%= currentLanguage==='en' ? 
+                    'Access or review your personal data.' : 
+                    '（一）查詢或請求閱覽。' %>
+                    
+                    <br>
+                    <br>
+                    <%= currentLanguage==='en' ? 
+                    'Obtain a copy of your personal data.' : 
+                    '（二）請求製給複製本。' %>
+                    
+                    <br>
+                    <br>
+                    <%= currentLanguage==='en' ? 
+                    'Supplement or correct your personal data.' : 
+                    '（三）請求補充或更正。' %>
+                    
+                    <br>
+                    <br>
+                    <%= currentLanguage==='en' ? 
+                    'Request suspension of collection, processing, or use of your data.' : 
+                    '（四）請求停止蒐集、處理或利用。' %>
+                    
+                    <br>
+                    <br>
+                    <%= currentLanguage==='en' ? 
+                    'Request deletion of your personal data.' : 
+                    '（五）請求刪除。' %>
+                    
+                    <br>
+                    <br>
+                    <%= currentLanguage==='en' ? 
+                    'If you wish to exercise any of the above rights, please contact the responsible personnel at: Phone: 06-0000000 Email: service@stsvpo.org.tw The Institute will respond to your request in accordance with applicable laws.' : 
+                    '若有上述需求，請與承辦人員(電話：06-0000000；E-mail：service@stsvpo.org.tw)聯繫，本院將依法進行回覆。' %>
+                    
+                    <br>
+                    <br>
+                    <%= currentLanguage==='en' ? 
+                    '8. Consent Requirement If you choose not to sign this notification and consent form, the Institute will not be able to provide you with related services within the specific scope of its operations.' : 
+                    '八、您若不簽署本告知暨同意書，本院將無法提供您特定目的範圍內之相關服務。' %>
+                    
+                    <br>
+                    <br>
+                    <%= currentLanguage==='en' ? 
+                    '9. Confidentiality and Data Protection The Institute will safeguard and protect your personal data in accordance with relevant government regulations.' : 
+                    '九、對本院所持有您的個資，本院會按照政府相關法規保密並予以妥善保管。' %>
+                    
+                    <br>
                     <br>
                 </p>
             </div>
@@ -133,13 +201,53 @@
                 </div>
             </div>
             <div class="flex justify-center my-8">
-                <button type="submit" class="px-12 py-2 border rounded-3xl custom-button-green">
+                <button type="submit" id="submitButton" class="px-12 py-2 border rounded-3xl custom-button-green">
                     <%= currentLanguage==='en' ? 'Submit' : '送出' %>
                 </button>
             </div>
             
 
         </form>
-
-        
     </section>
+
+    <!-- 添加 JavaScript 來處理條件邏輯 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const termsContainer = document.getElementById('termsContainer');
+            const agreeTerms = document.getElementById('agreeTerms');
+            const submitButton = document.getElementById('submitButton');
+            let hasScrolledToBottom = false;
+
+            // 一開始就檢查條件
+            updateSubmitButton();
+
+            // 監聽滾動事件
+            termsContainer.addEventListener('scroll', function() {
+                // 檢查是否滾動到底部
+                if (termsContainer.scrollHeight - termsContainer.scrollTop <= termsContainer.clientHeight + 1) {
+                    hasScrolledToBottom = true;
+                    // 滾動到底部後啟用複選框
+                    agreeTerms.disabled = false;
+                    
+                    // 檢查是否已勾選同意框
+                    updateSubmitButton();
+                }
+            });
+
+            // 監聽勾選框變化
+            agreeTerms.addEventListener('change', function() {
+                updateSubmitButton();
+            });
+
+            // 更新提交按鈕狀態
+            function updateSubmitButton() {
+                if (hasScrolledToBottom && agreeTerms.checked) {
+                    submitButton.disabled = false;
+                    submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                } else {
+                    submitButton.disabled = true;
+                    submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+            }
+        });
+    </script>
