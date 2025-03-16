@@ -14,10 +14,12 @@ exports.renderDashboard = async (req, res) => {
             faqCategoryCount,
             faqItemCount,
             downloadCount,
+            frontpageItemCount,
             recentArticles,
             recentPages,
             recentFaqItems,
-            recentDownloads
+            recentDownloads,
+            recentFrontpageItems
         ] = await Promise.all([
             prisma.article.count(),
             prisma.media.count(),
@@ -31,6 +33,9 @@ exports.renderDashboard = async (req, res) => {
                 where: { deletedAt: null }
             }),
             prisma.download.count({
+                where: { deletedAt: null }
+            }),
+            prisma.frontpageItem.count({
                 where: { deletedAt: null }
             }),
             prisma.article.findMany({
@@ -91,6 +96,22 @@ exports.renderDashboard = async (req, res) => {
                         }
                     }
                 }
+            }),
+            prisma.frontpageItem.findMany({
+                take: 5,
+                orderBy: { createdAt: 'desc' },
+                where: { deletedAt: null },
+                include: {
+                    author: {
+                        select: { username: true }
+                    },
+                    category: {
+                        select: { 
+                            name_tw: true,
+                            id: true
+                        }
+                    }
+                }
             })
         ]);
 
@@ -130,12 +151,14 @@ exports.renderDashboard = async (req, res) => {
                 pages: pageCount,
                 faqCategories: faqCategoryCount,
                 faqItems: faqItemCount,
-                downloads: downloadCount
+                downloads: downloadCount,
+                frontpageItems: frontpageItemCount
             },
             recentArticles: processedRecentArticles,
             recentPages,
             recentFaqItems: processedRecentFaqItems,
-            recentDownloads: processedRecentDownloads
+            recentDownloads: processedRecentDownloads,
+            recentFrontpageItems
         });
     } catch (error) {
         logger.error('Error loading dashboard:', error);

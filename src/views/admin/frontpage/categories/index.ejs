@@ -116,46 +116,52 @@
 
       // Edit category
       const editButtons = document.querySelectorAll('.edit-category');
-      editButtons.forEach(button => {
-        button.addEventListener('click', function () {
-          const id = this.getAttribute('data-id');
-          const name = this.getAttribute('data-name');
-          const order = this.getAttribute('data-order');
+      if (editButtons.length > 0) {
+        editButtons.forEach(button => {
+          button.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            const name = this.getAttribute('data-name');
+            const order = this.getAttribute('data-order');
 
-          // Update form
-          formTitle.textContent = '編輯分類';
-          categoryForm.action = `/admin/frontpage/categories/${id}`;
-          categoryIdInput.value = id;
-          methodOverrideInput.value = 'POST';
-          nameTwInput.value = name;
-          orderInput.value = order;
+            // Update form
+            formTitle.textContent = '編輯分類';
+            categoryForm.action = `/admin/frontpage/categories/${id}`;
+            categoryIdInput.value = id;
+            methodOverrideInput.value = 'POST';
+            nameTwInput.value = name;
+            orderInput.value = order;
 
-          // Scroll to form on mobile
-          if (window.innerWidth < 768) {
-            categoryForm.scrollIntoView({ behavior: 'smooth' });
-          }
+            // Scroll to form on mobile
+            if (window.innerWidth < 768) {
+              categoryForm.scrollIntoView({ behavior: 'smooth' });
+            }
+          });
         });
-      });
+      }
 
       // Reset form
-      resetFormBtn.addEventListener('click', function () {
-        formTitle.textContent = '新增分類';
-        categoryForm.action = '/admin/frontpage/categories';
-        categoryIdInput.value = '';
-        methodOverrideInput.value = 'POST';
-        nameTwInput.value = '';
-        orderInput.value = '0';
-      });
+      if (resetFormBtn) {
+        resetFormBtn.addEventListener('click', function () {
+          formTitle.textContent = '新增分類';
+          categoryForm.action = '/admin/frontpage/categories';
+          categoryIdInput.value = '';
+          methodOverrideInput.value = 'POST';
+          nameTwInput.value = '';
+          orderInput.value = '0';
+        });
+      }
 
       // Delete confirmation
       const deleteForms = document.querySelectorAll('.delete-form');
-      deleteForms.forEach(form => {
-        form.addEventListener('submit', function (e) {
-          e.preventDefault();
-          if (confirm('確定要刪除此分類嗎？這將會刪除所有關聯的項目！')) {
-            this.submit();
-          }
+      if (deleteForms.length > 0) {
+        deleteForms.forEach(form => {
+          form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (confirm('確定要刪除此分類嗎？這將會刪除所有關聯的項目！')) {
+              this.submit();
+            }
+          });
         });
-      });
+      }
     });
   </script>

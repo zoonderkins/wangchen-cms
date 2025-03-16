@@ -21,11 +21,11 @@
         .dropdown-menu.show {
             display: block;
         }
-        
+
         .dropdown-menu:not(.hidden) {
             display: block;
         }
-        
+
         .sidebar {
             height: 100vh;
             position: fixed;
@@ -35,24 +35,35 @@
             overflow-y: auto;
             z-index: 40;
         }
-        
+
         .main-content {
             margin-left: 250px;
             min-height: 100vh;
         }
-        
+
+        /* Ensure header content has proper spacing */
+        .main-content .bg-white.shadow {
+            margin: -1rem -1rem 1rem -1rem;
+        }
+
+        /* Adjust container width for better content display */
+        .main-content .container {
+            max-width: 100%;
+            padding: 0;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 width: 0;
                 transform: translateX(-100%);
                 transition: transform 0.3s ease-in-out;
             }
-            
+
             .sidebar.open {
                 width: 250px;
                 transform: translateX(0);
             }
-            
+
             .main-content {
                 margin-left: 0;
             }
@@ -69,121 +80,146 @@
         <div class="p-4 border-b border-gray-700">
             <a href="/admin/dashboard" class="text-white font-bold text-xl block py-2">大南方新矽谷</a>
         </div>
-        
+
         <% if (typeof user !=='undefined' && user) { %>
-        <div class="p-4 border-b border-gray-700">
-            <div class="flex items-center mb-4">
-                <span class="text-gray-300 mr-2"><%= user.username %></span>
-                <a href="/admin/logout" class="text-gray-300 hover:text-white ml-auto">
-                    <i class="fas fa-sign-out-alt"></i>
-                </a>
+            <div class="p-4 border-b border-gray-700">
+                <div class="flex items-center mb-4">
+                    <span class="text-gray-300 mr-2">
+                        <%= user.username %>
+                    </span>
+                    <a href="/admin/logout" class="text-gray-300 hover:text-white ml-auto">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </div>
             </div>
-        </div>
-        
-        <div class="py-4">
-            <ul class="space-y-1">
-                <li>
-                    <a href="/admin/pages" class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
-                        <i class="fas fa-file-alt mr-2"></i> Pages
+
+            <div class="py-4">
+                <ul class="space-y-1">
+                    <li>
+                        <a href="/admin/pages"
+                            class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
+                            <i class="fas fa-file-alt mr-2"></i> Pages
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/downloads"
+                            class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
+                            <i class="fas fa-download mr-2"></i> 下載專區
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/news"
+                            class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
+                            <i class="fas fa-newspaper mr-2"></i> 最新消息
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/promotions"
+                            class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
+                            <i class="fas fa-bullhorn mr-2"></i> 推動方案
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/platforms"
+                            class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
+                            <i class="fas fa-desktop mr-2"></i> 推廣平台
+                        </a>
+                    </li>
+
+                    <!-- 前台首頁 Dropdown -->
+                    <li class="dropdown">
+                        <button type="button"
+                            class="w-full text-left px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md dropdown-toggle">
+                            <i class="fas fa-home mr-2"></i> 前台首頁 <i
+                                class="fas fa-chevron-down ml-1 float-right mt-1"></i>
+                        </button>
+                        <div class="hidden dropdown-menu bg-gray-700 rounded-md mt-1 py-2">
+                            <a href="/" class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
+                                <i class="fas fa-arrow-right mr-2"></i> 前往首頁
+                            </a>
+                            <a href="/admin/frontpage"
+                                class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
+                                <i class="fas fa-list mr-2"></i> 首頁項目
+                            </a>
+                            <a href="/admin/frontpage/categories"
+                                class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
+                                <i class="fas fa-folder mr-2"></i> 首頁分類
+                            </a>
+                            <a href="/admin/banners"
+                                class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
+                                <i class="fas fa-image mr-2"></i> 橫幅
+                            </a>
+                            <a href="/admin/pageImages"
+                                class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
+                                <i class="fas fa-images mr-2"></i> 網頁橫幅
+                            </a>
+                            <a href="/admin/about"
+                                class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
+                                <i class="fas fa-info-circle mr-2"></i> 關於我們
+                            </a>
+                            <a href="/admin/links"
+                                class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
+                                <i class="fas fa-link mr-2"></i> 相關連結
+                            </a>
+                        </div>
+                    </li>
+
+                    <!-- 常見問題 Dropdown -->
+                    <li class="dropdown">
+                        <button type="button"
+                            class="w-full text-left px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md dropdown-toggle">
+                            <i class="fas fa-question-circle mr-2"></i> 常見問題 <i
+                                class="fas fa-chevron-down ml-1 float-right mt-1"></i>
+                        </button>
+                        <div class="hidden dropdown-menu bg-gray-700 rounded-md mt-1 py-2">
+                            <a href="/admin/faq/categories"
+                                class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
+                                <i class="fas fa-folder mr-2"></i> 分類
+                            </a>
+                            <a href="/admin/faq/items"
+                                class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
+                                <i class="fas fa-list-alt mr-2"></i> 問題項目
+                            </a>
+                        </div>
+                    </li>
+
+                    <!-- 聯絡 Dropdown -->
+                    <li class="dropdown">
+                        <button type="button"
+                            class="w-full text-left px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md dropdown-toggle">
+                            <i class="fas fa-envelope mr-2"></i> 聯絡 <i
+                                class="fas fa-chevron-down ml-1 float-right mt-1"></i>
+                        </button>
+                        <div class="hidden dropdown-menu bg-gray-700 rounded-md mt-1 py-2">
+                            <a href="/admin/contact"
+                                class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
+                                <i class="fas fa-paper-plane mr-2"></i> 提交
+                            </a>
+                            <a href="/admin/contact/categories"
+                                class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
+                                <i class="fas fa-folder mr-2"></i> 分類
+                            </a>
+                        </div>
+                    </li>
+
+                    <% if (user.role && user.role==='super_admin' ) { %>
+                        <li>
+                            <a href="/admin/users"
+                                class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
+                                <i class="fas fa-users mr-2"></i> 用戶
+                            </a>
+                        </li>
+                        <% } %>
+                </ul>
+            </div>
+            <% } else { %>
+                <div class="p-4">
+                    <a href="/admin/login"
+                        class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
+                        <i class="fas fa-sign-in-alt mr-2"></i> 登入
                     </a>
-                </li>
-                <li>
-                    <a href="/admin/downloads" class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
-                        <i class="fas fa-download mr-2"></i> 下載專區
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/news" class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
-                        <i class="fas fa-newspaper mr-2"></i> 最新消息
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/promotions" class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
-                        <i class="fas fa-bullhorn mr-2"></i> 推動方案
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/platforms" class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
-                        <i class="fas fa-desktop mr-2"></i> 推廣平台
-                    </a>
-                </li>
-                
-                <!-- 前台首頁 Dropdown -->
-                <li class="dropdown">
-                    <button type="button" class="w-full text-left px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md dropdown-toggle">
-                        <i class="fas fa-home mr-2"></i> 前台首頁 <i class="fas fa-chevron-down ml-1 float-right mt-1"></i>
-                    </button>
-                    <div class="hidden dropdown-menu bg-gray-700 rounded-md mt-1 py-2">
-                        <a href="/" class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
-                            <i class="fas fa-arrow-right mr-2"></i> 前往首頁
-                        </a>
-                        <a href="/admin/frontpage" class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
-                            <i class="fas fa-list mr-2"></i> 首頁項目
-                        </a>
-                        <a href="/admin/frontpage/categories" class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
-                            <i class="fas fa-folder mr-2"></i> 首頁分類
-                        </a>
-                        <a href="/admin/banners" class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
-                            <i class="fas fa-image mr-2"></i> 橫幅
-                        </a>
-                        <a href="/admin/pageImages" class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
-                            <i class="fas fa-images mr-2"></i> 網頁橫幅
-                        </a>
-                        <a href="/admin/about" class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
-                            <i class="fas fa-info-circle mr-2"></i> 關於我們
-                        </a>
-                        <a href="/admin/links" class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
-                            <i class="fas fa-link mr-2"></i> 相關連結
-                        </a>
-                    </div>
-                </li>
-                
-                <!-- 常見問題 Dropdown -->
-                <li class="dropdown">
-                    <button type="button" class="w-full text-left px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md dropdown-toggle">
-                        <i class="fas fa-question-circle mr-2"></i> 常見問題 <i class="fas fa-chevron-down ml-1 float-right mt-1"></i>
-                    </button>
-                    <div class="hidden dropdown-menu bg-gray-700 rounded-md mt-1 py-2">
-                        <a href="/admin/faq/categories" class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
-                            <i class="fas fa-folder mr-2"></i> 分類
-                        </a>
-                        <a href="/admin/faq/items" class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
-                            <i class="fas fa-list-alt mr-2"></i> 問題項目
-                        </a>
-                    </div>
-                </li>
-                
-                <!-- 聯絡 Dropdown -->
-                <li class="dropdown">
-                    <button type="button" class="w-full text-left px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md dropdown-toggle">
-                        <i class="fas fa-envelope mr-2"></i> 聯絡 <i class="fas fa-chevron-down ml-1 float-right mt-1"></i>
-                    </button>
-                    <div class="hidden dropdown-menu bg-gray-700 rounded-md mt-1 py-2">
-                        <a href="/admin/contact" class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
-                            <i class="fas fa-paper-plane mr-2"></i> 提交
-                        </a>
-                        <a href="/admin/contact/categories" class="block px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white">
-                            <i class="fas fa-folder mr-2"></i> 分類
-                        </a>
-                    </div>
-                </li>
-                
-                <% if (user.role && user.role==='super_admin' ) { %>
-                <li>
-                    <a href="/admin/users" class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
-                        <i class="fas fa-users mr-2"></i> 用戶
-                    </a>
-                </li>
+                </div>
                 <% } %>
-            </ul>
-        </div>
-        <% } else { %>
-        <div class="p-4">
-            <a href="/admin/login" class="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md">
-                <i class="fas fa-sign-in-alt mr-2"></i> 登入
-            </a>
-        </div>
-        <% } %>
     </nav>
 
     <!-- Mobile menu button -->
@@ -197,67 +233,78 @@
     <main class="main-content p-4">
         <% if (typeof success_msg !=='undefined' && success_msg.length> 0) { %>
             <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
-                <p><%= success_msg %></p>
+                <p>
+                    <%= success_msg %>
+                </p>
             </div>
-        <% } %>
+            <% } %>
 
-        <% if (typeof error_msg !=='undefined' && error_msg.length> 0) { %>
-            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
-                <p><%= error_msg %></p>
-            </div>
-        <% } %>
+                <% if (typeof error_msg !=='undefined' && error_msg.length> 0) { %>
+                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+                        <p>
+                            <%= error_msg %>
+                        </p>
+                    </div>
+                    <% } %>
 
-        <div class="container mx-auto">
-            <%- body %>
-        </div>
+                        <div class="container mx-auto">
+                            <!-- Header content section -->
+                            <%- defineContent('header') %>
+
+                                <!-- Breadcrumbs content section -->
+                                <%- defineContent('breadcrumbs') %>
+
+                                    <!-- Main body content -->
+                                    <%- body %>
+                        </div>
     </main>
 
     <!-- Base Scripts -->
     <script>
         // Toggle dropdown menus
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Dropdown functionality
             const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-            
+
             dropdownToggles.forEach(toggle => {
-                toggle.addEventListener('click', function(e) {
+                toggle.addEventListener('click', function (e) {
                     e.preventDefault();
                     const dropdownMenu = this.nextElementSibling;
-                    
+
                     // Close all other dropdowns first
                     document.querySelectorAll('.dropdown-menu').forEach(menu => {
                         if (menu !== dropdownMenu) {
                             menu.classList.add('hidden');
                         }
                     });
-                    
+
                     // Toggle current dropdown
                     dropdownMenu.classList.toggle('hidden');
                 });
             });
-            
+
             // Mobile menu toggle
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const sidebar = document.querySelector('.sidebar');
-            
+
             if (mobileMenuButton && sidebar) {
-                mobileMenuButton.addEventListener('click', function() {
+                mobileMenuButton.addEventListener('click', function () {
                     sidebar.classList.toggle('open');
                 });
             }
-            
+
             // Close sidebar when clicking outside on mobile
-            document.addEventListener('click', function(event) {
-                if (window.innerWidth <= 768 && 
-                    !sidebar.contains(event.target) && 
+            document.addEventListener('click', function (event) {
+                if (window.innerWidth <= 768 &&
+                    !sidebar.contains(event.target) &&
                     event.target !== mobileMenuButton) {
                     sidebar.classList.remove('open');
                 }
-                
+
                 // Close dropdowns when clicking outside
-                const isDropdownToggle = event.target.classList.contains('dropdown-toggle') || 
-                                        event.target.closest('.dropdown-toggle');
-                                        
+                const isDropdownToggle = event.target.classList.contains('dropdown-toggle') ||
+                    event.target.closest('.dropdown-toggle');
+
                 if (!isDropdownToggle) {
                     document.querySelectorAll('.dropdown-menu').forEach(menu => {
                         if (!menu.contains(event.target)) {

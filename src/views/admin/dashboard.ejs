@@ -21,6 +21,13 @@
                 <a href="/admin/pages" class="mt-2 inline-block text-blue-600 hover:text-blue-800">查看所有頁面 →</a>
             </div>
             <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-gray-500 text-sm font-medium">首頁項目</h3>
+                <p class="text-3xl font-bold text-gray-900">
+                    <%= stats.frontpageItems || 0 %>
+                </p>
+                <a href="/admin/frontpage" class="mt-2 inline-block text-blue-600 hover:text-blue-800">管理首頁內容 →</a>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6">
                 <h3 class="text-gray-500 text-sm font-medium">媒體總數</h3>
                 <p class="text-3xl font-bold text-gray-900">
                     <%= stats.media %>
@@ -60,7 +67,7 @@
         </div>
 
         <!-- Content Management -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <!-- Recent Articles -->
             <div class="bg-white rounded-lg shadow">
                 <div class="px-6 py-4 border-b flex justify-between items-center">
@@ -177,6 +184,47 @@
                                     <% } %>
                 </div>
             </div>
+
+            <!-- Recent Frontpage Items -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b flex justify-between items-center">
+                    <h2 class="text-xl font-semibold">最新首頁項目</h2>
+                    <a href="/admin/frontpage/items/create"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <i class="fas fa-plus mr-2"></i> 新增項目
+                    </a>
+                </div>
+                <div class="divide-y">
+                    <% if (recentFrontpageItems && recentFrontpageItems.length> 0) { %>
+                        <% recentFrontpageItems.forEach(item=> { %>
+                            <div class="px-6 py-4">
+                                <a href="/admin/frontpage/items/<%= item.id %>/edit"
+                                    class="text-lg font-medium text-blue-600 hover:text-blue-800">
+                                    <%= item.title_tw %>
+                                </a>
+                                <div class="mt-1 text-sm text-gray-500">
+                                    <span>作者：<%= item.author ? item.author.username : '未知' %></span>
+                                    <% if (item.category) { %>
+                                        <span class="mx-2">•</span>
+                                        <span>
+                                            <%= item.category.name_tw %>
+                                        </span>
+                                        <% } %>
+                                            <span class="mx-2">•</span>
+                                            <span>
+                                                <%= item.status==='published' ? '已發佈' : '草稿' %>
+                                            </span>
+                                </div>
+                            </div>
+                            <% }); %>
+                                <% } else { %>
+                                    <div class="px-6 py-4 text-gray-500">
+                                        尚無首頁項目。<a href="/admin/frontpage/items/create"
+                                            class="text-blue-600 hover:text-blue-800">建立您的第一個首頁項目</a>
+                                    </div>
+                                    <% } %>
+                </div>
+            </div>
         </div>
 
         <!-- Recent Downloads -->
@@ -238,6 +286,14 @@
                     <a href="/admin/pages/create" class="block p-4 border rounded-lg hover:bg-gray-50">
                         <h3 class="text-lg font-medium text-gray-900">建立新頁面</h3>
                         <p class="mt-1 text-sm text-gray-500">為您的網站建立自訂頁面</p>
+                    </a>
+                    <a href="/admin/frontpage" class="block p-4 border rounded-lg hover:bg-gray-50">
+                        <h3 class="text-lg font-medium text-gray-900">管理首頁內容</h3>
+                        <p class="mt-1 text-sm text-gray-500">編輯首頁顯示的內容項目</p>
+                    </a>
+                    <a href="/admin/frontpage/categories" class="block p-4 border rounded-lg hover:bg-gray-50">
+                        <h3 class="text-lg font-medium text-gray-900">管理首頁分類</h3>
+                        <p class="mt-1 text-sm text-gray-500">整理首頁內容的分類</p>
                     </a>
                     <a href="/admin/faq/categories" class="block p-4 border rounded-lg hover:bg-gray-50">
                         <h3 class="text-lg font-medium text-gray-900">管理常見問題分類</h3>
