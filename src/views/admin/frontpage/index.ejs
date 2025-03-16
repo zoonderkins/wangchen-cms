@@ -1,163 +1,95 @@
 <%- contentFor('header') %>
   <div class="bg-white shadow">
     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-      <h1 class="text-3xl font-bold text-gray-900">首頁分類管理</h1>
+      <h1 class="text-3xl font-bold text-gray-900">首頁管理</h1>
     </div>
   </div>
 
   <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
     <div class="px-4 py-6 sm:px-0">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Categories List -->
-        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-          <div class="px-4 py-5 sm:px-6">
-            <h2 class="text-lg leading-6 font-medium text-gray-900">現有分類</h2>
-          </div>
-          <div class="border-t border-gray-200">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    名稱
-                  </th>
-                  <th scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    排序
-                  </th>
-                  <th scope="col"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    操作
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <% categories.forEach(function(category) { %>
+      <div class="flex justify-end mb-4">
+        <a href="/admin/frontpage/items/create"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          新增項目
+        </a>
+      </div>
+
+      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                標題
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                類型
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                分類
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                狀態
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                排序
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                操作
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% items.forEach(function(item) { %>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <%= item.title_tw %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= item.type==='plain_text' ? '純文字' : '圖片' %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= item.category ? item.category.name_tw : '' %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span
+                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= item.status === 'published' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' %>">
+                    <%= item.status==='published' ? '已發布' : '草稿' %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= item.order %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <a href="/admin/frontpage/items/<%= item.id %>/edit"
+                    class="text-indigo-600 hover:text-indigo-900 mr-3">編輯</a>
+                  <form action="/admin/frontpage/items/<%= item.id %>/delete" method="POST"
+                    class="inline-block delete-form">
+                    <button type="submit" class="text-red-600 hover:text-red-900">刪除</button>
+                  </form>
+                </td>
+              </tr>
+              <% }); %>
+                <% if (items.length===0) { %>
                   <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <%= category.name_tw %>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <%= category.order %>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button type="button" class="edit-category text-indigo-600 hover:text-indigo-900 mr-3"
-                        data-id="<%= category.id %>" data-name="<%= category.name_tw %>"
-                        data-order="<%= category.order %>">
-                        編輯
-                      </button>
-                      <form action="/admin/frontpage/categories/<%= category.id %>/delete" method="POST"
-                        class="inline-block delete-form">
-                        <button type="submit" class="text-red-600 hover:text-red-900">刪除</button>
-                      </form>
+                    <td colspan="6" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                      尚無項目
                     </td>
                   </tr>
-                  <% }); %>
-                    <% if (categories.length===0) { %>
-                      <tr>
-                        <td colspan="3" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                          尚無分類
-                        </td>
-                      </tr>
-                      <% } %>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Add/Edit Category Form -->
-        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-          <div class="px-4 py-5 sm:px-6">
-            <h2 id="form-title" class="text-lg leading-6 font-medium text-gray-900">新增分類</h2>
-          </div>
-          <div class="border-t border-gray-200 p-6">
-            <form id="category-form" action="/admin/frontpage/categories" method="POST">
-              <input type="hidden" id="category-id" name="id">
-              <input type="hidden" id="method-override" name="_method" value="POST">
-
-              <div class="mb-4">
-                <label for="name_tw" class="block text-sm font-medium text-gray-700 mb-2">名稱</label>
-                <input type="text" id="name_tw" name="name_tw"
-                  class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  required>
-              </div>
-
-              <div class="mb-4">
-                <label for="order" class="block text-sm font-medium text-gray-700 mb-2">排序</label>
-                <input type="number" id="order" name="order" value="0" min="0"
-                  class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-              </div>
-
-              <div class="flex justify-end">
-                <button type="button" id="reset-form"
-                  class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2">
-                  取消
-                </button>
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                  儲存
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+                  <% } %>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      const categoryForm = document.getElementById('category-form');
-      const formTitle = document.getElementById('form-title');
-      const categoryIdInput = document.getElementById('category-id');
-      const methodOverrideInput = document.getElementById('method-override');
-      const nameTwInput = document.getElementById('name_tw');
-      const orderInput = document.getElementById('order');
-      const resetFormBtn = document.getElementById('reset-form');
-
-      // Edit category
-      const editButtons = document.querySelectorAll('.edit-category');
-      if (editButtons.length > 0) {
-        editButtons.forEach(button => {
-          button.addEventListener('click', function () {
-            const id = this.getAttribute('data-id');
-            const name = this.getAttribute('data-name');
-            const order = this.getAttribute('data-order');
-
-            // Update form
-            formTitle.textContent = '編輯分類';
-            categoryForm.action = `/admin/frontpage/categories/${id}`;
-            categoryIdInput.value = id;
-            methodOverrideInput.value = 'POST';
-            nameTwInput.value = name;
-            orderInput.value = order;
-
-            // Scroll to form on mobile
-            if (window.innerWidth < 768) {
-              categoryForm.scrollIntoView({ behavior: 'smooth' });
-            }
-          });
-        });
-      }
-
-      // Reset form
-      if (resetFormBtn) {
-        resetFormBtn.addEventListener('click', function () {
-          formTitle.textContent = '新增分類';
-          categoryForm.action = '/admin/frontpage/categories';
-          categoryIdInput.value = '';
-          methodOverrideInput.value = 'POST';
-          nameTwInput.value = '';
-          orderInput.value = '0';
-        });
-      }
-
-      // Delete confirmation
       const deleteForms = document.querySelectorAll('.delete-form');
       if (deleteForms.length > 0) {
         deleteForms.forEach(form => {
           form.addEventListener('submit', function (e) {
             e.preventDefault();
-            if (confirm('確定要刪除此分類嗎？這將會刪除所有關聯的項目！')) {
+            if (confirm('確定要刪除此項目嗎？')) {
               this.submit();
             }
           });
