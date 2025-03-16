@@ -35,6 +35,7 @@
                     <% }); %>
                 </ul>
             </div>
+            <div class="absolute bottom-0 w-full h-full bg-white" id="splideLoader"></div>
             <div class="absolute bottom-0 w-full flex flex-col sm:flex-row justify-center">
                 <button class="max-w-xl px-3 py-2 mx-10 sm:px-12 sm:py-3 sm:mx-8 sm:w-1/2 mb-2 sm:mb-0 banner-button-yellow">
                     <%= currentLanguage==='en' ? 'Nationwide On-Site Services' : '全區進駐服務' %>
@@ -46,14 +47,7 @@
             </div>
         </section>
     <% } %>
-    <script>
-        document.addEventListener( 'DOMContentLoaded', function() {
-            var splide = new Splide( '.splide' ,{
-                type   : 'loop',
-            });
-        splide.mount();
-        });
-    </script>
+    
 
 
     <!-- Content Section -->
@@ -258,48 +252,7 @@
             </div>
         </div>
     </section>
-
-    <script>
-        // 簡單的標籤切換功能
-        document.addEventListener('DOMContentLoaded', function() {
-            const categoryTabs = document.querySelectorAll('.categoryTab');
-            const companyTabs = document.querySelectorAll('.companyTab');
-            const supplierList = document.querySelector('.supplierList');
-            const demanderList = document.querySelector('.demanderList');
-            
-            categoryTabs.forEach(categoryTab => {
-                categoryTab.addEventListener('click', function() {
-                    // 移除所有標籤的活動狀態
-                    categoryTabs.forEach(t => {
-                        t.classList.remove('border-custom-yellow', 'border-l-4');
-                        t.classList.add('text-gray-500');
-                    });
-                    
-                    // 設置當前標籤為活動狀態
-                    this.classList.remove('text-gray-500');
-                    this.classList.add('border-custom-yellow', 'border-l-4');
-                });
-            });
-
-            companyTabs.forEach((companyTab, index) => {
-                companyTab.addEventListener('click', function() {
-                    companyTabs.forEach(tab => {
-                        // 切換標籤樣式
-                        tab.classList.toggle('border-custom-yellow', tab === this);
-                        tab.classList.toggle('text-custom-blue', tab === this);
-                        tab.classList.toggle('text-gray-500', tab !== this);
-                        tab.classList.toggle('border-gray-100', tab !== this);
-                    });
-                    // 切換內容顯示
-                    const isSupplierTab = index === 0;
-                    supplierList.classList.toggle('grid', isSupplierTab);
-                    supplierList.classList.toggle('hidden', !isSupplierTab);
-                    demanderList.classList.toggle('grid', !isSupplierTab);
-                    demanderList.classList.toggle('hidden', isSupplierTab);
-                });
-            });
-        });
-    </script>
+    
 
     <!-- Related Links Section -->
     <% if (links && links.length> 0) { %>
@@ -323,3 +276,78 @@
             </div>
         </section>
     <% } %>
+
+
+<%- contentFor('scripts') %>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var splide = new Splide( '.splide' ,{
+            type   : 'loop',
+        });
+        splide.mount();
+            
+        // 獲取覆蓋層元素
+        const splideLoader = document.getElementById('splideLoader');
+        // 使用 requestAnimationFrame 實現平滑的淡出效果
+        let opacity = 1;
+        const fadeOut = function() {
+            opacity -= 0.01; // 每次減少0.01，實現緩慢淡出
+            if (opacity <= 0) {
+                opacity = 0;
+                splideLoader.style.opacity = '0';
+                // 當完全透明時移除元素
+                setTimeout(function() {
+                splideLoader.style.display = 'none';
+                }, 100);
+                return;
+            }
+            splideLoader.style.opacity = opacity.toString();
+            requestAnimationFrame(fadeOut);
+        };
+        // 延遲一段時間後開始淡出動畫
+        setTimeout(function() {
+            requestAnimationFrame(fadeOut);
+        }, 500); // 可以調整這個延遲時間
+
+
+        ///////////////////////////////////////////////////////////////////////
+
+        // 簡單的標籤切換功能
+        const categoryTabs = document.querySelectorAll('.categoryTab');
+        const companyTabs = document.querySelectorAll('.companyTab');
+        const supplierList = document.querySelector('.supplierList');
+        const demanderList = document.querySelector('.demanderList');
+        
+        categoryTabs.forEach(categoryTab => {
+            categoryTab.addEventListener('click', function() {
+                // 移除所有標籤的活動狀態
+                categoryTabs.forEach(t => {
+                    t.classList.remove('border-custom-yellow', 'border-l-4');
+                    t.classList.add('text-gray-500');
+                });
+                
+                // 設置當前標籤為活動狀態
+                this.classList.remove('text-gray-500');
+                this.classList.add('border-custom-yellow', 'border-l-4');
+            });
+        });
+
+        companyTabs.forEach((companyTab, index) => {
+            companyTab.addEventListener('click', function() {
+                companyTabs.forEach(tab => {
+                    // 切換標籤樣式
+                    tab.classList.toggle('border-custom-yellow', tab === this);
+                    tab.classList.toggle('text-custom-blue', tab === this);
+                    tab.classList.toggle('text-gray-500', tab !== this);
+                    tab.classList.toggle('border-gray-100', tab !== this);
+                });
+                // 切換內容顯示
+                const isSupplierTab = index === 0;
+                supplierList.classList.toggle('grid', isSupplierTab);
+                supplierList.classList.toggle('hidden', !isSupplierTab);
+                demanderList.classList.toggle('grid', !isSupplierTab);
+                demanderList.classList.toggle('hidden', isSupplierTab);
+            });
+        });
+    });
+</script>
