@@ -5,7 +5,9 @@
     --color-custom-blue: #2A8CA9;
     --color-custom-lightgreen: #9CFFE6;
     --color-custom-green: #38B9A1;
+    --color-custom-darkgreen: #37b7a2;
     --color-custom-yellow: #FFE082;
+    --color-custom-darkyellow: #cdb46a;
 }
 
 .bg-custom-blue {
@@ -156,6 +158,18 @@ main {
 }
 .banner-title {
     width: 90vw;
+}
+.banner-button-yellow {
+    background-color: var(--color-custom-yellow);
+}
+.banner-button-yellow:hover {
+    background-color: var(--color-custom-darkyellow);
+}
+.banner-button-lightgreen {
+    background-color: var(--color-custom-lightgreen);
+}
+.banner-button-lightgreen:hover {
+    background-color: var(--color-custom-darkgreen);
 }
 
 /* custom scrollbar */

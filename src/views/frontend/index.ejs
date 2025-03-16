@@ -36,11 +36,11 @@
                 </ul>
             </div>
             <div class="absolute bottom-0 w-full flex flex-col sm:flex-row justify-center">
-                <button class="max-w-xl px-3 py-2 mx-10 sm:px-12 sm:py-3 sm:mx-8 sm:w-1/2 mb-2 sm:mb-0 bg-custom-yellow">
+                <button class="max-w-xl px-3 py-2 mx-10 sm:px-12 sm:py-3 sm:mx-8 sm:w-1/2 mb-2 sm:mb-0 banner-button-yellow">
                     <%= currentLanguage==='en' ? 'Nationwide On-Site Services' : '全區進駐服務' %>
                     
                 </button>
-                <button class="max-w-xl px-3 py-2 mx-10 sm:px-12 sm:py-3 sm:mx-8 sm:w-1/2 bg-custom-lightgreen ">
+                <button class="max-w-xl px-3 py-2 mx-10 sm:px-12 sm:py-3 sm:mx-8 sm:w-1/2 banner-button-lightgreen ">
                     <%= currentLanguage==='en' ? 'Industry Promotion Cooperation' : '產業推廣合作' %>
                 </button>
             </div>
@@ -302,73 +302,24 @@
     </script>
 
     <!-- Related Links Section -->
-    <section class="py-12 px-5 lg:px-8">
-        <h3 class="text-center mb-2"><%= currentLanguage==='en' ? 'Related Links' : '相關連結' %></h3>
-        <div class="yellow-line w-24 h-2 mx-auto mb-16 text-center"></div>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-6">
-            <!-- Link Item -->
-            <a href="https://www.nstc.gov.tw" class="block no-underline" target="_blank">
-            <div class="bg-gray-100 h-28 lg:h-36 rounded-xl flex items-center justify-center p-4 sm:p-6">
-                <div class="w-full flex items-center justify-center">
-                <img src="../images/logo/logo-NSTC.png" alt="國家科學及技術委員會" class="h-full w-full object-cover">
-                </div>
+    <% if (links && links.length> 0) { %>
+        <section class="py-12 px-5 lg:px-8">
+            <h3 class="text-center mb-2"><%= currentLanguage==='en' ? 'Related Links' : '相關連結' %></h3>
+            <div class="yellow-line w-24 h-2 mx-auto mb-16 text-center"></div>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-6">
+                <% links.forEach(function(link) { %>
+                    <!-- Link Item -->
+                    <a href="<%= link.url %>" class="block no-underline" target="_blank">
+                        <div class="bg-gray-100 h-28 lg:h-36 rounded-xl flex items-center justify-center p-4 sm:p-6">
+                            <% if (link.image) { %>
+                                <div class="w-full flex items-center justify-center">
+                                    <img src="<%= link.image %>" alt="<%= currentLanguage==='en' ? link.title_en : link.title_tw %>" 
+                                    class="h-full w-full object-cover">
+                                </div>
+                            <% } %>
+                        </div>
+                    </a>
+                <% }); %>
             </div>
-            </a>
-            <!-- Link Item -->
-            <a href="https://www.ndc.gov.tw" class="block no-underline" target="_blank">
-            <div class="bg-gray-100 h-28 lg:h-36 rounded-xl flex items-center justify-center p-4 sm:p-6">
-                <div class="w-full flex items-center justify-center">
-                <img src="../images/logo/logo-NDC.png" alt="國家發展委員會" class="h-full w-full object-cover">
-                </div>
-            </div>
-            </a>
-            <!-- Link Item -->
-            <a href="https://moda.gov.tw/" class="block no-underline" target="_blank">
-            <div class="bg-gray-100 h-28 lg:h-36 rounded-xl flex items-center justify-center p-4 sm:p-6">
-                <div class="w-full flex items-center justify-center">
-                <img src="../images/logo/logo-MODA.png" alt="數位發展部" class="h-full w-full object-cover">
-                </div>
-            </div>
-            </a>
-            <!-- Link Item -->
-            <a href="https://www.moea.gov.tw" class="block no-underline" target="_blank">
-            <div class="bg-gray-100 h-28 lg:h-36 rounded-xl flex items-center justify-center p-4 sm:p-6">
-                <div class="w-full flex items-center justify-center">
-                <img src="../images/logo/logo-MEA.png" alt="經濟部" class="h-full w-full object-cover">
-                </div>
-            </div>
-            </a>
-            <!-- Link Item -->
-            <a href="https://www.edu.tw" class="block no-underline" target="_blank">
-            <div class="bg-gray-100 h-28 lg:h-36 rounded-xl flex items-center justify-center p-4 sm:p-6">
-                <div class="w-full flex items-center justify-center">
-                <img src="../images/logo/logo-ME.png" alt="教育部" class="h-full w-full object-cover">
-                </div>
-            </div>
-            </a>
-            <!-- Link Item -->
-            <a href="https://www.tainan.gov.tw" class="block no-underline" target="_blank">
-            <div class="bg-gray-100 h-28 lg:h-36 rounded-xl flex items-center justify-center p-4 sm:p-6">
-                <div class="w-full flex items-center justify-center">
-                <img src="../images/logo/logo-TNCG.png" alt="臺南市政府" class="h-full w-full object-cover">
-                </div>
-            </div>
-            </a>
-            <!-- Link Item -->
-            <a href="https://www.stsp.gov.tw" class="block no-underline" target="_blank">
-            <div class="bg-gray-100 h-28 lg:h-36 rounded-xl flex items-center justify-center p-4 sm:p-6">
-                <div class="w-full flex items-center justify-center">
-                <img src="../images/logo/logo-STSP.png" alt="南部科學園區" class="h-full w-full object-cover">
-                </div>
-            </div>
-            </a>
-            <!-- Link Item -->
-            <a href="https://www.narlabs.org.tw" class="block no-underline" target="_blank">
-            <div class="bg-gray-100 h-28 lg:h-36 rounded-xl flex items-center justify-center p-4 sm:p-6">
-                <div class="w-full flex items-center justify-center">
-                <img src="../images/logo/logo-NARLabs.png" alt="國家實驗研究所" class="h-full w-full object-cover">
-                </div>
-            </div>
-            </a>
-        </div>
-    </section>
+        </section>
+    <% } %>
