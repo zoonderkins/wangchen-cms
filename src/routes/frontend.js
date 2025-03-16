@@ -113,15 +113,41 @@ router.get('/:language', async (req, res, next) => {
         // Get frontpage items
         const { plainTextItems, pictureItems } = await frontendController.getFrontpageItems();
 
-        // Debug banner information
-        logger.info(`Banners found: ${banners.length}`);
-        if (banners.length > 0) {
-            banners.forEach((banner, index) => {
-                logger.info(`Banner ${index + 1}: ID=${banner.id}, Title=${banner.title}, Media=${banner.mediaPath}, Active=${banner.isActive}, Type=${banner.mediaType}`);
-            });
-        } else {
-            logger.info('No active banners found');
-        }
+        // Get latest 6 news items
+        const latestNews = await prisma.newsItem.findMany({
+            where: {
+                status: 'published',
+                deletedAt: null
+            },
+            include: {
+                category: true
+            },
+            orderBy: {
+                publishedDate: 'desc'
+            },
+            take: 6
+        });
+
+        // Process news items for the selected language
+        const processedNews = latestNews.map(item => {
+            const titleField = `title_${currentLanguage}`;
+            
+            // Ensure image path is absolute and doesn't include language prefix
+            let imageUrl = null;
+            if (item.imagePath) {
+                imageUrl = item.imagePath;
+            }
+            
+            return {
+                ...item,
+                title: item[titleField] || item.title_en, // Fallback to English
+                imageUrl: imageUrl,
+                category: item.category ? {
+                    ...item.category,
+                    name: item.category[`name_${currentLanguage}`] || item.category.name_en
+                } : null
+            };
+        });
 
         // Process banners for multilingual content
         const processedBanners = banners.map(banner => {
@@ -148,6 +174,7 @@ router.get('/:language', async (req, res, next) => {
             links: links,
             plainTextItems: plainTextItems,
             pictureItems: pictureItems,
+            latestNews: processedNews,
             currentLanguage: currentLanguage,
             getContent: getContent,
             layout: 'layouts/frontend'
@@ -175,6 +202,7 @@ router.get('/:language', async (req, res, next) => {
             links: [],
             plainTextItems: [],
             pictureItems: [],
+            latestNews: [],
             currentLanguage: currentLanguage,
             getContent: (item, field) => '',
             layout: 'layouts/frontend'
