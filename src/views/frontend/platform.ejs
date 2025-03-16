@@ -24,10 +24,16 @@
                         </h3>
 
                         <% if (platform.type==='plain_text' ) { %>
-                          <div class="prose max-w-none">
-                            <p class="text-gray-700 whitespace-pre-line">
-                              <%= currentLanguage==='en' ? platform.content_en : platform.content_tw %>
-                            </p>
+                          <div class="prose max-w-none quill-content">
+                            <div class="ql-container ql-snow" style="border: none;">
+                              <div class="ql-editor quill-content-wrapper" <% if ((currentLanguage==='en' && platform._content_en_is_delta) ||
+                                (currentLanguage==='tw' && platform._content_tw_is_delta)) { %>
+                                data-is-delta="true"
+                                <% } %>
+                                  id="quill-content-<%= platform.id %>-<%= currentLanguage %>">
+                                      <%- currentLanguage==='en' ? platform.content_en : platform.content_tw %>
+                              </div>
+                            </div>
                           </div>
                           <% if (platform.imagePath) { %>
                             <div class="mt-4">
@@ -44,10 +50,12 @@
                                       alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
                                       class="w-full h-auto rounded-lg shadow-sm">
                                   </div>
-                                  <div class="text-gray-700">
-                                    <p class="whitespace-pre-line">
-                                      <%= currentLanguage==='en' ? platform.content_en : platform.content_tw %>
-                                    </p>
+                                  <div class="text-gray-700 quill-content">
+                                    <div class="ql-container ql-snow" style="border: none;">
+                                      <div class="ql-editor">
+                                        <%- currentLanguage==='en' ? platform.content_en : platform.content_tw %>
+                                      </div>
+                                    </div>
                                   </div>
                                   <% } else { %>
                                     <div class="bg-gray-100 p-4 rounded-lg text-center text-gray-500">
@@ -296,3 +304,50 @@
           <% } %>
     </div>
   </div>
+  <%- contentFor('head') %>
+    <!-- Include Quill.js 2.0.3 styles for rendering -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+  
+    <%- contentFor('scripts') %>
+      <!-- Include Quill.js for proper rendering -->
+      <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.min.js"></script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          // Find all Quill content elements that might contain Delta format
+          const quillContentElements = document.querySelectorAll('.quill-content-wrapper[data-is-delta="true"]');
+
+          quillContentElements.forEach(function (element) {
+            try {
+              // Get the element ID to identify which content we're working with
+              const elementId = element.id;
+
+              // Try to parse the content as Delta JSON
+              const content = element.innerHTML.trim();
+              if (content) {
+                const delta = JSON.parse(content);
+
+                // Create a temporary Quill instance to render the Delta
+                const tempContainer = document.createElement('div');
+                tempContainer.style.display = 'none';
+                document.body.appendChild(tempContainer);
+
+                const quill = new Quill(tempContainer, {
+                  readOnly: true,
+                  theme: 'snow'
+                });
+
+                // Set the Delta content
+                quill.setContents(delta);
+
+                // Get the rendered HTML and update the original element
+                element.innerHTML = quill.root.innerHTML;
+
+                // Remove the temporary container
+                document.body.removeChild(tempContainer);
+              }
+            } catch (error) {
+              console.error('Error rendering Quill content:', error);
+            }
+          });
+        });
+      </script>

@@ -37,12 +37,12 @@
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="type" name="type" required>
             <option value="">選擇類型</option>
-            <option value="plain_text" <%=item.type==='plain_text' ? 'selected' : '' %>>純文字</option>
+            <option value="plain_text" <%=item.type==='plain_text' ? 'selected' : '' %>>所見即所得</option>
             <option value="image" <%=item.type==='image' ? 'selected' : '' %>>圖片</option>
             <option value="bullet_points" <%=item.type==='bullet_points' ? 'selected' : '' %>>項目符號</option>
           </select>
           <p class="text-gray-600 text-xs italic mt-1">
-            純文字：簡單文字內容<br>
+            所見即所得：簡單文字內容<br>
             圖片：上傳圖片，可選擇添加說明<br>
             項目符號：項目列表（每行一個）
           </p>

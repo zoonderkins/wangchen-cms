@@ -67,22 +67,20 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <div class="content-field" id="content_en_field">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="content_en">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="editor_en">
                   內容 (英文) <span class="text-red-500 content-required">*</span>
                 </label>
-                <textarea
-                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="content_en" name="content_en" rows="5" required></textarea>
+                <div id="editor_en" class="h-64 mt-1"></div>
+                <input type="hidden" name="content_en" id="content_en">
               </div>
             </div>
             <div>
               <div class="content-field" id="content_tw_field">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="content_tw">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="editor_tw">
                   內容 (繁體中文) <span class="text-red-500 content-required">*</span>
                 </label>
-                <textarea
-                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="content_tw" name="content_tw" rows="5" required></textarea>
+                <div id="editor_tw" class="h-64 mt-1"></div>
+                <input type="hidden" name="content_tw" id="content_tw">
               </div>
             </div>
           </div>
@@ -246,6 +244,8 @@
 
         const contentEnField = document.getElementById('content_en');
         const contentTwField = document.getElementById('content_tw');
+        const editorEnContainer = document.getElementById('editor_en');
+        const editorTwContainer = document.getElementById('editor_tw');
         const categoryField = document.getElementById('categoryId');
         const contentRequiredMarks = document.querySelectorAll('.content-required');
         const categoryRequiredMarks = document.querySelectorAll('.category-required');
@@ -285,8 +285,8 @@
           categoryField.required = true;
 
           // Update content labels to show they're optional
-          document.querySelector('label[for="content_en"]').innerHTML = '內容 (英文)';
-          document.querySelector('label[for="content_tw"]').innerHTML = '內容 (繁體中文)';
+          document.querySelector('label[for="editor_en"]').innerHTML = '內容 (英文)';
+          document.querySelector('label[for="editor_tw"]').innerHTML = '內容 (繁體中文)';
 
           // Hide required marks for content
           contentRequiredMarks.forEach(mark => mark.style.display = 'none');
@@ -370,6 +370,7 @@
 
           // Show partners fields section
           partnersFieldsSection.classList.remove('hidden');
+          partnersSubtypeSection.classList.remove('hidden');
 
           // Hide image, URL, and attachments sections
           if (imageUploadSection) imageUploadSection.style.display = 'none';
@@ -401,9 +402,9 @@
           }
 
           // Update content labels to show they're required
-          document.querySelector('label[for="content_en"]').innerHTML =
+          document.querySelector('label[for="editor_en"]').innerHTML =
             '內容 (英文) <span class="text-red-500 content-required">*</span>';
-          document.querySelector('label[for="content_tw"]').innerHTML =
+          document.querySelector('label[for="editor_tw"]').innerHTML =
             '內容 (繁體中文) <span class="text-red-500 content-required">*</span>';
 
           // Hide attachments section for plain text type
@@ -452,3 +453,185 @@
         document.getElementById('publishedDate').value = today;
       });
     </script>
+
+    <!-- Quill.js Editor Setup -->
+    <script>
+      // Include jQuery and Quill.js dynamically
+      (function () {
+        // Add jQuery
+        var jquery = document.createElement('script');
+        jquery.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
+        jquery.type = 'text/javascript';
+        document.head.appendChild(jquery);
+
+        // Add Quill.js after jQuery loads
+        jquery.onload = function () {
+          // Add Quill.js script
+          var quillScript = document.createElement('script');
+          quillScript.src = 'https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js';
+          quillScript.type = 'text/javascript';
+          document.head.appendChild(quillScript);
+
+          // Add Quill.js CSS
+          var quillCss = document.createElement('link');
+          quillCss.href = 'https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css';
+          quillCss.rel = 'stylesheet';
+          document.head.appendChild(quillCss);
+
+          // Initialize Quill after script loads
+          quillScript.onload = function () {
+            // Initialize English editor with simple configuration
+            var quill_en = new Quill('#editor_en', {
+              theme: 'snow',
+              modules: {
+                toolbar: [
+                  [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                  ['bold', 'italic', 'underline', 'strike'],
+                  [{ 'color': [] }, { 'background': [] }],
+                  [{ 'align': [] }],
+                  [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                  ['link', 'image', 'video'],
+                  ['clean'],
+                  ['code-block']
+                ]
+              },
+              placeholder: 'Compose an epic...'
+            });
+
+            // Initialize Traditional Chinese editor with simple configuration
+            var quill_tw = new Quill('#editor_tw', {
+              theme: 'snow',
+              modules: {
+                toolbar: [
+                  [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                  ['bold', 'italic', 'underline', 'strike'],
+                  [{ 'color': [] }, { 'background': [] }],
+                  [{ 'align': [] }],
+                  [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                  ['link', 'image', 'video'],
+                  ['clean'],
+                  ['code-block']
+                ]
+              },
+              placeholder: '撰寫內容...'
+            });
+
+            // Function to truncate content if needed
+            function truncateContent(content, maxLength) {
+              // Use 100MB as the maximum length for LongText fields
+              const MAX_LONGTEXT_LENGTH = 100 * 1024 * 1024; // 100MB
+
+              // If maxLength is not provided, use the maximum LongText length
+              const limit = maxLength || MAX_LONGTEXT_LENGTH;
+
+              if (content && content.length > limit) {
+                console.warn(`Content truncated from ${content.length} to ${limit} characters`);
+                return content.substring(0, limit);
+              }
+              return content;
+            }
+
+            // Form validation before submit
+            $('form').on('submit', function (e) {
+              // Update hidden inputs with Quill content
+              const type = $('#type').val();
+
+              if (type === 'plain_text') {
+                // For plain text, store the HTML content
+                const htmlEn = quill_en.root.innerHTML;
+                const htmlTw = quill_tw.root.innerHTML;
+
+                // Using LongText field now, so we can store much more content
+                $('#content_en').val(truncateContent(htmlEn));
+                $('#content_tw').val(truncateContent(htmlTw));
+              } else if (type === 'partners') {
+                // For partners type, set empty content if not provided
+                if (!$('#content_en').val()) {
+                  $('#content_en').val(' ');
+                }
+                if (!$('#content_tw').val()) {
+                  $('#content_tw').val(' ');
+                }
+              }
+
+              return true;
+            });
+
+            // Add image handler for English editor
+            const imageHandlerEn = () => {
+              const input = document.createElement('input');
+              input.setAttribute('type', 'file');
+              input.setAttribute('accept', 'image/*');
+              input.click();
+
+              input.onchange = () => {
+                const file = input.files[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onload = () => {
+                    const base64 = reader.result;
+                    const range = quill_en.getSelection(true);
+                    quill_en.insertEmbed(range.index, 'image', base64);
+                  };
+                  reader.readAsDataURL(file);
+                }
+              };
+            };
+
+            // Attach image handler to English editor toolbar
+            quill_en.getModule('toolbar').addHandler('image', imageHandlerEn);
+
+            // Add image handler for Traditional Chinese editor
+            const imageHandlerTw = () => {
+              const input = document.createElement('input');
+              input.setAttribute('type', 'file');
+              input.setAttribute('accept', 'image/*');
+              input.click();
+
+              input.onchange = () => {
+                const file = input.files[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onload = () => {
+                    const base64 = reader.result;
+                    const range = quill_tw.getSelection(true);
+                    quill_tw.insertEmbed(range.index, 'image', base64);
+                  };
+                  reader.readAsDataURL(file);
+                }
+              };
+            };
+
+            // Attach image handler to Traditional Chinese editor toolbar
+            quill_tw.getModule('toolbar').addHandler('image', imageHandlerTw);
+          };
+        };
+      })();
+    </script>
+
+    <style>
+      /* Custom styles for Quill editors */
+      #editor_en,
+      #editor_tw {
+        height: 300px;
+        margin-bottom: 30px;
+      }
+
+      /* Fix toolbar positioning */
+      .ql-toolbar.ql-snow {
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+        padding: 8px;
+      }
+
+      .ql-container.ql-snow {
+        border: 1px solid #ccc;
+        border-top: 0px;
+      }
+
+      /* Ensure editor has proper height */
+      .ql-editor {
+        min-height: 200px;
+      }
+    </style>
