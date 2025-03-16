@@ -2,18 +2,18 @@
 
     <div class="container px-6 mx-auto grid">
         <h2 class="my-6 text-2xl font-semibold text-gray-700">
-            新聞項目管理
+            消息項目管理
         </h2>
 
         <!-- CTA -->
         <div
             class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-purple-100 bg-purple-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple">
             <div class="flex items-center">
-                <span>管理網站新聞項目，支援多語言內容。</span>
+                <span>管理網站消息項目，支援多語言內容。</span>
             </div>
             <a href="/admin/news/items/create"
                 class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-800 border border-transparent rounded-lg active:bg-purple-900 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                <i class="fas fa-plus mr-2"></i> 新增新聞項目
+                <i class="fas fa-plus mr-2"></i> 新增消息項目
             </a>
         </div>
 
@@ -154,7 +154,7 @@
                                                             </a>
                                                             <form action="/admin/news/items/<%= item.id %>/delete"
                                                                 method="POST"
-                                                                onsubmit="return confirm('您確定要刪除此新聞項目嗎？');">
+                                                                onsubmit="return confirm('您確定要刪除此消息項目嗎？');">
                                                                 <button type="submit"
                                                                     class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg focus:outline-none focus:shadow-outline-gray"
                                                                     aria-label="刪除">
@@ -173,7 +173,7 @@
                                                     <% } else { %>
                                                         <tr class="text-gray-700">
                                                             <td colspan="5" class="px-4 py-3 text-sm text-center">
-                                                                未找到新聞項目。 <a href="/admin/news/items/create"
+                                                                未找到消息項目。 <a href="/admin/news/items/create"
                                                                     class="text-purple-600 hover:underline">建立一個</a>。
                                                             </td>
                                                         </tr>

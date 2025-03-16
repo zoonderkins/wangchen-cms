@@ -283,7 +283,7 @@ exports.listItems = async (req, res) => {
         });
         
         res.render('admin/news/items/index', {
-            title: 'News Items',
+            title: '消息項目',
             newsItems: items,
             categories,
             search: search || '',
@@ -296,7 +296,7 @@ exports.listItems = async (req, res) => {
         });
     } catch (error) {
         logger.error('Error listing news items:', error);
-        req.flash('error_msg', `Failed to load news items: ${error.message}`);
+        req.flash('error_msg', `無法載入消息項目: ${error.message}`);
         res.redirect('/admin/dashboard');
     }
 };
@@ -314,13 +314,13 @@ exports.renderCreateItem = async (req, res) => {
         });
         
         res.render('admin/news/items/form', {
-            title: 'Create News Item',
+            title: '建立消息項目',
             newsItem: null,
             categories
         });
     } catch (error) {
         logger.error('Error rendering create news item form:', error);
-        req.flash('error_msg', `Failed to load news categories: ${error.message}`);
+        req.flash('error_msg', `無法載入消息分類: ${error.message}`);
         res.redirect('/admin/news/items');
     }
 };
@@ -404,11 +404,11 @@ exports.createItem = async (req, res) => {
             }
         });
         
-        req.flash('success_msg', 'News item created successfully');
+        req.flash('success_msg', '消息項目建立成功');
         res.redirect('/admin/news/items');
     } catch (error) {
         logger.error('Error creating news item:', error);
-        req.flash('error_msg', `Failed to create news item: ${error.message}`);
+        req.flash('error_msg', `無法建立消息項目: ${error.message}`);
         res.redirect('/admin/news/items/create');
     }
 };
@@ -439,18 +439,18 @@ exports.renderEditItem = async (req, res) => {
         ]);
         
         if (!newsItem) {
-            req.flash('error_msg', 'News item not found');
+            req.flash('error_msg', '找不到消息項目');
             return res.redirect('/admin/news/items');
         }
         
         res.render('admin/news/items/form', {
-            title: `Edit News Item: ${newsItem.title_en}`,
+            title: `編輯消息項目: ${newsItem.title_en}`,
             newsItem,
             categories
         });
     } catch (error) {
         logger.error('Error rendering edit news item form:', error);
-        req.flash('error_msg', `Failed to load news item: ${error.message}`);
+        req.flash('error_msg', `無法載入消息項目: ${error.message}`);
         res.redirect('/admin/news/items');
     }
 };
@@ -473,7 +473,7 @@ exports.updateItem = async (req, res) => {
         // Parse item ID
         const parsedId = parseInt(id, 10);
         if (isNaN(parsedId)) {
-            req.flash('error_msg', 'Invalid news item ID');
+            req.flash('error_msg', '無效的消息項目 ID');
             return res.redirect('/admin/news/items');
         }
         
@@ -482,7 +482,7 @@ exports.updateItem = async (req, res) => {
         if (categoryId && categoryId.trim() !== '') {
             const parsedCategoryId = parseInt(categoryId, 10);
             if (isNaN(parsedCategoryId)) {
-                req.flash('error_msg', 'Invalid category ID');
+                req.flash('error_msg', '無效的分類 ID');
                 return res.redirect(`/admin/news/items/edit/${id}`);
             }
             categoryData = { categoryId: parsedCategoryId };
@@ -497,7 +497,7 @@ exports.updateItem = async (req, res) => {
         });
         
         if (!existingItem) {
-            req.flash('error_msg', 'News item not found');
+            req.flash('error_msg', '找不到消息項目');
             return res.redirect('/admin/news/items');
         }
         
@@ -519,7 +519,7 @@ exports.updateItem = async (req, res) => {
         });
         
         if (existingItemWithSlug) {
-            req.flash('error_msg', 'A news item with this title already exists');
+            req.flash('error_msg', '已存在相同標題的消息項目');
             return res.redirect(`/admin/news/items/edit/${id}`);
         }
         
@@ -593,11 +593,11 @@ exports.updateItem = async (req, res) => {
             }
         });
         
-        req.flash('success_msg', 'News item updated successfully');
+        req.flash('success_msg', '消息項目更新成功');
         res.redirect('/admin/news/items');
     } catch (error) {
         logger.error('Error updating news item:', error);
-        req.flash('error_msg', `Failed to update news item: ${error.message}`);
+        req.flash('error_msg', `無法更新消息項目: ${error.message}`);
         res.redirect(`/admin/news/items/edit/${req.params.id}`);
     }
 };
@@ -615,11 +615,11 @@ exports.deleteItem = async (req, res) => {
             }
         });
         
-        req.flash('success_msg', 'News item deleted successfully');
+        req.flash('success_msg', '消息項目刪除成功');
         res.redirect('/admin/news/items');
     } catch (error) {
         logger.error('Error deleting news item:', error);
-        req.flash('error_msg', `Failed to delete news item: ${error.message}`);
+        req.flash('error_msg', `無法刪除消息項目: ${error.message}`);
         res.redirect('/admin/news/items');
     }
 };

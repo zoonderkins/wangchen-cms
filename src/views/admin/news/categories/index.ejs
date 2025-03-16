@@ -2,14 +2,14 @@
 
     <div class="container px-6 mx-auto grid">
         <h2 class="my-6 text-2xl font-semibold text-gray-700">
-            新聞類別管理
+            消息類別管理
         </h2>
 
         <!-- CTA -->
         <div
             class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-purple-100 bg-purple-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple">
             <div class="flex items-center">
-                <span>管理新聞類別，用於組織您的新聞項目。</span>
+                <span>管理消息類別，用於組織您的消息項目。</span>
             </div>
             <a href="/admin/news/categories/create"
                 class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-800 border border-transparent rounded-lg active:bg-purple-900 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
@@ -83,7 +83,7 @@
                                                             <form
                                                                 action="/admin/news/categories/<%= category.id %>/delete"
                                                                 method="POST"
-                                                                onsubmit="return confirm('您確定要刪除此類別嗎？這將同時刪除該類別下的所有新聞項目。');">
+                                                                onsubmit="return confirm('您確定要刪除此類別嗎？這將同時刪除該類別下的所有消息項目。');">
                                                                 <button type="submit"
                                                                     class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg focus:outline-none focus:shadow-outline-gray"
                                                                     aria-label="刪除">
