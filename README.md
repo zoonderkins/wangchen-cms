@@ -34,11 +34,16 @@ volumes:
 
 # Prisma DB
 
-verion: >= 6
+verion: >= 6.5
 
 ```
 npx prisma migrate reset --force && npx prisma migrate dev
 ```
+
+
+# Deploy
+
+部署到 Server 指令, 參考 Deploy.md
 
 # Start development server
 
