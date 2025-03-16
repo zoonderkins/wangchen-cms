@@ -80,8 +80,7 @@ const uploadLinkImage = (req, res, next) => {
                 }
             }
             return res.redirect('/admin/links/create');
-        }
-        
+            }
         next();
     });
 };
