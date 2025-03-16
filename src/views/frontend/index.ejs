@@ -55,56 +55,7 @@
         });
     </script>
 
-<!-- Latest News Section  首頁讀取最新消息 6筆-->
-            <% if (latestNews && latestNews.length> 0) { %>
-                <div class="bg-gray-50 py-12">
-                    <div class="container mx-auto px-4">
-                        <h2 class="text-2xl font-bold mb-6 text-center">
-                            <%= currentLanguage==='en' ? 'Latest News' : '最新消息' %>
-                        </h2>
 
-                        <!-- News Items -->
-                        <div class="space-y-6">
-                            <% latestNews.forEach(function(item) { %>
-                                <div class="bg-white p-4 rounded-lg shadow-md">
-                                    <div class="flex flex-col md:flex-row gap-4">
-                                        <% if (item.imageUrl) { %>
-                                            <div class="md:w-1/4">
-                                                <img src="<%= item.imageUrl %>" alt="<%= item.title %>"
-                                                    class="w-full h-auto object-cover rounded">
-                                            </div>
-                                            <% } %>
-                                                <div class="<%= item.imageUrl ? 'md:w-3/4' : 'w-full' %>">
-                                                    <h2 class="text-xl font-semibold mb-2">
-                                                        <%= item.title %>
-                                                    </h2>
-                                                    <div class="flex flex-wrap gap-2 mb-3">
-                                                        <span class="text-gray-500 text-sm">
-                                                            <%= new
-                                                                Date(item.publishedDate).toLocaleDateString(currentLanguage==='tw'
-                                                                ? 'zh-TW' : 'en-US' ) %>
-                                                        </span>
-                                                        <% if (item.category) { %>
-                                                            <span
-                                                                class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
-                                                                <%= item.category.name %>
-                                                            </span>
-                                                            <% } %>
-                                                    </div>
-                                                    <% if (item.url) { %>
-                                                        <a href="<%= item.url %>" target="_blank"
-                                                            class="text-blue-600 hover:underline">
-                                                            <%= currentLanguage==='tw' ? '閱讀更多' : 'Read More' %> →
-                                                        </a>
-                                                        <% } %>
-                                                </div>
-                                    </div>
-                                </div>
-                                <% }); %>
-                        </div>
-                    </div>
-                </div>
-                <% } %>
     <!-- Content Section -->
     <% if (plainTextItems && plainTextItems.length> 0) { %>
         <% plainTextItems.forEach(function(item) { %>
