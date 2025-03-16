@@ -73,12 +73,13 @@ const uploadLinkImage = (req, res, next) => {
             }
             
             // Determine where to redirect based on the route
-            if (req.path.includes('/edit/')) {
-                const id = req.path.split('/').pop();
-                return res.redirect(`/admin/links/edit/${id}`);
-            } else {
-                return res.redirect('/admin/links/create');
+            if (req.path.includes('/links/')) {
+                const id = req.params.id;
+                if (id) {
+                    return res.redirect(`/admin/links/edit/${id}`);
+                }
             }
+            return res.redirect('/admin/links/create');
         }
         
         next();

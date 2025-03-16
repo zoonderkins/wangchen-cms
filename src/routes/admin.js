@@ -271,11 +271,13 @@ router.post('/platforms/:id', hasRole(['super_admin', 'admin']), platformUpload.
 router.post('/platforms/:id/delete', hasRole(['super_admin', 'admin']), platformController.deleteItem);
 
 // Links Routes
+const { uploadLinkImage } = require('../middleware/linkImageUpload');
+
 router.get('/links', hasRole(['super_admin', 'admin']), linksController.index);
 router.get('/links/create', hasRole(['super_admin', 'admin']), linksController.createForm);
-router.post('/links', hasRole(['super_admin', 'admin']), linksController.create);
+router.post('/links', hasRole(['super_admin', 'admin']), uploadLinkImage, linksController.create);
 router.get('/links/edit/:id', hasRole(['super_admin', 'admin']), linksController.editForm);
-router.post('/links/:id', hasRole(['super_admin', 'admin']), linksController.update);
+router.post('/links/:id', hasRole(['super_admin', 'admin']), uploadLinkImage, linksController.update);
 router.post('/links/:id/delete', hasRole(['super_admin', 'admin']), linksController.delete);
 
 // Frontpage Routes
