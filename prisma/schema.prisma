@@ -219,7 +219,7 @@ model PageImage {
   filename     String
   originalName String
   path         String
-  targetPage   String   // The page this image is for (e.g., "index", "about", "contact")
+  targetPage   String // The page this image is for (e.g., "index", "about", "contact")
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -603,4 +603,11 @@ model VisitCounter {
   id        Int      @id @default(autoincrement())
   count     Int      @default(0)
   updatedAt DateTime @updatedAt
+}
+
+model VisitCounterHistory {
+  id        Int      @id @default(autoincrement())
+  count     Int      @default(0)
+  date      DateTime @default(now())
+  createdAt DateTime @default(now())
 }

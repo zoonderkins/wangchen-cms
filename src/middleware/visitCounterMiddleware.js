@@ -4,6 +4,7 @@ const logger = require('../config/logger');
 /**
  * Middleware to track and increment website visits
  * This will increment the counter for each unique session
+ * The counter resets at midnight every day
  */
 const trackVisits = async (req, res, next) => {
     try {
@@ -32,7 +33,7 @@ const trackVisits = async (req, res, next) => {
                         count: 1
                     }
                 });
-                // logger.info(`Visit counter created with initial count: ${counter.count}`);
+                logger.info(`Visit counter created with initial count: ${counter.count}`);
             } else {
                 // Increment the counter
                 counter = await prisma.visitCounter.update({
@@ -41,7 +42,7 @@ const trackVisits = async (req, res, next) => {
                         count: { increment: 1 }
                     }
                 });
-                // logger.info(`Visit counter incremented to: ${counter.count}`);
+                logger.debug(`Visit counter incremented to: ${counter.count}`);
             }
             
             // Mark this session as counted

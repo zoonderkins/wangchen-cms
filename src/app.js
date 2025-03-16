@@ -136,6 +136,10 @@ const startApp = async () => {
         await prisma.$connect();
         logger.info('Database connection established successfully');
 
+        // Initialize scheduler for cron jobs
+        const { initScheduler } = require('./config/scheduler');
+        initScheduler();
+
         // Start server
         const port = process.env.PORT || 3000;
         app.listen(port, () => {
