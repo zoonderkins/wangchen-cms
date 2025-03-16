@@ -1,10 +1,10 @@
 /* Base styles (Mobile first) */
 :root {
     --header-height: 64px; /* 導覽列高度 */
-    --color-custom-lightblue: #FAFCFC;
-    --color-custom-blue: #156f8b;
+    --color-custom-lightblue: #3AB5E0;
+    --color-custom-blue: #2A8CA9;
     --color-custom-lightgreen: #9CFFE6;
-    --color-custom-green: #127b68;
+    --color-custom-green: #38B9A1;
     --color-custom-yellow: #FFE082;
 }
 
@@ -129,7 +129,7 @@ p, label {
     line-height: 20px;
 }
 .slide h3, .slide .h3 {
-    font-size: 1.125rem;
+    font-size: 0.9rem;
     font-weight: 500;
 }
 
@@ -175,7 +175,7 @@ main {
     width: 70px;  /* 或設定具體寬度，例如 200px */
     height: 8px;  /* 調整線條粗細 */
     border-radius: 4px;  /* 讓線條兩端變圓 */
-    background: linear-gradient(to right, var(--color-custom-green), var(--color-custom-green));
+    background: linear-gradient(to right, var(--color-custom-lightgreen), var(--color-custom-lightgreen));
 }
 .yellow-line {
     width: 160px;  /* 或設定具體寬度，例如 200px */
@@ -184,7 +184,7 @@ main {
     background: var(--color-custom-yellow);
 }
 .img-shadow {
-    border-radius: 50px;
+    /* border-radius: 50px; */
     box-shadow: 20px 20px var(--color-custom-yellow);
 }
 .bg-promotion {
@@ -216,7 +216,7 @@ main {
 /* Tablet breakpoint */
 @media (min-width: 640px) {
     h1 {
-        font-size: 3rem;
+        font-size: 2.75rem;
     }
     h2, .h2 {
         font-size: 2.5rem;
@@ -237,7 +237,7 @@ main {
         line-height: 30px;
     }
     .slide h3, .slide .h3 {
-        font-size: 1.875rem;
+        font-size: 1.25rem;
     }
     
     footer span,  footer p {
@@ -249,7 +249,7 @@ main {
     }
 
     .banner-title {
-        width: 70vw;
+        width: 50vw;
     }
 
     .bg-news {
@@ -271,7 +271,7 @@ main {
     }
 
     h1 {
-        font-size: 3rem;
+        font-size: 2.75rem;
     }
     h2, .h2 {
         font-size: 2.5rem;
@@ -291,7 +291,7 @@ main {
         font-size: 1rem;
     }
     .slide h3, .slide .h3 {
-        font-size: 1.875rem;
+        font-size: 1.25rem;
     }
     
     footer span,  footer p {
