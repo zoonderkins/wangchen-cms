@@ -1,9 +1,15 @@
 <%- contentFor('body') %>
 
   <div class="container px-6 mx-auto grid">
-    <h2 class="my-6 text-2xl font-semibold text-gray-700">
-      <%= title %>
-    </h2>
+    <div class="flex justify-between items-center my-6">
+      <h2 class="text-2xl font-semibold text-gray-700">
+        <%= title %>
+      </h2>
+      <a href="/admin/promotions/categories"
+        class="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md shadow-sm flex items-center">
+        <i class="fas fa-cog mr-2"></i> 管理分類
+      </a>
+    </div>
 
     <!-- CTA -->
     <div

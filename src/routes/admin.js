@@ -205,11 +205,7 @@ router.post('/news/items/:id/delete', hasRole(['super_admin', 'admin', 'editor']
 const promotionImageUpload = require('../middleware/promotionImageUpload');
 
 router.get('/promotions', hasRole(['super_admin', 'admin']), (req, res) => {
-    res.render('admin/promotions/index', {
-        title: 'Promotion Management',
-        success_msg: req.flash('success_msg'),
-        error_msg: req.flash('error_msg')
-    });
+    res.redirect('/admin/promotions/items');
 });
 
 // Promotion Category Routes

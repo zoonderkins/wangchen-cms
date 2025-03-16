@@ -8,8 +8,14 @@
 
             <div class="bg-white shadow-md rounded-lg p-6 mb-8">
                 <!-- Page Content -->
-                <div class="prose max-w-none">
-                    <%- page.content %>
+                <div class="prose max-w-none quill-content">
+                    <div class="ql-container ql-snow" style="border: none;">
+                        <div class="ql-editor quill-content-wrapper" <% if ((currentLanguage==='en' &&
+                            page._content_en_is_delta) || (currentLanguage==='tw' && page._content_tw_is_delta)) { %>
+                            data-is-delta="true" <% } %> id="quill-content-<%= page.id %>-<%= currentLanguage %>">
+                                        <%- page.content %>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -123,7 +129,12 @@
         </div>
     </div>
 
+
+
     <%- contentFor('head') %>
+        <!-- Include Quill.js 2.0.3 styles for rendering -->
+        <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+
         <% if (page.metaTitle) { %>
             <title>
                 <%= page.metaTitle %>
@@ -135,7 +146,7 @@
                         <% if (page.metaKeywords) { %>
                             <meta name="keywords" content="<%= page.metaKeywords %>">
                             <% } %>
-                                <!-- Include Quill CSS for proper rendering of content -->
-                                <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"
-                                    rel="stylesheet">
-                                <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+
+                                <%- contentFor('scripts') %>
+                                    <!-- Include Quill.js for proper rendering -->
+                                    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.min.js"></script>

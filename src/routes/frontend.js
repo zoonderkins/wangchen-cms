@@ -656,12 +656,14 @@ router.get('/:language/page/:slug', async (req, res) => {
         
         // Process content if it's in Quill Delta format
         let processedContent = '';
+        let isContentDelta = false;
         try {
             // Check if content is in Quill Delta JSON format
             const contentObj = JSON.parse(page[contentField]);
             if (contentObj.ops) {
                 const converter = new QuillDeltaToHtmlConverter(contentObj.ops, {});
                 processedContent = converter.convert();
+                isContentDelta = true;
             }
         } catch (e) {
             // If not JSON or conversion fails, use content as is (HTML)
@@ -676,7 +678,9 @@ router.get('/:language/page/:slug', async (req, res) => {
             title: page[titleField] || page.title_en, // Fallback to English if current language not available
             metaTitle: page[metaTitleField] || page[titleField] || page.title_en,
             metaDescription: page[metaDescriptionField] || '',
-            metaKeywords: page[metaKeywordsField] || ''
+            metaKeywords: page[metaKeywordsField] || '',
+            _content_en_is_delta: language === 'en' ? isContentDelta : false,
+            _content_tw_is_delta: language === 'tw' ? isContentDelta : false
         };
         
         // Render the page

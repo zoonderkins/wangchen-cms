@@ -2,25 +2,25 @@
 
   <div class="container px-6 mx-auto grid">
     <h2 class="my-6 text-2xl font-semibold text-gray-700">
-      Edit Link
+      編輯連結
     </h2>
 
     <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
       <form action="/admin/links/<%= link.id %>" method="POST" enctype="multipart/form-data">
         <!-- Language Tabs -->
-        <%- include('../../partials/admin-language-switcher', { title: 'Content Language' , activeTab: 'en' }) %>
+        <%- include('../../partials/admin-language-switcher', { title: '內容語言' , activeTab: 'en' }) %>
 
           <!-- English Content -->
           <div class="language-content language-content-en">
             <!-- Title (English) -->
             <div class="mb-4">
               <label class="block text-sm font-medium text-gray-700" for="title_en">
-                Title (English) <span class="text-red-500">*</span>
+                標題 (英文) <span class="text-red-500">*</span>
               </label>
               <input
                 class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                type="text" id="title_en" name="title_en" placeholder="Enter the link title in English"
-                value="<%= link.title_en %>" required />
+                type="text" id="title_en" name="title_en" placeholder="請輸入連結標題（英文）" value="<%= link.title_en %>"
+                required />
             </div>
           </div>
 
@@ -43,18 +43,18 @@
             <!-- URL -->
             <div class="mb-4">
               <label class="block text-sm font-medium text-gray-700" for="url">
-                URL <span class="text-red-500">*</span>
+                網址 <span class="text-red-500">*</span>
               </label>
               <input
                 class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                 type="url" id="url" name="url" placeholder="https://example.com" value="<%= link.url %>" required />
-              <p class="mt-1 text-xs text-gray-500">Enter the full URL including http:// or https://</p>
+              <p class="mt-1 text-xs text-gray-500">請輸入完整網址，包含 http:// 或 https://</p>
             </div>
 
             <!-- Image Upload -->
             <div class="mb-4">
               <label class="block text-sm font-medium text-gray-700" for="image">
-                Image
+                圖片
               </label>
               <% if (link.image) { %>
                 <div class="mt-2 mb-2">
@@ -62,7 +62,7 @@
                   <div class="mt-2">
                     <label class="inline-flex items-center">
                       <input type="checkbox" name="removeImage" class="form-checkbox h-4 w-4 text-blue-600">
-                      <span class="ml-2 text-sm text-gray-700">Remove current image</span>
+                      <span class="ml-2 text-sm text-gray-700">移除目前圖片</span>
                     </label>
                   </div>
                 </div>
@@ -71,29 +71,28 @@
                     <input type="file" id="image" name="image" accept="image/*"
                       class="bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" />
                   </div>
-                  <p class="mt-1 text-xs text-gray-500">Recommended size: 800x600 pixels. Max file size: 2MB.</p>
+                  <p class="mt-1 text-xs text-gray-500">建議尺寸：800x600 像素。最大檔案大小：2MB。</p>
             </div>
 
             <!-- Order -->
             <div class="mb-4">
               <label class="block text-sm font-medium text-gray-700" for="order">
-                Display Order
+                顯示順序
               </label>
               <input
                 class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                type="number" id="order" name="order" placeholder="Enter display order (lower numbers appear first)"
-                value="<%= link.order %>" />
+                type="number" id="order" name="order" placeholder="請輸入顯示順序（數字越小排序越前）" value="<%= link.order %>" />
             </div>
 
             <!-- Submit Button -->
             <div class="flex justify-end mt-6">
               <a href="/admin/links"
                 class="px-4 py-2 mr-2 text-sm font-medium leading-5 text-gray-700 transition-colors duration-150 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline-gray">
-                Cancel
+                取消
               </a>
               <button type="submit"
                 class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue">
-                Update Link
+                更新連結
               </button>
             </div>
           </div>

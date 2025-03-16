@@ -1,21 +1,15 @@
 <%- contentFor('body') %>
 
     <div class="container px-6 mx-auto grid">
-        <h2 class="my-6 text-2xl font-semibold text-gray-700">
-            頁面管理
-        </h2>
-
-        <!-- CTA -->
-        <a href="/admin/pages/create"
-            class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-white bg-blue-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-blue">
-            <div class="flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                        clip-rule="evenodd" fill-rule="evenodd"></path>
-                </svg>
-                <span>建立新頁面</span>
-            </div>
-        </a>
+        <div class="flex justify-between items-center my-6">
+            <h2 class="text-2xl font-semibold text-gray-700">
+                頁面管理
+            </h2>
+            <a href="/admin/pages/create"
+                class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md shadow-sm flex items-center">
+                <i class="fas fa-plus mr-2"></i> 建立新頁面
+            </a>
+        </div>
 
         <!-- Flash messages -->
         <% if (success_msg && success_msg.length> 0) { %>

@@ -1,4 +1,3 @@
-// This is your Prisma schema file
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,31 +8,29 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  username  String    @unique
-  email     String    @unique
-  password  String
-  isActive  Boolean   @default(true)
-  lastLogin DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  roleId    Int
-
-  // Relations
+  id                  Int                  @id @default(autoincrement())
+  username            String               @unique
+  email               String               @unique
+  password            String
+  isActive            Boolean              @default(true)
+  lastLogin           DateTime?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  roleId              Int
+  aboutItems          AboutItem[]
+  banners             Banner[]
+  categoryPermissions CategoryPermission[] @relation("categoryPermissions")
+  downloads           Download[]
+  faqItems            FaqItem[]
+  FrontpageItem       FrontpageItem[]
+  uploads             Media[]              @relation("uploads")
+  newsItems           NewsItem[]
+  pageImages          PageImage[]          @relation("pageImageCreator")
+  pages               Page[]
+  platforms           Platform[]
+  promotionItems      PromotionItem[]
   role                Role                 @relation(fields: [roleId], references: [id])
   articles            Article[]
-  newsItems           NewsItem[]
-  promotionItems      PromotionItem[]
-  banners             Banner[]
-  platforms           Platform[] // Added relation for platforms
-  uploads             Media[]              @relation("uploads")
-  categoryPermissions CategoryPermission[] @relation("categoryPermissions")
-  pages               Page[]
-  faqItems            FaqItem[]
-  downloads           Download[]
-  aboutItems          AboutItem[]
-  FrontpageItem       FrontpageItem[]
-  pageImages          PageImage[]          @relation("pageImageCreator")
 
   @@index([roleId], map: "Users_roleId_fkey")
   @@map("Users")
@@ -46,154 +43,150 @@ model Role {
   permissions Json
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  // Relations
-  users User[]
+  users       User[]
 
   @@map("Roles")
 }
 
 model Article {
-  id                 Int       @id @default(autoincrement())
-  title_en           String // English title
-  title_tw           String // Traditional Chinese title
-  content_en         String    @db.LongText // English content
-  content_tw         String    @db.LongText // Traditional Chinese content
-  excerpt_en         String?   @db.Text // English excerpt
-  excerpt_tw         String?   @db.Text // Traditional Chinese excerpt
-  status             Status    @default(draft)
+  id                 Int              @id @default(autoincrement())
+  status             Status           @default(draft)
   publishedAt        DateTime?
-  metaTitle_en       String? // English meta title
-  metaTitle_tw       String? // Traditional Chinese meta title
-  metaDescription_en String?   @db.Text // English meta description
-  metaDescription_tw String?   @db.Text // Traditional Chinese meta description
-  metaKeywords_en    String? // English meta keywords
-  metaKeywords_tw    String? // Traditional Chinese meta keywords
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
   deletedAt          DateTime?
+  authorId           Int
+  categoryId         Int?
+  featuredImage      Int?
+  content_en         String           @db.LongText
+  content_tw         String           @db.LongText
+  excerpt_en         String?          @db.Text
+  excerpt_tw         String?          @db.Text
+  metaDescription_en String?          @db.Text
+  metaDescription_tw String?          @db.Text
+  metaKeywords_en    String?
+  metaKeywords_tw    String?
+  metaTitle_en       String?
+  metaTitle_tw       String?
+  title_en           String
+  title_tw           String
+  ArticleToMedia     ArticleToMedia[]
+  author             User             @relation(fields: [authorId], references: [id])
+  category           Category?        @relation(fields: [categoryId], references: [id])
+  featured           Media?           @relation("FeaturedImage", fields: [featuredImage], references: [id])
 
-  // Relations
-  author        User      @relation(fields: [authorId], references: [id])
-  authorId      Int
-  category      Category? @relation(fields: [categoryId], references: [id])
-  categoryId    Int?
-  featured      Media?    @relation("FeaturedImage", fields: [featuredImage], references: [id])
-  featuredImage Int?
-  media         Media[]   @relation("ArticleToMedia")
-
+  @@index([authorId], map: "articles_authorId_fkey")
+  @@index([categoryId], map: "articles_categoryId_fkey")
+  @@index([featuredImage], map: "articles_featuredImage_fkey")
   @@map("articles")
 }
 
 model Category {
-  id             Int       @id @default(autoincrement())
-  name_en        String // English name
-  name_tw        String // Traditional Chinese name
-  description_en String?   @db.Text // English description
-  description_tw String?   @db.Text // Traditional Chinese description
-  order          Int       @default(0)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  id             Int                  @id @default(autoincrement())
+  order          Int                  @default(0)
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
   deletedAt      DateTime?
+  parentId       Int?
+  description_en String?              @db.Text
+  description_tw String?              @db.Text
+  name_en        String
+  name_tw        String
+  parent         Category?            @relation("CategoryToCategory", fields: [parentId], references: [id])
+  children       Category[]           @relation("CategoryToCategory")
+  permissions    CategoryPermission[]
+  articles       Article[]
 
-  // Relations
-  parent      Category?            @relation("CategoryToCategory", fields: [parentId], references: [id])
-  parentId    Int?
-  children    Category[]           @relation("CategoryToCategory")
-  articles    Article[]
-  permissions CategoryPermission[]
-
+  @@index([parentId], map: "Categories_parentId_fkey")
   @@map("Categories")
 }
 
 model Media {
-  id           Int       @id @default(autoincrement())
-  filename     String
-  originalName String
-  mimeType     String
-  size         Int
-  path         String
-  alt_en       String? // English alt text
-  alt_tw       String? // Traditional Chinese alt text
-  caption_en   String?   @db.Text // English caption
-  caption_tw   String?   @db.Text // Traditional Chinese caption
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  deletedAt    DateTime?
-
-  // Relations
-  uploader           User      @relation("uploads", fields: [uploaderId], references: [id])
+  id                 Int              @id @default(autoincrement())
+  filename           String
+  originalName       String
+  mimeType           String
+  size               Int
+  path               String
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  deletedAt          DateTime?
   uploaderId         Int
-  featuredInArticles Article[] @relation("FeaturedImage")
-  articles           Article[] @relation("ArticleToMedia")
+  alt_en             String?
+  alt_tw             String?
+  caption_en         String?          @db.Text
+  caption_tw         String?          @db.Text
+  uploader           User             @relation("uploads", fields: [uploaderId], references: [id])
+  ArticleToMedia     ArticleToMedia[]
+  featuredInArticles Article[]        @relation("FeaturedImage")
 
+  @@index([uploaderId], map: "Media_uploaderId_fkey")
   @@map("Media")
 }
 
 model CategoryPermission {
-  id        Int      @id @default(autoincrement())
-  canView   Boolean  @default(true)
-  canCreate Boolean  @default(false)
-  canEdit   Boolean  @default(false)
-  canDelete Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  user       User     @relation("categoryPermissions", fields: [userId], references: [id])
+  id         Int      @id @default(autoincrement())
+  canView    Boolean  @default(true)
+  canCreate  Boolean  @default(false)
+  canEdit    Boolean  @default(false)
+  canDelete  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
   userId     Int
-  category   Category @relation(fields: [categoryId], references: [id])
   categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  user       User     @relation("categoryPermissions", fields: [userId], references: [id])
 
   @@unique([userId, categoryId])
+  @@index([categoryId], map: "CategoryPermissions_categoryId_fkey")
   @@map("CategoryPermissions")
 }
 
 model Banner {
   id             Int      @id @default(autoincrement())
-  title_en       String // English title
-  title_tw       String // Traditional Chinese title
-  description_en String?  @db.Text // English description
-  description_tw String?  @db.Text // Traditional Chinese description
   url            String?
   mediaPath      String
-  mediaType      String // "image" or "video"
+  mediaType      String
   isActive       Boolean  @default(false)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  createdBy      User     @relation(fields: [userId], references: [id])
   userId         Int
+  description_en String?  @db.Text
+  description_tw String?  @db.Text
+  title_en       String
+  title_tw       String
+  createdBy      User     @relation(fields: [userId], references: [id])
 
+  @@index([userId], map: "Banners_userId_fkey")
   @@map("Banners")
 }
 
 model Page {
-  id                 Int       @id @default(autoincrement())
-  title_en           String // English title
-  title_tw           String // Traditional Chinese title
-  slug               String    @unique
-  content_en         String    @db.LongText // English content
-  content_tw         String    @db.LongText // Traditional Chinese content
-  editorMode         String    @default("editor") // "editor" or "html"
-  status             Status    @default(draft)
-  showInNavigation   Boolean   @default(false)
+  id                 Int              @id @default(autoincrement())
+  slug               String           @unique
+  status             Status           @default(draft)
+  showInNavigation   Boolean          @default(false)
   navigationOrder    Int?
-  metaTitle_en       String? // English meta title
-  metaTitle_tw       String? // Traditional Chinese meta title
-  metaDescription_en String?   @db.Text // English meta description
-  metaDescription_tw String?   @db.Text // Traditional Chinese meta description
-  metaKeywords_en    String? // English meta keywords
-  metaKeywords_tw    String? // Traditional Chinese meta keywords
   publishedAt        DateTime?
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
   deletedAt          DateTime?
+  authorId           Int
+  editorMode         String           @default("editor")
+  content_en         String           @db.LongText
+  content_tw         String           @db.LongText
+  metaDescription_en String?          @db.Text
+  metaDescription_tw String?          @db.Text
+  metaKeywords_en    String?
+  metaKeywords_tw    String?
+  metaTitle_en       String?
+  metaTitle_tw       String?
+  title_en           String
+  title_tw           String
+  attachments        PageAttachment[]
+  author             User             @relation(fields: [authorId], references: [id])
 
-  // Relations
-  author      User             @relation(fields: [authorId], references: [id])
-  authorId    Int
-  attachments PageAttachment[]
-
+  @@index([authorId], map: "Pages_authorId_fkey")
   @@map("Pages")
 }
 
@@ -206,11 +199,10 @@ model PageAttachment {
   path         String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  pageId       Int
+  page         Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
 
-  // Relations
-  page   Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  pageId Int
-
+  @@index([pageId], map: "PageAttachments_pageId_fkey")
   @@map("PageAttachments")
 }
 
@@ -219,200 +211,185 @@ model PageImage {
   filename     String
   originalName String
   path         String
-  targetPage   String // The page this image is for (e.g., "index", "about", "contact")
+  targetPage   String
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  createdBy    User     @relation("pageImageCreator", fields: [userId], references: [id])
   userId       Int
+  createdBy    User     @relation("pageImageCreator", fields: [userId], references: [id])
 
+  @@index([userId], map: "PageImages_userId_fkey")
   @@map("PageImages")
 }
 
 model FaqCategory {
   id             Int       @id @default(autoincrement())
-  name_en        String // English name
-  name_tw        String // Traditional Chinese name
   slug           String    @unique
-  description_en String?   @db.Text // English description
-  description_tw String?   @db.Text // Traditional Chinese description
   order          Int       @default(0)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   deletedAt      DateTime?
-
-  // Relations
-  faqItems FaqItem[]
+  description_en String?   @db.Text
+  description_tw String?   @db.Text
+  name_en        String
+  name_tw        String
+  faqItems       FaqItem[]
 
   @@map("FaqCategories")
 }
 
 model FaqItem {
-  id         Int       @id @default(autoincrement())
-  title_en   String // English title
-  title_tw   String // Traditional Chinese title
-  content_en String    @db.LongText // English content
-  content_tw String    @db.LongText // Traditional Chinese content
-  order      Int       @default(0)
-  status     Status    @default(draft)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id         Int         @id @default(autoincrement())
+  order      Int         @default(0)
+  status     Status      @default(draft)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
   deletedAt  DateTime?
-
-  // Relations
-  category   FaqCategory @relation(fields: [categoryId], references: [id])
   categoryId Int
-  author     User        @relation(fields: [authorId], references: [id])
   authorId   Int
+  content_en String      @db.LongText
+  content_tw String      @db.LongText
+  title_en   String
+  title_tw   String
+  author     User        @relation(fields: [authorId], references: [id])
+  category   FaqCategory @relation(fields: [categoryId], references: [id])
 
+  @@index([authorId], map: "FaqItems_authorId_fkey")
+  @@index([categoryId], map: "FaqItems_categoryId_fkey")
   @@map("FaqItems")
 }
 
 model DownloadCategory {
-  id             Int       @id @default(autoincrement())
-  name_en        String // English name
-  name_tw        String // Traditional Chinese name
-  description_en String?   @db.Text // English description
-  description_tw String?   @db.Text // Traditional Chinese description
-  order          Int       @default(0)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  id             Int        @id @default(autoincrement())
+  order          Int        @default(0)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
   deletedAt      DateTime?
-
-  // Relations
-  downloads Download[]
+  description_en String?    @db.Text
+  description_tw String?    @db.Text
+  name_en        String
+  name_tw        String
+  downloads      Download[]
 
   @@map("DownloadCategories")
 }
 
 model Download {
-  id             Int       @id @default(autoincrement())
-  title_en       String // English title
-  title_tw       String // Traditional Chinese title
-  description_en String?   @db.Text // English description
-  description_tw String?   @db.Text // Traditional Chinese description
-  status         Status    @default(draft)
-  keywords_en    String? // English keywords
-  keywords_tw    String? // Traditional Chinese keywords
+  id             Int               @id @default(autoincrement())
   filename       String
   originalName   String
   mimeType       String
   size           Int
   path           String
-  downloadCount  Int       @default(0)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  status         Status            @default(draft)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
   deletedAt      DateTime?
+  authorId       Int
+  categoryId     Int?
+  downloadCount  Int               @default(0)
+  description_en String?           @db.Text
+  description_tw String?           @db.Text
+  keywords_en    String?
+  keywords_tw    String?
+  title_en       String
+  title_tw       String
+  author         User              @relation(fields: [authorId], references: [id])
+  category       DownloadCategory? @relation(fields: [categoryId], references: [id])
 
-  // Relations
-  author     User              @relation(fields: [authorId], references: [id])
-  authorId   Int
-  category   DownloadCategory? @relation(fields: [categoryId], references: [id])
-  categoryId Int?
-
+  @@index([authorId], map: "Downloads_authorId_fkey")
+  @@index([categoryId], map: "Downloads_categoryId_fkey")
   @@map("Downloads")
 }
 
-enum Status {
-  draft
-  published
-  archived
-}
-
 model NewsCategory {
-  id             Int       @id @default(autoincrement())
-  name_en        String // English name
-  name_tw        String // Traditional Chinese name
-  slug           String    @unique
-  description_en String?   @db.Text // English description
-  description_tw String?   @db.Text // Traditional Chinese description
-  order          Int       @default(0)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  id             Int        @id @default(autoincrement())
+  name_en        String
+  name_tw        String
+  slug           String     @unique
+  description_en String?    @db.Text
+  description_tw String?    @db.Text
+  order          Int        @default(0)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
   deletedAt      DateTime?
-
-  // Relations
-  newsItems NewsItem[]
+  newsItems      NewsItem[]
 
   @@map("NewsCategories")
 }
 
 model NewsItem {
-  id            Int       @id @default(autoincrement())
-  title_en      String // English title
-  title_tw      String // Traditional Chinese title
-  // content fields removed as they are no longer needed
-  summary_en    String?   @db.Text // English summary
-  summary_tw    String?   @db.Text // Traditional Chinese summary
-  slug          String    @unique // URL-friendly identifier
-  url           String? // External URL if applicable
-  imagePath     String? // Path to the uploaded image
-  publishedDate DateTime // Custom published date
-  status        Status    @default(draft)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id            Int          @id @default(autoincrement())
+  title_en      String
+  title_tw      String
+  summary_en    String?      @db.Text
+  summary_tw    String?      @db.Text
+  url           String?
+  imagePath     String?
+  publishedDate DateTime
+  status        Status       @default(draft)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
   deletedAt     DateTime?
+  categoryId    Int
+  authorId      Int
+  slug          String       @unique
+  author        User         @relation(fields: [authorId], references: [id])
+  category      NewsCategory @relation(fields: [categoryId], references: [id])
 
-  // Relations
-  category   NewsCategory @relation(fields: [categoryId], references: [id])
-  categoryId Int
-  author     User         @relation(fields: [authorId], references: [id])
-  authorId   Int
-
+  @@index([authorId], map: "NewsItems_authorId_fkey")
+  @@index([categoryId], map: "NewsItems_categoryId_fkey")
   @@map("NewsItems")
 }
 
 model PromotionCategory {
-  id             Int       @id @default(autoincrement())
-  name_en        String // English name
-  name_tw        String // Traditional Chinese name
-  slug           String    @unique
-  description_en String?   @db.Text // English description
-  description_tw String?   @db.Text // Traditional Chinese description
-  order          Int       @default(0)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  id             Int             @id @default(autoincrement())
+  name_en        String
+  name_tw        String
+  slug           String          @unique
+  description_en String?         @db.Text
+  description_tw String?         @db.Text
+  order          Int             @default(0)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   deletedAt      DateTime?
-
-  // Relations
   promotionItems PromotionItem[]
 
   @@map("PromotionCategories")
 }
 
 model PromotionItem {
-  id            Int       @id @default(autoincrement())
-  title_en      String // English title
-  title_tw      String // Traditional Chinese title
-  content_en    String    @db.LongText // English content
-  content_tw    String    @db.LongText // Traditional Chinese content
-  slug          String    @unique // URL-friendly identifier
-  url           String? // External URL if applicable
-  imagePath     String? // Path to the uploaded image
-  publishedDate DateTime // Custom published date
-  status        Status    @default(draft)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id            Int               @id @default(autoincrement())
+  title_en      String
+  title_tw      String
+  content_en    String            @db.LongText
+  content_tw    String            @db.LongText
+  slug          String            @unique
+  url           String?
+  imagePath     String?
+  publishedDate DateTime
+  status        Status            @default(draft)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
   deletedAt     DateTime?
+  categoryId    Int
+  authorId      Int
+  author        User              @relation(fields: [authorId], references: [id])
+  category      PromotionCategory @relation(fields: [categoryId], references: [id])
 
-  // Relations
-  category   PromotionCategory @relation(fields: [categoryId], references: [id])
-  categoryId Int
-  author     User              @relation(fields: [authorId], references: [id])
-  authorId   Int
-
+  @@index([authorId], map: "PromotionItems_authorId_fkey")
+  @@index([categoryId], map: "PromotionItems_categoryId_fkey")
   @@map("PromotionItems")
 }
 
-// About page items
 model AboutItem {
   id         Int       @id @default(autoincrement())
   title_en   String
   title_tw   String
-  type       String // "plain_text", "image", "bullet_points"
+  type       String
   content_en String    @db.LongText
   content_tw String    @db.LongText
-  imagePath  String? // For image type items
+  imagePath  String?
   order      Int       @default(0)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
@@ -424,7 +401,6 @@ model AboutItem {
   @@map("AboutItems")
 }
 
-// Contact categories
 model ContactCategory {
   id        Int       @id @default(autoincrement())
   name_en   String
@@ -438,7 +414,6 @@ model ContactCategory {
   @@map("ContactCategories")
 }
 
-// Contact submissions
 model Contact {
   id         Int              @id @default(autoincrement())
   name       String
@@ -447,12 +422,12 @@ model Contact {
   phone      String?
   message    String           @db.Text
   categoryId Int?
-  category   ContactCategory? @relation(fields: [categoryId], references: [id])
   agreeTerms Boolean          @default(false)
-  status     String           @default("pending") // pending, processed, archived
+  status     String           @default("pending")
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @updatedAt
   deletedAt  DateTime?
+  category   ContactCategory? @relation(fields: [categoryId], references: [id])
 
   @@index([categoryId], map: "Contacts_categoryId_fkey")
   @@map("Contacts")
@@ -472,55 +447,50 @@ model Link {
   @@map("Links")
 }
 
-// Platform categories
 model PlatformCategory {
-  id             Int       @id @default(autoincrement())
-  name_en        String // English name
-  name_tw        String // Traditional Chinese name
-  description_en String? // English description
-  description_tw String? // Traditional Chinese description
-  slug           String    @unique // URL-friendly identifier
-  order          Int       @default(0) // Display order
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  id             Int        @id @default(autoincrement())
+  name_en        String
+  name_tw        String
+  description_en String?
+  description_tw String?
+  slug           String     @unique
+  order          Int        @default(0)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
   deletedAt      DateTime?
-
-  // Relations
-  platforms Platform[] // Platforms in this category
+  platforms      Platform[]
 
   @@map("PlatformCategories")
 }
 
-// Platform items
 model Platform {
-  id            Int       @id @default(autoincrement())
-  title_en      String    @db.VarChar(255)
-  title_tw      String    @db.VarChar(255)
-  content_en    String?   @db.Text
-  content_tw    String?   @db.Text
-  slug          String    @db.VarChar(255)
-  url           String?   @db.VarChar(255)
-  imagePath     String?   @db.VarChar(255)
-  publishedDate DateTime  @default(now())
-  status        Status    @default(draft)
-  type          String    @default("plain_text") // plain_text, image, attachment_only, partners
-  order         Int       @default(0)
-  partnersData  String?   @db.Text // JSON data for partners type: { suppliers: { companies_en: [], companies_tw: [] }, buyers: { companies_en: [], companies_tw: [] } }
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id            Int                  @id @default(autoincrement())
+  title_en      String               @db.VarChar(255)
+  title_tw      String               @db.VarChar(255)
+  content_en    String?              @db.Text
+  content_tw    String?              @db.Text
+  slug          String               @db.VarChar(255)
+  url           String?              @db.VarChar(255)
+  imagePath     String?              @db.VarChar(255)
+  publishedDate DateTime             @default(now())
+  status        Status               @default(draft)
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
   deletedAt     DateTime?
+  categoryId    Int?
+  authorId      Int?
+  order         Int                  @default(0)
+  type          String               @default("plain_text")
+  partnersData  String?              @db.Text
+  attachments   PlatformAttachment[]
+  author        User?                @relation(fields: [authorId], references: [id])
+  category      PlatformCategory?    @relation(fields: [categoryId], references: [id])
 
-  // Relations
-  category    PlatformCategory?    @relation(fields: [categoryId], references: [id])
-  categoryId  Int?
-  author      User?                @relation(fields: [authorId], references: [id])
-  authorId    Int?
-  attachments PlatformAttachment[]
-
+  @@index([authorId], map: "Platforms_authorId_fkey")
+  @@index([categoryId], map: "Platforms_categoryId_fkey")
   @@map("Platforms")
 }
 
-// Platform attachments
 model PlatformAttachment {
   id             Int       @id @default(autoincrement())
   filename       String
@@ -528,74 +498,67 @@ model PlatformAttachment {
   mimeType       String
   size           Int
   path           String
-  title_en       String? // English title
-  title_tw       String? // Traditional Chinese title
-  description_en String?   @db.Text // English description
-  description_tw String?   @db.Text // Traditional Chinese description
+  title_en       String?
+  title_tw       String?
+  description_en String?   @db.Text
+  description_tw String?   @db.Text
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+  platformId     Int
   deletedAt      DateTime?
+  platform       Platform  @relation(fields: [platformId], references: [id], onDelete: Cascade)
 
-  // Relations
-  platform   Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
-  platformId Int
-
+  @@index([platformId], map: "PlatformAttachments_platformId_fkey")
   @@map("PlatformAttachments")
 }
 
-// Frontpage categories
 model FrontpageCategory {
-  id        Int       @id @default(autoincrement())
-  name_tw   String // Traditional Chinese name
-  order     Int       @default(0)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
-  // Relations
+  id             Int             @id @default(autoincrement())
+  name_tw        String
+  order          Int             @default(0)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  deletedAt      DateTime?
   frontpageItems FrontpageItem[]
 
   @@map("FrontpageCategories")
 }
 
-// Frontpage items
 model FrontpageItem {
-  id         Int       @id @default(autoincrement())
-  title_tw   String // Traditional Chinese title
-  title_en   String // English title
-  content_tw String?   @db.LongText // Traditional Chinese content
-  content_en String?   @db.LongText // English content
-  type       String // "plain_text" or "picture"
-  order      Int       @default(0)
-  status     Status    @default(draft)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id         Int                @id @default(autoincrement())
+  title_tw   String
+  title_en   String
+  content_tw String?            @db.LongText
+  content_en String?            @db.LongText
+  type       String
+  order      Int                @default(0)
+  status     Status             @default(draft)
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
   deletedAt  DateTime?
-
-  // Relations
-  category   FrontpageCategory @relation(fields: [categoryId], references: [id])
-  categoryId Int
-  author     User              @relation(fields: [authorId], references: [id])
+  categoryId Int?
   authorId   Int
   images     FrontpageImage[]
+  author     User               @relation(fields: [authorId], references: [id])
+  category   FrontpageCategory? @relation(fields: [categoryId], references: [id])
 
+  @@index([authorId], map: "FrontpageItems_authorId_fkey")
+  @@index([categoryId], map: "FrontpageItems_categoryId_fkey")
   @@map("FrontpageItems")
 }
 
-// Frontpage images
 model FrontpageImage {
-  id           Int      @id @default(autoincrement())
+  id           Int           @id @default(autoincrement())
   filename     String
   originalName String
   path         String
-  order        Int      @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  order        Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  itemId       Int
+  item         FrontpageItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
 
-  // Relations
-  item   FrontpageItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
-  itemId Int
-
+  @@index([itemId], map: "FrontpageImages_itemId_fkey")
   @@map("FrontpageImages")
 }
 
@@ -610,4 +573,21 @@ model VisitCounterHistory {
   count     Int      @default(0)
   date      DateTime @default(now())
   createdAt DateTime @default(now())
+}
+
+model ArticleToMedia {
+  A        Int
+  B        Int
+  articles Article @relation(fields: [A], references: [id], onDelete: Cascade)
+  Media    Media   @relation(fields: [B], references: [id], onDelete: Cascade)
+
+  @@unique([A, B], map: "_ArticleToMedia_AB_unique")
+  @@index([B], map: "_ArticleToMedia_B_index")
+  @@map("_ArticleToMedia")
+}
+
+enum Status {
+  draft
+  published
+  archived
 }
