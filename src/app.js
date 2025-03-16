@@ -8,7 +8,7 @@ const prisma = require('./lib/prisma');
 const expressLayouts = require('express-ejs-layouts');
 const methodOverride = require('method-override');
 const cookieParser = require('cookie-parser');
-const { setLocals } = require('./middleware/viewMiddleware');
+const { setLocals, ensureVisitCount } = require('./middleware/viewMiddleware');
 const { languageMiddleware } = require('./middleware/languageMiddleware');
 const { languageRouteMiddleware, addLanguageHelpers } = require('./middleware/languageRouteMiddleware');
 const { attachPageImage } = require('./middleware/pageImageMiddleware');
@@ -78,6 +78,9 @@ app.use(attachPageImage);
 
 // Track website visits
 app.use(trackVisits);
+
+// Ensure visitCount is defined for all views
+app.use(ensureVisitCount);
 
 // Global variables
 app.use((req, res, next) => {
