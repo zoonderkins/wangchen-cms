@@ -22,11 +22,22 @@
                         </div>
                     </div>
                     <% } else if (item.type==='image' ) { %>
-                        <% if (item.imagePath) { %>
-                            <div class="rounded-lg overflow-hidden">
-                                <img src="<%= item.imagePath %>"
-                                    alt="<%= currentLanguage === 'en' ? item.title_en : item.title_tw %>"
-                                    class="w-full object-cover">
+                        <% if (item.imagePath || item.imagePathDesktop || item.imagePathTablet || item.imagePathMobile) { %>
+                            <div class="mt-4 flex justify-center">
+                                <picture>
+                                    <% if (item.imagePathMobile) { %>
+                                        <source media="(max-width: 640px)" srcset="<%= item.imagePathMobile %>">
+                                        <% } %>
+                                            <% if (item.imagePathTablet) { %>
+                                                <source media="(max-width: 1024px)" srcset="<%= item.imagePathTablet %>">
+                                                <% } %>
+                                                    <% if (item.imagePathDesktop) { %>
+                                                        <source media="(min-width: 1025px)" srcset="<%= item.imagePathDesktop %>">
+                                                        <% } %>
+                                                            <img src="<%= item.imagePathDesktop || item.imagePathTablet || item.imagePathMobile || item.imagePath %>"
+                                                                alt="<%= currentLanguage === 'en' ? item.title_en : item.title_tw %>"
+                                                                class="max-w-full h-auto rounded-lg shadow-sm">
+                                </picture>
                             </div>
                             <div class="mt-4 text-center text-gray-700 quill-content">
                                 <div class="ql-container ql-snow" style="border: none;">

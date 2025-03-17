@@ -18,7 +18,18 @@ const storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, 'about-' + uniqueSuffix + path.extname(file.originalname));
+        let suffix = '';
+        
+        // Add appropriate suffix based on field name
+        if (file.fieldname === 'imageDesktop') {
+            suffix = '-desktop';
+        } else if (file.fieldname === 'imageTablet') {
+            suffix = '-tablet';
+        } else if (file.fieldname === 'imageMobile') {
+            suffix = '-mobile';
+        }
+        
+        cb(null, 'about-' + uniqueSuffix + suffix + path.extname(file.originalname));
     }
 });
 
@@ -35,7 +46,11 @@ exports.upload = multer({
         }
         cb(null, true);
     }
-}).single('image');
+}).fields([
+    { name: 'imageDesktop', maxCount: 1 },
+    { name: 'imageTablet', maxCount: 1 },
+    { name: 'imageMobile', maxCount: 1 }
+]);
 
 // Admin: List all about items
 exports.listItems = async (req, res) => {
@@ -97,10 +112,33 @@ exports.createItem = async (req, res) => {
             processedContentTw = processedContentTw.substring(0, MAX_CONTENT_LENGTH);
         }
         
-        // Handle image upload
+        // Handle image uploads
         let imagePath = null;
-        if (req.file && type === 'image') {
-            imagePath = `/uploads/about/${req.file.filename}`;
+        let imagePathDesktop = null;
+        let imagePathTablet = null;
+        let imagePathMobile = null;
+        
+        if (req.files && type === 'image') {
+            // Handle desktop image
+            if (req.files.imageDesktop && req.files.imageDesktop.length > 0) {
+                imagePathDesktop = `/uploads/about/${req.files.imageDesktop[0].filename}`;
+                // Set the main image path to desktop image if available
+                imagePath = imagePathDesktop;
+            }
+            
+            // Handle tablet image
+            if (req.files.imageTablet && req.files.imageTablet.length > 0) {
+                imagePathTablet = `/uploads/about/${req.files.imageTablet[0].filename}`;
+                // If no desktop image, use tablet as main image
+                if (!imagePath) imagePath = imagePathTablet;
+            }
+            
+            // Handle mobile image
+            if (req.files.imageMobile && req.files.imageMobile.length > 0) {
+                imagePathMobile = `/uploads/about/${req.files.imageMobile[0].filename}`;
+                // If no desktop or tablet image, use mobile as main image
+                if (!imagePath) imagePath = imagePathMobile;
+            }
         }
         
         // Create the about item
@@ -112,6 +150,9 @@ exports.createItem = async (req, res) => {
                 content_en: processedContentEn,
                 content_tw: processedContentTw,
                 imagePath,
+                imagePathDesktop,
+                imagePathTablet,
+                imagePathMobile,
                 order: order ? parseInt(order) : 0,
                 authorId: req.session.user.id
             }
@@ -215,32 +256,94 @@ exports.updateItem = async (req, res) => {
             processedContentTw = processedContentTw.substring(0, MAX_CONTENT_LENGTH);
         }
         
-        // Handle image upload or removal
+        // Handle image uploads or removal
         let imagePath = existingItem.imagePath;
+        let imagePathDesktop = existingItem.imagePathDesktop;
+        let imagePathTablet = existingItem.imagePathTablet;
+        let imagePathMobile = existingItem.imagePathMobile;
         
-        // Remove existing image if type changed from image
-        if (type !== 'image' && existingItem.imagePath) {
-            const filePath = path.join(__dirname, '../../public', existingItem.imagePath);
-            try {
-                await unlinkAsync(filePath);
-            } catch (err) {
-                logger.error(`Failed to delete image file: ${err.message}`);
-            }
+        // Remove existing images if type changed from image
+        if (type !== 'image') {
+            // Helper function to delete file if it exists
+            const deleteFileIfExists = async (filePath) => {
+                if (filePath) {
+                    const fullPath = path.join(__dirname, '../../public', filePath);
+                    try {
+                        await unlinkAsync(fullPath);
+                    } catch (err) {
+                        logger.error(`Failed to delete image file: ${err.message}`);
+                    }
+                }
+            };
+            
+            // Delete all image files
+            await deleteFileIfExists(existingItem.imagePath);
+            await deleteFileIfExists(existingItem.imagePathDesktop);
+            await deleteFileIfExists(existingItem.imagePathTablet);
+            await deleteFileIfExists(existingItem.imagePathMobile);
+            
+            // Reset all image paths
             imagePath = null;
+            imagePathDesktop = null;
+            imagePathTablet = null;
+            imagePathMobile = null;
         }
         
-        // Add new image if uploaded
-        if (req.file && type === 'image') {
-            // Remove old image if exists
-            if (existingItem.imagePath) {
-                const filePath = path.join(__dirname, '../../public', existingItem.imagePath);
-                try {
-                    await unlinkAsync(filePath);
-                } catch (err) {
-                    logger.error(`Failed to delete old image file: ${err.message}`);
+        // Add new images if uploaded
+        if (req.files && type === 'image') {
+            // Helper function to delete file if it exists
+            const deleteFileIfExists = async (filePath) => {
+                if (filePath) {
+                    const fullPath = path.join(__dirname, '../../public', filePath);
+                    try {
+                        await unlinkAsync(fullPath);
+                    } catch (err) {
+                        logger.error(`Failed to delete image file: ${err.message}`);
+                    }
+                }
+            };
+            
+            // Handle desktop image
+            if (req.files.imageDesktop && req.files.imageDesktop.length > 0) {
+                // Delete old desktop image if exists
+                await deleteFileIfExists(existingItem.imagePathDesktop);
+                
+                // Set new desktop image path
+                imagePathDesktop = `/uploads/about/${req.files.imageDesktop[0].filename}`;
+                
+                // Update main image path if it was previously desktop or not set
+                if (!imagePath || imagePath === existingItem.imagePathDesktop) {
+                    imagePath = imagePathDesktop;
                 }
             }
-            imagePath = `/uploads/about/${req.file.filename}`;
+            
+            // Handle tablet image
+            if (req.files.imageTablet && req.files.imageTablet.length > 0) {
+                // Delete old tablet image if exists
+                await deleteFileIfExists(existingItem.imagePathTablet);
+                
+                // Set new tablet image path
+                imagePathTablet = `/uploads/about/${req.files.imageTablet[0].filename}`;
+                
+                // Update main image path if it was previously tablet or not set
+                if (!imagePath || imagePath === existingItem.imagePathTablet) {
+                    imagePath = imagePathTablet;
+                }
+            }
+            
+            // Handle mobile image
+            if (req.files.imageMobile && req.files.imageMobile.length > 0) {
+                // Delete old mobile image if exists
+                await deleteFileIfExists(existingItem.imagePathMobile);
+                
+                // Set new mobile image path
+                imagePathMobile = `/uploads/about/${req.files.imageMobile[0].filename}`;
+                
+                // Update main image path if it was previously mobile or not set
+                if (!imagePath || imagePath === existingItem.imagePathMobile) {
+                    imagePath = imagePathMobile;
+                }
+            }
         }
         
         // Update the about item
@@ -253,6 +356,9 @@ exports.updateItem = async (req, res) => {
                 content_en: processedContentEn,
                 content_tw: processedContentTw,
                 imagePath,
+                imagePathDesktop,
+                imagePathTablet,
+                imagePathMobile,
                 order: order ? parseInt(order) : 0,
                 updatedAt: new Date()
             }
@@ -272,7 +378,7 @@ exports.deleteItem = async (req, res) => {
     try {
         const { id } = req.params;
         
-        // Get the item to check if it has an image
+        // Get the item to check if it has images
         const item = await prisma.aboutItem.findUnique({
             where: { id: parseInt(id) }
         });
@@ -290,15 +396,23 @@ exports.deleteItem = async (req, res) => {
             }
         });
         
-        // Delete the image file if exists
-        if (item.imagePath) {
-            const filePath = path.join(__dirname, '../../public', item.imagePath);
-            try {
-                await unlinkAsync(filePath);
-            } catch (err) {
-                logger.error(`Failed to delete image file: ${err.message}`);
+        // Helper function to delete file if it exists
+        const deleteFileIfExists = async (filePath) => {
+            if (filePath) {
+                const fullPath = path.join(__dirname, '../../public', filePath);
+                try {
+                    await unlinkAsync(fullPath);
+                } catch (err) {
+                    logger.error(`Failed to delete image file: ${err.message}`);
+                }
             }
-        }
+        };
+        
+        // Delete all image files
+        await deleteFileIfExists(item.imagePath);
+        await deleteFileIfExists(item.imagePathDesktop);
+        await deleteFileIfExists(item.imagePathTablet);
+        await deleteFileIfExists(item.imagePathMobile);
         
         req.flash('success_msg', 'About item deleted successfully');
         res.redirect('/admin/about');

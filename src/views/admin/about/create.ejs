@@ -52,21 +52,74 @@
           <label class="block text-gray-700 text-sm font-bold mb-2" for="image">
             圖片 <span class="text-red-500">*</span>
           </label>
-          <div class="border-2 border-gray-300 border-dashed rounded-lg p-6 bg-gray-50">
-            <div class="flex flex-col items-center justify-center mb-4">
-              <svg class="w-8 h-8 mb-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                viewBox="0 0 20 16">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-              </svg>
-              <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">點擊選擇圖片</span></p>
-              <p class="text-xs text-gray-500 mb-4">PNG、JPG、GIF（最大 5MB）</p>
+
+          <!-- Desktop Image -->
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="imageDesktop">
+              桌面版圖片 <span class="text-red-500">*</span>
+            </label>
+            <div class="border-2 border-gray-300 border-dashed rounded-lg p-6 bg-gray-50">
+              <div class="flex flex-col items-center justify-center mb-4">
+                <svg class="w-8 h-8 mb-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                  fill="none" viewBox="0 0 20 16">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                </svg>
+                <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">點擊選擇桌面版圖片</span></p>
+                <p class="text-xs text-gray-500 mb-4">PNG、JPG、GIF（最大 5MB）</p>
+              </div>
+              <input
+                class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+                id="imageDesktop" name="imageDesktop" type="file" accept="image/*">
             </div>
-            <input
-              class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
-              id="image" name="image" type="file" accept="image/*">
+            <p class="text-gray-600 text-xs italic mt-1">建議尺寸：1920x1080像素。最大檔案大小：5MB。</p>
           </div>
-          <p class="text-gray-600 text-xs italic mt-1">建議尺寸：800x600像素或更大。最大檔案大小：5MB。</p>
+
+          <!-- Tablet Image -->
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="imageTablet">
+              平板版圖片 <span class="text-red-500">*</span>
+            </label>
+            <div class="border-2 border-gray-300 border-dashed rounded-lg p-6 bg-gray-50">
+              <div class="flex flex-col items-center justify-center mb-4">
+                <svg class="w-8 h-8 mb-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                  fill="none" viewBox="0 0 20 16">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                </svg>
+                <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">點擊選擇平板版圖片</span></p>
+                <p class="text-xs text-gray-500 mb-4">PNG、JPG、GIF（最大 5MB）</p>
+              </div>
+              <input
+                class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+                id="imageTablet" name="imageTablet" type="file" accept="image/*">
+            </div>
+            <p class="text-gray-600 text-xs italic mt-1">建議尺寸：768x1024像素。最大檔案大小：5MB。</p>
+          </div>
+
+          <!-- Mobile Image -->
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="imageMobile">
+              手機版圖片 <span class="text-red-500">*</span>
+            </label>
+            <div class="border-2 border-gray-300 border-dashed rounded-lg p-6 bg-gray-50">
+              <div class="flex flex-col items-center justify-center mb-4">
+                <svg class="w-8 h-8 mb-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                  fill="none" viewBox="0 0 20 16">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                </svg>
+                <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">點擊選擇手機版圖片</span></p>
+                <p class="text-xs text-gray-500 mb-4">PNG、JPG、GIF（最大 5MB）</p>
+              </div>
+              <input
+                class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+                id="imageMobile" name="imageMobile" type="file" accept="image/*">
+            </div>
+            <p class="text-gray-600 text-xs italic mt-1">建議尺寸：375x667像素。最大檔案大小：5MB。</p>
+          </div>
+
+          <input type="hidden" name="image" id="image">
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -228,10 +281,13 @@
           // Form validation before submit
           $('#aboutForm').on('submit', function (e) {
             // If type is image and no image selected
-            if ($('#type').val() === 'image' && !$('#image').val()) {
-              e.preventDefault();
-              alert('請選擇一個圖片文件。');
-              return false;
+            if ($('#type').val() === 'image') {
+              // Check if at least one image is selected
+              if (!$('#imageDesktop').val() && !$('#imageTablet').val() && !$('#imageMobile').val()) {
+                e.preventDefault();
+                alert('請至少選擇一個圖片文件（桌面版、平板版或手機版）。');
+                return false;
+              }
             }
 
             // Update hidden inputs with Quill content
