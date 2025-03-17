@@ -107,7 +107,7 @@ router.get('/:language', async (req, res, next) => {
             orderBy: {
                 order: 'asc'
             },
-            take: 6 // Limit to 6 links for the homepage
+            take: 12 // Limit to 6 links for the homepage
         });
 
         // Get frontpage items
