@@ -88,6 +88,25 @@
     </header>
 
     <!-- Main Content -->
+    <!-- 每一頁 Page Banner 共用的 -->
+    <% if (typeof pageImage !=='undefined' && pageImage) { %>
+        <div class="page-banner w-full">
+            <picture>
+                <% if (pageImage.pathMobile) { %>
+                    <source media="(max-width: 640px)" srcset="<%= pageImage.pathMobile %>">
+                    <% } %>
+                        <% if (pageImage.pathTablet) { %>
+                            <source media="(max-width: 1024px)" srcset="<%= pageImage.pathTablet %>">
+                            <% } %>
+                                <% if (pageImage.pathDesktop) { %>
+                                    <source media="(min-width: 1025px)" srcset="<%= pageImage.pathDesktop %>">
+                                    <% } %>
+                                        <img src="<%= pageImage.responsivePath || pageImage.path %>" alt="Page Banner"
+                                            class="w-full object-cover" style="max-height: 300px;">
+            </picture>
+        </div>
+        <% } %>
+
     <main class="">
         <!-- Flash Messages -->
         <% if (typeof success_msg !=='undefined' && success_msg.length> 0) { %>
