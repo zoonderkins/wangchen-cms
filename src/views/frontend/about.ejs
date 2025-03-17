@@ -1,35 +1,5 @@
 <%- contentFor('body') %>
-    <section class="relative">
-        <picture class="block w-full h-full">
-            <source media="(min-width: 1024px)" srcset="../images/desktop/aboutbg_desktop.png">
-            <source media="(min-width: 640px)" srcset="../images/tablet/aboutbg_tablet.png">
-            <img class="w-full h-full object-cover" src="../images/mobile/aboutbg_mobile.png" alt="響應式圖片">
-        </picture>
-        <div class="absolute inset-0 flex flex-col justify-center px-6 sm:px-16 lg:px-32">
-            <h2 class="text-white">
-                <%= title %>
-            </h2>
-            <p class="text-white">/ <%= currentLanguage==='en' ? 'Home' : '首頁' %> - <%= title %> /</p>
-        </div>
-    </section>
-
-    <!-- Navigation Tabs -->
-    <!-- <nav class="flex my-4 px-6 sm:px-16 lg:px-32 overflow-auto">
-        <% if (items && items.length> 0) { %>
-            <% items.forEach(function(item) { %>
-                <a href="#<%= item.title_en %>"
-                    class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow">
-                    <%= currentLanguage==='en' ? item.title_en : item.title_tw %>
-                </a>
-                <% }); %>
-                    <% } %>
-    </nav> -->
-
-    <!-- Divider -->
-    <!-- <div class="w-screen relative" style="left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
-        <hr class="border-t-2 border-gray-200 mb-16">
-    </div> -->
-
+    
     <% if (items && items.length> 0) { %>
         <% items.forEach(function(item) { %>
             <section id="<%= item.title_en %>" class="px-6 py-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">

@@ -1,16 +1,4 @@
 <%- contentFor('body') %>
-<section class="relative">
-    <picture class="block w-full h-full">
-        <source media="(min-width: 1024px)" srcset="../images/desktop/promotionbg_desktop.png">
-        <source media="(min-width: 640px)" srcset="../images/tablet/promotionbg_tablet.png">
-        <img class="w-full h-full object-cover" src="../images/mobile/promotionbg_mobile.png" alt="響應式圖片">
-    </picture>
-    <div class="absolute inset-0 flex flex-col justify-center px-6 sm:px-16 lg:px-32">
-        <h1 class="h2 text-white"><%= title %></h1>
-        <p class="text-white">/ <%= currentLanguage==='en' ? 'Home' : '首頁' %> - <%= title %> /</p>
-    </div>
-</section>
-
 <!-- Navigation Tabs -->
 <!-- 添加箭頭按鈕的導航欄容器 -->
 <div class="relative flex items-center my-4 px-6 sm:px-16 lg:px-32">

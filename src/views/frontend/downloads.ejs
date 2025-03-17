@@ -1,23 +1,7 @@
 <%- contentFor('body') %>
-    <section class="relative">
-        <picture class="block w-full h-full">
-            <source media="(min-width: 1024px)" srcset="../images/desktop/download_desktop.png">
-            <source media="(min-width: 640px)" srcset="../images/tablet/download_tablet.png">
-            <img class="w-full h-full object-cover" src="../images/mobile/download_mobile.png" alt="響應式圖片">
-        </picture>
-        <div class="absolute inset-0 flex flex-col justify-center px-6 sm:px-16 lg:px-32">
-            <h1 class="h2 text-white"><%= title %></h1>
-            <p class="text-white">/ <%= currentLanguage==='en' ? 'Home' : '首頁' %> - <%= title %> /</p>
-        </div>
-    </section>
-
-    <!-- Divider -->
-    <div class="w-screen relative" style="left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
-        <hr class="border-t-2 border-gray-200 mb-16">
-    </div>
 
     <!-- Download categories -->
-    <section id="aboutplatform" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32">
+    <section id="aboutplatform" class="px-6 pt-16 pb-8 sm:px-16 sm:pb-16 lg:px-32">
         <div class="rounded-3xl border border-custom-green px-4 py-8 mb-12 sm:px-16">
             <h2 class="h4 text-center mb-4 sm:mb-8 text-custom-blue"><%= language === 'en' ? 'Download Categories' : '下載分類' %></h2>
 

@@ -1,15 +1,5 @@
 <%- contentFor('body') %>
-    <section class="relative">
-        <picture class="block w-full h-full">
-            <source media="(min-width: 1024px)" srcset="../images/desktop/news_desktop.png">
-            <source media="(min-width: 640px)" srcset="../images/tablet/news_tablet.png">
-            <img class="w-full h-full object-cover" src="../images/mobile/news_mobile.png" alt="響應式圖片">
-        </picture>
-        <div class="absolute inset-0 flex flex-col justify-center px-6 sm:px-16 lg:px-32">
-            <h1 class="h2 text-white"><%= title %></h1>
-            <p class="text-white">/ <%= currentLanguage==='en' ? 'Home' : '首頁' %> - <%= title %> /</p>
-        </div>
-    </section>
+    
     <!-- Navigation Tabs -->
     <nav class="flex my-4 px-6 sm:px-16 lg:px-32 overflow-auto">
         <a href="#" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow">
