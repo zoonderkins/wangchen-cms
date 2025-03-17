@@ -180,7 +180,7 @@
                                     外部連結
                                     <span class="text-gray-500 text-xs">(選填)</span>
                                 </label>
-                                <input type="url" id="url" name="url" value="<%= newsItem ? newsItem.url : '' %>"
+                                <input type="text" id="url" name="url" value="<%= newsItem ? newsItem.url : '' %>"
                                     class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <p class="text-xs text-gray-500 mt-1">若提供此連結，點擊消息項目將會重新導向至此網址</p>
                             </div>
@@ -243,6 +243,23 @@
                 });
             });
 
-            // No form submission handler needed as we're using standard form submission
+            // URL handling - clean up URL if needed
+            const urlInput = document.getElementById('url');
+            if (urlInput) {
+                document.getElementById('newsForm').addEventListener('submit', function (e) {
+                    // Only process if there's a URL value
+                    if (urlInput.value.trim()) {
+                        // If URL starts with @ symbol, remove it
+                        if (urlInput.value.startsWith('@')) {
+                            urlInput.value = urlInput.value.substring(1);
+                        }
+
+                        // Make sure URL has http:// or https:// prefix if not already present
+                        if (!urlInput.value.match(/^https?:\/\//i) && !urlInput.value.startsWith('/')) {
+                            urlInput.value = 'https://' + urlInput.value;
+                        }
+                    }
+                });
+            }
         });
     </script>
