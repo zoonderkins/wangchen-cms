@@ -1,0 +1,86 @@
+/* Platform Embed Styles for Frontend */
+
+.platform-embed-container {
+  margin: 2rem 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background-color: #f8fafc;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.platform-embed-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.platform-embed-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.platform-embed-header h4 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.platform-embed-category {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6366f1;
+  background-color: #eef2ff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.platform-embed-body {
+  padding: 1.5rem;
+  color: #334155;
+}
+
+.platform-embed-image {
+  padding: 0 1.5rem 1.5rem;
+}
+
+.platform-embed-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.25rem;
+}
+
+.platform-embed-error {
+  padding: 2rem;
+  text-align: center;
+  color: #ef4444;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.platform-embed-error-icon {
+  font-size: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .platform-embed-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .platform-embed-body {
+    padding: 1rem;
+  }
+  
+  .platform-embed-image {
+    padding: 0 1rem 1rem;
+  }
+} 
