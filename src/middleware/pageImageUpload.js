@@ -1,6 +1,7 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const logger = require('../config/logger');
 
 // Set up storage for uploaded files
 const storage = multer.diskStorage({
@@ -32,13 +33,21 @@ const upload = multer({
             cb(new Error('只允許上傳圖片檔案'), false);
         }
     }
-}).single('image');
+});
+
+// Define fields for multiple file uploads
+const uploadFields = upload.fields([
+    { name: 'imageDesktop', maxCount: 1 },
+    { name: 'imageTablet', maxCount: 1 },
+    { name: 'imageMobile', maxCount: 1 }
+]);
 
 // Export middleware
 module.exports = (req, res, next) => {
-    upload(req, res, (err) => {
+    uploadFields(req, res, (err) => {
         if (err instanceof multer.MulterError) {
             // A Multer error occurred when uploading
+            logger.error(`Multer upload error: ${err.message}`, err);
             req.flash('error_msg', `上傳錯誤: ${err.message}`);
             if (req.params.id) {
                 return res.redirect(`/admin/pageImages/edit/${req.params.id}`);
@@ -46,6 +55,7 @@ module.exports = (req, res, next) => {
             return res.redirect('/admin/pageImages/create');
         } else if (err) {
             // An unknown error occurred
+            logger.error(`Unknown upload error: ${err.message}`, err);
             req.flash('error_msg', `上傳錯誤: ${err.message}`);
             if (req.params.id) {
                 return res.redirect(`/admin/pageImages/edit/${req.params.id}`);

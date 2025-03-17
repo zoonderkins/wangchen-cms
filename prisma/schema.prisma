@@ -143,22 +143,22 @@ model CategoryPermission {
 }
 
 model Banner {
-  id             Int      @id @default(autoincrement())
-  url            String?
-  mediaPath      String
-  mediaType      String
+  id               Int      @id @default(autoincrement())
+  url              String?
+  mediaPath        String
+  mediaType        String
+  isActive         Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  userId           Int
+  description_en   String?  @db.Text
+  description_tw   String?  @db.Text
+  title_en         String
+  title_tw         String
   mediaPathDesktop String?
-  mediaPathTablet  String?
   mediaPathMobile  String?
-  isActive       Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  userId         Int
-  description_en String?  @db.Text
-  description_tw String?  @db.Text
-  title_en       String
-  title_tw       String
-  createdBy      User     @relation(fields: [userId], references: [id])
+  mediaPathTablet  String?
+  createdBy        User     @relation(fields: [userId], references: [id])
 
   @@index([userId], map: "Banners_userId_fkey")
   @@map("Banners")
@@ -210,25 +210,25 @@ model PageAttachment {
 }
 
 model PageImage {
-  id           Int      @id @default(autoincrement())
-  filename     String
-  originalName String
-  path         String
+  id                  Int      @id @default(autoincrement())
+  filename            String
+  originalName        String
+  path                String
+  targetPage          String
+  isActive            Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  userId              Int
   filenameDesktop     String?
+  filenameMobile      String?
+  filenameTablet      String?
   originalNameDesktop String?
+  originalNameMobile  String?
+  originalNameTablet  String?
   pathDesktop         String?
-  filenameTablet     String?
-  originalNameTablet String?
-  pathTablet         String?
-  filenameMobile     String?
-  originalNameMobile String?
-  pathMobile         String?
-  targetPage   String
-  isActive     Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  userId       Int
-  createdBy    User     @relation("pageImageCreator", fields: [userId], references: [id])
+  pathMobile          String?
+  pathTablet          String?
+  createdBy           User     @relation("pageImageCreator", fields: [userId], references: [id])
 
   @@index([userId], map: "PageImages_userId_fkey")
   @@map("PageImages")
