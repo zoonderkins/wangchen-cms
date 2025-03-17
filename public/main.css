@@ -150,7 +150,7 @@ main {
     opacity: 0.5;
 }
 .splide__pagination {
-    bottom: 3rem;
+    bottom: 6rem;
 }
 .splide__slide,
 .slide {
@@ -262,6 +262,10 @@ main {
         font-size: 1rem;
     }
 
+    /* custom splide */
+    .splide__pagination {
+        bottom: 4rem;
+    }
     .banner-title {
         width: 50vw;
     }
