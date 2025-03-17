@@ -211,6 +211,15 @@ model PageImage {
   filename     String
   originalName String
   path         String
+  filenameDesktop     String?
+  originalNameDesktop String?
+  pathDesktop         String?
+  filenameTablet     String?
+  originalNameTablet String?
+  pathTablet         String?
+  filenameMobile     String?
+  originalNameMobile String?
+  pathMobile         String?
   targetPage   String
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())

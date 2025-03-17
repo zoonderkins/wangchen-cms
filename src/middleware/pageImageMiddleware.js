@@ -37,6 +37,26 @@ const attachPageImage = async (req, res, next) => {
         // Log whether we found an image
         if (pageImage) {
             logger.info(`Found page image for ${currentPage}: ${pageImage.path}`);
+            
+            // Add device detection for responsive images
+            // This is a simple implementation - for more advanced detection, 
+            // consider using a library like 'mobile-detect' or 'express-device'
+            const userAgent = req.headers['user-agent'] || '';
+            
+            // Determine which image to use based on user agent
+            if (pageImage.pathMobile && /mobile|android|iphone|ipod|blackberry|opera mini/i.test(userAgent)) {
+                pageImage.responsivePath = pageImage.pathMobile;
+                logger.info(`Using mobile image for ${currentPage}: ${pageImage.pathMobile}`);
+            } else if (pageImage.pathTablet && /ipad|tablet|playbook|silk/i.test(userAgent)) {
+                pageImage.responsivePath = pageImage.pathTablet;
+                logger.info(`Using tablet image for ${currentPage}: ${pageImage.pathTablet}`);
+            } else if (pageImage.pathDesktop) {
+                pageImage.responsivePath = pageImage.pathDesktop;
+                logger.info(`Using desktop image for ${currentPage}: ${pageImage.pathDesktop}`);
+            } else {
+                pageImage.responsivePath = pageImage.path;
+                logger.info(`Using default image for ${currentPage}: ${pageImage.path}`);
+            }
         } else {
             logger.info(`No page image found for ${currentPage}`);
         }

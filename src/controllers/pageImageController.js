@@ -70,13 +70,17 @@ exports.renderCreateForm = async (req, res) => {
 // Create new page image
 exports.createPageImage = async (req, res) => {
     try {
-        if (!req.file) {
-            req.flash('error_msg', '請選擇一個圖片檔案');
+        if (!req.files || !req.files.imageDesktop || !req.files.imageTablet || !req.files.imageMobile) {
+            req.flash('error_msg', '請選擇所有必要的圖片檔案 (桌面版、平板版和手機版)');
             return res.redirect('/admin/pageImages/create');
         }
 
         const { targetPage, isActive } = req.body;
-        const { filename, originalname } = req.file;
+        
+        // Get file information for each image type
+        const desktopImage = req.files.imageDesktop[0];
+        const tabletImage = req.files.imageTablet[0];
+        const mobileImage = req.files.imageMobile[0];
         
         // Check if there's already an image for this page
         const existingImage = await prisma.pageImage.findFirst({
@@ -84,20 +88,42 @@ exports.createPageImage = async (req, res) => {
         });
 
         if (existingImage) {
-            // Delete the old image file
+            // Delete the old image files
             try {
                 await fs.unlink(path.join(process.cwd(), 'public', 'uploads', 'pageimages', existingImage.filename));
+                if (existingImage.filenameDesktop) {
+                    await fs.unlink(path.join(process.cwd(), 'public', 'uploads', 'pageimages', existingImage.filenameDesktop));
+                }
+                if (existingImage.filenameTablet) {
+                    await fs.unlink(path.join(process.cwd(), 'public', 'uploads', 'pageimages', existingImage.filenameTablet));
+                }
+                if (existingImage.filenameMobile) {
+                    await fs.unlink(path.join(process.cwd(), 'public', 'uploads', 'pageimages', existingImage.filenameMobile));
+                }
             } catch (err) {
-                logger.warn(`Could not delete old page image file: ${existingImage.filename}`, err);
+                logger.warn(`Could not delete old page image files: ${err.message}`, err);
             }
             
             // Update the existing record
             await prisma.pageImage.update({
                 where: { id: existingImage.id },
                 data: {
-                    filename,
-                    originalName: originalname,
-                    path: `/uploads/pageimages/${filename}`,
+                    // Main image (desktop as default)
+                    filename: desktopImage.filename,
+                    originalName: desktopImage.originalname,
+                    path: `/uploads/pageimages/${desktopImage.filename}`,
+                    // Desktop specific
+                    filenameDesktop: desktopImage.filename,
+                    originalNameDesktop: desktopImage.originalname,
+                    pathDesktop: `/uploads/pageimages/${desktopImage.filename}`,
+                    // Tablet specific
+                    filenameTablet: tabletImage.filename,
+                    originalNameTablet: tabletImage.originalname,
+                    pathTablet: `/uploads/pageimages/${tabletImage.filename}`,
+                    // Mobile specific
+                    filenameMobile: mobileImage.filename,
+                    originalNameMobile: mobileImage.originalname,
+                    pathMobile: `/uploads/pageimages/${mobileImage.filename}`,
                     isActive: isActive === 'true',
                     updatedAt: new Date()
                 }
@@ -108,9 +134,22 @@ exports.createPageImage = async (req, res) => {
             // Create a new record
             await prisma.pageImage.create({
                 data: {
-                    filename,
-                    originalName: originalname,
-                    path: `/uploads/pageimages/${filename}`,
+                    // Main image (desktop as default)
+                    filename: desktopImage.filename,
+                    originalName: desktopImage.originalname,
+                    path: `/uploads/pageimages/${desktopImage.filename}`,
+                    // Desktop specific
+                    filenameDesktop: desktopImage.filename,
+                    originalNameDesktop: desktopImage.originalname,
+                    pathDesktop: `/uploads/pageimages/${desktopImage.filename}`,
+                    // Tablet specific
+                    filenameTablet: tabletImage.filename,
+                    originalNameTablet: tabletImage.originalname,
+                    pathTablet: `/uploads/pageimages/${tabletImage.filename}`,
+                    // Mobile specific
+                    filenameMobile: mobileImage.filename,
+                    originalNameMobile: mobileImage.originalname,
+                    pathMobile: `/uploads/pageimages/${mobileImage.filename}`,
                     targetPage,
                     isActive: isActive === 'true',
                     userId: req.session.user.id
@@ -201,20 +240,66 @@ exports.updatePageImage = async (req, res) => {
             updatedAt: new Date()
         };
         
-        // If a new file is uploaded
-        if (req.file) {
-            // Delete the old image file
-            try {
-                await fs.unlink(path.join(process.cwd(), 'public', 'uploads', 'pageimages', pageImage.filename));
-            } catch (err) {
-                logger.warn(`Could not delete old page image file: ${pageImage.filename}`, err);
+        // If new files are uploaded
+        if (req.files) {
+            // Update desktop image if provided
+            if (req.files.imageDesktop) {
+                const desktopImage = req.files.imageDesktop[0];
+                // Delete the old image file
+                try {
+                    if (pageImage.filenameDesktop) {
+                        await fs.unlink(path.join(process.cwd(), 'public', 'uploads', 'pageimages', pageImage.filenameDesktop));
+                    }
+                } catch (err) {
+                    logger.warn(`Could not delete old desktop image file: ${pageImage.filenameDesktop}`, err);
+                }
+                
+                // Update with new file info
+                updateData.filenameDesktop = desktopImage.filename;
+                updateData.originalNameDesktop = desktopImage.originalname;
+                updateData.pathDesktop = `/uploads/pageimages/${desktopImage.filename}`;
+                
+                // Also update the main image if it's the desktop one
+                updateData.filename = desktopImage.filename;
+                updateData.originalName = desktopImage.originalname;
+                updateData.path = `/uploads/pageimages/${desktopImage.filename}`;
             }
             
-            // Update with new file info
-            const { filename, originalname } = req.file;
-            updateData.filename = filename;
-            updateData.originalName = originalname;
-            updateData.path = `/uploads/pageimages/${filename}`;
+            // Update tablet image if provided
+            if (req.files.imageTablet) {
+                const tabletImage = req.files.imageTablet[0];
+                // Delete the old image file
+                try {
+                    if (pageImage.filenameTablet) {
+                        await fs.unlink(path.join(process.cwd(), 'public', 'uploads', 'pageimages', pageImage.filenameTablet));
+                    }
+                } catch (err) {
+                    logger.warn(`Could not delete old tablet image file: ${pageImage.filenameTablet}`, err);
+                }
+                
+                // Update with new file info
+                updateData.filenameTablet = tabletImage.filename;
+                updateData.originalNameTablet = tabletImage.originalname;
+                updateData.pathTablet = `/uploads/pageimages/${tabletImage.filename}`;
+            }
+            
+            // Update mobile image if provided
+            if (req.files.imageMobile) {
+                const mobileImage = req.files.imageMobile[0];
+                // Delete the old image file
+                try {
+                    if (pageImage.filenameMobile) {
+                        await fs.unlink(path.join(process.cwd(), 'public', 'uploads', 'pageimages', pageImage.filenameMobile));
+                    }
+                } catch (err) {
+                    logger.warn(`Could not delete old mobile image file: ${pageImage.filenameMobile}`, err);
+                }
+                
+                // Update with new file info
+                updateData.filenameMobile = mobileImage.filename;
+                updateData.originalNameMobile = mobileImage.originalname;
+                updateData.pathMobile = `/uploads/pageimages/${mobileImage.filename}`;
+            }
         }
         
         // Update the record

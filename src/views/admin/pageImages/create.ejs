@@ -28,13 +28,33 @@
                 </div>
 
                 <div class="mb-6">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="image">
-                        橫幅圖片 <span class="text-red-500">*</span>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="imageDesktop">
+                        桌面版橫幅圖片 <span class="text-red-500">*</span>
                     </label>
                     <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="image" name="image" type="file" accept="image/*" required>
-                    <p class="text-gray-600 text-xs italic mt-1">上傳寬度為全頁面寬度的圖片，高度不超過300px</p>
+                        id="imageDesktop" name="imageDesktop" type="file" accept="image/*" required>
+                    <p class="text-gray-600 text-xs italic mt-1">上傳適合桌面顯示的圖片 (建議寬度: 1920px)</p>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="imageTablet">
+                        平板版橫幅圖片 <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="imageTablet" name="imageTablet" type="file" accept="image/*" required>
+                    <p class="text-gray-600 text-xs italic mt-1">上傳適合平板顯示的圖片 (建議寬度: 1024px)</p>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="imageMobile">
+                        手機版橫幅圖片 <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="imageMobile" name="imageMobile" type="file" accept="image/*" required>
+                    <p class="text-gray-600 text-xs italic mt-1">上傳適合手機顯示的圖片 (建議寬度: 640px)</p>
                 </div>
 
                 <div class="mb-6">

@@ -26,26 +26,76 @@
                     <p class="text-gray-600 text-xs italic mt-1">選擇要顯示此橫幅的頁面</p>
                 </div>
 
+                <!-- Desktop Image -->
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">
-                        當前圖片
+                        當前桌面版圖片
                     </label>
                     <div class="border p-2 rounded">
-                        <img src="<%= pageImage.path %>" alt="<%= pageImage.targetPage %>" class="max-h-48 w-auto">
+                        <img src="<%= pageImage.pathDesktop || pageImage.path %>"
+                            alt="<%= pageImage.targetPage %> - 桌面版" class="max-h-48 w-auto">
                         <p class="text-sm text-gray-600 mt-1">
-                            <%= pageImage.originalName %>
+                            <%= pageImage.originalNameDesktop || pageImage.originalName %>
                         </p>
                     </div>
                 </div>
 
                 <div class="mb-6">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="image">
-                        更換圖片 (選填)
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="imageDesktop">
+                        更換桌面版圖片 (選填)
                     </label>
                     <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="image" name="image" type="file" accept="image/*">
-                    <p class="text-gray-600 text-xs italic mt-1">上傳寬度為全頁面寬度的圖片，高度不超過300px</p>
+                        id="imageDesktop" name="imageDesktop" type="file" accept="image/*">
+                    <p class="text-gray-600 text-xs italic mt-1">上傳適合桌面顯示的圖片 (建議寬度: 1920px)</p>
+                </div>
+
+                <!-- Tablet Image -->
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                        當前平板版圖片
+                    </label>
+                    <div class="border p-2 rounded">
+                        <img src="<%= pageImage.pathTablet || pageImage.path %>" alt="<%= pageImage.targetPage %> - 平板版"
+                            class="max-h-48 w-auto">
+                        <p class="text-sm text-gray-600 mt-1">
+                            <%= pageImage.originalNameTablet || pageImage.originalName %>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="imageTablet">
+                        更換平板版圖片 (選填)
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="imageTablet" name="imageTablet" type="file" accept="image/*">
+                    <p class="text-gray-600 text-xs italic mt-1">上傳適合平板顯示的圖片 (建議寬度: 1024px)</p>
+                </div>
+
+                <!-- Mobile Image -->
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                        當前手機版圖片
+                    </label>
+                    <div class="border p-2 rounded">
+                        <img src="<%= pageImage.pathMobile || pageImage.path %>" alt="<%= pageImage.targetPage %> - 手機版"
+                            class="max-h-48 w-auto">
+                        <p class="text-sm text-gray-600 mt-1">
+                            <%= pageImage.originalNameMobile || pageImage.originalName %>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="imageMobile">
+                        更換手機版圖片 (選填)
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="imageMobile" name="imageMobile" type="file" accept="image/*">
+                    <p class="text-gray-600 text-xs italic mt-1">上傳適合手機顯示的圖片 (建議寬度: 640px)</p>
                 </div>
 
                 <div class="mb-6">
