@@ -46,16 +46,36 @@ exports.createBanner = async (req, res) => {
     try {
         const { title_en, title_tw, description_en, description_tw, url, isActive } = req.body;
         
-        if (!req.file) {
-            req.flash('error_msg', 'Please upload a media file');
+        if (!req.files || !req.files.media) {
+            req.flash('error_msg', 'Please upload a main media file');
             return res.redirect('/admin/banners/create');
         }
 
+        // Get the main media file
+        const mainMedia = req.files.media[0];
+        
         // Determine if it's an image or video based on mimetype
-        const mediaType = req.file.mimetype.startsWith('image/') ? 'image' : 'video';
+        const mediaType = mainMedia.mimetype.startsWith('image/') ? 'image' : 'video';
         
         // Store the path relative to the public directory for proper URL generation
-        const relativePath = '/uploads/banners/' + path.basename(req.file.path);
+        const relativePath = '/uploads/banners/' + path.basename(mainMedia.path);
+        
+        // Get responsive image paths if they exist
+        let mediaPathDesktop = null;
+        let mediaPathTablet = null;
+        let mediaPathMobile = null;
+        
+        if (req.files.mediaDesktop) {
+            mediaPathDesktop = '/uploads/banners/' + path.basename(req.files.mediaDesktop[0].path);
+        }
+        
+        if (req.files.mediaTablet) {
+            mediaPathTablet = '/uploads/banners/' + path.basename(req.files.mediaTablet[0].path);
+        }
+        
+        if (req.files.mediaMobile) {
+            mediaPathMobile = '/uploads/banners/' + path.basename(req.files.mediaMobile[0].path);
+        }
         
         await prisma.banner.create({
             data: {
@@ -66,6 +86,9 @@ exports.createBanner = async (req, res) => {
                 url,
                 mediaPath: relativePath,
                 mediaType,
+                mediaPathDesktop,
+                mediaPathTablet,
+                mediaPathMobile,
                 isActive: isActive === 'true',
                 userId: req.session.user.id
             }
@@ -130,8 +153,8 @@ exports.updateBanner = async (req, res) => {
             isActive: isActive === 'true'
         };
 
-        // If a new file is uploaded, update the media info
-        if (req.file) {
+        // If a new main file is uploaded, update the media info
+        if (req.files && req.files.media) {
             // Delete the old file if it exists
             try {
                 // The actual physical path on disk
@@ -150,9 +173,64 @@ exports.updateBanner = async (req, res) => {
             }
 
             // Update with new file info
-            const relativePath = '/uploads/banners/' + path.basename(req.file.path);
+            const mainMedia = req.files.media[0];
+            const relativePath = '/uploads/banners/' + path.basename(mainMedia.path);
             updateData.mediaPath = relativePath;
-            updateData.mediaType = req.file.mimetype.startsWith('image/') ? 'image' : 'video';
+            updateData.mediaType = mainMedia.mimetype.startsWith('image/') ? 'image' : 'video';
+        }
+        
+        // Update desktop image if provided
+        if (req.files && req.files.mediaDesktop) {
+            // Delete the old file if it exists
+            if (banner.mediaPathDesktop) {
+                try {
+                    const oldFilePath = path.join(process.cwd(), 'public', banner.mediaPathDesktop);
+                    if (fs.existsSync(oldFilePath)) {
+                        await unlinkAsync(oldFilePath);
+                    }
+                } catch (err) {
+                    logger.error(`Error deleting old desktop banner file: ${banner.mediaPathDesktop}`, err);
+                }
+            }
+            
+            // Update with new file info
+            updateData.mediaPathDesktop = '/uploads/banners/' + path.basename(req.files.mediaDesktop[0].path);
+        }
+        
+        // Update tablet image if provided
+        if (req.files && req.files.mediaTablet) {
+            // Delete the old file if it exists
+            if (banner.mediaPathTablet) {
+                try {
+                    const oldFilePath = path.join(process.cwd(), 'public', banner.mediaPathTablet);
+                    if (fs.existsSync(oldFilePath)) {
+                        await unlinkAsync(oldFilePath);
+                    }
+                } catch (err) {
+                    logger.error(`Error deleting old tablet banner file: ${banner.mediaPathTablet}`, err);
+                }
+            }
+            
+            // Update with new file info
+            updateData.mediaPathTablet = '/uploads/banners/' + path.basename(req.files.mediaTablet[0].path);
+        }
+        
+        // Update mobile image if provided
+        if (req.files && req.files.mediaMobile) {
+            // Delete the old file if it exists
+            if (banner.mediaPathMobile) {
+                try {
+                    const oldFilePath = path.join(process.cwd(), 'public', banner.mediaPathMobile);
+                    if (fs.existsSync(oldFilePath)) {
+                        await unlinkAsync(oldFilePath);
+                    }
+                } catch (err) {
+                    logger.error(`Error deleting old mobile banner file: ${banner.mediaPathMobile}`, err);
+                }
+            }
+            
+            // Update with new file info
+            updateData.mediaPathMobile = '/uploads/banners/' + path.basename(req.files.mediaMobile[0].path);
         }
 
         await prisma.banner.update({
@@ -214,7 +292,7 @@ exports.deleteBanner = async (req, res) => {
             return res.redirect('/admin/banners');
         }
 
-        // Delete the file
+        // Delete the main file
         try {
             // The actual physical path on disk
             const filePath = path.join(process.cwd(), 'public', banner.mediaPath);
@@ -230,6 +308,40 @@ exports.deleteBanner = async (req, res) => {
         } catch (err) {
             logger.error(`Error deleting banner file: ${banner.mediaPath}`, err);
             // Continue with banner deletion even if file deletion fails
+        }
+        
+        // Delete responsive image files if they exist
+        if (banner.mediaPathDesktop) {
+            try {
+                const filePath = path.join(process.cwd(), 'public', banner.mediaPathDesktop);
+                if (fs.existsSync(filePath)) {
+                    await unlinkAsync(filePath);
+                }
+            } catch (err) {
+                logger.error(`Error deleting desktop banner file: ${banner.mediaPathDesktop}`, err);
+            }
+        }
+        
+        if (banner.mediaPathTablet) {
+            try {
+                const filePath = path.join(process.cwd(), 'public', banner.mediaPathTablet);
+                if (fs.existsSync(filePath)) {
+                    await unlinkAsync(filePath);
+                }
+            } catch (err) {
+                logger.error(`Error deleting tablet banner file: ${banner.mediaPathTablet}`, err);
+            }
+        }
+        
+        if (banner.mediaPathMobile) {
+            try {
+                const filePath = path.join(process.cwd(), 'public', banner.mediaPathMobile);
+                if (fs.existsSync(filePath)) {
+                    await unlinkAsync(filePath);
+                }
+            } catch (err) {
+                logger.error(`Error deleting mobile banner file: ${banner.mediaPathMobile}`, err);
+            }
         }
 
         // Delete the banner record

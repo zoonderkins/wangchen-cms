@@ -71,12 +71,42 @@
 
                         <div class="mb-4">
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="media">
-                                媒體 (圖片或影片) <span class="text-red-500">*</span>
+                                主要媒體 (圖片或影片) <span class="text-red-500">*</span>
                             </label>
                             <input
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 id="media" name="media" type="file" accept="image/*,video/mp4" required>
-                            <p class="text-gray-600 text-xs italic mt-1">上傳圖片或MP4影片 (最大20MB)</p>
+                            <p class="text-gray-600 text-xs italic mt-1">上傳圖片或MP4影片 (最大20MB)，此為預設顯示的媒體</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="mediaDesktop">
+                                桌面版圖片 (選填)
+                            </label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="mediaDesktop" name="mediaDesktop" type="file" accept="image/*">
+                            <p class="text-gray-600 text-xs italic mt-1">上傳適合桌面顯示的圖片 (建議寬度: 1920px)</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="mediaTablet">
+                                平板版圖片 (選填)
+                            </label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="mediaTablet" name="mediaTablet" type="file" accept="image/*">
+                            <p class="text-gray-600 text-xs italic mt-1">上傳適合平板顯示的圖片 (建議寬度: 1024px)</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="mediaMobile">
+                                手機版圖片 (選填)
+                            </label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="mediaMobile" name="mediaMobile" type="file" accept="image/*">
+                            <p class="text-gray-600 text-xs italic mt-1">上傳適合手機顯示的圖片 (建議寬度: 640px)</p>
                         </div>
 
                         <div class="mb-6">

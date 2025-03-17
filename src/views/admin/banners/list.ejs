@@ -44,16 +44,45 @@
                         <% banners.forEach(banner=> { %>
                             <tr class="hover:bg-neutral-50 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex-shrink-0 h-20 w-32 overflow-hidden rounded-md">
-                                        <% if (banner.mediaType==='image' ) { %>
-                                            <img src="<%= banner.mediaPath %>" alt="<%= banner.title_en %>"
-                                                class="h-20 w-32 object-cover">
-                                            <% } else { %>
-                                                <video class="h-20 w-32 object-cover" controls>
-                                                    <source src="<%= banner.mediaPath %>" type="video/mp4">
-                                                    您的瀏覽器不支援影片標籤。
-                                                </video>
-                                                <% } %>
+                                    <div class="flex-shrink-0 overflow-hidden rounded-md">
+                                        <div class="mb-2">
+                                            <span class="text-xs font-semibold">主要媒體:</span>
+                                            <% if (banner.mediaType==='image' ) { %>
+                                                <img src="<%= banner.mediaPath %>" alt="<%= banner.title_en %>"
+                                                    class="h-20 w-32 object-cover">
+                                                <% } else { %>
+                                                    <video class="h-20 w-32 object-cover" controls>
+                                                        <source src="<%= banner.mediaPath %>" type="video/mp4">
+                                                        您的瀏覽器不支援影片標籤。
+                                                    </video>
+                                                    <% } %>
+                                        </div>
+
+                                        <% if (banner.mediaPathDesktop) { %>
+                                            <div class="mb-2">
+                                                <span class="text-xs font-semibold">桌面版:</span>
+                                                <img src="<%= banner.mediaPathDesktop %>"
+                                                    alt="<%= banner.title_en %> - 桌面版" class="h-16 w-28 object-cover">
+                                            </div>
+                                            <% } %>
+
+                                                <% if (banner.mediaPathTablet) { %>
+                                                    <div class="mb-2">
+                                                        <span class="text-xs font-semibold">平板版:</span>
+                                                        <img src="<%= banner.mediaPathTablet %>"
+                                                            alt="<%= banner.title_en %> - 平板版"
+                                                            class="h-16 w-28 object-cover">
+                                                    </div>
+                                                    <% } %>
+
+                                                        <% if (banner.mediaPathMobile) { %>
+                                                            <div>
+                                                                <span class="text-xs font-semibold">手機版:</span>
+                                                                <img src="<%= banner.mediaPathMobile %>"
+                                                                    alt="<%= banner.title_en %> - 手機版"
+                                                                    class="h-16 w-28 object-cover">
+                                                            </div>
+                                                            <% } %>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">

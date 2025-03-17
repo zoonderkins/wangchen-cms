@@ -10,7 +10,7 @@
 
         <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <div class="mb-6">
-                <h2 class="text-lg font-semibold mb-2">目前媒體</h2>
+                <h2 class="text-lg font-semibold mb-2">目前主要媒體</h2>
                 <div class="border rounded p-4 flex justify-center">
                     <% if (banner.mediaType==='image' ) { %>
                         <img src="<%= banner.mediaPath %>" alt="<%= banner.title_en %>" class="max-h-64 object-contain">
@@ -23,113 +23,190 @@
                 </div>
             </div>
 
-            <form action="/admin/banners/<%= banner.id %>" method="POST" enctype="multipart/form-data">
-                <!-- Language Tabs -->
-                <%- include('../../partials/admin-language-switcher', { title: '內容語言' , activeTab: 'en' }) %>
-
-                    <!-- English Content -->
-                    <div class="language-content language-content-en">
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="title_en">
-                                Title (English) <span class="text-red-500">*</span>
-                            </label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="title_en" name="title_en" type="text" value="<%= banner.title_en %>"
-                                placeholder="Enter banner title in English" required>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="description_en">
-                                Description (English)
-                            </label>
-                            <textarea
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="description_en" name="description_en" rows="3"
-                                placeholder="Enter banner description in English"><%= banner.description_en || '' %></textarea>
-                        </div>
+            <% if (banner.mediaPathDesktop) { %>
+                <div class="mb-6">
+                    <h2 class="text-lg font-semibold mb-2">目前桌面版圖片</h2>
+                    <div class="border rounded p-4 flex justify-center">
+                        <img src="<%= banner.mediaPathDesktop %>" alt="<%= banner.title_en %> - 桌面版"
+                            class="max-h-64 object-contain">
                     </div>
+                </div>
+                <% } %>
 
-                    <!-- Traditional Chinese Content -->
-                    <div class="language-content language-content-tw hidden">
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="title_tw">
-                                標題 (中文) <span class="text-red-500">*</span>
-                            </label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="title_tw" name="title_tw" type="text" value="<%= banner.title_tw %>"
-                                placeholder="請輸入橫幅標題" required>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="description_tw">
-                                描述 (中文)
-                            </label>
-                            <textarea
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="description_tw" name="description_tw" rows="3"
-                                placeholder="請輸入橫幅描述"><%= banner.description_tw || '' %></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Common Fields -->
-                    <div class="border-t pt-4 mt-4">
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="url">
-                                網址 (選填)
-                            </label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="url" name="url" type="url" value="<%= banner.url || '' %>"
-                                placeholder="https://example.com">
-                            <p class="text-gray-600 text-xs italic mt-1">用戶點擊橫幅時的重定向連結</p>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="media">
-                                更換媒體 (圖片或影片)
-                            </label>
-                            <input
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="media" name="media" type="file" accept="image/*,video/mp4">
-                            <p class="text-gray-600 text-xs italic mt-1">上傳新的圖片或MP4影片 (最大20MB)。
-                                留空以保留目前媒體。</p>
-                        </div>
-
+                    <% if (banner.mediaPathTablet) { %>
                         <div class="mb-6">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">
-                                狀態
-                            </label>
-                            <div class="flex items-center">
-                                <input type="radio" id="active" name="isActive" value="true" class="mr-2"
-                                    <%=banner.isActive ? 'checked' : '' %>>
-                                <label for="active" class="mr-4">啟用</label>
-
-                                <input type="radio" id="inactive" name="isActive" value="false" class="mr-2"
-                                    <%=!banner.isActive ? 'checked' : '' %>>
-                                <label for="inactive">停用</label>
+                            <h2 class="text-lg font-semibold mb-2">目前平板版圖片</h2>
+                            <div class="border rounded p-4 flex justify-center">
+                                <img src="<%= banner.mediaPathTablet %>" alt="<%= banner.title_en %> - 平板版"
+                                    class="max-h-64 object-contain">
                             </div>
-                            <p class="text-gray-600 text-xs italic mt-1">啟用的橫幅將顯示在首頁</p>
                         </div>
+                        <% } %>
 
-                        <div class="flex items-center justify-between">
-                            <button
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                type="submit">
-                                更新橫幅
-                            </button>
-                        </div>
-                    </div>
-            </form>
+                            <% if (banner.mediaPathMobile) { %>
+                                <div class="mb-6">
+                                    <h2 class="text-lg font-semibold mb-2">目前手機版圖片</h2>
+                                    <div class="border rounded p-4 flex justify-center">
+                                        <img src="<%= banner.mediaPathMobile %>" alt="<%= banner.title_en %> - 手機版"
+                                            class="max-h-64 object-contain">
+                                    </div>
+                                </div>
+                                <% } %>
 
-            <form action="/admin/banners/<%= banner.id %>" method="POST" class="inline mt-4"
-                onsubmit="return confirm('您確定要刪除此橫幅嗎？');">
-                <input type="hidden" name="_method" value="DELETE">
-                <button type="submit"
-                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    刪除橫幅
-                </button>
-            </form>
+                                    <form action="/admin/banners/<%= banner.id %>" method="POST"
+                                        enctype="multipart/form-data">
+                                        <!-- Language Tabs -->
+                                        <%- include('../../partials/admin-language-switcher', { title: '內容語言' ,
+                                            activeTab: 'en' }) %>
+
+                                            <!-- English Content -->
+                                            <div class="language-content language-content-en">
+                                                <div class="mb-4">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                                                        for="title_en">
+                                                        Title (English) <span class="text-red-500">*</span>
+                                                    </label>
+                                                    <input
+                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                        id="title_en" name="title_en" type="text"
+                                                        value="<%= banner.title_en %>"
+                                                        placeholder="Enter banner title in English" required>
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                                                        for="description_en">
+                                                        Description (English)
+                                                    </label>
+                                                    <textarea
+                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                        id="description_en" name="description_en" rows="3"
+                                                        placeholder="Enter banner description in English"><%= banner.description_en || '' %></textarea>
+                                                </div>
+                                            </div>
+
+                                            <!-- Traditional Chinese Content -->
+                                            <div class="language-content language-content-tw hidden">
+                                                <div class="mb-4">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                                                        for="title_tw">
+                                                        標題 (中文) <span class="text-red-500">*</span>
+                                                    </label>
+                                                    <input
+                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                        id="title_tw" name="title_tw" type="text"
+                                                        value="<%= banner.title_tw %>" placeholder="請輸入橫幅標題" required>
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                                                        for="description_tw">
+                                                        描述 (中文)
+                                                    </label>
+                                                    <textarea
+                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                        id="description_tw" name="description_tw" rows="3"
+                                                        placeholder="請輸入橫幅描述"><%= banner.description_tw || '' %></textarea>
+                                                </div>
+                                            </div>
+
+                                            <!-- Common Fields -->
+                                            <div class="border-t pt-4 mt-4">
+                                                <div class="mb-4">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="url">
+                                                        網址 (選填)
+                                                    </label>
+                                                    <input
+                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                        id="url" name="url" type="url" value="<%= banner.url || '' %>"
+                                                        placeholder="https://example.com">
+                                                    <p class="text-gray-600 text-xs italic mt-1">用戶點擊橫幅時的重定向連結</p>
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                                                        for="media">
+                                                        更換主要媒體 (圖片或影片)
+                                                    </label>
+                                                    <input
+                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                        id="media" name="media" type="file" accept="image/*,video/mp4">
+                                                    <p class="text-gray-600 text-xs italic mt-1">上傳新的圖片或MP4影片 (最大20MB)。
+                                                        留空以保留目前媒體。</p>
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                                                        for="mediaDesktop">
+                                                        更換桌面版圖片 (選填)
+                                                    </label>
+                                                    <input
+                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                        id="mediaDesktop" name="mediaDesktop" type="file"
+                                                        accept="image/*">
+                                                    <p class="text-gray-600 text-xs italic mt-1">上傳適合桌面顯示的圖片 (建議寬度:
+                                                        1920px)</p>
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                                                        for="mediaTablet">
+                                                        更換平板版圖片 (選填)
+                                                    </label>
+                                                    <input
+                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                        id="mediaTablet" name="mediaTablet" type="file"
+                                                        accept="image/*">
+                                                    <p class="text-gray-600 text-xs italic mt-1">上傳適合平板顯示的圖片 (建議寬度:
+                                                        1024px)</p>
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                                                        for="mediaMobile">
+                                                        更換手機版圖片 (選填)
+                                                    </label>
+                                                    <input
+                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                        id="mediaMobile" name="mediaMobile" type="file"
+                                                        accept="image/*">
+                                                    <p class="text-gray-600 text-xs italic mt-1">上傳適合手機顯示的圖片 (建議寬度:
+                                                        640px)</p>
+                                                </div>
+
+                                                <div class="mb-6">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                                                        狀態
+                                                    </label>
+                                                    <div class="flex items-center">
+                                                        <input type="radio" id="active" name="isActive" value="true"
+                                                            class="mr-2" <%=banner.isActive ? 'checked' : '' %>>
+                                                        <label for="active" class="mr-4">啟用</label>
+
+                                                        <input type="radio" id="inactive" name="isActive" value="false"
+                                                            class="mr-2" <%=!banner.isActive ? 'checked' : '' %>>
+                                                        <label for="inactive">停用</label>
+                                                    </div>
+                                                    <p class="text-gray-600 text-xs italic mt-1">啟用的橫幅將顯示在首頁</p>
+                                                </div>
+
+                                                <div class="flex items-center justify-between">
+                                                    <button
+                                                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                                        type="submit">
+                                                        更新橫幅
+                                                    </button>
+                                                </div>
+                                            </div>
+                                    </form>
+
+                                    <form action="/admin/banners/<%= banner.id %>" method="POST" class="inline mt-4"
+                                        onsubmit="return confirm('您確定要刪除此橫幅嗎？');">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button type="submit"
+                                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                            刪除橫幅
+                                        </button>
+                                    </form>
         </div>
     </div>

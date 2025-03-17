@@ -147,6 +147,9 @@ model Banner {
   url            String?
   mediaPath      String
   mediaType      String
+  mediaPathDesktop String?
+  mediaPathTablet  String?
+  mediaPathMobile  String?
   isActive       Boolean  @default(false)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt

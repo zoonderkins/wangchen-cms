@@ -22,7 +22,18 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         const ext = path.extname(file.originalname);
-        cb(null, 'banner-' + uniqueSuffix + ext);
+        
+        // Add suffix based on field name
+        let suffix = '';
+        if (file.fieldname === 'mediaDesktop') {
+            suffix = '-desktop';
+        } else if (file.fieldname === 'mediaTablet') {
+            suffix = '-tablet';
+        } else if (file.fieldname === 'mediaMobile') {
+            suffix = '-mobile';
+        }
+        
+        cb(null, 'banner-' + uniqueSuffix + suffix + ext);
     }
 });
 
@@ -51,7 +62,12 @@ const upload = multer({
 
 // Middleware to handle file upload errors
 const handleUploadErrors = (req, res, next) => {
-    const bannerUpload = upload.single('media');
+    const bannerUpload = upload.fields([
+        { name: 'media', maxCount: 1 },
+        { name: 'mediaDesktop', maxCount: 1 },
+        { name: 'mediaTablet', maxCount: 1 },
+        { name: 'mediaMobile', maxCount: 1 }
+    ]);
 
     bannerUpload(req, res, function (err) {
         if (err instanceof multer.MulterError) {
