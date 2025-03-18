@@ -35,7 +35,7 @@
 
             <!-- Search Bar -->
             <div class="relative">
-                <form action="/downloads" method="GET" class="flex flex-col">
+                <form action="/<%= language %>/downloads" method="GET" class="flex flex-col">
                     <label for="search" class="w-auto mx-4"><%= language === 'en' ? 'Search' : '搜尋' %></label>
                     <input type="text" id="search" name="search" placeholder="<%= language === 'tw' ? '搜尋下載項目...' : 'Search downloads...' %>" value="<%= filters.search %>"
                         class="w-full px-4 py-4 border rounded-xl">

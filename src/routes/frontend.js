@@ -859,6 +859,15 @@ router.get('/:language/faq', async (req, res) => {
 // Downloads list page
 router.get('/:language/downloads', downloadController.listDownloadsForFrontend);
 
+// Redirect non-language download routes to language version
+router.get('/downloads', (req, res) => {
+    const language = res.locals.currentLanguage || DEFAULT_LANGUAGE;
+    const queryString = Object.keys(req.query).length > 0 
+        ? '?' + new URLSearchParams(req.query).toString() 
+        : '';
+    res.redirect(`/${language}/downloads${queryString}`);
+});
+
 // Download file
 router.get('/:language/downloads/:id', downloadController.downloadFile);
 
