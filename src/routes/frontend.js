@@ -708,8 +708,10 @@ router.get('/:language/page/:slug', async (req, res) => {
 router.get('/:language/faq', async (req, res) => {
     try {
         const language = req.params.language;
-        // Get all published FAQ categories with their published items
-        const categories = await prisma.faqCategory.findMany({
+        const searchQuery = req.query.search?.trim();
+        
+        // Base query for FAQ categories
+        const categoriesQuery = {
             where: {
                 deletedAt: null
             },
@@ -727,7 +729,80 @@ router.get('/:language/faq', async (req, res) => {
             orderBy: {
                 order: 'asc'
             }
-        });
+        };
+        
+        // Get all published FAQ categories with their published items
+        let categories = await prisma.faqCategory.findMany(categoriesQuery);
+        
+        // Function to highlight search terms in text
+        const highlightText = (text, query) => {
+            if (!query || !text) return text;
+            
+            // Escape special regex characters in the query
+            const escapeRegExp = (string) => {
+                return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            };
+            
+            const escapedQuery = escapeRegExp(query);
+            const regex = new RegExp(`(${escapedQuery})`, 'gi');
+            return text.replace(regex, '<span class="bg-yellow-200">$1</span>');
+        };
+        
+        // If search query exists, filter the items
+        if (searchQuery) {
+            // Filter out items that don't match the search query in title or content
+            categories = categories.map(category => {
+                return {
+                    ...category,
+                    faqItems: category.faqItems.filter(item => {
+                        const titleEn = item.title_en.toLowerCase();
+                        const titleTw = item.title_tw.toLowerCase();
+                        const query = searchQuery.toLowerCase();
+                        
+                        // Check title match
+                        if (titleEn.includes(query) || titleTw.includes(query)) {
+                            return true;
+                        }
+                        
+                        // Check content match
+                        let contentEn = item.content_en;
+                        let contentTw = item.content_tw;
+                        
+                        // Try to extract text from content if it's JSON (Quill Delta)
+                        try {
+                            const deltaEn = JSON.parse(contentEn);
+                            contentEn = deltaEn.ops.map(op => typeof op.insert === 'string' ? op.insert : '').join('');
+                        } catch (e) {
+                            // Not JSON, use as is but remove HTML tags
+                            contentEn = contentEn.replace(/<[^>]*>/g, ' ');
+                        }
+                        
+                        try {
+                            const deltaTw = JSON.parse(contentTw);
+                            contentTw = deltaTw.ops.map(op => typeof op.insert === 'string' ? op.insert : '').join('');
+                        } catch (e) {
+                            // Not JSON, use as is but remove HTML tags
+                            contentTw = contentTw.replace(/<[^>]*>/g, ' ');
+                        }
+                        
+                        return contentEn.toLowerCase().includes(query) || 
+                               contentTw.toLowerCase().includes(query);
+                    }).map(item => {
+                        // Highlight the search terms in titles
+                        return {
+                            ...item,
+                            title_en: highlightText(item.title_en, searchQuery),
+                            title_tw: highlightText(item.title_tw, searchQuery)
+                            // Note: Content highlighting is more complex due to Quill Delta format
+                            // We'll handle that in the frontend with client-side JS
+                        };
+                    })
+                };
+            });
+            
+            // Remove empty categories after filtering
+            categories = categories.filter(category => category.faqItems.length > 0);
+        }
         
         // Get article categories for navigation (separate from FAQ categories)
         const articleCategories = await prisma.category.findMany({
@@ -763,6 +838,7 @@ router.get('/:language/faq', async (req, res) => {
             title: language === 'en' ? 'Frequently Asked Questions' : '常見問題',
             categories, // These are FAQ categories
             articleCategories, // Pass article categories separately
+            searchQuery, // Pass the search query to the template
             layout: 'layouts/frontend'
         });
     } catch (error) {

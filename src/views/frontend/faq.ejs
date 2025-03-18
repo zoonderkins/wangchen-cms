@@ -14,314 +14,413 @@
                         onclick="switchCategory(this, '<%= category.slug %>')">
                         <%= currentLanguage==='en' ? category.name_en : category.name_tw %>
                     </a>
-                <% }); %>
+                    <% }); %>
             </nav>
-        <% } %>
+            <% } %>
 
-        <!-- Divider -->
-        <div class="w-screen relative" style="left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
-            <hr class="border-t-2 border-gray-200 mb-16">
-        </div>
+                <!-- Divider -->
+                <div class="w-screen relative" style="left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
+                    <hr class="border-t-2 border-gray-200 mb-16">
+                </div>
 
-        <!-- Search Bar -->
-        <div class="relative mx-6 mb-8 sm:mx-16 sm:mb-16 lg:mx-32">
-            <form action="/faq" method="GET" class="flex flex-col">
-                <label for="search" class="w-auto mx-4">
-                    <%= currentLanguage==='en' ? 'search' : '搜尋' %>
-                </label>
-                <input type="text" id="search" name="search" placeholder="請輸入關鍵字"
-                    class="w-full px-4 py-4 border rounded-xl">
-                <button class="absolute right-3 bottom-4" type="submit">
-                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        alt="<%= currentLanguage==='en' ? 'search' : '搜尋' %>">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </button>
-            </form>
-            
-        </div>
-
-        <!-- FAQ list -->
-        <% categories.forEach(function(category, index) { %>
-            <section id="<%= category.slug %>" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32">
-                <% if (category.faqItems && category.faqItems.length> 0) { %>
-                    <% category.faqItems.forEach(function(item, itemIndex) { %>
-                        <div class="accordion">
-                            <button class="accordion-header w-full mb-6 flex justify-between items-center"
-                                type="button">
-                                <h2 class="h4 text-left">
-                                    <%= currentLanguage==='en' ? item.title_en : item.title_tw %>
-                                </h2>
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="accordion-icon h-6 w-6 chevron-icon text-custom-blue" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
+                <!-- Search Bar -->
+                <div class="relative mx-6 mb-8 sm:mx-16 sm:mb-16 lg:mx-32">
+                    <form action="/<%=currentLanguage%>/faq" method="GET" class="flex flex-col">
+                        <label for="search" class="w-auto mx-4">
+                            <%= currentLanguage==='en' ? 'search' : '搜尋' %>
+                        </label>
+                        <input type="text" id="search" name="search" placeholder="請輸入關鍵字"
+                            class="w-full px-4 py-4 border rounded-xl" value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
+                        <button class="absolute right-3 bottom-4" type="submit">
+                            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                alt="<%= currentLanguage==='en' ? 'search' : '搜尋' %>">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                        <% if (typeof searchQuery !== 'undefined' && searchQuery) { %>
+                            <a href="/<%=currentLanguage%>/faq" class="absolute right-12 bottom-4 text-gray-400 hover:text-gray-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 9l-7 7-7-7" />
+                                        d="M6 18L18 6M6 6l12 12" />
                                 </svg>
-                            </button>
-                            <div class="py-6 accordion-content overflow-hidden">
-                                <div class="prose max-w-none">
-                                    <div class="quill-content"
-                                        data-content="<%= encodeURIComponent(currentLanguage === 'en' ? item.content_en : item.content_tw) %>">
+                            </a>
+                        <% } %>
+                    </form>
+                </div>
+
+                <% if (typeof searchQuery !== 'undefined' && searchQuery) { %>
+                    <div class="px-6 mb-8 sm:px-16 sm:mb-16 lg:px-32">
+                        <div class="bg-blue-50 text-blue-700 p-4 rounded-lg">
+                            <% if (categories.length > 0) { %>
+                                <p><%= currentLanguage==='en' ? `Search results for "${searchQuery}"` : `「${searchQuery}」的搜尋結果` %></p>
+                            <% } else { %>
+                                <p><%= currentLanguage==='en' ? `No results found for "${searchQuery}"` : `沒有找到「${searchQuery}」的結果` %></p>
+                            <% } %>
+                        </div>
+                    </div>
+                <% } %>
+
+                <!-- FAQ list -->
+                <% categories.forEach(function(category, index) { %>
+                    <section id="<%= category.slug %>" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32">
+                        <% if (category.faqItems && category.faqItems.length> 0) { %>
+                            <% category.faqItems.forEach(function(item, itemIndex) { %>
+                                <div class="accordion">
+                                    <button class="accordion-header w-full mb-6 flex justify-between items-center"
+                                        type="button">
+                                        <h2 class="h4 text-left">
+                                            <%= currentLanguage==='en' ? item.title_en : item.title_tw %>
+                                        </h2>
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                            class="accordion-icon h-6 w-6 chevron-icon text-custom-blue" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <div class="py-6 accordion-content overflow-hidden">
+                                        <div class="prose max-w-none">
+                                            <div class="quill-content"
+                                                data-content="<%= encodeURIComponent(currentLanguage === 'en' ? item.content_en : item.content_tw) %>">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <!-- Divider -->
-                        <div class="my-8">
-                            <hr class="border-t-2 border-gray-200">
-                        </div>
+                                <!-- Divider -->
+                                <div class="my-8">
+                                    <hr class="border-t-2 border-gray-200">
+                                </div>
+                                <% }); %>
+                                    <% } %>
+                    </section>
                     <% }); %>
-                <% } %>
-            </section>
-        <% }); %>
 
-        <script>
-            // 等待DOM完全加載
-            document.addEventListener('DOMContentLoaded', function() {
-            // 獲取所有 section 元素
-            const sections = document.querySelectorAll('section[id]');
-                    // 預設顯示第一個標籤內容，隱藏其他
-                    sections.forEach((section, index) => {
-                        if (index === 0) {
-                            section.classList.remove('hidden');
-                        } else {
-                            section.classList.add('hidden');
-                        }
-                    });
-                    
-                ///////////////////////////////////////////////////////////
-        
-                // 滾動偏移量設定（可調整）
-                const scrollOffset = 120;
-                // 獲取所有 subtitle 元素
-                const subtitles = document.querySelectorAll('.subtitle');
-                // 為每個 subtitle 添加點擊事件監聽器
-                subtitles.forEach(subtitle => {
-                    subtitle.addEventListener('click', function(e) {
-                        // 阻止默認的錨點行為
-                        // e.preventDefault();
-                        
-                        // 移除所有 subtitle 的活動樣式
-                        subtitles.forEach(s => {
-                            // 移除活動樣式
-                            s.classList.remove('active');
-                        });
-        
-                        // 為被點擊的元素添加活動樣式
-                        this.classList.add('active');
-                        
-                        const targetId = this.getAttribute('href').substring(1);
-        
-                        // 顯示目標內容，隱藏其他內容
-                        sections.forEach(section => {
-                            if (section.id === targetId) {
-                                section.classList.remove('hidden');
-                            } else {
-                                section.classList.add('hidden');
-                            }
-                        });
-        
-                        // 如果需要，可以滾動到目標區域
-                        const targetElement = document.getElementById(targetId);
-                        if (targetElement) {
-                            const elementPosition = targetElement.getBoundingClientRect().top;
-                            const offsetPosition = elementPosition + window.pageYOffset - scrollOffset;
-        
-                            window.scrollTo({
-                                top: offsetPosition,
-                                behavior: 'smooth'
-                            });
-                        }
-                    });
-                });
-        
-                ///////////////////////////////////////////////////////////
-
-                const accordions = document.querySelectorAll('.accordion');
-                
-                accordions.forEach(accordion => {
-                    const header = accordion.querySelector('.accordion-header');
-                    const content = accordion.querySelector('.accordion-content');
-                    const icon = accordion.querySelector('.accordion-icon');
-                    
-                    header.addEventListener('click', function() {
-                        // 簡單地切換內容的顯示/隱藏狀態
-                        content.classList.toggle('hidden');
-                        // 切換箭頭方向
-                        icon.classList.toggle('rotate-180');
-                    });
-                });
-
-                ///////////////////////////////////////////////////////////
-
-            });
-        </script>
-                                <style>
-                                    /* Add prose styling for content */
-                                    .prose {
-                                        max-width: 65ch;
-                                        color: #374151;
-                                    }
-
-                                    .prose p {
-                                        margin-top: 1.25em;
-                                        margin-bottom: 1.25em;
-                                        line-height: 1.75;
-                                    }
-
-                                    .prose a {
-                                        color: #2563eb;
-                                        text-decoration: underline;
-                                        font-weight: 500;
-                                    }
-
-                                    .prose strong {
-                                        font-weight: 600;
-                                        color: #111827;
-                                    }
-
-                                    .prose ul {
-                                        margin-top: 1.25em;
-                                        margin-bottom: 1.25em;
-                                        padding-left: 1.625em;
-                                        list-style-type: disc;
-                                    }
-
-                                    .prose ol {
-                                        margin-top: 1.25em;
-                                        margin-bottom: 1.25em;
-                                        padding-left: 1.625em;
-                                        list-style-type: decimal;
-                                    }
-
-                                    .prose h1 {
-                                        margin-top: 0;
-                                        margin-bottom: 0.8888889em;
-                                        font-size: 2.25em;
-                                        font-weight: 800;
-                                        line-height: 1.1111111;
-                                    }
-
-                                    .prose h2 {
-                                        margin-top: 2em;
-                                        margin-bottom: 1em;
-                                        font-size: 1.5em;
-                                        font-weight: 700;
-                                        line-height: 1.3333333;
-                                    }
-
-                                    .prose h3 {
-                                        margin-top: 1.6em;
-                                        margin-bottom: 0.6em;
-                                        font-size: 1.25em;
-                                        font-weight: 600;
-                                        line-height: 1.6;
-                                    }
-
-                                    .prose img {
-                                        margin-top: 2em;
-                                        margin-bottom: 2em;
-                                    }
-
-                                    .prose blockquote {
-                                        margin-top: 1.6em;
-                                        margin-bottom: 1.6em;
-                                        padding-left: 1em;
-                                        border-left: 0.25em solid #e5e7eb;
-                                        font-style: italic;
-                                    }
-
-                                    /* Quill specific styles */
-                                    .ql-align-center {
-                                        text-align: center;
-                                    }
-
-                                    .ql-align-right {
-                                        text-align: right;
-                                    }
-
-                                    .ql-align-justify {
-                                        text-align: justify;
-                                    }
-
-                                    .ql-indent-1 {
-                                        padding-left: 3em;
-                                    }
-
-                                    .ql-indent-2 {
-                                        padding-left: 6em;
-                                    }
-                                </style>
-`
-                                <script>
-                                    document.addEventListener('DOMContentLoaded', function () {
-                                        console.log('FAQ page loaded');
-                                        initFAQPage();
+                        <script>
+                            // 等待DOM完全加載
+                            document.addEventListener('DOMContentLoaded', function () {
+                                // 獲取所有 section 元素
+                                const sections = document.querySelectorAll('section[id]');
+                                
+                                // Check if search query exists
+                                const searchParams = new URLSearchParams(window.location.search);
+                                const searchQuery = searchParams.get('search');
+                                
+                                if (searchQuery) {
+                                    // If search is active, show all sections
+                                    sections.forEach(section => {
+                                        section.classList.remove('hidden');
                                     });
+                                    
+                                    // Open accordion items automatically
+                                    const accordions = document.querySelectorAll('.accordion');
+                                    accordions.forEach(accordion => {
+                                        const content = accordion.querySelector('.accordion-content');
+                                        const icon = accordion.querySelector('.accordion-icon');
+                                        
+                                        // Remove hidden class to show content
+                                        content.classList.remove('hidden');
+                                        // Rotate icon to show it's expanded
+                                        icon.classList.add('rotate-180');
+                                    });
+                                } else {
+                                    // 預設顯示第一個標籤內容，隱藏其他
+                                    sections.forEach((section, index) => {
+                                        if (index === 0) {
+                                            section.classList.remove('hidden');
+                                        } else {
+                                            section.classList.add('hidden');
+                                        }
+                                    });
+                                }
 
-                                    function initFAQPage() {
-                                        // Initialize Quill content
-                                        document.querySelectorAll('.quill-content').forEach(function (container) {
-                                            try {
-                                                const contentData = decodeURIComponent(container.getAttribute('data-content'));
-                                                if (contentData) {
-                                                    try {
-                                                        // Try to parse as Delta JSON
-                                                        const delta = JSON.parse(contentData);
-                                                        const tempContainer = document.createElement('div');
-                                                        const tempQuill = new Quill(tempContainer);
-                                                        tempQuill.setContents(delta);
-                                                        container.innerHTML = tempContainer.querySelector('.ql-editor').innerHTML;
-                                                    } catch (e) {
-                                                        // If not Delta JSON, use as HTML
-                                                        container.innerHTML = contentData;
-                                                    }
-                                                }
-                                            } catch (error) {
-                                                console.error('Error rendering Quill content:', error);
-                                                // Fallback for error cases
-                                                container.innerHTML = '<p>Content could not be displayed</p>';
+                                ///////////////////////////////////////////////////////////
+
+                                // 滾動偏移量設定（可調整）
+                                const scrollOffset = 120;
+                                // 獲取所有 subtitle 元素
+                                const subtitles = document.querySelectorAll('.subtitle');
+                                // 為每個 subtitle 添加點擊事件監聽器
+                                subtitles.forEach(subtitle => {
+                                    subtitle.addEventListener('click', function (e) {
+                                        // 阻止默認的錨點行為
+                                        // e.preventDefault();
+
+                                        // 移除所有 subtitle 的活動樣式
+                                        subtitles.forEach(s => {
+                                            // 移除活動樣式
+                                            s.classList.remove('active');
+                                        });
+
+                                        // 為被點擊的元素添加活動樣式
+                                        this.classList.add('active');
+
+                                        const targetId = this.getAttribute('href').substring(1);
+
+                                        // 顯示目標內容，隱藏其他內容
+                                        sections.forEach(section => {
+                                            if (section.id === targetId) {
+                                                section.classList.remove('hidden');
+                                            } else {
+                                                section.classList.add('hidden');
                                             }
                                         });
-                                    }
 
-                                    // Function to toggle FAQ answers
-                                    function toggleAnswer(button) {
-                                        const answer = button.nextElementSibling;
-                                        const arrow = button.querySelector('.faq-arrow');
+                                        // 如果需要，可以滾動到目標區域
+                                        const targetElement = document.getElementById(targetId);
+                                        if (targetElement) {
+                                            const elementPosition = targetElement.getBoundingClientRect().top;
+                                            const offsetPosition = elementPosition + window.pageYOffset - scrollOffset;
 
-                                        if (answer.classList.contains('hidden')) {
-                                            answer.classList.remove('hidden');
-                                            if (arrow) arrow.classList.add('rotate-180');
-                                        } else {
-                                            answer.classList.add('hidden');
-                                            if (arrow) arrow.classList.remove('rotate-180');
+                                            window.scrollTo({
+                                                top: offsetPosition,
+                                                behavior: 'smooth'
+                                            });
                                         }
-                                    }
+                                    });
+                                });
 
-                                    // Function to switch category tabs
-                                    function switchCategory(tab, categoryId) {
-                                        // Hide all category contents
-                                        document.querySelectorAll('.category-content').forEach(content => {
-                                            content.classList.add('hidden');
+                                ///////////////////////////////////////////////////////////
+
+                                const accordions = document.querySelectorAll('.accordion');
+
+                                accordions.forEach(accordion => {
+                                    const header = accordion.querySelector('.accordion-header');
+                                    const content = accordion.querySelector('.accordion-content');
+                                    const icon = accordion.querySelector('.accordion-icon');
+
+                                    // Skip if we're in search mode (already opened)
+                                    if (!searchQuery) {
+                                        header.addEventListener('click', function () {
+                                            // 簡單地切換內容的顯示/隱藏狀態
+                                            content.classList.toggle('hidden');
+                                            // 切換箭頭方向
+                                            icon.classList.toggle('rotate-180');
                                         });
+                                    } else {
+                                        header.addEventListener('click', function () {
+                                            // In search mode, we still want to allow toggling
+                                            content.classList.toggle('hidden');
+                                            icon.classList.toggle('rotate-180');
+                                        });
+                                    }
+                                });
 
-                                        // Show the selected category content
-                                        const selectedContent = document.getElementById(categoryId);
-                                        if (selectedContent) {
-                                            selectedContent.classList.remove('hidden');
+                                ///////////////////////////////////////////////////////////
+
+                            });
+                        </script>
+                        <style>
+                            /* Add prose styling for content */
+                            .prose {
+                                max-width: 65ch;
+                                color: #374151;
+                            }
+
+                            .prose p {
+                                margin-top: 1.25em;
+                                margin-bottom: 1.25em;
+                                line-height: 1.75;
+                            }
+
+                            .prose a {
+                                color: #2563eb;
+                                text-decoration: underline;
+                                font-weight: 500;
+                            }
+
+                            .prose strong {
+                                font-weight: 600;
+                                color: #111827;
+                            }
+
+                            .prose ul {
+                                margin-top: 1.25em;
+                                margin-bottom: 1.25em;
+                                padding-left: 1.625em;
+                                list-style-type: disc;
+                            }
+
+                            .prose ol {
+                                margin-top: 1.25em;
+                                margin-bottom: 1.25em;
+                                padding-left: 1.625em;
+                                list-style-type: decimal;
+                            }
+
+                            .prose h1 {
+                                margin-top: 0;
+                                margin-bottom: 0.8888889em;
+                                font-size: 2.25em;
+                                font-weight: 800;
+                                line-height: 1.1111111;
+                            }
+
+                            .prose h2 {
+                                margin-top: 2em;
+                                margin-bottom: 1em;
+                                font-size: 1.5em;
+                                font-weight: 700;
+                                line-height: 1.3333333;
+                            }
+
+                            .prose h3 {
+                                margin-top: 1.6em;
+                                margin-bottom: 0.6em;
+                                font-size: 1.25em;
+                                font-weight: 600;
+                                line-height: 1.6;
+                            }
+
+                            .prose img {
+                                margin-top: 2em;
+                                margin-bottom: 2em;
+                            }
+
+                            .prose blockquote {
+                                margin-top: 1.6em;
+                                margin-bottom: 1.6em;
+                                padding-left: 1em;
+                                border-left: 0.25em solid #e5e7eb;
+                                font-style: italic;
+                            }
+
+                            /* Quill specific styles */
+                            .ql-align-center {
+                                text-align: center;
+                            }
+
+                            .ql-align-right {
+                                text-align: right;
+                            }
+
+                            .ql-align-justify {
+                                text-align: justify;
+                            }
+
+                            .ql-indent-1 {
+                                padding-left: 3em;
+                            }
+
+                            .ql-indent-2 {
+                                padding-left: 6em;
+                            }
+                        </style>
+                        `
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                console.log('FAQ page loaded');
+                                initFAQPage();
+                            });
+
+                            function initFAQPage() {
+                                // Initialize Quill content
+                                document.querySelectorAll('.quill-content').forEach(function (container) {
+                                    try {
+                                        const contentData = decodeURIComponent(container.getAttribute('data-content'));
+                                        if (contentData) {
+                                            try {
+                                                // Try to parse as Delta JSON
+                                                const delta = JSON.parse(contentData);
+                                                const tempContainer = document.createElement('div');
+                                                const tempQuill = new Quill(tempContainer);
+                                                tempQuill.setContents(delta);
+                                                container.innerHTML = tempContainer.querySelector('.ql-editor').innerHTML;
+                                            } catch (e) {
+                                                // If not Delta JSON, use as HTML
+                                                container.innerHTML = contentData;
+                                            }
+                                            
+                                            // Highlight search terms if search is active
+                                            highlightSearchTerms(container);
                                         }
-
-                                        // Update tab styles
-                                        document.querySelectorAll('.category-tab').forEach(t => {
-                                            t.classList.remove('border-blue-500', 'text-blue-600', 'font-medium');
-                                            t.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-                                        });
-
-                                        // Highlight the clicked tab
-                                        tab.classList.add('border-blue-500', 'text-blue-600', 'font-medium');
-                                        tab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                                    } catch (error) {
+                                        console.error('Error rendering Quill content:', error);
+                                        // Fallback for error cases
+                                        container.innerHTML = '<p>Content could not be displayed</p>';
                                     }
-                                </script>
+                                });
+                            }
+                            
+                            // Function to highlight search terms in content
+                            function highlightSearchTerms(container) {
+                                const searchParams = new URLSearchParams(window.location.search);
+                                const searchQuery = searchParams.get('search');
+                                
+                                if (!searchQuery || !container) return;
+                                
+                                // Escape special regex characters
+                                const escapeRegExp = (string) => {
+                                    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                                };
+                                
+                                const escapedQuery = escapeRegExp(searchQuery);
+                                
+                                // Create a text node walker to search through all text
+                                const walker = document.createTreeWalker(
+                                    container, 
+                                    NodeFilter.SHOW_TEXT,
+                                    null,
+                                    false
+                                );
+                                
+                                const nodesToReplace = [];
+                                let node;
+                                
+                                // Find all text nodes with the search term
+                                while (node = walker.nextNode()) {
+                                    if (node.nodeValue.toLowerCase().includes(searchQuery.toLowerCase())) {
+                                        nodesToReplace.push(node);
+                                    }
+                                }
+                                
+                                // Replace text with highlighted version
+                                nodesToReplace.forEach(textNode => {
+                                    const regex = new RegExp(`(${escapedQuery})`, 'gi');
+                                    const newHtml = textNode.nodeValue.replace(regex, '<span class="bg-yellow-200">$1</span>');
+                                    
+                                    const replacementNode = document.createElement('span');
+                                    replacementNode.innerHTML = newHtml;
+                                    
+                                    textNode.parentNode.replaceChild(replacementNode, textNode);
+                                });
+                            }
+
+                            // Function to toggle FAQ answers
+                            function toggleAnswer(button) {
+                                const answer = button.nextElementSibling;
+                                const arrow = button.querySelector('.faq-arrow');
+
+                                if (answer.classList.contains('hidden')) {
+                                    answer.classList.remove('hidden');
+                                    if (arrow) arrow.classList.add('rotate-180');
+                                } else {
+                                    answer.classList.add('hidden');
+                                    if (arrow) arrow.classList.remove('rotate-180');
+                                }
+                            }
+
+                            // Function to switch category tabs
+                            function switchCategory(tab, categoryId) {
+                                // Hide all category contents
+                                document.querySelectorAll('.category-content').forEach(content => {
+                                    content.classList.add('hidden');
+                                });
+
+                                // Show the selected category content
+                                const selectedContent = document.getElementById(categoryId);
+                                if (selectedContent) {
+                                    selectedContent.classList.remove('hidden');
+                                }
+
+                                // Update tab styles
+                                document.querySelectorAll('.category-tab').forEach(t => {
+                                    t.classList.remove('border-blue-500', 'text-blue-600', 'font-medium');
+                                    t.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                                });
+
+                                // Highlight the clicked tab
+                                tab.classList.add('border-blue-500', 'text-blue-600', 'font-medium');
+                                tab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                            }
+                        </script>
