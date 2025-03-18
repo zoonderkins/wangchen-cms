@@ -3,6 +3,7 @@ const logger = require('../config/logger');
 const slugify = require('slugify');
 const fs = require('fs');
 const path = require('path');
+const { parsePlatformEmbeds } = require('../utils/platformEmbedParser');
 
 // List all promotion categories
 exports.listCategories = async (req, res) => {
@@ -672,6 +673,10 @@ exports.listPromotionsForFrontend = async (req, res) => {
             })
         ]);
         
+        // Parse platform embeds in content
+        const contentField = language === 'en' ? 'content_en' : 'content_tw';
+        item[contentField] = await parsePlatformEmbeds(item[contentField], language);
+
         // Add helper function for getting content in the current language
         const getContent = (item, field) => {
             const langField = `${field}_${language}`;

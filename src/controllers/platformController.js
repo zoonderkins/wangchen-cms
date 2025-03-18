@@ -1310,3 +1310,79 @@ exports.uploadAttachment = async (req, res) => {
         });
     }
 };
+
+// API: Get platform item by ID for embedding
+exports.getPlatformItemById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        if (!id) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Platform item ID is required' 
+            });
+        }
+        
+        // Parse the ID
+        let parsedId;
+        try {
+            parsedId = parseInt(id, 10);
+        } catch (error) {
+            logger.error(`Error parsing platform ID: ${error.message}`);
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Invalid platform item ID format' 
+            });
+        }
+        
+        if (isNaN(parsedId)) {
+            logger.warn(`Invalid platform ID: ${id}`);
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Invalid platform item ID' 
+            });
+        }
+        
+        // Find the platform item
+        const item = await prisma.platform.findFirst({
+            where: {
+                id: parsedId,
+                deletedAt: null,
+                status: 'published'
+            },
+            include: {
+                category: {
+                    select: {
+                        name_en: true,
+                        name_tw: true
+                    }
+                },
+                attachments: {
+                    where: {
+                        deletedAt: null
+                    }
+                }
+            }
+        });
+        
+        if (!item) {
+            logger.warn(`Platform item not found with ID: ${parsedId}`);
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Platform item not found' 
+            });
+        }
+        
+        // Return the platform item
+        return res.json({
+            success: true,
+            data: item
+        });
+    } catch (error) {
+        logger.error('Error getting platform item by ID:', error);
+        return res.status(500).json({ 
+            success: false, 
+            message: `Failed to get platform item: ${error.message}` 
+        });
+    }
+};

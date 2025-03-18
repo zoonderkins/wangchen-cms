@@ -114,11 +114,12 @@
                     <label class="block text-sm font-medium text-gray-700" for="content_en">
                       內容 (英文) <span class="text-red-500">*</span>
                     </label>
+                    <div id="editor_en" class="mt-1 quill-editor"></div>
                     <textarea
-                      class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-textarea"
+                      class="hidden block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-textarea"
                       rows="10" placeholder="請輸入英文HTML內容" id="content_en" name="content_en"
                       required><%= item ? item.content_en : '' %></textarea>
-                    <p class="mt-1 text-xs text-gray-500">您可以使用HTML標籤進行格式化。</p>
+                    <p class="mt-1 text-xs text-gray-500">您可以使用HTML標籤進行格式化。您也可以嵌入平台項目。</p>
                   </div>
                 </div>
 
@@ -142,11 +143,12 @@
                     <label class="block text-sm font-medium text-gray-700" for="content_tw">
                       內容 (繁體中文) <span class="text-red-500">*</span>
                     </label>
+                    <div id="editor_tw" class="mt-1 quill-editor"></div>
                     <textarea
-                      class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-textarea"
+                      class="hidden block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-textarea"
                       rows="10" placeholder="請輸入繁體中文HTML內容" id="content_tw" name="content_tw"
                       required><%= item ? item.content_tw : '' %></textarea>
-                    <p class="mt-1 text-xs text-gray-500">您可以使用HTML標籤進行格式化。</p>
+                    <p class="mt-1 text-xs text-gray-500">您可以使用HTML標籤進行格式化。您也可以嵌入平台項目。</p>
                   </div>
                 </div>
 
@@ -228,3 +230,98 @@
               </a>
             </div>
   </div>
+
+  <!-- Quill.js Editor Setup -->
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+  <script src="/js/platform-embed.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Initialize Quill editors
+      const toolbarOptions = [
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'align': [] }],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        ['link', 'image'],
+        ['clean'],
+        ['platform'] // Custom button for platform embed
+      ];
+
+      // Initialize English editor
+      const quill_en = new Quill('#editor_en', {
+        theme: 'snow',
+        modules: {
+          toolbar: {
+            container: toolbarOptions,
+            handlers: {
+              'platform': window.platformEmbedHandler
+            }
+          }
+        },
+        placeholder: 'Compose content in English...'
+      });
+
+      // Initialize Traditional Chinese editor
+      const quill_tw = new Quill('#editor_tw', {
+        theme: 'snow',
+        modules: {
+          toolbar: {
+            container: toolbarOptions,
+            handlers: {
+              'platform': window.platformEmbedHandler
+            }
+          }
+        },
+        placeholder: '撰寫繁體中文內容...'
+      });
+
+      // Set initial content
+      const content_en = document.getElementById('content_en').value;
+      const content_tw = document.getElementById('content_tw').value;
+
+      if (content_en) {
+        quill_en.root.innerHTML = content_en;
+      }
+
+      if (content_tw) {
+        quill_tw.root.innerHTML = content_tw;
+      }
+
+      // Update hidden textarea on form submit
+      document.querySelector('form').addEventListener('submit', function () {
+        document.getElementById('content_en').value = quill_en.root.innerHTML;
+        document.getElementById('content_tw').value = quill_tw.root.innerHTML;
+      });
+
+      // Add platform icon to toolbar
+      const platformButtons = document.querySelectorAll('.ql-platform');
+      platformButtons.forEach(button => {
+        button.innerHTML = '<i class="fas fa-cube"></i>';
+        button.title = 'Insert Platform Item';
+      });
+    });
+  </script>
+
+  <style>
+    .quill-editor {
+      height: 300px;
+      margin-bottom: 1rem;
+    }
+
+    .ql-toolbar.ql-snow {
+      border-top-left-radius: 0.375rem;
+      border-top-right-radius: 0.375rem;
+    }
+
+    .ql-container.ql-snow {
+      border-bottom-left-radius: 0.375rem;
+      border-bottom-right-radius: 0.375rem;
+    }
+
+    .ql-editor {
+      min-height: 200px;
+    }
+  </style>
