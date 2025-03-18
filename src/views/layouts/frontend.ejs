@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= typeof title !=='undefined' ? title + ' - ' : '' %>「大南方新矽谷」推動辦公室
-    </title>
+<title>
+    <%= typeof title !=='undefined' ? title + ' - ' : '' %>
+        <%= siteSettings && currentLanguage==='en' ? siteSettings.site_name_en : siteSettings && currentLanguage==='tw'
+            ? siteSettings.site_name_tw : 'Your Website Name' %>
+</title>
 
     <!-- splidejs -->
     <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
@@ -42,6 +44,27 @@
                 <a href="/<%= currentLanguage %>" class="flex items-center">
                     <img src="../images/logo/logo-STSVPO_v2.png" alt="大南方新矽谷推動辦公室頁首標誌" class="h-8 lg:h-8">
                 </a>
+                <!-- New logo -->
+                <% if (siteSettings) { %>
+                    <a href="/<%= currentLanguage %>">
+                        <picture>
+                            <% if (siteSettings.logo_mobile_path) { %>
+                                <source media="(max-width: 640px)" srcset="/<%= siteSettings.logo_mobile_path %>">
+                                <% } %>
+                                    <% if (siteSettings.logo_tablet_path) { %>
+                                        <source media="(max-width: 1024px)" srcset="/<%= siteSettings.logo_tablet_path %>">
+                                        <% } %>
+                                            <% if (siteSettings.logo_desktop_path) { %>
+                                                <source media="(min-width: 1025px)" srcset="/<%= siteSettings.logo_desktop_path %>">
+                                                <% } %>
+                                                    <img src="/<%= siteSettings.logo_desktop_path || 'images/logo-placeholder.png' %>"
+                                                        alt="<%= currentLanguage === 'en' ? (siteSettings.logo_alt_en || siteSettings.site_name_en) : (siteSettings.logo_alt_tw || siteSettings.site_name_tw) %>"
+                                                        class="max-h-12">
+                        </picture>
+                    </a>
+                    <% } else { %>
+                        <a href="/<%= currentLanguage %>"> </a>
+                        <% } %>
                 <div class="flex">
                     <!-- Combined Navigation Links -->
                     <div id="nav-menu"

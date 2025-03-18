@@ -30,6 +30,8 @@ const contactController = require('../controllers/contactController');
 const linksController = require('../controllers/linksController');
 const platformController = require('../controllers/platformController');
 const platformUpload = require('../middleware/platformImageUpload');
+const siteSettingsController = require('../controllers/siteSettingsController');
+const siteLogoUpload = require('../middleware/siteLogoUpload');
 
 // Import frontpage routes
 const frontpageRoutes = require('./admin/frontpage');
@@ -295,5 +297,9 @@ router.post('/users', hasRole(['super_admin', 'admin']), userController.createUs
 router.get('/users/edit/:id', hasRole(['super_admin', 'admin']), userController.renderEditUser);
 router.post('/users/:id', hasRole(['super_admin', 'admin']), userController.updateUser);
 router.post('/users/:id/delete', hasRole(['super_admin', 'admin']), userController.deleteUser);
+
+// Site Settings routes
+router.get('/site-settings', hasRole(['super_admin']), siteSettingsController.renderSiteSettingsForm);
+router.post('/site-settings', hasRole(['super_admin']), siteLogoUpload, siteSettingsController.saveSiteSettings);
 
 module.exports = router;

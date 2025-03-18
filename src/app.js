@@ -13,10 +13,12 @@ const { languageMiddleware } = require('./middleware/languageMiddleware');
 const { languageRouteMiddleware, addLanguageHelpers } = require('./middleware/languageRouteMiddleware');
 const { attachPageImage } = require('./middleware/pageImageMiddleware');
 const { trackVisits } = require('./middleware/visitCounterMiddleware');
+const siteSettingsMiddleware = require('./middleware/siteSettings');
 
 // Import routes
 const frontendRoutes = require('./routes/frontend');
 const adminRoutes = require('./routes/admin');
+const apiRoutes = require('./routes/api');
 
 const app = express();
 
@@ -73,6 +75,9 @@ app.use(languageMiddleware);
 // Add language helper functions to res.locals
 app.use(addLanguageHelpers);
 
+// Load site settings for all views
+app.use(siteSettingsMiddleware);
+
 // Attach page image to frontend routes
 app.use(attachPageImage);
 
@@ -102,6 +107,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/admin', adminRoutes);
+app.use('/api', apiRoutes);
 app.use('/', frontendRoutes);
 
 // 404 handler
