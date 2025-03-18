@@ -14,13 +14,20 @@ const setLocals = (req, res, next) => {
 };
 
 /**
- * Ensures that visitCount is defined for all views
+ * Ensures that visit counters are defined for all views
  * This is used as a fallback when the visitCounterMiddleware hasn't run
  */
 const ensureVisitCount = (req, res, next) => {
-    // Set a default value for visitCount if it's not already defined
+    // Set default values for visit counters if they're not already defined
+    if (res.locals.todayVisitCount === undefined) {
+        res.locals.todayVisitCount = 0;
+    }
+    if (res.locals.totalVisitCount === undefined) {
+        res.locals.totalVisitCount = 0;
+    }
+    // For backward compatibility
     if (res.locals.visitCount === undefined) {
-        res.locals.visitCount = 0;
+        res.locals.visitCount = res.locals.totalVisitCount;
     }
     next();
 };

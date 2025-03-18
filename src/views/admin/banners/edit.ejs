@@ -175,18 +175,18 @@
                                                 </div>
 
                                                 <div class="mb-6">
-                                                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                                                        for="status">
                                                         狀態
                                                     </label>
-                                                    <div class="flex items-center">
-                                                        <input type="radio" id="active" name="isActive" value="true"
-                                                            class="mr-2" <%=banner.isActive ? 'checked' : '' %>>
-                                                        <label for="active" class="mr-4">啟用</label>
-
-                                                        <input type="radio" id="inactive" name="isActive" value="false"
-                                                            class="mr-2" <%=!banner.isActive ? 'checked' : '' %>>
-                                                        <label for="inactive">停用</label>
-                                                    </div>
+                                                    <select
+                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                        id="status" name="isActive">
+                                                        <option value="true" <%=banner.isActive ? 'selected' : '' %>>啟用
+                                                        </option>
+                                                        <option value="false" <%=!banner.isActive ? 'selected' : '' %>
+                                                            >停用</option>
+                                                    </select>
                                                     <p class="text-gray-600 text-xs italic mt-1">啟用的橫幅將顯示在首頁</p>
                                                 </div>
 

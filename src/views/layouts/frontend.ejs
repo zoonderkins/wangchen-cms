@@ -33,6 +33,46 @@
     <!-- Include Quill.js for proper rendering -->
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.min.js"></script>
     <%- defineContent('head') %>
+
+        <!-- Custom styles -->
+        <style>
+            /* Remove platform embed custom styling to use default rendering */
+            .platform-embed-container {
+                /* Reset any custom styling */
+                margin: 0;
+                border: none;
+                border-radius: 0;
+                box-shadow: none;
+                background-color: transparent;
+            }
+        
+            .platform-embed-header {
+                background-color: transparent;
+                padding: 0;
+                border-bottom: none;
+            }
+        
+            .platform-embed-body {
+                padding: 0;
+                background-color: transparent;
+            }
+        
+            /* Ensure images are responsive */
+            .promotion-content img {
+                max-width: 100%;
+                height: auto;
+            }
+        
+            /* Preserve Quill.js styling */
+            .promotion-content .ql-editor {
+                padding: 0;
+            }
+        
+            /* Override any Quill container styles that might interfere */
+            .promotion-content .ql-container {
+                border: none !important;
+            }
+        </style>
 </head>
 
 <body class="bg-white">
@@ -179,8 +219,10 @@
                             : '服務信箱：service@stsvpo.org.tw' %>
                     </p>
                     <p class="mb-1">
-                        <%= currentLanguage==='en' ? `Today's Views: ${visitCount || 0}` : `瀏覽人次： ${visitCount ||
-                            0}` %>
+                    <%= currentLanguage==='en' ? `Today's Views: ${todayVisitCount || 0}` : `今日瀏覽人次： ${todayVisitCount || 0}` %>
+                        </p>
+                        <p class="mb-1">
+                            <%= currentLanguage==='en' ? `Total Views: ${totalVisitCount || 0}` : `總瀏覽人次： ${totalVisitCount || 0}` %>
                     </p>
                     <p class="mb-0">
                         <a href="security.html">

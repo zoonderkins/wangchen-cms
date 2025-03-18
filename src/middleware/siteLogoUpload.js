@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 // Make sure the uploads directory exists
-const uploadDir = 'uploads/site-logos';
+const uploadDir = 'public/uploads/site-logos';
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }

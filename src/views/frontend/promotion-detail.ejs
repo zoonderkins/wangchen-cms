@@ -1,0 +1,271 @@
+<%- contentFor('body') %>
+
+  <div class="container mx-auto px-4 py-8">
+    <!-- Breadcrumb -->
+    <nav class="flex mb-6" aria-label="Breadcrumb">
+      <ol class="inline-flex items-center space-x-1 md:space-x-3">
+        <li class="inline-flex items-center">
+          <a href="/<%= language %>" class="text-gray-700 hover:text-blue-600">
+            <%= language==='en' ? 'Home' : '首頁' %>
+          </a>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
+                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                clip-rule="evenodd"></path>
+            </svg>
+            <a href="/<%= language %>/promotions" class="ml-1 text-gray-700 hover:text-blue-600 md:ml-2">
+              <%= language==='en' ? 'Promotions' : '推動方案' %>
+            </a>
+          </div>
+        </li>
+        <li aria-current="page">
+          <div class="flex items-center">
+            <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
+                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                clip-rule="evenodd"></path>
+            </svg>
+            <span class="ml-1 text-gray-500 md:ml-2 line-clamp-1">
+              <%= language==='en' ? item.title_en : item.title_tw %>
+            </span>
+          </div>
+        </li>
+      </ol>
+    </nav>
+
+    <!-- Promotion Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold mb-4 text-gray-800">
+        <%= language==='en' ? item.title_en : item.title_tw %>
+      </h1>
+
+      <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-6">
+        <% if (item.category) { %>
+          <div class="flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
+              </path>
+            </svg>
+            <span>
+              <%= language==='en' ? item.category.name_en : item.category.name_tw %>
+            </span>
+          </div>
+          <% } %>
+
+            <div class="flex items-center">
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              <span>
+                <%= new Date(item.publishedDate).toLocaleDateString(language==='en' ? 'en-US' : 'zh-TW' ) %>
+              </span>
+            </div>
+      </div>
+    </div>
+
+    <!-- Featured Image -->
+    <% if (item.imagePath) { %>
+      <div class="mb-8">
+        <img src="/<%= item.imagePath %>" alt="<%= language === 'en' ? item.title_en : item.title_tw %>"
+          class="w-full h-auto rounded-lg shadow-md">
+      </div>
+      <% } %>
+
+        <!-- Content -->
+        <div class="prose prose-lg max-w-none mb-8 w-full">
+          <div class="quill-content w-full">
+            <% let content=language==='en' ? item.content_en : item.content_tw; // Also handle the [Platform: ID] format
+              content=content.replace(/\[Platform:\s*(\d+)\]/gi, (match, id)=> {
+              return `
+              <div class="platform-embed-container">
+                <div class="platform-embed-item">
+                  <div class="platform-embed-header">
+                    <h4>Platform Content #${id}</h4>
+                  </div>
+                  <div class="platform-embed-body">
+                    <p>Platform content will be displayed here. ID: ${id}, Language: ${language}</p>
+                    <a href="/admin/platforms/edit/${id}" target="_blank" class="text-blue-600 hover:underline">
+                      View platform content in admin
+                    </a>
+                  </div>
+                </div>
+              </div>
+              `;
+              });
+              // Handle any platform placeholders that weren't processed by the backend
+              content = content.replace(/\[PLATFORM:(\d+):([a-z]{2})\]/g, (match, id, lang) => {
+              return `
+              <div class="platform-embed-container">
+                <div class="platform-embed-item">
+                  <div class="platform-embed-header">
+                    <h4>Platform Content #${id}</h4>
+                  </div>
+                  <div class="platform-embed-body">
+                    <p>Platform content will be displayed here. ID: ${id}, Language: ${lang}</p>
+                    <a href="/admin/platforms/edit/${id}" target="_blank" class="text-blue-600 hover:underline">
+                      View platform content in admin
+                    </a>
+                  </div>
+                </div>
+              </div>
+              `;
+              });
+              %>
+              <%- content %>
+          </div>
+        </div>
+
+        <!-- External Link -->
+        <% if (item.url) { %>
+          <div class="mt-8">
+            <a href="<%= item.url %>" target="_blank" rel="noopener noreferrer"
+              class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+              <%= language==='en' ? 'Learn More' : '了解更多' %>
+                <svg class="ml-2 -mr-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd"
+                    d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                    clip-rule="evenodd"></path>
+                </svg>
+            </a>
+          </div>
+          <% } %>
+
+            <!-- Back to Promotions -->
+            <div class="mt-12">
+              <a href="/<%= language %>/promotions" class="inline-flex items-center text-blue-600 hover:text-blue-800">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                  </path>
+                </svg>
+                <%= language==='en' ? 'Back to Promotions' : '返回推動方案列表' %>
+              </a>
+            </div>
+  </div>
+
+  <%- contentFor('head') %>
+    <style>
+      /* Ensure Quill content displays properly */
+      .quill-content .ql-editor {
+        padding: 0;
+      }
+
+      .quill-content .ql-container.ql-snow {
+        border: none;
+      }
+
+      /* Additional styling for embedded content */
+      .prose img {
+        border-radius: 0.375rem;
+      }
+
+      .prose h1,
+      .prose h2,
+      .prose h3,
+      .prose h4,
+      .prose h5,
+      .prose h6 {
+        color: #1e293b;
+        margin-top: 1.5em;
+        margin-bottom: 0.75em;
+      }
+
+      .prose p {
+        margin-bottom: 1.25em;
+      }
+
+      .prose ul,
+      .prose ol {
+        margin-bottom: 1.25em;
+        padding-left: 1.5em;
+      }
+
+      .prose li {
+        margin-bottom: 0.5em;
+      }
+
+      .prose a {
+        color: #2563eb;
+        text-decoration: underline;
+      }
+
+      .prose a:hover {
+        color: #1d4ed8;
+      }
+
+      .prose blockquote {
+        border-left: 4px solid #e2e8f0;
+        padding-left: 1em;
+        font-style: italic;
+        color: #64748b;
+      }
+
+      /* Platform Embed Styling */
+      .platform-embed-container {
+        margin: 1.5rem 0;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        background-color: #f8fafc;
+        width: 100%;
+      }
+
+      .platform-embed-item {
+        padding: 1rem;
+      }
+
+      .platform-embed-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 0.75rem;
+      }
+
+      .platform-embed-header h4 {
+        font-weight: 600;
+        font-size: 1.125rem;
+        color: #4338ca;
+        margin: 0;
+      }
+
+      .platform-embed-category {
+        font-size: 0.875rem;
+        color: #6b7280;
+        background-color: #f3f4f6;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+      }
+
+      .platform-embed-body {
+        margin-bottom: 1rem;
+        font-size: 0.975rem;
+        line-height: 1.5;
+        color: #374151;
+      }
+
+      .platform-embed-error {
+        padding: 1rem;
+        background-color: #fee2e2;
+        border: 1px solid #fecaca;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        margin: 1.5rem 0;
+      }
+    </style>
+
+    <!-- Include platform viewer script -->
+    <script src="/js/platform-viewer.js"></script>

@@ -11,19 +11,47 @@ async function parsePlatformEmbeds(content, language = 'en') {
   if (!content) return '';
   
   try {
-    // Regular expression to match platform embeds
-    // Matches: <div class="platform-embed-container" data-platform-id="123">...</div>
-    const regex = /<div[^>]*class="platform-embed-container"[^>]*data-platform-id="(\d+)"[^>]*>.*?<\/div>/gs;
+    // Regular expressions to match platform embeds
+    // Legacy format: <div class="platform-embed-container" data-platform-id="123">...</div>
+    const legacyRegex = /<div[^>]*class="platform-embed-container"[^>]*data-platform-id="(\d+)"[^>]*>.*?<\/div>/gs;
+    // Text placeholder format: [PLATFORM:123:en]
+    const placeholderRegex = /\[PLATFORM:(\d+):([a-z]{2})\]/g;
+    // Simple format: [Platform: 123]
+    const simpleRegex = /\[Platform:\s*(\d+)\]/gi;
     
-    // Find all platform embeds in the content
-    const matches = [...content.matchAll(regex)];
+    // First check for legacy format
+    let matches = [...content.matchAll(legacyRegex)];
+    const legacyMatches = matches.map(match => ({
+      fullMatch: match[0],
+      platformId: parseInt(match[1], 10),
+      language: null // Will use the provided language parameter
+    }));
     
-    if (matches.length === 0) {
+    // Then check for new format
+    matches = [...content.matchAll(placeholderRegex)];
+    const newMatches = matches.map(match => ({
+      fullMatch: match[0],
+      platformId: parseInt(match[1], 10),
+      language: match[2] // Language specified in the embed
+    }));
+    
+    // Then check for simple format
+    matches = [...content.matchAll(simpleRegex)];
+    const simpleMatches = matches.map(match => ({
+      fullMatch: match[0],
+      platformId: parseInt(match[1], 10),
+      language: null // Will use the provided language parameter
+    }));
+    
+    // Combine all matches
+    const allMatches = [...legacyMatches, ...newMatches, ...simpleMatches];
+    
+    if (allMatches.length === 0) {
       return content;
     }
     
     // Get all platform IDs
-    const platformIds = matches.map(match => parseInt(match[1], 10)).filter(id => !isNaN(id));
+    const platformIds = allMatches.map(match => match.platformId).filter(id => !isNaN(id));
     
     if (platformIds.length === 0) {
       return content;
@@ -54,9 +82,9 @@ async function parsePlatformEmbeds(content, language = 'en') {
     
     // Replace each platform embed with actual content
     let result = content;
-    for (const match of matches) {
-      const fullMatch = match[0];
-      const platformId = parseInt(match[1], 10);
+    for (const match of allMatches) {
+      const fullMatch = match.fullMatch;
+      const platformId = match.platformId;
       
       if (isNaN(platformId)) continue;
       
@@ -65,10 +93,11 @@ async function parsePlatformEmbeds(content, language = 'en') {
       if (!platform) {
         // Platform not found, replace with error message
         const errorHtml = `
-          <div class="platform-embed-error">
-            <div class="platform-embed-error-icon">⚠️</div>
-            <div class="platform-embed-error-message">
-              Platform item #${platformId} not found or not available
+          <div class="prose max-w-none quill-content">
+            <div class="ql-container ql-snow" style="border: none;">
+              <div class="ql-editor">
+                <p>Platform item #${platformId} not found or not available</p>
+              </div>
             </div>
           </div>
         `;
@@ -76,28 +105,19 @@ async function parsePlatformEmbeds(content, language = 'en') {
         continue;
       }
       
-      // Get content based on language
-      const title = language === 'en' ? platform.title_en : platform.title_tw;
-      const content = language === 'en' ? platform.content_en : platform.content_tw;
+      // Get content based on language (use match.language if specified, otherwise use the provided language parameter)
+      const embedLanguage = match.language || language;
+      const title = embedLanguage === 'en' ? platform.title_en : platform.title_tw;
+      const content = embedLanguage === 'en' ? platform.content_en : platform.content_tw;
       
       // Create HTML for the platform
       const platformHtml = `
-        <div class="platform-embed-container">
-          <div class="platform-embed-item">
-            <div class="platform-embed-header">
-              <h4>${title}</h4>
-              ${platform.category ? 
-                `<div class="platform-embed-category">${language === 'en' ? platform.category.name_en : platform.category.name_tw}</div>` : 
-                ''}
-            </div>
-            <div class="platform-embed-body">
+        <div class="prose max-w-none quill-content">
+          <div class="ql-container ql-snow" style="border: none;">
+            <div class="ql-editor">
               ${content || ''}
+              ${platform.imagePath ? `<img src="${platform.imagePath}" alt="${title}" style="max-width: 100%; height: auto;">` : ''}
             </div>
-            ${platform.imagePath ? `
-              <div class="platform-embed-image">
-                <img src="${platform.imagePath}" alt="${title}">
-              </div>
-            ` : ''}
           </div>
         </div>
       `;
@@ -113,4 +133,4 @@ async function parsePlatformEmbeds(content, language = 'en') {
   }
 }
 
-module.exports = { parsePlatformEmbeds }; 
+module.exports = { parsePlatformEmbeds };

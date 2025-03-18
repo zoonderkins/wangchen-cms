@@ -47,15 +47,18 @@ exports.saveSiteSettings = async (req, res) => {
     // Process logo uploads if they exist
     if (req.files) {
       if (req.files.logo_desktop) {
-        data.logo_desktop_path = req.files.logo_desktop[0].path.replace(/\\/g, '/');
+        // Store path relative to public directory
+        data.logo_desktop_path = req.files.logo_desktop[0].path.replace(/^public\//, '');
       }
 
       if (req.files.logo_tablet) {
-        data.logo_tablet_path = req.files.logo_tablet[0].path.replace(/\\/g, '/');
+        // Store path relative to public directory
+        data.logo_tablet_path = req.files.logo_tablet[0].path.replace(/^public\//, '');
       }
 
       if (req.files.logo_mobile) {
-        data.logo_mobile_path = req.files.logo_mobile[0].path.replace(/\\/g, '/');
+        // Store path relative to public directory
+        data.logo_mobile_path = req.files.logo_mobile[0].path.replace(/^public\//, '');
       }
     }
 

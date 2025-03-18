@@ -1,9 +1,9 @@
 const prisma = require('../lib/prisma');
 const logger = require('../config/logger');
+const { parsePlatformEmbeds } = require('../utils/platformEmbedParser');
 const slugify = require('slugify');
 const fs = require('fs');
 const path = require('path');
-const { parsePlatformEmbeds } = require('../utils/platformEmbedParser');
 
 // List all promotion categories
 exports.listCategories = async (req, res) => {
@@ -673,6 +673,20 @@ exports.listPromotionsForFrontend = async (req, res) => {
             })
         ]);
         
+        // Parse platform embeds in content
+        const parsedItems = await Promise.all(items.map(async item => {
+            try {
+                const contentField = language === 'en' ? 'content_en' : 'content_tw';
+                item[contentField] = await parsePlatformEmbeds(item[contentField], language);
+                logger.info(`Successfully parsed platform embeds for promotion ${item.id} in ${language}`);
+                return item;
+            } catch (parseError) {
+                logger.error(`Error parsing platform embeds for promotion ${item.id}:`, parseError);
+                // Continue with original content if parsing fails
+                return item;
+            }
+        }));
+        
         // Add helper function for getting content in the current language
         const getContent = (item, field) => {
             const langField = `${field}_${language}`;
@@ -684,7 +698,7 @@ exports.listPromotionsForFrontend = async (req, res) => {
         
         res.render('frontend/promotions', {
             title: language === 'en' ? 'Promotions' : '推動方案',
-            items,
+            items: parsedItems,
             categories,
             navigationPages,
             selectedCategory: category || '',
@@ -764,6 +778,16 @@ exports.getPromotionItemForFrontend = async (req, res) => {
                 },
                 layout: 'layouts/frontend'
             });
+        }
+        
+        // Parse platform embeds in content
+        const contentField = language === 'en' ? 'content_en' : 'content_tw';
+        try {
+            item[contentField] = await parsePlatformEmbeds(item[contentField], language);
+            logger.info(`Successfully parsed platform embeds for promotion ${item.id} in ${language}`);
+        } catch (parseError) {
+            logger.error(`Error parsing platform embeds for promotion ${item.id}:`, parseError);
+            // Continue with original content if parsing fails
         }
         
         // Add helper function for getting content in the current language

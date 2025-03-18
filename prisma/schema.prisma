@@ -588,6 +588,8 @@ model VisitCounter {
 model VisitCounterHistory {
   id        Int      @id @default(autoincrement())
   count     Int      @default(0)
+  todayCount Int     @default(0)
+  lastReset DateTime @default(now())
   date      DateTime @default(now())
   createdAt DateTime @default(now())
 }

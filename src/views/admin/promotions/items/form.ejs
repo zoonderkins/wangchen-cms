@@ -23,8 +23,8 @@
 
     <!-- Item Form -->
     <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
-      <form action="<%= item ? `/admin/promotions/items/${item.id}` : '/admin/promotions/items' %>"
-        method="POST" enctype="multipart/form-data">
+      <form action="<%= item ? `/admin/promotions/items/${item.id}` : '/admin/promotions/items' %>" method="POST"
+        enctype="multipart/form-data">
         <!-- Basic Information Section -->
         <div class="mb-6">
           <h3 class="text-lg font-medium text-gray-700 mb-4 pb-2 border-b">基本資訊</h3>
@@ -40,8 +40,7 @@
               <option value="">選擇類別</option>
               <% if (categories && categories.length> 0) { %>
                 <% categories.forEach(category=> { %>
-                  <option value="<%= category.id %>" <%=item && item.categoryId===category.id ? 'selected' : ''
-                    %>>
+                  <option value="<%= category.id %>" <%=item && item.categoryId===category.id ? 'selected' : '' %>>
                     <%= category.name_en %> / <%= category.name_tw %>
                   </option>
                   <% }); %>
@@ -76,8 +75,7 @@
             <input
               class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
               type="date" id="publishedDate" name="publishedDate"
-              value="<%= item ? item.formattedPublishedDate : new Date().toISOString().split('T')[0] %>"
-              required />
+              value="<%= item ? item.formattedPublishedDate : new Date().toISOString().split('T')[0] %>" required />
           </div>
         </div>
 
@@ -92,8 +90,8 @@
             </label>
             <input
               class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
-              placeholder="請輸入英文標題" type="text" id="title_en" name="title_en"
-              value="<%= item ? item.title_en : '' %>" required />
+              placeholder="請輸入英文標題" type="text" id="title_en" name="title_en" value="<%= item ? item.title_en : '' %>"
+              required />
             <p class="mt-1 text-xs text-gray-500">此標題將用於生成網址代碼。</p>
           </div>
 
@@ -105,7 +103,8 @@
             <div id="editor_en" class="mt-1 quill-editor" data-required="true"></div>
             <textarea
               class="hidden block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-textarea"
-              rows="10" placeholder="請輸入英文HTML內容" id="content_en" name="content_en"><%= item ? item.content_en : '' %></textarea>
+              rows="10" placeholder="請輸入英文HTML內容" id="content_en"
+              name="content_en"><%= item ? item.content_en : '' %></textarea>
             <p class="mt-1 text-xs text-gray-500">您可以使用HTML標籤進行格式化。您也可以嵌入平台項目。</p>
           </div>
         </div>
@@ -121,8 +120,8 @@
             </label>
             <input
               class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
-              placeholder="請輸入繁體中文標題" type="text" id="title_tw" name="title_tw"
-              value="<%= item ? item.title_tw : '' %>" required />
+              placeholder="請輸入繁體中文標題" type="text" id="title_tw" name="title_tw" value="<%= item ? item.title_tw : '' %>"
+              required />
           </div>
 
           <!-- Chinese Content -->
@@ -133,7 +132,8 @@
             <div id="editor_tw" class="mt-1 quill-editor" data-required="true"></div>
             <textarea
               class="hidden block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-textarea"
-              rows="10" placeholder="請輸入繁體中文HTML內容" id="content_tw" name="content_tw"><%= item ? item.content_tw : '' %></textarea>
+              rows="10" placeholder="請輸入繁體中文HTML內容" id="content_tw"
+              name="content_tw"><%= item ? item.content_tw : '' %></textarea>
             <p class="mt-1 text-xs text-gray-500">您可以使用HTML標籤進行格式化。您也可以嵌入平台項目。</p>
           </div>
         </div>
@@ -220,7 +220,33 @@
   <!-- Quill.js Editor Setup -->
   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
-  <script src="/js/platform-embed.js"></script>
+
+  <!-- Platform Embed Handler -->
+  <script>
+    // Platform Embed Handler
+    window.platformEmbedHandler = function () {
+      const activeEditor = this.quill;
+      const editorId = activeEditor.container.id;
+      const language = editorId === 'editor_en' ? 'en' : 'tw';
+
+      // Create a platform ID input dialog
+      const platformId = prompt(`Enter Platform ID to insert (currently in ${language === 'en' ? 'English' : 'Chinese'} editor):`);
+
+      if (platformId && !isNaN(platformId)) {
+        // Instead of trying to insert HTML directly, we'll insert a text placeholder
+        // that will be processed by the backend
+        const platformPlaceholder = `[PLATFORM:${platformId}:${language}]`;
+
+        // Insert at current cursor position
+        const range = activeEditor.getSelection(true);
+        activeEditor.insertText(range.index, platformPlaceholder, 'user');
+        activeEditor.setSelection(range.index + platformPlaceholder.length, 'silent');
+
+        // Feedback to user
+        console.log(`Inserted platform ID ${platformId} with language: ${language}`);
+      }
+    };
+  </script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -235,6 +261,35 @@
         ['clean'],
         ['platform'] // Custom button for platform embed
       ];
+
+      // Function to enhance platform placeholders in the editor
+      function enhancePlatformPlaceholders(editor) {
+        const content = editor.container.querySelector('.ql-editor');
+        if (!content) return;
+
+        // Find all platform placeholders
+        const regex = /\[PLATFORM:(\d+):([a-z]{2})\]/g;
+        const html = content.innerHTML;
+
+        // Replace placeholders with styled spans
+        const enhancedHtml = html.replace(regex, (match, id, lang) => {
+          return `<span class="platform-placeholder" data-id="${id}" data-lang="${lang}">[Platform: ${id}]</span>`;
+        });
+
+        if (html !== enhancedHtml) {
+          content.innerHTML = enhancedHtml;
+        }
+      }
+
+      // Add event listener to update placeholders after changes
+      function setupPlatformPlaceholderEnhancement(editor) {
+        editor.on('text-change', function () {
+          // Use setTimeout to let Quill finish its rendering
+          setTimeout(() => {
+            enhancePlatformPlaceholders(editor);
+          }, 10);
+        });
+      }
 
       // Initialize English editor
       const quill_en = new Quill('#editor_en', {
@@ -276,38 +331,46 @@
         quill_tw.root.innerHTML = content_tw;
       }
 
+      // Apply platform placeholder enhancement
+      enhancePlatformPlaceholders(quill_en);
+      enhancePlatformPlaceholders(quill_tw);
+
+      // Set up enhancement to run on text changes
+      setupPlatformPlaceholderEnhancement(quill_en);
+      setupPlatformPlaceholderEnhancement(quill_tw);
+
       // Update hidden textarea on form submit
       const form = document.querySelector('form');
       form.addEventListener('submit', function (event) {
         // Transfer content from Quill to hidden textareas
         document.getElementById('content_en').value = quill_en.root.innerHTML;
         document.getElementById('content_tw').value = quill_tw.root.innerHTML;
-        
+
         // Validate required Quill editors
         const requiredEditors = document.querySelectorAll('.quill-editor[data-required="true"]');
         let isValid = true;
-        
+
         requiredEditors.forEach(editor => {
           const editorId = editor.id;
           const quillInstance = editorId === 'editor_en' ? quill_en : quill_tw;
           const content = quillInstance.getText().trim();
-          
+
           if (content.length === 0) {
             isValid = false;
             // Add visual indication of error
             editor.style.border = '1px solid #EF4444';
-            
+
             // Show error message
             const errorMsg = document.createElement('p');
             errorMsg.className = 'mt-1 text-xs text-red-500';
             errorMsg.textContent = '此欄位為必填';
-            
+
             // Remove any existing error message
             const existingError = editor.parentNode.querySelector('.text-red-500');
             if (existingError) {
               editor.parentNode.removeChild(existingError);
             }
-            
+
             editor.parentNode.insertBefore(errorMsg, editor.nextSibling);
           } else {
             // Reset any error styling
@@ -318,7 +381,7 @@
             }
           }
         });
-        
+
         if (!isValid) {
           event.preventDefault();
         }
