@@ -568,6 +568,8 @@ model FrontpageImage {
   originalName String
   path         String
   order        Int           @default(0)
+  alt          String?
+  url          String?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   itemId       Int

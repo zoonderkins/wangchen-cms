@@ -61,10 +61,22 @@
 
           <div id="image-upload" class="mb-4 hidden">
             <label class="block text-sm font-medium text-gray-700 mb-2">圖片上傳 (最多10張)</label>
-            <div id="image-container" class="grid grid-cols-2 gap-4 mb-4">
-              <div class="image-upload-item">
-                <input type="file" name="images" accept="image/*" multiple
-                  class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            <div id="image-container" class="grid grid-cols-1 gap-4 mb-4">
+              <div class="image-upload-item border rounded p-4">
+                <div class="mb-3">
+                  <input type="file" name="images" accept="image/*" multiple
+                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+                <div class="mb-3">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">替代文字 (Alt)</label>
+                  <input type="text" name="image_alts" placeholder="描述圖片內容"
+                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">連結網址 (URL)</label>
+                  <input type="url" name="image_urls" placeholder="https://example.com"
+                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
               </div>
             </div>
             <button type="button" id="add-image"
@@ -135,13 +147,23 @@
       addImageBtn.addEventListener('click', function () {
         if (imageCount < 10) {
           const newImageInput = document.createElement('div');
-          newImageInput.className = 'image-upload-item';
+          newImageInput.className = 'image-upload-item border rounded p-4 mt-4';
           newImageInput.innerHTML = `
-                    <div class="flex items-center">
-                        <input type="file" name="images" accept="image/*" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        <button type="button" class="remove-image ml-2 text-red-500 hover:text-red-700">
-                            <i class="fas fa-times"></i>
+                    <div class="flex justify-end mb-2">
+                        <button type="button" class="remove-image text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i> 移除
                         </button>
+                    </div>
+                    <div class="mb-3">
+                        <input type="file" name="images" accept="image/*" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">替代文字 (Alt)</label>
+                        <input type="text" name="image_alts" placeholder="描述圖片內容" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">連結網址 (URL)</label>
+                        <input type="url" name="image_urls" placeholder="https://example.com" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                     </div>
                 `;
           imageContainer.appendChild(newImageInput);
@@ -152,6 +174,10 @@
           removeBtn.addEventListener('click', function () {
             imageContainer.removeChild(newImageInput);
             imageCount--;
+
+            if (imageCount < 10) {
+              addImageBtn.disabled = false;
+            }
           });
         }
 

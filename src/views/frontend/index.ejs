@@ -1,361 +1,419 @@
 <%- contentFor('body') %>
-    <!-- 新版 - 首頁橫幅, 桌面, 平板, 手機 -->
-    <!-- Slide Section -->
-    <section class="splide">
-        <% if (banners && banners.length> 0) { %>
-            <div class="splide__track">
-                <ul class="splide__list">
-                    <% banners.forEach((banner, index)=> { %>
-                        <!-- Slide 1 -->
-                        <li class="splide__slide">
-                            <div class="slide flex relative">
-                                <div class="w-full">
-                                    <% if (banner.mediaType==='image' ) { %>
-                                        <picture class="block w-full h-full">
-                                            <% if (banner.mediaPathDesktop) { %>
-                                                <source media="(min-width: 1024px)" srcset="<%= banner.mediaPathDesktop %>">
-                                            <% } %>
-                                            <% if (banner.mediaPathTablet) { %>
-                                                <source media="(min-width: 640px)" srcset="<%= banner.mediaPathTablet %>">
-                                            <% } %>
-                                            <% if (banner.mediaPathMobile) { %>
-                                                <img class="w-full h-full object-cover" src="<%= banner.mediaPathMobile %>" alt="響應式圖片">
-                                            <% } %>
-                                        </picture>
-                                    <% } %>
-                                </div>
-                                <!-- 隱形線包含文字內容，垂直置中 -->
-                                <div class="absolute bottom-40 lg:inset-y-0 left-8 sm:left-16 flex items-center">
-                                    <div class="relative">
-                                        <!-- h1 貼齊隱形線上緣 -->
-                                        <h1 class="absolute bottom-0 mb-4 w-full text-white"><%= banner.title %></h1>
-                                        <!-- 隱形線 -->
-                                        <div class="banner-title"></div>
-                                        <!-- p 貼齊隱形線下緣 -->
-                                        <% if (banner.description) { %>
-                                            <h2 class="h3 absolute top-0 mt-0 w-full text-white"><%= banner.description %></h2>
+
+    <% if (banners && banners.length> 0) { %>
+        <!-- Banner Carousel -->
+        <div class="relative w-full overflow-hidden bg-gray-100 mb-8" style="height: 400px;">
+            <!-- Banner Container -->
+            <div id="banner-carousel" class="relative w-full h-full">
+                <% banners.forEach((banner, index)=> { %>
+                    <div class="banner-slide absolute inset-0 w-full h-full"
+                        style="display: <%= index === 0 ? 'block' : 'none' %>;" data-index="<%= index %>">
+                        <% if (banner.mediaType==='image' ) { %>
+                            <% if (banner.url) { %>
+                                <a href="<%= banner.url %>" target="_blank" rel="noopener noreferrer"
+                                    class="block w-full h-full">
+                                    <picture>
+                                        <% if (banner.mediaPathMobile) { %>
+                                        <source media="(max-width: 640px)" srcset="<%= banner.mediaPathMobile %>">
                                         <% } %>
+                                        <% if (banner.mediaPathTablet) { %>
+                                        <source media="(max-width: 1024px)" srcset="<%= banner.mediaPathTablet %>">
+                                        <% } %>
+                                        <% if (banner.mediaPathDesktop) { %>
+                                        <source media="(min-width: 1025px)" srcset="<%= banner.mediaPathDesktop %>">
+                                        <% } %>
+                                        <img src="<%= banner.mediaPath %>" alt="<%= banner.title %>"
+                                            class="w-full h-full object-cover">
+                                    </picture>
+                                </a>
+                                <% } else { %>
+                                    <picture>
+                                        <% if (banner.mediaPathMobile) { %>
+                                        <source media="(max-width: 640px)" srcset="<%= banner.mediaPathMobile %>">
+                                        <% } %>
+                                        <% if (banner.mediaPathTablet) { %>
+                                        <source media="(max-width: 1024px)" srcset="<%= banner.mediaPathTablet %>">
+                                        <% } %>
+                                        <% if (banner.mediaPathDesktop) { %>
+                                        <source media="(min-width: 1025px)" srcset="<%= banner.mediaPathDesktop %>">
+                                        <% } %>
+                                        <img src="<%= banner.mediaPath %>" alt="<%= banner.title %>"
+                                            class="w-full h-full object-cover">
+                                    </picture>
+                                    <% } %>
+                                        <% } else if (banner.mediaType==='video' ) { %>
+                                            <video id="video-<%= index %>" autoplay muted loop playsinline
+                                                class="w-full h-full object-cover">
+                                                <source src="<%= banner.mediaPath %>" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                            <% } %>
+                                                <div
+                                                    class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-4">
+                                                    <h2 class="text-xl font-bold">
+                                                        <%= banner.title %>
+                                                    </h2>
+                                                    <% if (banner.description) { %>
+                                                        <p class="mt-2">
+                                                            <%= banner.description %>
+                                                        </p>
+                                                        <% } %>
+                                                            <% if (banner.url && banner.mediaType !=='image' ) { %>
+                                                                <a href="<%= banner.url %>" target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    class="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Learn
+                                                                    More</a>
+                                                                <% } %>
+                                                </div>
+                    </div>
+                    <% }); %>
+
+                        <% if (banners.length> 1) { %>
+                            <!-- Navigation Arrows -->
+                            <a href="#" id="prev-banner"
+                                class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-70 text-white p-3 rounded-full z-20 hover:bg-opacity-90 focus:outline-none cursor-pointer"
+                                style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </a>
+                            <a href="#" id="next-banner"
+                                class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-70 text-white p-3 rounded-full z-20 hover:bg-opacity-90 focus:outline-none cursor-pointer"
+                                style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
+
+                            <!-- Indicators -->
+                            <div class="absolute bottom-20 left-0 right-0 flex justify-center space-x-3 z-20">
+                                <% banners.forEach((_, index)=> { %>
+                                    <a href="#"
+                                        class="banner-indicator h-4 w-4 rounded-full <%= index === 0 ? 'bg-white' : 'bg-gray-400' %> hover:bg-white focus:outline-none cursor-pointer"
+                                        data-index="<%= index %>"></a>
+                                    <% }); %>
+                            </div>
+                            <% } %>
+            </div>
+        </div>
+
+        <!-- Banner Carousel Script -->
+        <script>
+            // Wait for the DOM to be fully loaded
+            document.addEventListener('DOMContentLoaded', function () {
+                // Get all the elements we need
+                var slides = document.querySelectorAll('.banner-slide');
+                var prevButton = document.getElementById('prev-banner');
+                var nextButton = document.getElementById('next-banner');
+                var indicators = document.querySelectorAll('.banner-indicator');
+
+                // Only proceed if we have multiple slides
+                if (slides.length <= 1) return;
+
+                console.log('Carousel initialized with', slides.length, 'slides');
+
+                var currentIndex = 0;
+                var interval;
+
+                // Function to show a specific slide
+                function showSlide(index) {
+                    console.log('Showing slide', index);
+
+                    // Hide all slides
+                    for (var i = 0; i < slides.length; i++) {
+                        slides[i].style.display = 'none';
+                    }
+
+                    // Show the selected slide
+                    slides[index].style.display = 'block';
+
+                    // Update indicators
+                    for (var j = 0; j < indicators.length; j++) {
+                        indicators[j].classList.remove('bg-white');
+                        indicators[j].classList.add('bg-gray-400');
+                    }
+
+                    indicators[index].classList.remove('bg-gray-400');
+                    indicators[index].classList.add('bg-white');
+
+                    // Pause all videos
+                    var videos = document.querySelectorAll('.banner-slide video');
+                    for (var k = 0; k < videos.length; k++) {
+                        videos[k].pause();
+                    }
+
+                    // Play video if current slide has one
+                    var currentVideo = slides[index].querySelector('video');
+                    if (currentVideo) {
+                        currentVideo.play();
+                    }
+
+                    currentIndex = index;
+                }
+
+                // Function to show the previous slide
+                function showPrevSlide() {
+                    clearInterval(interval);
+                    var prevIndex = (currentIndex - 1 + slides.length) % slides.length;
+                    showSlide(prevIndex);
+                    startAutoRotation();
+                }
+
+                // Function to show the next slide
+                function showNextSlide() {
+                    clearInterval(interval);
+                    var nextIndex = (currentIndex + 1) % slides.length;
+                    showSlide(nextIndex);
+                    startAutoRotation();
+                }
+
+                // Function to start automatic rotation
+                function startAutoRotation() {
+                    interval = setInterval(function () {
+                        var nextIndex = (currentIndex + 1) % slides.length;
+                        showSlide(nextIndex);
+                    }, 6000);
+                }
+
+                // Add event listeners to the previous and next buttons
+                if (prevButton) {
+                    prevButton.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        console.log('Previous button clicked');
+                        showPrevSlide();
+                        return false;
+                    });
+                }
+
+                if (nextButton) {
+                    nextButton.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        console.log('Next button clicked');
+                        showNextSlide();
+                        return false;
+                    });
+                }
+
+                // Add event listeners to the indicators
+                for (var l = 0; l < indicators.length; l++) {
+                    (function (index) {
+                        indicators[index].addEventListener('click', function (e) {
+                            e.preventDefault();
+                            console.log('Indicator', index, 'clicked');
+                            clearInterval(interval);
+                            showSlide(index);
+                            startAutoRotation();
+                            return false;
+                        });
+                    })(l);
+                }
+
+                // Start automatic rotation
+                startAutoRotation();
+            });
+        </script>
+        <% } %>
+<!-- Frontpage Picture Items Section -->
+<% if (pictureItems && pictureItems.length> 0) { %>
+    <div class="py-12">
+        <div class="container mx-auto px-4">
+            <% pictureItems.forEach(function(item) { %>
+                <div class="mb-16">
+                    <h2 class="text-2xl font-bold mb-8 text-center">
+                        <%= currentLanguage==='en' ? item.title_en : item.title_tw %>
+                    </h2>
+
+                    <% if (item.images && item.images.length> 0) { %>
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                            <% item.images.forEach(function(image) { %>
+                                <div class="overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                                    <% if (image.url) { %>
+                                        <a href="<%= image.url %>" target="_blank" rel="noopener noreferrer">
+                                            <img src="<%= image.path %>"
+                                                alt="<%= image.alt || (currentLanguage === 'en' ? item.title_en : item.title_tw) %>"
+                                                class="w-full h-48 object-cover">
+                                        </a>
+                                        <% } else { %>
+                                            <img src="<%= image.path %>"
+                                                alt="<%= image.alt || (currentLanguage === 'en' ? item.title_en : item.title_tw) %>"
+                                                class="w-full h-48 object-cover">
+                                            <% } %>
+                                </div>
+                                <% }); %>
+                        </div>
+                        <% } %>
+                </div>
+                <% }); %>
+        </div>
+    </div>
+    <% } %>
+            <!-- Latest News Section  首頁讀取最新消息 6筆-->
+            <% if (latestNews && latestNews.length> 0) { %>
+                <div class="bg-gray-50 py-12">
+                    <div class="container mx-auto px-4">
+                        <h2 class="text-2xl font-bold mb-6 text-center">
+                            <%= currentLanguage==='en' ? 'Latest News' : '最新消息' %>
+                        </h2>
+
+                        <!-- News Items -->
+                        <div class="space-y-6">
+                            <% latestNews.forEach(function(item) { %>
+                                <div class="bg-white p-4 rounded-lg shadow-md">
+                                    <div class="flex flex-col md:flex-row gap-4">
+                                        <% if (item.imageUrl) { %>
+                                            <div class="md:w-1/4">
+                                                <img src="<%= item.imageUrl %>" alt="<%= item.title %>"
+                                                    class="w-full h-auto object-cover rounded">
+                                            </div>
+                                            <% } %>
+                                                <div class="<%= item.imageUrl ? 'md:w-3/4' : 'w-full' %>">
+                                                    <h2 class="text-xl font-semibold mb-2">
+                                                        <%= item.title %>
+                                                    </h2>
+                                                    <div class="flex flex-wrap gap-2 mb-3">
+                                                        <span class="text-gray-500 text-sm">
+                                                            <%= new
+                                                                Date(item.publishedDate).toLocaleDateString(currentLanguage==='tw'
+                                                                ? 'zh-TW' : 'en-US' ) %>
+                                                        </span>
+                                                        <% if (item.category) { %>
+                                                            <span
+                                                                class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                                                                <%= item.category.name %>
+                                                            </span>
+                                                            <% } %>
+                                                    </div>
+                                                    <% if (item.url) { %>
+                                                        <a href="<%= item.url %>" target="_blank"
+                                                            class="text-blue-600 hover:underline">
+                                                            <%= currentLanguage==='tw' ? '閱讀更多' : 'Read More' %> →
+                                                        </a>
+                                                        <% } %>
+                                                </div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
-                    <% }); %>
-                </ul>
-            </div>
-        <% } %>
-        <div class="absolute bottom-0 w-full h-full bg-white" id="splideLoader"></div>
-        <div class="absolute bottom-0 w-full flex flex-col sm:flex-row justify-center">
-            <button class="max-w-xl px-3 py-2 mx-10 sm:px-12 sm:py-3 sm:mx-8 sm:w-1/2 mb-2 sm:mb-0 banner-button-yellow">
-                <%= currentLanguage==='en' ? 'Nationwide On-Site Services' : '全區進駐服務' %>
-                
-            </button>
-            <button class="max-w-xl px-3 py-2 mx-10 sm:px-12 sm:py-3 sm:mx-8 sm:w-1/2 banner-button-lightgreen ">
-                <%= currentLanguage==='en' ? 'Industry Promotion Cooperation' : '產業推廣合作' %>
-            </button>
-        </div>
-    </section>
-    
-    
-
-
-    <!-- Content Section -->
-    <% if (plainTextItems && plainTextItems.length> 0) { %>
-        <% plainTextItems.forEach(function(item) { %>
-            <section class="bg-promotion bg-center bg-cover py-12 md:py-24 px-8 md:px-16 lg:px-24">
-                <div class="flex flex-col lg:flex-row items-center mb-16">
-                    <div class="w-full lg:w-1/2 mb-0">
-                        <h2 class="mb-4 text-center lg:text-left"><%= currentLanguage==='en' ? item.title_en : item.title_tw %></h2>
-                        <div class="gradient-line w-24 h-2 mx-auto lg:mx-0 mb-12"></div>
-                    </div>
-                    <div class="w-full lg:w-1/2 flex justify-center">
-                        <img class="img-shadow" src="../images/desktop/contentImg.jpg" alt="">
+                                <% }); %>
+                        </div>
                     </div>
                 </div>
-                <div class="w-full">
-                    <p class=""><%- currentLanguage==='en' ? item.content_en : item.content_tw %></p>
-                </div>
-            </section>
-        <% }); %>
-    <% } %>
-
-    <% if (pictureItems && pictureItems.length> 0) { %>
-        <% pictureItems.forEach(function(item) { %>
-            <!-- Features Section -->
-            <section class="bg-plan bg-center bg-cover py-16 px-6 md:px-16">
-                <h3 class="text-center mb-10"><%= currentLanguage==='en' ? item.title_en : item.title_tw %></h3>
-                <% if (item.images && item.images.length> 0) { %>
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-14 gap-y-24 sm:gap-10">
-                        <% item.images.forEach(function(image) { %>
-                            <div class="flex justify-center">
-                                <div class="w-[90%] md:w-full rounded-2xl transform transition-transform hover:-translate-y-1 cursor-pointer">
-                                    <img src="<%= image.path %>" alt="<%= currentLanguage=== 'en' ? item.title_en : item.title_tw %>" class="w-full">
-                                </div>
-                            </div>
-                        <% }); %>
-                    </div>
                 <% } %>
-            </section>
-        <% }); %>
-    <% } %>
 
-    <!-- Latest News Section  首頁讀取最新消息 6筆-->
-    <% if (latestNews && latestNews.length> 0) { %>
-        <section class="bg-news bg-cover py-16 px-6 md:px-16 sm:bg-none">
-            <div class="flex flex-col sm:flex-row gap-8">
-                <!-- Left: Image (hidden on mobile) -->
-                <div class="hidden sm:block sm:w-1/2 flex items-center justify-center">
-                    <div class="flex items-center justify-center h-full">
-                        <img src="../images/tablet/newsLGBG.png" alt="最新活動照片" class="w-full h-auto rounded-lg">
-                    </div>
-                </div>
-                <!-- Right: News List -->
-                <div class="w-full sm:w-1/2">
-                    <h3 class="mb-2 text-center sm:text-left">
-                        <%= currentLanguage==='en' ? 'Latest News' : '最新消息' %>
-                    </h3>
-                    <div class="yellow-line w-24 h-2 mx-auto sm:mx-0 mb-8"></div>
-                    <div class="max-h-96 overflow-y-auto pr-2">
-                        <% latestNews.forEach(function(item) { %>
-                            <!-- News Item -->
-                            <div class="relative border-b border-gray-300 py-2 mb-4">
-                                <% if (item.category) { %>
-                                    <span class="<%= item.category.id === 1 ? 'bg-custom-lightblue' : 'bg-custom-lightgreen' %> absolute top-1 right-0 text-black px-2 py-0.5 rounded text-xs">
-                                        <%= item.category.name %>
-                                    </span>
-                                <% } %>
-                                <p class="mb-2">
-                                    <%= new
-                                        Date(item.publishedDate).toLocaleDateString(currentLanguage==='tw'
-                                        ? 'zh-TW' : 'en-US' ) %>
-                                </p>
-                                <a href="<%= item.url %>" target="_blank" class="no-underline">
-                                    <p class=""><%= item.title %></p>
-                                </a>
-                            </div>
-                        <% }); %>
-                    </div>
-                </div>
-            </div>
-        </section>
-    <% } %>
-
-    <!-- Partners Section -->
-    <section class="bg-partner bg-no-repeat bg-cover bg-bottom sm:bg-cover sm:bg-center px-6 py-12 sm:px-16 sm:py-20 lg:px-56 lg:py-28" id="partners">
-        <h3 class="mb-4 sm:mb-8 text-center"><span class="text-white"><%= currentLanguage==='en' ? 'Taiwan Smart System Integrated Manufacturing Platform' : '臺灣智慧系統整合製造平台' %></span><br class="lg:hidden"><span class="text-custom-yellow"><%= currentLanguage==='en' ? 'Partners' : '合作伙伴' %></span></h3>
-        <div class="flex flex-col sm:flex-row">
-            <!-- 手機版下拉選單 -->
-            <div class="block w-full sm:hidden mb-6 p-2 relative rounded-xl border">
-                <select id="platform-select" class="w-full  text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none">
-                    <option value="metal" selected>
-                        <%= currentLanguage==='en' ? 'Metal Processing' : '金屬加工' %>
-                    </option>
-                    <option value="plastic">
-                        <%= currentLanguage==='en' ? 'Smart Footwear' : '智慧鞋業' %>
-                    </option>
-                    <option value="shoes">
-                        <%= currentLanguage==='en' ? 'Smart Healthcare' : '智慧健康' %>
-                    </option>
-                    <option value="health">
-                        <%= currentLanguage==='en' ? 'Food & Hospitality' : '餐飲/住宿' %>
-                    </option>
-                    <option value="hospitality">
-                        <%= currentLanguage==='en' ? 'Semiconductor' : '半導體' %>
-                    </option>
-                    <option value="retail">
-                        <%= currentLanguage==='en' ? 'Smart manufacturing' : '智慧製造' %>
-                    </option>
-                    <option value="retail">
-                        <%= currentLanguage==='en' ? 'Smart energy' : '智慧能源' %>
-                    </option>
-                </select>
-                <!-- 自定義下拉箭頭 -->
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </div>
-            </div>
-    
-            <!-- 左側選單 (Desktop) -->
-            <div class="hidden sm:block sm:w-3/12 mr-6">
-                <ul class="">
-                    <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 border-l-4 border-custom-yellow" type="button">
-                            <%= currentLanguage==='en' ? 'Metal Processing' : '金屬加工' %>
-                        </button>
-                    </li>
-                    <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                            <%= currentLanguage==='en' ? 'Smart Footwear' : '智慧鞋業' %>
-                        </button>
-                    </li>
-                    <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                            <%= currentLanguage==='en' ? 'Smart Healthcare' : '智慧健康' %>
-                        </button>
-                    </li>
-                    <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                            <%= currentLanguage==='en' ? 'Food & Hospitality' : '餐飲/住宿' %>
-                        </button>
-                    </li>
-                    
-                    <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                            <%= currentLanguage==='en' ? 'Semiconductor' : '半導體' %>
-                        </button>
-                    </li>
-                    <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                            <%= currentLanguage==='en' ? 'Smart manufacturing' : '智慧製造' %>
-                        </button>
-                    </li>
-                    <li class="">
-                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                            <%= currentLanguage==='en' ? 'Smart energy' : '智慧能源' %>
-                        </button>
-                    </li>
-                </ul>
-            </div>
-    
-            <!-- 主內容區 -->
-            <div class="w-full sm:w-9/12">
-                <!-- 頂部標籤頁 -->
-                <div class="bg-white border-2 rounded-xl border-gray-100 p-4 mb-6 min-h-full">
-                    <div class="flex justify-center">
-                        <button class="companyTab px-4 py-2 border-b-2 border-custom-yellow text-custom-blue font-medium">
-                            <%= currentLanguage==='en' ? 'Suppliers' : '供應商' %>
-                        </button>
-                        <button class="companyTab px-4 py-2 border-b-2 border-gray-100 text-gray-500">
-                            <%= currentLanguage==='en' ? 'Buyers' : '需求商' %></button>
-                    </div>
-    
-                    <!-- 供應商列表 -->
-                    <div class="supplierList py-6 grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4">
-                        <!-- 供應商卡片 -->
-                        <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">廣杰精機股份有限公司</p>
-                        </div>
-                        <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">艾肯林科技股份有限公司</p>
-                        </div>
-                        <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">怡邦精密有限公司</p>
-                        </div>
-                        <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">達明機器人股份有限公司</p>
-                        </div>
-                        <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">帆宣系統科技股份有限公司</p>
-                        </div>
-                    </div>
-                    <!-- 需求商列表 -->
-                    <div class="demanderList py-6 hidden grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4">
-                        <!-- 需求商卡片 -->
-                        <!-- <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">需求商卡片</p>
-                        </div> -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-
-    <!-- 相關連結 Related Links Section -->
-    <% if (links && links.length> 0) { %>
-        <section class="py-12 px-5 lg:px-8">
-            <h3 class="text-center mb-2"><%= currentLanguage==='en' ? 'Related Links' : '相關連結' %></h3>
-            <div class="yellow-line w-24 h-2 mx-auto mb-16 text-center"></div>
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-6">
-                <% links.forEach(function(link) { %>
-                    <!-- Link Item -->
-                    <a href="<%= link.url %>" class="block no-underline" target="_blank">
-                        <div class="bg-gray-100 h-28 lg:h-36 rounded-xl flex items-center justify-center p-4 sm:p-6">
-                            <% if (link.image) { %>
-                                <div class="w-full flex items-center justify-center">
-                                    <img src="<%= link.image %>" alt="<%= currentLanguage==='en' ? link.title_en : link.title_tw %>" 
-                                    class="h-full w-full object-cover">
+                    <!-- Frontpage Plain Text Items Section -->
+                    <% if (plainTextItems && plainTextItems.length> 0) { %>
+                        <div class="bg-gray-50 py-12">
+                            <div class="container mx-auto px-4">
+                                <div class="grid grid-cols-1 gap-8">
+                                    <% plainTextItems.forEach(function(item) { %>
+                                        <div
+                                            class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                                            <div class="p-6">
+                                                <h3 class="text-xl font-semibold mb-4">
+                                                    <%= currentLanguage==='en' ? item.title_en : item.title_tw %>
+                                                </h3>
+                                                <div class="text-gray-600 whitespace-pre-line">
+                                                    <%- currentLanguage==='en' ? item.content_en : item.content_tw %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <% }); %>
                                 </div>
-                            <% } %>
+                            </div>
                         </div>
-                    </a>
-                <% }); %>
-            </div>
-        </section>
-    <% } %>
+                        <% } %>
 
+                            <!-- Frontpage Picture Items Section -->
+                            <% if (pictureItems && pictureItems.length> 0) { %>
+                                <div class="py-12">
+                                    <div class="container mx-auto px-4">
+                                        <% pictureItems.forEach(function(item) { %>
+                                            <div class="mb-16">
+                                                <h2 class="text-2xl font-bold mb-8 text-center">
+                                                    <%= currentLanguage==='en' ? item.title_en : item.title_tw %>
+                                                </h2>
 
-<%- contentFor('scripts') %>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var splide = new Splide( '.splide' ,{
-            type   : 'loop',
-        });
-        splide.mount();
-            
-        // 獲取覆蓋層元素
-        const splideLoader = document.getElementById('splideLoader');
-        // 使用 requestAnimationFrame 實現平滑的淡出效果
-        let opacity = 1;
-        const fadeOut = function() {
-            opacity -= 0.01; // 每次減少0.01，實現緩慢淡出
-            if (opacity <= 0) {
-                opacity = 0;
-                splideLoader.style.opacity = '0';
-                // 當完全透明時移除元素
-                setTimeout(function() {
-                splideLoader.style.display = 'none';
-                }, 100);
-                return;
-            }
-            splideLoader.style.opacity = opacity.toString();
-            requestAnimationFrame(fadeOut);
-        };
-        // 延遲一段時間後開始淡出動畫
-        setTimeout(function() {
-            requestAnimationFrame(fadeOut);
-        }, 500); // 可以調整這個延遲時間
+                                                <% if (item.images && item.images.length> 0) { %>
+                                                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                                                        <% item.images.forEach(function(image) { %>
+                                                            <div
+                                                                class="overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                                                                <img src="<%= image.path %>"
+                                                                    alt="<%= currentLanguage=== 'en' ? item.title_en : item.title_tw %>"
+                                                                    class="w-full h-48 object-cover">
+                                                            </div>
+                                                            <% }); %>
+                                                    </div>
+                                                    <% } %>
+                                            </div>
+                                            <% }); %>
+                                    </div>
+                                </div>
+                                <% } %>
 
+                                    <!-- Related Links Section -->
+                                    <% if (links && links.length> 0) { %>
+                                        <div class="container mx-auto px-4 py-8 mb-12">
+                                            <div class="max-w-6xl mx-auto">
+                                                <h2 class="text-2xl font-bold mb-6 text-center">
+                                                    <%= currentLanguage==='en' ? 'Related Links' : '相關連結' %>
+                                                </h2>
 
-        ///////////////////////////////////////////////////////////////////////
-
-        // 簡單的標籤切換功能
-        const categoryTabs = document.querySelectorAll('.categoryTab');
-        const companyTabs = document.querySelectorAll('.companyTab');
-        const supplierList = document.querySelector('.supplierList');
-        const demanderList = document.querySelector('.demanderList');
-        
-        categoryTabs.forEach(categoryTab => {
-            categoryTab.addEventListener('click', function() {
-                // 移除所有標籤的活動狀態
-                categoryTabs.forEach(t => {
-                    t.classList.remove('border-custom-yellow', 'border-l-4');
-                    t.classList.add('text-gray-500');
-                });
-                
-                // 設置當前標籤為活動狀態
-                this.classList.remove('text-gray-500');
-                this.classList.add('border-custom-yellow', 'border-l-4');
-            });
-        });
-
-        companyTabs.forEach((companyTab, index) => {
-            companyTab.addEventListener('click', function() {
-                companyTabs.forEach(tab => {
-                    // 切換標籤樣式
-                    tab.classList.toggle('border-custom-yellow', tab === this);
-                    tab.classList.toggle('text-custom-blue', tab === this);
-                    tab.classList.toggle('text-gray-500', tab !== this);
-                    tab.classList.toggle('border-gray-100', tab !== this);
-                });
-                // 切換內容顯示
-                const isSupplierTab = index === 0;
-                supplierList.classList.toggle('grid', isSupplierTab);
-                supplierList.classList.toggle('hidden', !isSupplierTab);
-                demanderList.classList.toggle('grid', !isSupplierTab);
-                demanderList.classList.toggle('hidden', isSupplierTab);
-            });
-        });
-    });
-</script>
+                                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                                    <% links.forEach(function(link) { %>
+                                                        <a href="<%= link.url %>" target="_blank"
+                                                            rel="noopener noreferrer" class="block group">
+                                                            <div
+                                                                class="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+                                                                <% if (link.image) { %>
+                                                                    <div class="h-40 overflow-hidden">
+                                                                        <img src="<%= link.image %>"
+                                                                            alt="<%= currentLanguage==='en' ? link.title_en : link.title_tw %>"
+                                                                            class="w-full h-full object-cover transition-transform duration-500 transform group-hover:scale-105">
+                                                                    </div>
+                                                                    <% } else { %>
+                                                                        <div
+                                                                            class="h-40 bg-gray-200 flex items-center justify-center">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                class="h-12 w-12 text-gray-400"
+                                                                                fill="none" viewBox="0 0 24 24"
+                                                                                stroke="currentColor">
+                                                                                <path stroke-linecap="round"
+                                                                                    stroke-linejoin="round"
+                                                                                    stroke-width="2"
+                                                                                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                                                                                </path>
+                                                                            </svg>
+                                                                        </div>
+                                                                        <% } %>
+                                                                            <div class="p-4">
+                                                                                <h3
+                                                                                    class="text-lg font-semibold text-gray-800 mb-2 group-hover:text-blue-600">
+                                                                                    <%= currentLanguage==='en' ?
+                                                                                        link.title_en : link.title_tw %>
+                                                                                </h3>
+                                                                                <div
+                                                                                    class="flex items-center text-gray-600 text-sm">
+                                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                        class="h-4 w-4 mr-1" fill="none"
+                                                                                        viewBox="0 0 24 24"
+                                                                                        stroke="currentColor">
+                                                                                        <path stroke-linecap="round"
+                                                                                            stroke-linejoin="round"
+                                                                                            stroke-width="2"
+                                                                                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
+                                                                                        </path>
+                                                                                    </svg>
+                                                                                    <%= currentLanguage==='en'
+                                                                                        ? 'Visit Link' : '訪問連結' %>
+                                                                                </div>
+                                                                            </div>
+                                                            </div>
+                                                        </a>
+                                                        <% }); %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <% } %>

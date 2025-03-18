@@ -95,7 +95,7 @@ exports.createForm = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        const { title_tw, title_en, content_tw, content_en, type, categoryId, order, status } = req.body;
+        const { title_tw, title_en, content_tw, content_en, type, categoryId, order, status, image_alts, image_urls } = req.body;
         
         // Create the frontpage item
         const item = await prisma.frontpageItem.create({
@@ -114,6 +114,9 @@ exports.create = async (req, res) => {
         
         // Handle image uploads for picture type
         if (type === 'picture' && req.files && req.files.length > 0) {
+            const alts = Array.isArray(image_alts) ? image_alts : [image_alts];
+            const urls = Array.isArray(image_urls) ? image_urls : [image_urls];
+            
             for (let i = 0; i < req.files.length; i++) {
                 const processedImage = processImage(req.files[i]);
                 
@@ -122,6 +125,8 @@ exports.create = async (req, res) => {
                         filename: processedImage.filename,
                         originalName: processedImage.originalName,
                         path: processedImage.path,
+                        alt: alts[i] || null,
+                        url: urls[i] || null,
                         order: i,
                         itemId: item.id
                     }
@@ -181,7 +186,10 @@ exports.editForm = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title_tw, title_en, content_tw, content_en, type, categoryId, order, status, existingImages, deleteImages } = req.body;
+        const { 
+            title_tw, title_en, content_tw, content_en, type, categoryId, order, status, 
+            existingImages, deleteImages, imageAlts, imageUrls, image_alts, image_urls 
+        } = req.body;
         
         // Update the frontpage item
         await prisma.frontpageItem.update({
@@ -220,14 +228,21 @@ exports.update = async (req, res) => {
             }
         }
         
-        // Update image orders
-        if (existingImages && Array.isArray(existingImages) && req.body.imageOrders) {
+        // Update existing images (orders, alts, and urls)
+        if (existingImages && Array.isArray(existingImages)) {
             for (const imageId of existingImages) {
                 const order = req.body.imageOrders[imageId];
+                const alt = imageAlts ? imageAlts[imageId] : null;
+                const url = imageUrls ? imageUrls[imageId] : null;
+                
                 if (order !== undefined) {
                     await prisma.frontpageImage.update({
                         where: { id: parseInt(imageId) },
-                        data: { order: parseInt(order) || 0 }
+                        data: { 
+                            order: parseInt(order) || 0,
+                            alt: alt || null,
+                            url: url || null
+                        }
                     });
                 }
             }
@@ -243,6 +258,9 @@ exports.update = async (req, res) => {
             
             let startOrder = highestOrderImage ? highestOrderImage.order + 1 : 0;
             
+            const alts = Array.isArray(image_alts) ? image_alts : [image_alts];
+            const urls = Array.isArray(image_urls) ? image_urls : [image_urls];
+            
             for (let i = 0; i < req.files.length; i++) {
                 const processedImage = processImage(req.files[i]);
                 
@@ -251,6 +269,8 @@ exports.update = async (req, res) => {
                         filename: processedImage.filename,
                         originalName: processedImage.originalName,
                         path: processedImage.path,
+                        alt: alts[i] || null,
+                        url: urls[i] || null,
                         order: startOrder + i,
                         itemId: parseInt(id)
                     }
