@@ -743,9 +743,14 @@ router.get('/:language/faq', async (req, res) => {
                 return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             };
             
+            // We need to mark this as safe HTML to prevent the <span> tags from being escaped
+            // This tells EJS that this content should be treated as HTML, not plain text
             const escapedQuery = escapeRegExp(query);
             const regex = new RegExp(`(${escapedQuery})`, 'gi');
-            return text.replace(regex, '<span class="bg-yellow-200">$1</span>');
+            const highlighted = text.replace(regex, '<span class="bg-yellow-200">$1</span>');
+            
+            // Return the highlighted text with a special prefix that we'll handle in the view
+            return '<!--HTML-->' + highlighted;
         };
         
         // If search query exists, filter the items
