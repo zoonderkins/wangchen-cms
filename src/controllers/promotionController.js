@@ -673,10 +673,6 @@ exports.listPromotionsForFrontend = async (req, res) => {
             })
         ]);
         
-        // Parse platform embeds in content
-        const contentField = language === 'en' ? 'content_en' : 'content_tw';
-        item[contentField] = await parsePlatformEmbeds(item[contentField], language);
-
         // Add helper function for getting content in the current language
         const getContent = (item, field) => {
             const langField = `${field}_${language}`;

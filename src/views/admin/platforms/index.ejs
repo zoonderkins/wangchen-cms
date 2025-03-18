@@ -20,6 +20,7 @@
           <table class="min-w-full bg-white" id="dataTable">
             <thead>
               <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
+                <th class="py-3 px-6 text-left">ID</th>
                 <th class="py-3 px-6 text-left">標題 (英)</th>
                 <th class="py-3 px-6 text-left">標題 (中)</th>
                 <th class="py-3 px-6 text-left">分類</th>
@@ -33,6 +34,9 @@
             <tbody class="text-gray-600 text-sm">
               <% items.forEach(function(item) { %>
                 <tr class="border-b border-gray-200 hover:bg-gray-50">
+                  <td class="py-3 px-6 text-left">
+                    <%= item.id %>
+                  </td>
                   <td class="py-3 px-6 text-left">
                     <%= item.title_en %>
                   </td>
