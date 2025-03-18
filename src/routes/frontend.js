@@ -783,6 +783,7 @@ router.get('/:language/downloads/:id', downloadController.downloadFile);
 
 // News routes
 router.get('/:language/news', newsController.listNewsForFrontend);
+router.get('/:language/news/category/:id', newsController.listNewsByCategoryForFrontend);
 router.get('/:language/news/:id', newsController.getNewsItemForFrontend);
 
 // Promotion routes

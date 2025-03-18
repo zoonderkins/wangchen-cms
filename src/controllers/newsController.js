@@ -647,8 +647,8 @@ exports.listNewsForFrontend = async (req, res) => {
             ];
         }
         
-        // Get news items and total count for pagination
-        const [newsItems, total] = await Promise.all([
+        // Get news items, total count for pagination, and categories
+        const [newsItems, total, categories] = await Promise.all([
             prisma.newsItem.findMany({
                 where: whereConditions,
                 include: {
@@ -662,6 +662,14 @@ exports.listNewsForFrontend = async (req, res) => {
             }),
             prisma.newsItem.count({
                 where: whereConditions
+            }),
+            prisma.newsCategory.findMany({
+                where: {
+                    deletedAt: null
+                },
+                orderBy: {
+                    order: 'asc'
+                }
             })
         ]);
         
@@ -691,12 +699,22 @@ exports.listNewsForFrontend = async (req, res) => {
             };
         });
         
+        // Process categories for the selected language
+        const processedCategories = categories.map(cat => {
+            return {
+                ...cat,
+                name: cat[`name_${language}`] || cat.name_en
+            };
+        });
+        
         // Set page title based on language
         const pageTitle = language === 'tw' ? '最新消息' : 'News';
         
         res.render('frontend/news', {
             title: pageTitle,
             newsItems: processedItems,
+            categories: processedCategories,
+            category: null,
             search,
             language,
             currentPage: page,
