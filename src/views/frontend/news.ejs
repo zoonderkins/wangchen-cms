@@ -12,13 +12,13 @@
     </nav>
     <!-- Divider -->
     <div class="w-screen relative" style="left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
-        <hr class="border-t-2 border-gray-200 mb-16">
+        <hr class="border-t-2 border-gray-200 mb-12">
     </div>
 
     <!-- Search Bar -->
-    <div class="relative mx-6 mb-8 sm:mx-16 sm:mb-16 lg:mx-32">
+    <div class="relative mx-6 mb-8 sm:mx-16 sm:mb-12 lg:mx-32">
         <form id="searchForm" class="flex flex-col">
-            <label for="search" class="w-auto mx-4"><%= language === 'en' ? 'Search' : '搜尋' %></label>
+            <label for="search" class="w-auto mx-4 hidden"><%= language === 'en' ? 'Search' : '搜尋' %></label>
             <input type="text" id="search" name="search" placeholder="<%= language === 'tw' ? '搜尋最新消息...' : 'Search news...' %>" value="<%= search %>"
                 class="w-full px-4 py-2 border rounded-lg">
             <button class="absolute right-3 bottom-2" type="submit">
