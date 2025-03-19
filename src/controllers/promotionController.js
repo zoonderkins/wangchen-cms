@@ -673,6 +673,68 @@ exports.listPromotionsForFrontend = async (req, res) => {
             })
         ]);
         
+        // Fetch platform data and categories for the platform section
+        const [platforms, platformCategories] = await Promise.all([
+            prisma.platform.findMany({
+                where: {
+                    status: 'published',
+                    deletedAt: null
+                },
+                include: {
+                    attachments: true
+                },
+                orderBy: {
+                    order: 'asc'
+                }
+            }),
+            prisma.platformCategory.findMany({
+                where: {
+                    deletedAt: null
+                },
+                orderBy: {
+                    order: 'asc'
+                }
+            })
+        ]);
+        
+        // Process partners data for each platform item
+        platforms.forEach(platform => {
+            if (platform.type === 'partners' && platform.partnersData) {
+                try {
+                    platform.parsedPartnersData = JSON.parse(platform.partnersData);
+                } catch (error) {
+                    logger.error(`Error parsing partners data for platform ${platform.id}: ${error.message}`);
+                    platform.parsedPartnersData = { 
+                        suppliers: {
+                            companies_en: [],
+                            companies_tw: []
+                        },
+                        buyers: {
+                            companies_en: [],
+                            companies_tw: []
+                        }
+                    };
+                }
+            }
+        });
+        
+        // Group platforms by category
+        const platformsByCategory = platformCategories.map(category => ({
+            ...category,
+            platforms: platforms.filter(p => p.categoryId === category.id)
+        }));
+        
+        // Add a section for uncategorized items if there are any
+        const uncategorizedItems = platforms.filter(p => p.categoryId === null);
+        if (uncategorizedItems.length > 0) {
+            platformsByCategory.push({
+                id: 0,
+                name_en: 'Uncategorized',
+                name_tw: '未分類',
+                platforms: uncategorizedItems
+            });
+        }
+        
         // Parse platform embeds in content
         const parsedItems = await Promise.all(items.map(async item => {
             try {
@@ -711,7 +773,8 @@ exports.listPromotionsForFrontend = async (req, res) => {
             },
             language,
             getContent,
-            layout: 'layouts/frontend'
+            layout: 'layouts/frontend',
+            platformsByCategory
         });
     } catch (error) {
         logger.error('Error listing promotions for frontend:', error);
@@ -727,7 +790,8 @@ exports.listPromotionsForFrontend = async (req, res) => {
             language: currentLanguage,
             navigationPages: [],
             getContent: (item, field) => '',
-            layout: 'layouts/frontend'
+            layout: 'layouts/frontend',
+            platformsByCategory: []
         });
     }
 };
