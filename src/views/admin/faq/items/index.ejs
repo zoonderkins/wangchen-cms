@@ -1,126 +1,129 @@
 <%- contentFor('body') %>
 
-    <div class="container px-6 mx-auto grid">
-        <div class="flex justify-between items-center my-6">
-            <h2 class="text-2xl font-semibold text-gray-700">
-                常見問題項目
-            </h2>
-            <a href="/admin/faq/categories"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-cog mr-2"></i> 管理分類
-            </a>
-        </div>
-
-        <!-- CTA -->
-        <div
-            class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-purple-100 bg-purple-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple">
-            <div class="flex items-center">
-                <span>管理將顯示在常見問題頁面上的問題項目。</span>
-            </div>
-            <a href="/admin/faq/items/create"
-                class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-800 border border-transparent rounded-lg active:bg-purple-900 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                <i class="fas fa-plus mr-2"></i> 新增項目
-            </a>
-        </div>
-
-
-        <!-- Items Table -->
-        <div class="w-full overflow-hidden rounded-lg shadow-xs">
-            <div class="w-full overflow-x-auto">
-                <table class="w-full whitespace-no-wrap">
-                    <thead>
-                        <tr
-                            class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b bg-gray-50">
-                            <th class="px-4 py-3">標題</th>
-                            <th class="px-4 py-3">分類</th>
-                            <th class="px-4 py-3">狀態</th>
-                            <th class="px-4 py-3">排序</th>
-                            <th class="px-4 py-3">作者</th>
-                            <th class="px-4 py-3">操作</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y">
-                        <% if(items.length> 0) { %>
-                            <% items.forEach(function(item) { %>
-                                <tr class="text-gray-700">
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center text-sm">
-                                            <div>
-                                                <p class="font-semibold">
-                                                    <%= item.title_en %>
-                                                </p>
-                                                <p class="text-xs text-gray-500">
-                                                    <%= item.title_tw %>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3 text-sm">
-                                        <%= item.category.name_en %>
-                                    </td>
-                                    <td class="px-4 py-3 text-sm">
-                                        <% if (item.status==='published' ) { %>
-                                            <span
-                                                class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full">
-                                                已發佈
-                                            </span>
-                                            <% } else if (item.status==='draft' ) { %>
-                                                <span
-                                                    class="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-full">
-                                                    草稿
-                                                </span>
-                                                <% } else { %>
-                                                    <span
-                                                        class="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full">
-                                                        <%= item.status %>
-                                                    </span>
-                                                    <% } %>
-                                    </td>
-                                    <td class="px-4 py-3 text-sm">
-                                        <%= item.order %>
-                                    </td>
-                                    <td class="px-4 py-3 text-sm">
-                                        <%= item.author.username %>
-                                    </td>
-                                    <td class="px-4 py-3 text-sm">
-                                        <div class="flex items-center space-x-4 text-sm">
-                                            <a href="/admin/faq/items/edit/<%= item.id %>"
-                                                class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg focus:outline-none focus:shadow-outline-gray"
-                                                aria-label="編輯">
-                                                <svg class="w-5 h-5" aria-hidden="true" fill="currentColor"
-                                                    viewBox="0 0 20 20">
-                                                    <path
-                                                        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z">
-                                                    </path>
-                                                </svg>
-                                            </a>
-                                            <form action="/admin/faq/items/<%= item.id %>/delete" method="POST"
-                                                onsubmit="return confirm('您確定要刪除此項目嗎？');">
-                                                <button type="submit"
-                                                    class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg focus:outline-none focus:shadow-outline-gray"
-                                                    aria-label="刪除">
-                                                    <svg class="w-5 h-5" aria-hidden="true" fill="currentColor"
-                                                        viewBox="0 0 20 20">
-                                                        <path fill-rule="evenodd"
-                                                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                                            clip-rule="evenodd"></path>
-                                                    </svg>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <% }); %>
-                                    <% } else { %>
-                                        <tr class="text-gray-700">
-                                            <td colspan="6" class="px-4 py-3 text-sm text-center">
-                                                尚未找到任何常見問題項目。<a href="/admin/faq/items/create"
-                                                    class="text-purple-600 hover:underline">立即建立一個</a>。
-                                            </td>
-                                        </tr>
-                                        <% } %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">常見問題項目</h1>
+      <div>
+        <a href="/admin/faq/categories"
+          class="bg-white hover:bg-gray-100 text-blue-500 border border-blue-500 font-bold py-2 px-4 rounded mr-2">
+          <i class="fas fa-cog mr-2"></i> 管理分類
+        </a>
+        <a href="/admin/faq/items/create"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <i class="fas fa-plus mr-2"></i> 新增項目
+        </a>
+      </div>
     </div>
+
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <!-- Items Table -->
+      <% if(items.length > 0) { %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white" id="dataTable">
+          <thead>
+            <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
+              <th class="py-3 px-6 text-left">標題</th>
+              <th class="py-3 px-6 text-left">分類</th>
+              <th class="py-3 px-6 text-left">狀態</th>
+              <th class="py-3 px-6 text-left">排序</th>
+              <th class="py-3 px-6 text-left">作者</th>
+              <th class="py-3 px-6 text-center">操作</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-600 text-sm">
+            <% items.forEach(function(item) { %>
+              <tr class="border-b border-gray-200 hover:bg-gray-50">
+                <td class="py-3 px-6 text-left">
+                  <div class="flex items-center">
+                    <div>
+                      <p class="font-semibold"><%= item.title_en %></p>
+                      <p class="text-xs text-gray-500"><%= item.title_tw %></p>
+                    </div>
+                  </div>
+                </td>
+                <td class="py-3 px-6 text-left">
+                  <%= item.category.name_en %>
+                </td>
+                <td class="py-3 px-6 text-left">
+                  <% if (item.status==='published' ) { %>
+                    <span class="bg-green-200 text-green-800 py-1 px-3 rounded-full text-xs">
+                      已發佈
+                    </span>
+                  <% } else if (item.status==='draft' ) { %>
+                    <span class="bg-yellow-200 text-yellow-800 py-1 px-3 rounded-full text-xs">
+                      草稿
+                    </span>
+                  <% } else { %>
+                    <span class="bg-gray-200 text-gray-800 py-1 px-3 rounded-full text-xs">
+                      <%= item.status %>
+                    </span>
+                  <% } %>
+                </td>
+                <td class="py-3 px-6 text-left">
+                  <%= item.order %>
+                </td>
+                <td class="py-3 px-6 text-left">
+                  <%= item.author.username %>
+                </td>
+                <td class="py-3 px-6 text-center">
+                  <div class="flex items-center justify-center">
+                    <a href="/admin/faq/items/edit/<%= item.id %>" class="text-blue-600 hover:text-blue-900 mx-1">
+                      <i class="fas fa-edit"></i>
+                    </a>
+                    <button type="button" class="text-red-600 hover:text-red-900 mx-1"
+                      onclick="openDeleteModal('<%= item.id %>', '<%= item.title_en %>')">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+
+                  <!-- Delete Modal -->
+                  <div id="deleteModal<%= item.id %>"
+                    class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+                    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                      <div class="mt-3 text-center">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">確認刪除</h3>
+                        <div class="mt-2 px-7 py-3">
+                          <p class="text-sm text-gray-500">
+                            您確定要刪除「<%= item.title_en %>」嗎？
+                          </p>
+                        </div>
+                        <div class="flex justify-end mt-4">
+                          <button type="button"
+                            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2"
+                            onclick="closeDeleteModal('<%= item.id %>')">
+                            取消
+                          </button>
+                          <form action="/admin/faq/items/<%= item.id %>/delete" method="POST" class="inline">
+                            <button type="submit"
+                              class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                              刪除
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+      <% } else { %>
+      <div class="text-center py-5">
+        <p class="text-gray-500">尚未找到任何常見問題項目。<a href="/admin/faq/items/create" class="text-blue-600 hover:underline">立即建立一個</a>。</p>
+      </div>
+      <% } %>
+    </div>
+  </div>
+
+<%- contentFor('scripts') %>
+<script>
+  function openDeleteModal(id, title) {
+    document.getElementById('deleteModal' + id).classList.remove('hidden');
+  }
+
+  function closeDeleteModal(id) {
+    document.getElementById('deleteModal' + id).classList.add('hidden');
+  }
+</script>

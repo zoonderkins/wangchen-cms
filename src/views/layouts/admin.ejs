@@ -389,7 +389,43 @@
 
             // Dropdown toggle functionality
             const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-
+            
+            // Function to save dropdown states to localStorage
+            function saveDropdownState(targetId, isOpen) {
+                try {
+                    // Get existing state
+                    let sidebarState = JSON.parse(localStorage.getItem('adminSidebarState')) || {};
+                    // Update state for this dropdown
+                    sidebarState[targetId] = isOpen;
+                    // Save back to localStorage
+                    localStorage.setItem('adminSidebarState', JSON.stringify(sidebarState));
+                } catch (error) {
+                    console.error('Error saving sidebar state:', error);
+                }
+            }
+            
+            // Function to load dropdown states from localStorage
+            function loadDropdownStates() {
+                try {
+                    const sidebarState = JSON.parse(localStorage.getItem('adminSidebarState')) || {};
+                    
+                    // Apply saved states to dropdowns
+                    dropdownToggles.forEach(toggle => {
+                        const targetId = toggle.getAttribute('data-target');
+                        const targetContent = document.getElementById(targetId);
+                        
+                        if (targetContent && sidebarState[targetId]) {
+                            // If this dropdown was open, restore its state
+                            toggle.classList.add('active');
+                            targetContent.classList.add('show');
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error loading sidebar state:', error);
+                }
+            }
+            
+            // Apply click handlers to dropdowns
             dropdownToggles.forEach(toggle => {
                 toggle.addEventListener('click', function () {
                     const targetId = this.getAttribute('data-target');
@@ -401,9 +437,14 @@
                     // Toggle show class on the dropdown content
                     if (targetContent) {
                         targetContent.classList.toggle('show');
+                        // Save the new state
+                        saveDropdownState(targetId, targetContent.classList.contains('show'));
                     }
                 });
             });
+            
+            // Load saved dropdown states when page loads
+            loadDropdownStates();
         });
     </script>
 
