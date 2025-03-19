@@ -158,6 +158,7 @@ model Banner {
   mediaPathDesktop String?
   mediaPathMobile  String?
   mediaPathTablet  String?
+  order            Int      @default(0)
   createdBy        User     @relation(fields: [userId], references: [id])
 
   @@index([userId], map: "Banners_userId_fkey")
