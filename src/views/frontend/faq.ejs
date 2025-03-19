@@ -28,13 +28,13 @@
                     <!-- Divider -->
                     <div class="w-screen relative"
                         style="left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
-                        <hr class="border-t-2 border-gray-200 mb-16">
+                        <hr class="border-t-2 border-gray-200 mb-8">
                     </div>
 
                     <!-- Search Bar -->
-                    <div class="relative mx-6 mb-8 sm:mx-16 sm:mb-16 lg:mx-32">
+                    <div class="relative mx-6 mb-8 sm:mx-16 sm:mb-8 lg:mx-32">
                         <form action="/<%=currentLanguage%>/faq" method="GET" class="flex flex-col">
-                            <label for="search" class="w-auto mx-4">
+                            <label for="search" class="w-auto mx-4 hidden">
                                 <%= currentLanguage==='en' ? 'search' : '搜尋' %>
                             </label>
                             <input type="text" id="search" name="search" placeholder="請輸入關鍵字"
@@ -97,7 +97,7 @@
                                                             stroke-width="2" d="M19 9l-7 7-7-7" />
                                                     </svg>
                                                 </button>
-                                                <div class="py-6 accordion-content overflow-hidden">
+                                                <div class="accordion-content overflow-hidden">
                                                     <div class="prose max-w-none">
                                                         <div class="quill-content"
                                                             data-content="<%= encodeURIComponent(currentLanguage === 'en' ? item.content_en : item.content_tw) %>">
