@@ -41,7 +41,7 @@
                     <% categories.forEach(function(cat) { %>
                         <a href="/<%= language %>/news/category/<%= cat.id %>"
                             class="px-4 py-2 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200 <%= category && cat.id === category.id ? 'bg-blue-100 font-semibold' : '' %>">
-                            <%= cat.name %>
+                            <%= language === 'tw' ? cat.name_tw : cat.name_en %>
                         </a>
                         <% }); %>
                 </div>
@@ -54,15 +54,15 @@
             <!-- News Card 1 -->
             <a href="<%= item.url %>" target="_blank" class="block">
                 <div class="overflow-hidden">
-                    <img src="<%= item.imageUrl %>" alt="<%= item.title %>" class="w-full h-60 object-cover rounded-2xl border-b-4 border-custom-yellow">
+                    <img src="<%= item.imageUrl %>" alt="<%= language === 'tw' ? item.title_tw : item.title_en %>" class="w-full h-60 object-cover rounded-2xl border-b-4 border-custom-yellow">
                     <div class="py-4">
                         <div class="flex justify-between items-center">
-                            <span class="<%= item.category.id === 1 ? 'bg-custom-lightblue' : 'bg-custom-lightgreen' %> text-black text-xs px-2 py-1 rounded"><%= item.category.name %></span>
+                            <span class="<%= item.category.id === 1 ? 'bg-custom-lightblue' : 'bg-custom-lightgreen' %> text-black text-xs px-2 py-1 rounded"><%= language === 'tw' ? item.category.name_tw : item.category.name_en %></span>
                             <p class="text-gray-500 text-sm">
                                 <%= new Date(item.publishedDate).toLocaleDateString(language==='tw' ? 'zh-TW' : 'en-US' ) %>
                             </p>
                         </div>
-                        <p class="mt-2 line-clamp-2"><%= item.title %></p>
+                        <p class="mt-2 line-clamp-2"><%= language === 'tw' ? item.title_tw : item.title_en %></p>
                     </div>
                 </div>
             </a>
