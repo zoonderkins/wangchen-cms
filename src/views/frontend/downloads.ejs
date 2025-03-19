@@ -8,10 +8,10 @@
             <!-- Filter Bar -->
             <div class="bg-white mb-4 relative">
                 <form action="/<%= language %>/downloads" method="GET" class="flex flex-col">
-                    <label for="category" class="w-auto mx-4"><%= language === 'en' ? 'Category' : '分類' %></label>
+                    <label for="category" class="w-auto mx-4 hidden"><%= language === 'en' ? 'Category' : '分類' %></label>
                     <select id="category" name="category"
                         class="w-full text-gray-600 px-4 py-4 border rounded-lg focus:ring-0 focus:outline-none appearance-none">
-                        <option value=""><%= language === 'tw' ? '全部分類' : 'All Categories' %></option>
+                        <option value=""><%= language === 'tw' ? '選擇分類' : 'Select Categories' %></option>
                         <% categories.forEach(function(category) { %>
                             <option value="<%= category.id %>"
                                 <%=filters.category===category.id.toString() ? 'selected' : '' %>>
@@ -36,7 +36,7 @@
             <!-- Search Bar -->
             <div class="relative">
                 <form action="/<%= language %>/downloads" method="GET" class="flex flex-col">
-                    <label for="search" class="w-auto mx-4"><%= language === 'en' ? 'Search' : '搜尋' %></label>
+                    <label for="search" class="w-auto mx-4 hidden"><%= language === 'en' ? 'Search' : '搜尋' %></label>
                     <input type="text" id="search" name="search" placeholder="<%= language === 'tw' ? '搜尋下載項目...' : 'Search downloads...' %>" value="<%= filters.search %>"
                         class="w-full px-4 py-4 border rounded-xl">
                     <button class="absolute right-3 bottom-4" type="submit">
