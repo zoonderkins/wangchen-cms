@@ -114,8 +114,8 @@ exports.create = async (req, res) => {
         
         // Handle image uploads for picture type
         if (type === 'picture' && req.files && req.files.length > 0) {
-            const alts = Array.isArray(image_alts) ? image_alts : [image_alts];
-            const urls = Array.isArray(image_urls) ? image_urls : [image_urls];
+            const alts = image_alts ? (Array.isArray(image_alts) ? image_alts : [image_alts]) : [];
+            const urls = image_urls ? (Array.isArray(image_urls) ? image_urls : [image_urls]) : [];
             
             for (let i = 0; i < req.files.length; i++) {
                 const processedImage = processImage(req.files[i]);
@@ -138,7 +138,7 @@ exports.create = async (req, res) => {
         res.redirect('/admin/frontpage');
     } catch (error) {
         console.error('Error creating frontpage item:', error);
-        req.flash('error_msg', '新增首頁項目時發生錯誤');
+        req.flash('error_msg', '新增首頁項目時發生錯誤: ' + error.message);
         res.redirect('/admin/frontpage/items/create');
     }
 };
@@ -258,8 +258,8 @@ exports.update = async (req, res) => {
             
             let startOrder = highestOrderImage ? highestOrderImage.order + 1 : 0;
             
-            const alts = Array.isArray(image_alts) ? image_alts : [image_alts];
-            const urls = Array.isArray(image_urls) ? image_urls : [image_urls];
+            const alts = image_alts ? (Array.isArray(image_alts) ? image_alts : [image_alts]) : [];
+            const urls = image_urls ? (Array.isArray(image_urls) ? image_urls : [image_urls]) : [];
             
             for (let i = 0; i < req.files.length; i++) {
                 const processedImage = processImage(req.files[i]);
@@ -282,7 +282,7 @@ exports.update = async (req, res) => {
         res.redirect('/admin/frontpage');
     } catch (error) {
         console.error('Error updating frontpage item:', error);
-        req.flash('error_msg', '更新首頁項目時發生錯誤');
+        req.flash('error_msg', '更新首頁項目時發生錯誤: ' + error.message);
         res.redirect(`/admin/frontpage/items/${req.params.id}/edit`);
     }
 };
@@ -416,4 +416,4 @@ exports.deleteCategory = async (req, res) => {
 };
 
 // Middleware for handling file uploads
-exports.uploadImages = upload.array('images', 10); // Allow up to 10 images 
+exports.uploadImages = upload.array('images[]', 10); // Allow up to 10 images 
