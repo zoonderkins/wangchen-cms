@@ -202,16 +202,16 @@ main {
     box-shadow: 20px 20px var(--color-custom-yellow);
 }
 .bg-promotion {
-    background-image: url(images/desktop/aboutbglg.png);
+    background-image: url(/images/desktop/aboutbglg.png);
 }
 .bg-plan {
-    background-image: url(images/mobile/planbg_mobile.png);
+    background-image: url(/images/mobile/planbg_mobile.png);
 }
 .bg-news {
-    background-image: url(images/mobile/newsBG.png);
+    background-image: url(/images/mobile/newsBG.png);
 }
 .bg-partner {
-    background-image: url(images/mobile/partner_mobile.png);
+    background-image: url(/images/mobile/partner_mobile.png);
 }
 
 .headerLink {
@@ -274,10 +274,10 @@ main {
         background-image: none;
     }
     .bg-plan {
-        background-image: url(images/tablet/planbg_tablet.png);
+        background-image: url(/images/tablet/planbg_tablet.png);
     }
     .bg-partner {
-        background-image: url(images/tablet/partner_tablet.png);
+        background-image: url(/images/tablet/partner_tablet.png);
     }
 }
 
@@ -325,10 +325,10 @@ main {
     }
 
     .bg-plan {
-        background-image: url(images/desktop/planbg_desktop.png);
+        background-image: url(/images/desktop/planbg_desktop.png);
     }
     .bg-partner {
-        background-image: url(images/desktop/partner_desktop.png);
+        background-image: url(/images/desktop/partner_desktop.png);
     }
     
     .headerLink {

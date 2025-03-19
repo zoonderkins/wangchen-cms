@@ -71,7 +71,7 @@
                     <div class="gradient-line w-24 h-2 mx-auto lg:mx-0 mb-12"></div>
                 </div>
                 <div class="w-full lg:w-1/2 flex justify-center">
-                    <img class="img-shadow" src="../images/desktop/contentImg.jpg" alt="">
+                    <img class="img-shadow" src="/images/desktop/contentImg.jpg" alt="">
                 </div>
             </div>
             <div class="w-full">
@@ -90,12 +90,10 @@
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-14 gap-y-24 sm:gap-10">
                     <% item.images.forEach(function(image) { %>
                         <% if (image.url) { %>
-                            <a href="<%= image.url %>" target="_blank" rel="noopener noreferrer"></a>
-                                <div class="flex justify-center">
+                            <a href="<%= image.url %>" target="_blank" rel="noopener noreferrer" class="flex justify-center">
                                     <div class="w-[90%] md:w-full rounded-2xl transform transition-transform hover:-translate-y-1 cursor-pointer">
                                         <img src="<%= image.path %>" alt="<%= image.alt || (currentLanguage === 'en' ? item.title_en : item.title_tw) %>" class="w-full">
                                     </div>
-                                </div>
                             </a>
                         <% } %>
                     <% }); %>
@@ -112,7 +110,7 @@
             <!-- Left: Image (hidden on mobile) -->
             <div class="hidden sm:block sm:w-1/2 flex items-center justify-center">
                 <div class="flex items-center justify-center h-full">
-                    <img src="../images/tablet/newsLGBG.png" alt="最新活動照片" class="w-full h-auto rounded-lg">
+                    <img src="/images/tablet/newsLGBG.png" alt="最新活動照片" class="w-full h-auto rounded-lg">
                 </div>
             </div>
             <!-- Right: News List -->
