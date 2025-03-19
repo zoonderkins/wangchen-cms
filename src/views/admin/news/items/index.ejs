@@ -1,9 +1,21 @@
 <%- contentFor('body') %>
 
     <div class="container px-6 mx-auto grid">
-        <h2 class="my-6 text-2xl font-semibold text-gray-700">
-            消息項目管理
-        </h2>
+        <div class="flex justify-between items-center my-6">
+            <h2 class="text-2xl font-semibold text-gray-700">
+                消息項目管理
+            </h2>
+            <div>
+                <a href="/admin/news/categories"
+                    class="bg-white hover:bg-gray-100 text-blue-500 border border-blue-500 font-bold py-2 px-4 rounded mr-2">
+                    <i class="fas fa-folder-open mr-2"></i> 管理分類
+                </a>
+                <a href="/admin/news/items/create"
+                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                    <i class="fas fa-plus mr-2"></i> 新增消息項目
+                </a>
+            </div>
+        </div>
 
         <!-- CTA -->
         <div
@@ -11,10 +23,6 @@
             <div class="flex items-center">
                 <span>管理網站消息項目，支援多語言內容。</span>
             </div>
-            <a href="/admin/news/items/create"
-                class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-800 border border-transparent rounded-lg active:bg-purple-900 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                <i class="fas fa-plus mr-2"></i> 新增消息項目
-            </a>
         </div>
 
         <!-- Flash Messages -->

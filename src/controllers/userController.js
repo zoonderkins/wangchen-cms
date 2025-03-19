@@ -140,7 +140,7 @@ exports.renderEditUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const { username, email, password, roleId } = req.body;
+        const { username, email, password, roleId, isActive } = req.body;
 
         // Log the request body for debugging
         console.log('Update User Request Body:', req.body);
@@ -185,7 +185,7 @@ exports.updateUser = async (req, res) => {
             username,
             email,
             roleId: roleIdToUse,
-            isActive: true // Always keep isActive true when updating
+            isActive: isActive === 'on' || isActive === true
         };
 
         // Only update password if provided
