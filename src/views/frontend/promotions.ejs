@@ -1,587 +1,542 @@
 <%- contentFor('body') %>
-<!-- Navigation Tabs -->
-<!-- 添加箭頭按鈕的導航欄容器 -->
-<div class="relative flex items-center my-4 px-6 sm:px-16 lg:px-32">
-    <!-- 導航欄 -->
-    <nav id="scrollable-nav" class="flex overflow-auto scrollbar-hide scroll-smooth">
-        <a href="#platform" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow active">
-            <%= currentLanguage==='en' ? 'Taiwan Smart System Integrated Manufacturing Platform' : '臺灣智慧系統整合製造平台' %>
-        </a>
-        <a href="#datacenter" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow">
-            <%= currentLanguage==='en' ? 'AI Computing Data Center Construction' : 'AI運算資料中心建置' %>
-        </a>
-        <a href="#health" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow">
-            <%= currentLanguage==='en' ? 'Smart Healthcare Industry Innovation Park' : '智慧健康產業創新園區' %>
-        </a>
-        <a href="#green" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow">
-            <%= currentLanguage==='en' ? 'Net-Zero Green Energy Demonstration Zone' : '淨零綠能示範場域' %>
-        </a>
-        <a href="#security" class="subtitle px-6 py-2 rounded-full min-w-max custom-button-yellow">
-            <%= currentLanguage==='en' ? 'Cybersecurity and Smart Technology Zone' : '資安暨智慧科技專區' %>
-        </a>
-        <a href="#forest" class="subtitle px-6 py-2 rounded-full min-w-max custom-button-yellow">
-            <%= currentLanguage==='en' ? 'Smart Rainforest Industry Regeneration' : '智慧雨林產業創生' %>
-        </a>
-    </nav>
-    <!-- 左箭頭按鈕 -->
-    <button id="scroll-left" class="absolute left-0 sm:left-10 z-10 px-2 py-2 text-gray-600 bg-white rounded-full shadow-md hover:bg-gray-100 focus:outline-none">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" alt="<%= currentLanguage==='en' ? 'Left Arrow' : '左箭頭' %>">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-    </button>
-    <!-- 右箭頭按鈕 -->
-    <button id="scroll-right" class="absolute right-0 sm:right-10 z-10 px-2 py-2 text-gray-600 bg-white rounded-full shadow-md hover:bg-gray-100 focus:outline-none">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" alt="<%= currentLanguage==='en' ? 'Right Arrow' : '右箭頭' %>">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-    </button>
-</div>
+    <!-- Navigation Tabs -->
+    <!-- 添加箭頭按鈕的導航欄容器 -->
+    <div class="relative flex items-center my-4 px-6 sm:px-16 lg:px-32">
+        <!-- 導航欄 -->
+        <nav id="scrollable-nav" class="flex overflow-auto scrollbar-hide scroll-smooth">
+            <a href="#platform" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow active">
+                <%= currentLanguage==='en' ? 'Taiwan Smart System Integrated Manufacturing Platform' : '臺灣智慧系統整合製造平台' %>
+            </a>
+            <a href="#datacenter" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow">
+                <%= currentLanguage==='en' ? 'AI Computing Data Center Construction' : 'AI運算資料中心建置' %>
+            </a>
+            <a href="#health" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow">
+                <%= currentLanguage==='en' ? 'Smart Healthcare Industry Innovation Park' : '智慧健康產業創新園區' %>
+            </a>
+            <a href="#green" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow">
+                <%= currentLanguage==='en' ? 'Net-Zero Green Energy Demonstration Zone' : '淨零綠能示範場域' %>
+            </a>
+            <a href="#security" class="subtitle px-6 py-2 rounded-full min-w-max custom-button-yellow">
+                <%= currentLanguage==='en' ? 'Cybersecurity and Smart Technology Zone' : '資安暨智慧科技專區' %>
+            </a>
+            <a href="#forest" class="subtitle px-6 py-2 rounded-full min-w-max custom-button-yellow">
+                <%= currentLanguage==='en' ? 'Smart Rainforest Industry Regeneration' : '智慧雨林產業創生' %>
+            </a>
+        </nav>
+        <!-- 左箭頭按鈕 -->
+        <button id="scroll-left"
+            class="absolute left-0 sm:left-10 z-10 px-2 py-2 text-gray-600 bg-white rounded-full shadow-md hover:bg-gray-100 focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" alt="<%= currentLanguage==='en' ? 'Left Arrow' : '左箭頭' %>">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+        <!-- 右箭頭按鈕 -->
+        <button id="scroll-right"
+            class="absolute right-0 sm:right-10 z-10 px-2 py-2 text-gray-600 bg-white rounded-full shadow-md hover:bg-gray-100 focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" alt="<%= currentLanguage==='en' ? 'Right Arrow' : '右箭頭' %>">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+        </button>
+    </div>
 
-<!-- Divider -->
-<div class="w-screen relative" style="left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
-    <hr class="border-t-2 border-gray-200 mb-16">
-</div>
+    <!-- Divider -->
+    <div class="w-screen relative" style="left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
+        <hr class="border-t-2 border-gray-200 mb-16">
+    </div>
 
-<!-- Sample Promotion embed platform -->
+    <!-- Sample Promotion embed platform -->
 
-    <!-- Promotions Grid -->
-    <div class="grid grid-cols-1 gap-6" style="width: 100%;">
-        <% if (items && items.length> 0) { %>
-            <% items.forEach(item=> { %>
-                <div class="bg-white rounded-lg overflow-hidden shadow-lg transition-transform"
-                    style="width: 100%; margin: 0 auto;">
-                    <% if (item.imagePath) { %>
-                        <div class="h-48 overflow-hidden">
-                            <img src="/<%= item.imagePath %>" alt="<%= language === 'en' ? item.title_en : item.title_tw %>"
-                                class="w-full h-full object-cover">
-                        </div>
-                        <% } else { %>
-                            <div class="h-48 bg-gray-200 flex items-center justify-center">
-                                <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                            </div>
-                            <% } %>
-                                <div class="p-6">
-                                    <div class="mb-2">
-                                        <span
-                                            class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200 last:mr-0 mr-1">
-                                            <%= language==='en' ? item.category.name_en : item.category.name_tw %>
-                                        </span>
-                                        <span class="text-xs text-gray-500 ml-2">
-                                            <%= new Date(item.publishedDate).toLocaleDateString(language==='en' ? 'en-US'
-                                                : 'zh-TW' ) %>
-                                        </span>
+    <!-- Aboutplatform -->
+    <section id="platform" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-3xl font-bold mb-8 text-center">
+              <%= currentLanguage==='en' ? 'Manufacturing Platform' : '製造平台' %>
+            </h1>
+      
+            <% if (platformsByCategory && platformsByCategory.length> 0) { %>
+              <div class="space-y-16">
+                <% platformsByCategory.forEach(function(category) { %>
+                  <% if (category.platforms && category.platforms.length> 0) { %>
+                    <section class="mb-12">
+                      <h2 class="text-2xl font-semibold mb-6 pb-2 border-b-2 border-gray-200">
+                        <%= currentLanguage==='en' ? category.name_en : category.name_tw %>
+                      </h2>
+      
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <% category.platforms.forEach(function(platform) { %>
+                          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                            <div class="p-6">
+                              <h3 class="text-xl font-semibold mb-4 text-gray-800">
+                                <%= currentLanguage==='en' ? platform.title_en : platform.title_tw %>
+                              </h3>
+      
+                              <% if (platform.type==='plain_text' ) { %>
+                                <div class="prose max-w-none quill-content">
+                                  <div class="ql-container ql-snow" style="border: none;">
+                                    <div class="ql-editor quill-content-wrapper" <% if ((currentLanguage==='en' && platform._content_en_is_delta) ||
+                                      (currentLanguage==='tw' && platform._content_tw_is_delta)) { %>
+                                      data-is-delta="true"
+                                      <% } %>
+                                        id="quill-content-<%= platform.id %>-<%= currentLanguage %>">
+                                            <%- currentLanguage==='en' ? platform.content_en : platform.content_tw %>
                                     </div>
-                                    <h2 class="text-xl font-bold mb-2">
-                                        <%= language==='en' ? item.title_en : item.title_tw %>
-                                    </h2>
-                                    <div class="mb-4 promotion-content">
-                                        <% const content=language==='en' ? item.content_en : item.content_tw; %>
-                                            <div class="prose max-w-none quill-content">
-                                                <div class="ql-container ql-snow" style="border: none;">
-                                                    <div class="ql-editor">
-                                                        <%- content %>
-                                                    </div>
-                                                </div>
+                                  </div>
+                                </div>
+                                <% if (platform.imagePath) { %>
+                                  <div class="mt-4">
+                                    <img src="<%= platform.imagePath %>"
+                                      alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
+                                      class="w-full h-auto rounded-lg shadow-sm">
+                                  </div>
+                                  <% } %>
+      
+                                    <% } else if (platform.type==='image' ) { %>
+                                      <% if (platform.imagePath) { %>
+                                        <div class="mb-4">
+                                          <img src="<%= platform.imagePath %>"
+                                            alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
+                                            class="w-full h-auto rounded-lg shadow-sm">
+                                        </div>
+                                        <div class="text-gray-700 quill-content">
+                                          <div class="ql-container ql-snow" style="border: none;">
+                                            <div class="ql-editor">
+                                              <%- currentLanguage==='en' ? platform.content_en : platform.content_tw %>
                                             </div>
-                                    </div>
-                                    <% if (item.url) { %>
-                                        <a href="<%= item.url %>"
-                                            class="mt-4 ml-2 inline-block px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
-                                            target="_blank" rel="noopener noreferrer">
-                                            <%= language==='en' ? 'External Link' : '外部連結' %>
-                                        </a>
-                                        <% } %>
-                                </div>
-                </div>
-                <% }); %>
-                    <% } else { %>
-                        <div class="col-span-3 text-center py-12">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                                </path>
-                            </svg>
-                            <h3 class="mt-2 text-sm font-medium text-gray-900">
-                                <% if (currentSearch) { %>
-                                    <%= language==='en' ? `No promotions found for "${currentSearch}" ` :
-                                        `找不到與 "${currentSearch}" 相關的推動方案` %>
-                                        <% } else if (selectedCategory) { %>
-                                            <%= language==='en' ? 'No promotions found in this category' : '此類別中找不到推動方案' %>
-                                                <% } else { %>
-                                                    <%= language==='en' ? 'No promotions found' : '找不到推動方案' %>
-                                                        <% } %>
-                            </h3>
-                            <p class="mt-1 text-sm text-gray-500">
-                                <% if (currentSearch) { %>
-                                    <%= language==='en' ? 'Try a different search term or browse by category.'
-                                        : '嘗試不同的搜索詞或按類別瀏覽。' %>
+                                          </div>
+                                        </div>
                                         <% } else { %>
-                                            <%= language==='en' ? 'Check back later for new promotions.' : '請稍後再查看新的推動方案。'
-                                                %>
+                                          <div class="bg-gray-100 p-4 rounded-lg text-center text-gray-500">
+                                            <%= currentLanguage==='en' ? 'Image not available' : '圖片不可用' %>
+                                          </div>
+                                          <% } %>
+      
+                                            <% } else if (platform.type==='attachment_only' ) { %>
+                                              <% if (platform.imagePath) { %>
+                                                <div class="mb-4">
+                                                  <img src="<%= platform.imagePath %>"
+                                                    alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
+                                                    class="w-full h-auto rounded-lg shadow-sm">
+                                                </div>
                                                 <% } %>
-                            </p>
-                            <% if (currentSearch || selectedCategory) { %>
-                                <div class="mt-4">
-                                    <a href="/<%= language %>/promotions"
-                                        class="text-sm font-medium text-blue-600 hover:text-blue-800">
-                                        <%= language==='en' ? 'View all promotions' : '查看所有推動方案' %>
-                                    </a>
-                                </div>
-                                <% } %>
-                        </div>
-                        <% } %>
-    </div>
+      
+                                                  <% if (platform.attachments && platform.attachments.length> 0) { %>
+                                                    <div class="mt-4">
+                                                      <h4 class="font-medium mb-2">
+                                                        <%= currentLanguage==='en' ? 'Downloads' : '下載' %>
+                                                      </h4>
+                                                      <div class="space-y-2">
+                                                        <% platform.attachments.forEach(function(attachment) { %>
+                                                          <a href="<%= attachment.path %>" download
+                                                            class="flex items-center p-2 hover:bg-gray-50 rounded-md group">
+                                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                              class="h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                                                              fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                              <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                            </svg>
+                                                            <span
+                                                              class="ml-2 text-sm text-gray-600 group-hover:text-gray-900">
+                                                              <%= attachment.originalName %>
+                                                            </span>
+                                                            <span class="ml-auto text-xs text-gray-400">
+                                                              <%= Math.round(attachment.size / 1024) %> KB
+                                                            </span>
+                                                          </a>
+                                                          <% }); %>
+                                                      </div>
+                                                    </div>
+                                                    <% } else { %>
+                                                      <div class="bg-gray-100 p-4 rounded-lg text-center text-gray-500">
+                                                        <%= currentLanguage==='en' ? 'No attachments available' : '沒有可用的附件' %>
+                                                      </div>
+                                                      <% } %>
+      
+                                                        <% } else if (platform.type==='partners' ) { %>
+                                                          <% let partnersData=platform.parsedPartnersData || { suppliers: {
+                                                            companies_en: [], companies_tw: [] }, buyers: { companies_en: [],
+                                                            companies_tw: [] } }; if (!partnersData) { try { if
+                                                            (platform.partnersData) {
+                                                            partnersData=JSON.parse(platform.partnersData); } } catch (e) {
+                                                            console.error('Error parsing partners data:', e); partnersData={
+                                                            suppliers: { companies_en: [], companies_tw: [] }, buyers: {
+                                                            companies_en: [], companies_tw: [] } }; } } const
+                                                            suppliersCompanies=currentLanguage==='en' ?
+                                                            (partnersData.suppliers?.companies_en || []) :
+                                                            (partnersData.suppliers?.companies_tw || []); const
+                                                            buyersCompanies=currentLanguage==='en' ?
+                                                            (partnersData.buyers?.companies_en || []) :
+                                                            (partnersData.buyers?.companies_tw || []); const
+                                                            hasSuppliers=suppliersCompanies.length> 0;
+                                                            const hasBuyers = buyersCompanies.length > 0;
+                                                            %>
+      
+                                                            <% if (platform.imagePath) { %>
+                                                              <div class="mb-5">
+                                                                <img src="<%= platform.imagePath %>"
+                                                                  alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
+                                                                  class="w-full h-auto rounded-lg shadow-sm object-cover">
+                                                              </div>
+                                                              <% } %>
+      
+                                                                <% if (hasSuppliers) { %>
+                                                                  <div class="mb-6">
+                                                                    <div class="flex items-center mb-3">
+                                                                      <span
+                                                                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                                                        <%= currentLanguage==='en' ? 'Suppliers' : '供應商' %>
+                                                                      </span>
+                                                                    </div>
+      
+                                                                    <div class="bg-blue-50 p-4 rounded-lg">
+                                                                      <h4
+                                                                        class="text-md font-medium mb-3 text-gray-700 flex items-center">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                                          class="h-5 w-5 mr-2 text-blue-500" fill="none"
+                                                                          viewBox="0 0 24 24" stroke="currentColor">
+                                                                          <path stroke-linecap="round" stroke-linejoin="round"
+                                                                            stroke-width="2"
+                                                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                                        </svg>
+                                                                        <%= currentLanguage==='en' ? 'Companies' : '公司' %>
+                                                                      </h4>
+                                                                      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                                                        <% suppliersCompanies.forEach(function(company) { %>
+                                                                          <div
+                                                                            class="flex items-center p-2 bg-white rounded shadow-sm">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                                              class="h-4 w-4 text-blue-400 mr-2" fill="none"
+                                                                              viewBox="0 0 24 24" stroke="currentColor">
+                                                                              <path stroke-linecap="round"
+                                                                                stroke-linejoin="round" stroke-width="2"
+                                                                                d="M9 5l7 7-7 7" />
+                                                                            </svg>
+                                                                            <span class="text-gray-700">
+                                                                              <%= company %>
+                                                                            </span>
+                                                                          </div>
+                                                                          <% }); %>
+                                                                      </div>
+                                                                    </div>
+                                                                  </div>
+                                                                  <% } %>
+      
+                                                                    <% if (hasBuyers) { %>
+                                                                      <div class="mb-6">
+                                                                        <div class="flex items-center mb-3">
+                                                                          <span
+                                                                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                                                            <%= currentLanguage==='en' ? 'Buyers' : '需求商' %>
+                                                                          </span>
+                                                                        </div>
+      
+                                                                        <div class="bg-green-50 p-4 rounded-lg">
+                                                                          <h4
+                                                                            class="text-md font-medium mb-3 text-gray-700 flex items-center">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                                              class="h-5 w-5 mr-2 text-green-500" fill="none"
+                                                                              viewBox="0 0 24 24" stroke="currentColor">
+                                                                              <path stroke-linecap="round"
+                                                                                stroke-linejoin="round" stroke-width="2"
+                                                                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                                            </svg>
+                                                                            <%= currentLanguage==='en' ? 'Companies' : '公司' %>
+                                                                          </h4>
+                                                                          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                                                            <% buyersCompanies.forEach(function(company) { %>
+                                                                              <div
+                                                                                class="flex items-center p-2 bg-white rounded shadow-sm">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                  class="h-4 w-4 text-green-400 mr-2"
+                                                                                  fill="none" viewBox="0 0 24 24"
+                                                                                  stroke="currentColor">
+                                                                                  <path stroke-linecap="round"
+                                                                                    stroke-linejoin="round" stroke-width="2"
+                                                                                    d="M9 5l7 7-7 7" />
+                                                                                </svg>
+                                                                                <span class="text-gray-700">
+                                                                                  <%= company %>
+                                                                                </span>
+                                                                              </div>
+                                                                              <% }); %>
+                                                                          </div>
+                                                                        </div>
+                                                                      </div>
+                                                                      <% } %>
+      
+                                                                        <% if (!hasSuppliers && !hasBuyers) { %>
+                                                                          <div
+                                                                            class="mt-4 bg-gray-50 p-4 rounded-lg text-center text-gray-500">
+                                                                            <%= currentLanguage==='en' ? 'No companies listed'
+                                                                              : '沒有列出公司' %>
+                                                                          </div>
+                                                                          <% } %>
+      
+                                                                            <% } %>
+      
+                                                                              <% if (platform.url) { %>
+                                                                                <div class="mt-6">
+                                                                                  <a href="<%= platform.url %>"
+                                                                                    target="_blank" rel="noopener noreferrer"
+                                                                                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+                                                                                    <%= currentLanguage==='en'
+                                                                                      ? 'Visit Website' : '訪問網站' %>
+                                                                                      <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                        class="h-4 w-4 ml-2" fill="none"
+                                                                                        viewBox="0 0 24 24"
+                                                                                        stroke="currentColor">
+                                                                                        <path stroke-linecap="round"
+                                                                                          stroke-linejoin="round"
+                                                                                          stroke-width="2"
+                                                                                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                                                      </svg>
+                                                                                  </a>
+                                                                                </div>
+                                                                                <% } %>
+      
+                                                                                  <% if (platform.type !=='attachment_only' &&
+                                                                                    platform.attachments &&
+                                                                                    platform.attachments.length> 0)
+                                                                                    {
+                                                                                    %>
+                                                                                    <div class="mt-6 border-t pt-4">
+                                                                                      <h4 class="font-medium mb-2">
+                                                                                        <%= currentLanguage==='en'
+                                                                                          ? 'Downloads' : '下載' %>
+                                                                                      </h4>
+                                                                                      <div class="space-y-2">
+                                                                                        <% platform.attachments.forEach(function(attachment)
+                                                                                          { %>
+                                                                                          <a href="<%= attachment.path %>"
+                                                                                            download
+                                                                                            class="flex items-center p-2 hover:bg-gray-50 rounded-md group">
+                                                                                            <svg
+                                                                                              xmlns="http://www.w3.org/2000/svg"
+                                                                                              class="h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                                                                                              fill="none" viewBox="0 0 24 24"
+                                                                                              stroke="currentColor">
+                                                                                              <path stroke-linecap="round"
+                                                                                                stroke-linejoin="round"
+                                                                                                stroke-width="2"
+                                                                                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                                                            </svg>
+                                                                                            <span
+                                                                                              class="ml-2 text-sm text-gray-600 group-hover:text-gray-900">
+                                                                                              <%= attachment.originalName %>
+                                                                                            </span>
+                                                                                            <span
+                                                                                              class="ml-auto text-xs text-gray-400">
+                                                                                              <%= Math.round(attachment.size /
+                                                                                                1024) %> KB
+                                                                                            </span>
+                                                                                          </a>
+                                                                                          <% }); %>
+                                                                                      </div>
+                                                                                    </div>
+                                                                                    <% } %>
+                            </div>
+                          </div>
+                          <% }); %>
+                      </div>
+                    </section>
+                    <% } %>
+                      <% }); %>
+              </div>
+              <% } else { %>
+                <div class="bg-white rounded-lg shadow-md p-8 text-center">
+                  <p class="text-gray-500">
+                    <%= currentLanguage==='en' ? 'No platform content available yet.' : '尚無平台內容。' %>
+                  </p>
+                </div>
+                <% } %>
+          </div>
+    </section>
 
+    <!-- datacenter -->
+    <section id="datacenter" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
+        <h4 class="mb-8">
+            <%= currentLanguage==='en' ? 'AI Computing Data Center Construction' : 'AI運算資料中心建置' %>
+        </h4>
+        <!-- Hero Image -->
+        <div class="relative rounded-3xl overflow-hidden mb-8">
+            <img src="../images/desktop/promotion_ai.jpg" alt="Green Innovation"
+                class="w-full h-64 md:h-96 object-cover">
+        </div>
+        <!-- Description and CTA in flex layout -->
+        <div class="flex flex-col lg:flex-row lg:space-x-6">
+            <!-- Description on left - 8/12 width on desktop -->
+            <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
+                <p class="">
+                    本推動方案將建設數位基礎環境，提供大南方產業生態系所需的高品質與高安全運算資源與協作環境，並提供運算資源挹注新創與企業。
+                    <br>
+                    本中心規劃引進高速運算主機，滿足AI運算對資料與算力的高度需求，並打造新世代智慧節能IDC機房。機房採用綠能設施，如燃氣發電機、釩液流儲能系統與太陽能發電系統，建構智慧防災微電網，進一步降低PUE能耗，以實現節能減碳與淨零排放的永續發展目標。
+                    <br>
+                    AI運算資料中心將成為國內AI發展的重要基礎設施，推動產業創新與科技應用，加速智慧化時代的來臨。
+                </p>
+            </div>
 
-<!-- Aboutplatform -->
-<section id="platform" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-    <h4 class="mb-8">
-        <%= currentLanguage==='en' ? 'Taiwan Smart System Integrated Manufacturing Platform' : '臺灣智慧系統整合製造平台' %>
-    </h4>
-    <!-- Hero Image -->
-    <div class="relative rounded-3xl overflow-hidden mb-8">
-        <img src="/images/desktop/platformbg.jpg" alt="Green Innovation" class="w-full h-64 md:h-96 object-cover">
-    </div>
-    <!-- Intro -->
-    <h4 class="mb-6">
-        <%= currentLanguage==='en' ? 'Introduction' : '介紹' %>
-    </h4>
-
-    <div class="space-y-4 text-gray-700">
-        <p class="">
-            <%= currentLanguage==='en' ? 
-            'To assist small and medium-sized enterprises (SMEs) and traditional industries in their digital transformation and intelligent development, the National Science and Technology Council has launched the "Greater Southern Silicon Valley Promotion Plan." As part of this initiative, the Taiwan Smart System Integration and Manufacturing Platform was established to focus on key areas such as AI technology innovation, system integration capabilities, and industrial intelligence enhancement. This platform serves as a bridge between northern and southern Taiwan’s AI-driven industries, connecting resources across different regions.' : 
-            '為協助中小微企業、傳產等產業進行數位化及智慧化發展轉型，國科會宣布「大南方新矽谷推動方案」，旨在推動臺灣具備「AI科技的研發能力」、「系統整合能力」、「協助產業運用AI提升價值」，均衡臺灣南北發展建立「臺灣智慧系統整合製造平台」，鏈結台灣AI、半導體及電子資通訊能量，為百工百業提供技術整合與加值服務，協助產業升級。' %>
-        </p>
-        
-        <p class="">
-            <%= currentLanguage==='en' ? 
-            'This platform primarily targets advanced manufacturing industries, offering technical support and solutions. The key services include system software and hardware integration, embedded software and firmware development, and intelligent control systems. By combining AI-driven automation and smart technologies, the platform helps businesses accelerate their transition into smart manufacturing and intelligent production. The platform operates as an open hub, integrating cross-industry applications and smart manufacturing solutions. It provides customized technology matchmaking to connect SMEs with technology providers, fulfilling the demand for industrial upgrades and enhancing their global competitiveness.' : 
-            '本平台針對跨領域共通性產業需求，提供產業所需之服務，主要項目包括「系統規格制訂」、「軟體客制化開發」、「硬體客制化設計」、「系統試製與雛形驗證」等，致力於協助產業開發可落地之應用，並成為典範案例帶動產業擴散，讓多元產業皆受惠。本平台採開放式精神，納入不同產業供應端解決方案，透過本平台進行整合及提供加值服務，以期改善供需對接效率，滿足少量多樣客製化需求，助力國內產業從硬體製造導向邁向自主創新應用，掌握AI系統設計能力。' %>            
-        </p>
-    </div>
-    <!-- Divider -->
-    <div class="my-8">
-        <hr class="border-t-2 border-gray-200">
-    </div>
-
-    <!-- Client -->
-    <h4 class="mb-6">
-        <%= currentLanguage==='en' ? 'Target Clients' : '服務對象' %>
-    </h4>
-    <p class="">
-        <%= currentLanguage==='en' ? 'The platform is designed for businesses that do not yet have system integration capabilities but require AI-enabled smart system applications or software-hardware integration solutions (including system architecture, chip design, and embedded software development). It primarily serves small and medium-sized enterprises (SMEs), traditional industries, and innovation-driven startups in Taiwan’s industrial ecosystem.' : 
-        '現有供應鏈無法或沒有意願服務，但有「AI/智慧系統應用」或「軟硬體模組開發（含系統模組與晶片設計）」需求的中小、傳產/新創/跨域系統業者。' %>
-    </p>
-    <!-- Divider -->
-    <div class="my-8">
-        <hr class="border-t-2 border-gray-200">
-    </div>
-
-
-    <!-- Services -->
-    <h4 class="mb-6">
-        <%= currentLanguage==='en' ? 'Platform Structure and Services' : '平台架構與服務項目' %>
-    </h4>
-    
-    <!-- Hero Image -->
-    <div class="relative rounded-lg overflow-hidden mb-8">
-        <img src="/images/desktop/platformArchitecture.jpg" alt="Green Innovation" class="w-full object-contain">
-    </div>
-
-    <!-- Divider -->
-    <div class="my-8">
-        <hr class="border-t-2 border-gray-200">
-    </div>
-
-    <!-- Partners Section -->
-    <h4 class="mb-6"><%= currentLanguage==='en' ? 'Partners' : '合作伙伴' %></h4>
-    <div class="flex flex-col sm:flex-row">
-        <!-- 手機版下拉選單 -->
-        <div class="block w-full sm:hidden mb-6 p-2 relative rounded-xl border">
-            <select id="platform-select" class="w-full  text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none">
-                <option value="metal" selected>
-                    <%= currentLanguage==='en' ? 'Metal Processing' : '金屬加工' %>
-                </option>
-                <option value="plastic">
-                    <%= currentLanguage==='en' ? 'Smart Footwear' : '智慧鞋業' %>
-                </option>
-                <option value="shoes">
-                    <%= currentLanguage==='en' ? 'Smart Healthcare' : '智慧健康' %>
-                </option>
-                <option value="health">
-                    <%= currentLanguage==='en' ? 'Food & Hospitality' : '餐飲/住宿' %>
-                </option>
-                <option value="hospitality">
-                    <%= currentLanguage==='en' ? 'Semiconductor' : '半導體' %>
-                </option>
-                <option value="retail">
-                    <%= currentLanguage==='en' ? 'Smart manufacturing' : '智慧製造' %>
-                </option>
-                <option value="retail">
-                    <%= currentLanguage==='en' ? 'Smart energy' : '智慧能源' %>
-                </option>
-            </select>
-            <!-- 自定義下拉箭頭 -->
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
+            <!-- CTA Button on right - 4/12 width on desktop -->
+            <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
+                <a href="#" target="_blank"
+                    class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
+                    <span>進入AI運算資料中心建置</span>
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
             </div>
         </div>
+    </section>
 
-        <!-- 左側選單 (Desktop) -->
-        <div class="hidden sm:block sm:w-3/12 mr-6">
-            <ul class="">
-                <li class="">
-                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 border-l-4 border-custom-blue" type="button">
-                        <%= currentLanguage==='en' ? 'Metal Processing' : '金屬加工' %>
-                    </button>
-                </li>
-                <li class="">
-                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                        <%= currentLanguage==='en' ? 'Smart Footwear' : '智慧鞋業' %>
-                    </button>
-                </li>
-                <li class="">
-                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                        <%= currentLanguage==='en' ? 'Smart Healthcare' : '智慧健康' %>
-                    </button>
-                </li>
-                <li class="">
-                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                        <%= currentLanguage==='en' ? 'Food & Hospitality' : '餐飲/住宿' %>
-                    </button>
-                </li>
-                
-                <li class="">
-                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                        <%= currentLanguage==='en' ? 'Semiconductor' : '半導體' %>
-                    </button>
-                </li>
-                <li class="">
-                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                        <%= currentLanguage==='en' ? 'Smart manufacturing' : '智慧製造' %>
-                    </button>
-                </li>
-                <li class="">
-                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                        <%= currentLanguage==='en' ? 'Smart energy' : '智慧能源' %>
-                    </button>
-                </li>
-            </ul>
+    <!-- health -->
+    <section id="health" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
+        <h4 class="mb-8">
+            <%= currentLanguage==='en' ? 'Smart Healthcare Industry Innovation Park' : '智慧健康產業創新園區' %>
+        </h4>
+        <!-- Hero Image -->
+        <div class="relative rounded-3xl overflow-hidden mb-8">
+            <img src="../images/desktop/promotion_health.jpg" alt="Green Innovation"
+                class="w-full h-64 md:h-96 object-cover">
         </div>
+        <!-- Description and CTA in flex layout -->
+        <div class="flex flex-col lg:flex-row lg:space-x-6">
+            <!-- Description on left - 8/12 width on desktop -->
+            <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
+                <p class="">
+                    本推動方案以臨床需求為核心，發展智慧醫療關鍵技術，結合AI、資通訊與醫療科技，聚焦數位醫療、病理管理與健康照護三大研究主題。透過創新應用，推動智慧醫療與健康照護的發展，提升醫療資源運用效率，促進偏鄉健康平權，提升國人健康生活品質。
+                    <br>
+                    本方案以智慧醫療與數位健康為雙軸核心，串聯醫療場域與技術團隊，促成醫院（BIO）與企業（ICT）共組聯盟，建立以人為中心的醫療服務平台，研發智慧醫療解決方案。同時，透過醫療服務的延伸，從醫院端拓展至社區與居家端，促成診所、照護機構、醫院及企業跨領域合作，共同推動以家為中心的數位健康科技發展。
+                    <br>
+                    智慧健康產業創新園區將為台灣智慧醫療與數位健康產業打造創新基地，加速技術發展與應用，促進醫療科技產業升級，實現更全面的健康照護服務。
+                </p>
+            </div>
 
-        <!-- 主內容區 -->
-        <div class="w-full sm:w-9/12">
-            <!-- 頂部標籤頁 -->
-            <div class="bg-white border-2 rounded-xl border-gray-100 p-4 mb-6 min-h-full">
-                <div class="flex justify-center">
-                    <button class="companyTab px-4 py-2 border-b-2 border-custom-blue text-custom-blue font-medium">
-                        <%= currentLanguage==='en' ? 'Suppliers' : '供應商' %>
-                    </button>
-                    <button class="companyTab px-4 py-2 border-b-2 border-gray-100 text-gray-500">
-                        <%= currentLanguage==='en' ? 'Buyers' : '需求商' %></button>
-                </div>
-
-                <!-- 供應商列表 -->
-                <div class="supplierList py-6 grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4">
-                    <!-- 供應商卡片 -->
-                    <div class="partner-card h-full flex items-center justify-center">
-                        <p class="text-center">廣杰精機股份有限公司</p>
-                    </div>
-                    <div class="partner-card h-full flex items-center justify-center">
-                        <p class="text-center">艾肯林科技股份有限公司</p>
-                    </div>
-                    <div class="partner-card h-full flex items-center justify-center">
-                        <p class="text-center">怡邦精密有限公司</p>
-                    </div>
-                    <div class="partner-card h-full flex items-center justify-center">
-                        <p class="text-center">達明機器人股份有限公司</p>
-                    </div>
-                    <div class="partner-card h-full flex items-center justify-center">
-                        <p class="text-center">帆宣系統科技股份有限公司</p>
-                    </div>
-                </div>
-                <!-- 需求商列表 -->
-                <div class="demanderList py-6 hidden grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4">
-                    <!-- 需求商卡片 -->
-                    <!-- <div class="partner-card h-full flex items-center justify-center">
-                        <p class="text-center">需求商卡片</p>
-                    </div> -->
-                </div>
+            <!-- CTA Button on right - 4/12 width on desktop -->
+            <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
+                <a href="#" target="_blank"
+                    class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
+                    <span>進入智慧健康產業創新園區</span>
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- green -->
+    <section id="green" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
+        <h4 class="mb-8">
+            <%= currentLanguage==='en' ? 'Net-Zero Green Energy Demonstration Zone' : '淨零綠能示範場域' %>
+        </h4>
+        <!-- Hero Image -->
+        <div class="relative rounded-3xl overflow-hidden mb-8">
+            <img src="../images/desktop/promotionbg.png" alt="Green Innovation"
+                class="w-full h-64 md:h-96 object-cover">
+        </div>
+        <!-- Description and CTA in flex layout -->
+        <div class="flex flex-col lg:flex-row lg:space-x-6">
+            <!-- Description on left - 8/12 width on desktop -->
+            <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
+                <p class="">
+                    本推動方案以沙崙綠能科技示範場域為基地，整合多元綠能科技與淨零永續技術，建構上、中、下游完整綠能產業鏈，提供技術與產品測試驗證服務，加速綠能科技商業化落地。同時，鏈結周邊半導體S廊帶，應用擴散Living
+                    Lab實證場域綠能亮點，提升綠能與淨零技術普及應用。此外，亦推動化合物半導體元件與模組設計應用於電力電子系統保護裝置，實際導入儲能系統測試與驗證，提升儲能系統穩定性與安全性。
+                    <br>
+                    本方案亦涵蓋高效能氨製氫、低碳燃料電池技術，推動氫/氨能源應用，並透過區域能源整合調度進行技術驗證。進一步應用 AI
+                    深度強化學習方法，建構建築智慧能源管理系統，優化分散式能源及用電負載管理，提升能源供應效益，以支援未來智慧能源的發展。
+                </p>
+            </div>
+
+            <!-- CTA Button on right - 4/12 width on desktop -->
+            <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
+                <a href="https://www.sgetds.org.tw" target="_blank"
+                    class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
+                    <span>進入淨零綠能示範場域</span>
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- security -->
+    <section id="security" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
+        <h4 class="mb-8">
+            <%= currentLanguage==='en' ? 'Cybersecurity and Smart Technology Zone' : '資安暨智慧科技專區' %>
+        </h4>
+        <!-- Hero Image -->
+        <div class="relative rounded-3xl overflow-hidden mb-8">
+            <img src="../images/desktop/promotionbg.png" alt="Green Innovation"
+                class="w-full h-64 md:h-96 object-cover">
+        </div>
+        <!-- Description and CTA in flex layout -->
+        <div class="flex flex-col lg:flex-row lg:space-x-6">
+            <!-- Description on left - 8/12 width on desktop -->
+            <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
+                <p class="">
+                    本推動方案整合智慧科技應用，強化研發能量與國際鏈結，推動AI技術與智慧設施的建置，涵蓋監控、建築管理、保全、能源管理等多元應用，進一步優化招商服務與工作環境，打造智慧科技創新發展基地。
+                    <br>
+                    在智慧能源領域，專區將研發高再生能源比例的電網控制技術，建立智慧微電網管理系統，並運用區塊鏈技術打造虛擬電廠交易平台，以提升電能交易的安全性與透明度。
+                    <br>
+                    面對國際自動駕駛產業發展趨緩及國內沙盒創新實驗測試需求減少，本專區將聚焦人才培育擴展智慧載具技術之學研合作，以場域情境特色推動科普教育推廣轉型規劃，活化運用場域，並扣合沙崙AI產業專區發展，跨部會研商規劃分散式低碳電源與儲能系統設置空間，提供彈性模組化能源。
+                </p>
+            </div>
+
+            <!-- CTA Button on right - 4/12 width on desktop -->
+            <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
+                <a href="https://stb.stpi.narl.org.tw" target="_blank"
+                    class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
+                    <span>進入資安暨智慧科技專區</span>
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- forest -->
+    <section id="forest" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
+        <h4 class="mb-8">
+            <%= currentLanguage==='en' ? 'Smart Rainforest Industry Regeneration' : '智慧雨林產業創生' %>
+        </h4>
+        <!-- Hero Image -->
+        <div class="relative rounded-3xl overflow-hidden mb-8">
+            <img src="../images/desktop/promotion_forest.jpg" alt="Green Innovation"
+                class="w-full h-64 md:h-96 object-cover">
+        </div>
+        <!-- Description and CTA in flex layout -->
+        <div class="flex flex-col lg:flex-row lg:space-x-6">
+            <!-- Description on left - 8/12 width on desktop -->
+            <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
+                <p class="">
+                    本推動方案將透過政府跨部會的合作，推動各行各業數位轉型、AI化及人才培育，提升整體產業競爭力，並促進區域經濟均衡發展。同時，協助在地大專校院對接產業需求，支持在地產業發展，促進區域經濟增長，提升大專校院競爭力。
+                    <br>
+                    透過專業制度專才培訓、國家及算力與資料庫、以及綠能等資源導入應用，在南部地區發展重點產業，包含金屬加工、車用零組件、餐飲、健康醫療等，結合示範驗證，將南部地區打造成為全產業之AI科技前進基地。
+                </p>
+            </div>
+
+            <!-- CTA Button on right - 4/12 width on desktop -->
+            <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
+                <a href="#" target="_blank"
+                    class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
+                    <span>進入智慧雨林產業創生</span>
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
 
     <script>
-        // 簡單的標籤切換功能
-        document.addEventListener('DOMContentLoaded', function() {
-            const categoryTabs = document.querySelectorAll('.categoryTab');
-            const companyTabs = document.querySelectorAll('.companyTab');
-            const supplierList = document.querySelector('.supplierList');
-            const demanderList = document.querySelector('.demanderList');
-            
-            categoryTabs.forEach(categoryTab => {
-                categoryTab.addEventListener('click', function() {
-                    // 移除所有標籤的活動狀態
-                    categoryTabs.forEach(t => {
-                        t.classList.remove('border-custom-blue', 'border-l-4');
-                        t.classList.add('text-gray-500');
-                    });
-                    
-                    // 設置當前標籤為活動狀態
-                    this.classList.remove('text-gray-500');
-                    this.classList.add('border-custom-blue', 'border-l-4');
-                });
-            });
-
-            companyTabs.forEach((companyTab, index) => {
-                companyTab.addEventListener('click', function() {
-                    companyTabs.forEach(tab => {
-                        // 切換標籤樣式
-                        tab.classList.toggle('border-custom-blue', tab === this);
-                        tab.classList.toggle('text-custom-blue', tab === this);
-                        tab.classList.toggle('text-gray-500', tab !== this);
-                        tab.classList.toggle('border-gray-100', tab !== this);
-                    });
-                    // 切換內容顯示
-                    const isSupplierTab = index === 0;
-                    supplierList.classList.toggle('grid', isSupplierTab);
-                    supplierList.classList.toggle('hidden', !isSupplierTab);
-                    demanderList.classList.toggle('grid', !isSupplierTab);
-                    demanderList.classList.toggle('hidden', isSupplierTab);
-                });
-            });
-        });
-    </script>
-
-    <!-- Divider -->
-    <div class="my-8">
-        <hr class="border-t-2 border-gray-200">
-    </div>
-
-    <!-- Apply -->
-    <h4 class="mb-6">
-        <%= currentLanguage==='en' ? 'Online Application & Membership' : '線上申請加入' %>
-    </h4>
-    <p class="">
-        <%= currentLanguage==='en' ? 'We welcome businesses to submit collaborative R&D needs and common industry challenges so that we can co-develop solutions and standardize services to address industrial pain points, reduce costs, add value, and expand into new markets.' : 
-        '歡迎企業提出共通性需求和痛點，共同針對需求提出解決方案與訂定規格，解決產業問題助力降低成本、加值升級或創造新市場。' %>
-        <br>
-        <br>
-        <%= currentLanguage==='en' ? 'Contact Information' : '計畫聯絡窗口' %>
-        <br>
-        <%= currentLanguage==='en' ? 'Industrial Technology Research Institute (ITRI) - Smart Optical System Department' : '' %>
-        <br>
-        <%= currentLanguage==='en' ? 'Mr. JM' : '工研院電光所 盧俊銘副所長' %>：  jm@itri.org.tw  (03)591-9019 
-        <br>
-        <%= currentLanguage==='en' ? 'Ms. Wang Chihua' : '工研院電光所 王秋華經理' %>：  wangchiuhua@itri.org.tw  (06)363-6728
-    </p>
-
-    <!-- Divider -->
-    <div class="my-8">
-        <hr class="border-t-2 border-gray-200">
-    </div>
-
-    <!-- Intro -->
-    <h4 class="mb-6"><%= currentLanguage==='en' ? 'File Download' : '檔案下載' %></h4>
-    <!-- 橫幅卡片 -->
-    <div class="bg-gray-100 rounded-2xl">
-        <div class="flex items-center justify-between px-6 py-2">
-            <!-- 標題部分 -->
-            <p class="">
-                <%= currentLanguage==='en' ? 'Taiwan Smart System Integration and Manufacturing Platform Introduction' : '臺灣智慧系統整合製造平台介紹' %>
-            </p>
-            
-            <!-- 下載按鈕部分 -->
-            <a href="https://drive.google.com/file/d/1PjEGjovLQCdiwx4V_SX2OEInv2Af9vby/view" target="_blank" class="inline-flex items-center px-0 sm:px-5 py-0">
-                <img src="/images/desktop/downloadcloud.png" alt="下載雲" class="h-8 mr-0 sm:mr-2 object-contain">
-                <span class="hidden sm:block">
-                    <%= currentLanguage==='en' ? 'File Download' : '檔案下載' %>
-                </span>
-            </a>
-        </div>
-    </div>
-</section>
-
-<!-- datacenter -->
-<section id="datacenter" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-    <h4 class="mb-8">
-        <%= currentLanguage==='en' ? 'AI Computing Data Center Construction' : 'AI運算資料中心建置' %>
-    </h4>
-    <!-- Hero Image -->
-    <div class="relative rounded-3xl overflow-hidden mb-8">
-        <img src="/images/desktop/promotion_ai.jpg" alt="Green Innovation" class="w-full h-64 md:h-96 object-cover">
-    </div>
-    <!-- Description and CTA in flex layout -->
-    <div class="flex flex-col lg:flex-row lg:space-x-6">
-        <!-- Description on left - 8/12 width on desktop -->
-        <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
-            <p class="">
-                本推動方案將建設數位基礎環境，提供大南方產業生態系所需的高品質與高安全運算資源與協作環境，並提供運算資源挹注新創與企業。
-                <br>
-                本中心規劃引進高速運算主機，滿足AI運算對資料與算力的高度需求，並打造新世代智慧節能IDC機房。機房採用綠能設施，如燃氣發電機、釩液流儲能系統與太陽能發電系統，建構智慧防災微電網，進一步降低PUE能耗，以實現節能減碳與淨零排放的永續發展目標。
-                <br>
-                AI運算資料中心將成為國內AI發展的重要基礎設施，推動產業創新與科技應用，加速智慧化時代的來臨。
-            </p>
-        </div>
-        
-        <!-- CTA Button on right - 4/12 width on desktop -->
-        <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
-            <a href="#" target="_blank" class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
-                <span>進入AI運算資料中心建置</span>
-                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
-            </a>
-        </div>
-    </div>
-</section>
-
-<!-- health -->
-<section id="health" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-    <h4 class="mb-8">
-        <%= currentLanguage==='en' ? 'Smart Healthcare Industry Innovation Park' : '智慧健康產業創新園區' %>
-    </h4>
-    <!-- Hero Image -->
-    <div class="relative rounded-3xl overflow-hidden mb-8">
-        <img src="/images/desktop/promotion_health.jpg" alt="Green Innovation" class="w-full h-64 md:h-96 object-cover">
-    </div>
-    <!-- Description and CTA in flex layout -->
-    <div class="flex flex-col lg:flex-row lg:space-x-6">
-        <!-- Description on left - 8/12 width on desktop -->
-        <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
-            <p class="">
-                本推動方案以臨床需求為核心，發展智慧醫療關鍵技術，結合AI、資通訊與醫療科技，聚焦數位醫療、病理管理與健康照護三大研究主題。透過創新應用，推動智慧醫療與健康照護的發展，提升醫療資源運用效率，促進偏鄉健康平權，提升國人健康生活品質。
-                <br>
-                本方案以智慧醫療與數位健康為雙軸核心，串聯醫療場域與技術團隊，促成醫院（BIO）與企業（ICT）共組聯盟，建立以人為中心的醫療服務平台，研發智慧醫療解決方案。同時，透過醫療服務的延伸，從醫院端拓展至社區與居家端，促成診所、照護機構、醫院及企業跨領域合作，共同推動以家為中心的數位健康科技發展。
-                <br>
-                智慧健康產業創新園區將為台灣智慧醫療與數位健康產業打造創新基地，加速技術發展與應用，促進醫療科技產業升級，實現更全面的健康照護服務。
-            </p>
-        </div>
-        
-        <!-- CTA Button on right - 4/12 width on desktop -->
-        <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
-            <a href="#" target="_blank" class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
-                <span>進入智慧健康產業創新園區</span>
-                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
-            </a>
-        </div>
-    </div>
-</section>
-
-<!-- green -->
-<section id="green" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-    <h4 class="mb-8">
-        <%= currentLanguage==='en' ? 'Net-Zero Green Energy Demonstration Zone' : '淨零綠能示範場域' %>
-    </h4>
-    <!-- Hero Image -->
-    <div class="relative rounded-3xl overflow-hidden mb-8">
-        <img src="/images/desktop/promotionbg.png" alt="Green Innovation" class="w-full h-64 md:h-96 object-cover">
-    </div>
-    <!-- Description and CTA in flex layout -->
-    <div class="flex flex-col lg:flex-row lg:space-x-6">
-        <!-- Description on left - 8/12 width on desktop -->
-        <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
-            <p class="">
-                本推動方案以沙崙綠能科技示範場域為基地，整合多元綠能科技與淨零永續技術，建構上、中、下游完整綠能產業鏈，提供技術與產品測試驗證服務，加速綠能科技商業化落地。同時，鏈結周邊半導體S廊帶，應用擴散Living Lab實證場域綠能亮點，提升綠能與淨零技術普及應用。此外，亦推動化合物半導體元件與模組設計應用於電力電子系統保護裝置，實際導入儲能系統測試與驗證，提升儲能系統穩定性與安全性。
-                <br>
-                本方案亦涵蓋高效能氨製氫、低碳燃料電池技術，推動氫/氨能源應用，並透過區域能源整合調度進行技術驗證。進一步應用 AI 深度強化學習方法，建構建築智慧能源管理系統，優化分散式能源及用電負載管理，提升能源供應效益，以支援未來智慧能源的發展。
-            </p>
-        </div>
-        
-        <!-- CTA Button on right - 4/12 width on desktop -->
-        <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
-            <a href="https://www.sgetds.org.tw" target="_blank" class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
-                <span>進入淨零綠能示範場域</span>
-                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
-            </a>
-        </div>
-    </div>
-</section>
-
-<!-- security -->
-<section id="security" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-    <h4 class="mb-8">
-        <%= currentLanguage==='en' ? 'Cybersecurity and Smart Technology Zone' : '資安暨智慧科技專區' %>
-    </h4>
-    <!-- Hero Image -->
-    <div class="relative rounded-3xl overflow-hidden mb-8">
-        <img src="/images/desktop/promotionbg.png" alt="Green Innovation" class="w-full h-64 md:h-96 object-cover">
-    </div>
-    <!-- Description and CTA in flex layout -->
-    <div class="flex flex-col lg:flex-row lg:space-x-6">
-        <!-- Description on left - 8/12 width on desktop -->
-        <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
-            <p class="">
-                本推動方案整合智慧科技應用，強化研發能量與國際鏈結，推動AI技術與智慧設施的建置，涵蓋監控、建築管理、保全、能源管理等多元應用，進一步優化招商服務與工作環境，打造智慧科技創新發展基地。
-                <br>
-                在智慧能源領域，專區將研發高再生能源比例的電網控制技術，建立智慧微電網管理系統，並運用區塊鏈技術打造虛擬電廠交易平台，以提升電能交易的安全性與透明度。
-                <br>
-                面對國際自動駕駛產業發展趨緩及國內沙盒創新實驗測試需求減少，本專區將聚焦人才培育擴展智慧載具技術之學研合作，以場域情境特色推動科普教育推廣轉型規劃，活化運用場域，並扣合沙崙AI產業專區發展，跨部會研商規劃分散式低碳電源與儲能系統設置空間，提供彈性模組化能源。
-            </p>
-        </div>
-        
-        <!-- CTA Button on right - 4/12 width on desktop -->
-        <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
-            <a href="https://stb.stpi.narl.org.tw" target="_blank" class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
-                <span>進入資安暨智慧科技專區</span>
-                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
-            </a>
-        </div>
-    </div>
-</section>
-
-<!-- forest -->
-<section id="forest" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-    <h4 class="mb-8">
-        <%= currentLanguage==='en' ? 'Smart Rainforest Industry Regeneration' : '智慧雨林產業創生' %>
-    </h4>
-    <!-- Hero Image -->
-    <div class="relative rounded-3xl overflow-hidden mb-8">
-        <img src="/images/desktop/promotion_forest.jpg" alt="Green Innovation" class="w-full h-64 md:h-96 object-cover">
-    </div>
-    <!-- Description and CTA in flex layout -->
-    <div class="flex flex-col lg:flex-row lg:space-x-6">
-        <!-- Description on left - 8/12 width on desktop -->
-        <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
-            <p class="">
-                本推動方案將透過政府跨部會的合作，推動各行各業數位轉型、AI化及人才培育，提升整體產業競爭力，並促進區域經濟均衡發展。同時，協助在地大專校院對接產業需求，支持在地產業發展，促進區域經濟增長，提升大專校院競爭力。
-                <br>
-                透過專業制度專才培訓、國家及算力與資料庫、以及綠能等資源導入應用，在南部地區發展重點產業，包含金屬加工、車用零組件、餐飲、健康醫療等，結合示範驗證，將南部地區打造成為全產業之AI科技前進基地。
-            </p>
-        </div>
-        
-        <!-- CTA Button on right - 4/12 width on desktop -->
-        <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
-            <a href="#" target="_blank" class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
-                <span>進入智慧雨林產業創生</span>
-                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
-            </a>
-        </div>
-    </div>
-</section>
-
-<script>
-    // 等待DOM完全加載
-    document.addEventListener('DOMContentLoaded', function() {
-    // 獲取所有 section 元素
-    const sections = document.querySelectorAll('section[id]');
+        // 等待DOM完全加載
+        document.addEventListener('DOMContentLoaded', function () {
+            // 獲取所有 section 元素
+            const sections = document.querySelectorAll('section[id]');
             // 預設顯示第一個標籤內容，隱藏其他
             sections.forEach((section, index) => {
                 if (index === 0) {
@@ -590,91 +545,91 @@
                     section.classList.add('hidden');
                 }
             });
-            
-        ///////////////////////////////////////////////////////////
 
-        // 滾動偏移量設定（可調整）
-        const scrollOffset = 120;
-        // 獲取所有 subtitle 元素
-        const subtitles = document.querySelectorAll('.subtitle');
-        // 為每個 subtitle 添加點擊事件監聽器
-        subtitles.forEach(subtitle => {
-            subtitle.addEventListener('click', function(e) {
-                // 阻止默認的錨點行為
-                // e.preventDefault();
-                
-                // 移除所有 subtitle 的活動樣式
-                subtitles.forEach(s => {
-                    // 移除活動樣式
-                    s.classList.remove('active');
-                });
+            ///////////////////////////////////////////////////////////
 
-                // 為被點擊的元素添加活動樣式
-                this.classList.add('active');
-                
-                const targetId = this.getAttribute('href').substring(1);
+            // 滾動偏移量設定（可調整）
+            const scrollOffset = 120;
+            // 獲取所有 subtitle 元素
+            const subtitles = document.querySelectorAll('.subtitle');
+            // 為每個 subtitle 添加點擊事件監聽器
+            subtitles.forEach(subtitle => {
+                subtitle.addEventListener('click', function (e) {
+                    // 阻止默認的錨點行為
+                    // e.preventDefault();
 
-                // 顯示目標內容，隱藏其他內容
-                sections.forEach(section => {
-                    if (section.id === targetId) {
-                        section.classList.remove('hidden');
-                    } else {
-                        section.classList.add('hidden');
+                    // 移除所有 subtitle 的活動樣式
+                    subtitles.forEach(s => {
+                        // 移除活動樣式
+                        s.classList.remove('active');
+                    });
+
+                    // 為被點擊的元素添加活動樣式
+                    this.classList.add('active');
+
+                    const targetId = this.getAttribute('href').substring(1);
+
+                    // 顯示目標內容，隱藏其他內容
+                    sections.forEach(section => {
+                        if (section.id === targetId) {
+                            section.classList.remove('hidden');
+                        } else {
+                            section.classList.add('hidden');
+                        }
+                    });
+
+                    // 如果需要，可以滾動到目標區域
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - scrollOffset;
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
                     }
                 });
-
-                // 如果需要，可以滾動到目標區域
-                const targetElement = document.getElementById(targetId);
-                if (targetElement) {
-                    const elementPosition = targetElement.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - scrollOffset;
-
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                    });
-                }
             });
-        });
 
-        ///////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////
 
-        const navBar = document.getElementById('scrollable-nav');
-        const leftButton = document.getElementById('scroll-left');
-        const rightButton = document.getElementById('scroll-right');
-        const scrollAmount = 200; // 每次滾動的像素量
+            const navBar = document.getElementById('scrollable-nav');
+            const leftButton = document.getElementById('scroll-left');
+            const rightButton = document.getElementById('scroll-right');
+            const scrollAmount = 200; // 每次滾動的像素量
 
-        // 左箭頭按鈕點擊事件
-        leftButton.addEventListener('click', function () {
-            navBar.scrollLeft -= scrollAmount;
-        });
-        // 右箭頭按鈕點擊事件
-        rightButton.addEventListener('click', function () {
-            navBar.scrollLeft += scrollAmount;
-        });
-        // 檢查是否需要顯示箭頭按鈕
-        function checkScrollButtons() {
-            // 隱藏/顯示左箭頭
-            if (navBar.scrollLeft <= 0) {
-                leftButton.classList.add('opacity-50', 'cursor-not-allowed');
-            } else {
-                leftButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            // 左箭頭按鈕點擊事件
+            leftButton.addEventListener('click', function () {
+                navBar.scrollLeft -= scrollAmount;
+            });
+            // 右箭頭按鈕點擊事件
+            rightButton.addEventListener('click', function () {
+                navBar.scrollLeft += scrollAmount;
+            });
+            // 檢查是否需要顯示箭頭按鈕
+            function checkScrollButtons() {
+                // 隱藏/顯示左箭頭
+                if (navBar.scrollLeft <= 0) {
+                    leftButton.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    leftButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+                // 隱藏/顯示右箭頭
+                if (navBar.scrollLeft + navBar.clientWidth >= navBar.scrollWidth) {
+                    rightButton.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    rightButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
             }
-            // 隱藏/顯示右箭頭
-            if (navBar.scrollLeft + navBar.clientWidth >= navBar.scrollWidth) {
-                rightButton.classList.add('opacity-50', 'cursor-not-allowed');
-            } else {
-                rightButton.classList.remove('opacity-50', 'cursor-not-allowed');
-            }
-        }
-        // 綁定滾動事件
-        navBar.addEventListener('scroll', checkScrollButtons);
-        // 頁面載入時執行一次
-        checkScrollButtons();
-        // 視窗調整大小時檢查
-        window.addEventListener('resize', checkScrollButtons);
+            // 綁定滾動事件
+            navBar.addEventListener('scroll', checkScrollButtons);
+            // 頁面載入時執行一次
+            checkScrollButtons();
+            // 視窗調整大小時檢查
+            window.addEventListener('resize', checkScrollButtons);
 
-        ///////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////
 
-    });
-</script>
+        });
+    </script>
