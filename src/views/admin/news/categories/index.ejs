@@ -1,9 +1,15 @@
 <%- contentFor('body') %>
 
     <div class="container px-6 mx-auto grid">
-        <h2 class="my-6 text-2xl font-semibold text-gray-700">
-            消息類別管理
-        </h2>
+        <div class="flex justify-between items-center my-6">
+            <h2 class="text-2xl font-semibold text-gray-700">
+                消息類別管理
+            </h2>
+            <a href="/admin/news/items"
+                class="bg-white hover:bg-gray-100 text-blue-500 border border-blue-500 font-bold py-2 px-4 rounded mr-2">
+                <i class="fas fa-arrow-left mr-2"></i> 返回消息項目
+            </a>
+        </div>
 
         <!-- CTA -->
         <div
@@ -16,18 +22,6 @@
                 <i class="fas fa-plus mr-2"></i> 新增類別
             </a>
         </div>
-
-        <!-- Flash Messages -->
-        <% if(typeof success_msg !=='undefined' && success_msg.length> 0) { %>
-            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
-                <%= success_msg %>
-            </div>
-            <% } %>
-                <% if(typeof error_msg !=='undefined' && error_msg.length> 0) { %>
-                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
-                        <%= error_msg %>
-                    </div>
-                    <% } %>
 
                         <!-- Categories Table -->
                         <div class="w-full overflow-hidden rounded-lg shadow-xs">

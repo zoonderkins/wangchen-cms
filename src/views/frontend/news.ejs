@@ -2,12 +2,13 @@
     
     <!-- Navigation Tabs -->
     <nav class="flex my-4 px-6 sm:px-16 lg:px-32 overflow-auto">
-        <a href="#" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow">
-            <%= currentLanguage==='en' ? 'Industry trends' : '產業動態' %>
-        </a>
-        <a href="#" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow">
-            <%= currentLanguage==='en' ? 'Event information' : '活動訊息' %>
-        </a>
+        <% categories.forEach(function(category, index) { %>
+            <a href="#<%= category.id %>" 
+               class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow <%= index === 0 ? 'active' : '' %>"
+               onclick="switchCategory(this, '<%= category.id %>')">
+                <%= currentLanguage==='en' ? category.name_en : category.name_tw %>
+            </a>
+        <% }); %>
     </nav>
     <!-- Divider -->
     <div class="w-screen relative" style="left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
@@ -16,7 +17,7 @@
 
     <!-- Search Bar -->
     <div class="relative mx-6 mb-8 sm:mx-16 sm:mb-16 lg:mx-32">
-        <form action="/<%= language %>/news" method="GET" class="flex flex-col">
+        <form id="searchForm" class="flex flex-col">
             <label for="search" class="w-auto mx-4"><%= language === 'en' ? 'Search' : '搜尋' %></label>
             <input type="text" id="search" name="search" placeholder="<%= language === 'tw' ? '搜尋最新消息...' : 'Search news...' %>" value="<%= search %>"
                 class="w-full px-4 py-2 border rounded-lg">
@@ -25,75 +26,344 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </button>
+            <% if (search) { %>
+                <a href="#" id="clearSearch" class="absolute right-12 bottom-2 text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </a>
+            <% } %>
         </form>
     </div>
 
-            <!-- Categories Navigation -->
-            <div class="mb-8 bg-white p-4 rounded-lg shadow">
-                <h2 class="text-xl font-semibold mb-3">
-                    <%= language==='tw' ? '新聞分類' : 'News Categories' %>
-                </h2>
-                <div class="flex flex-wrap gap-2">
-                    <a href="/<%= language %>/news"
-                        class="px-4 py-2 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200 <%= !category ? 'bg-blue-100 font-semibold' : '' %>">
-                        <%= language==='tw' ? '所有' : 'All' %>
-                    </a>
-                    <% categories.forEach(function(cat) { %>
-                        <a href="/<%= language %>/news/category/<%= cat.id %>"
-                            class="px-4 py-2 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200 <%= category && cat.id === category.id ? 'bg-blue-100 font-semibold' : '' %>">
-                            <%= language === 'tw' ? cat.name_tw : cat.name_en %>
-                        </a>
-                        <% }); %>
-                </div>
+    <% if (search) { %>
+        <div class="px-6 mb-8 sm:px-16 sm:mb-16 lg:px-32">
+            <div class="bg-blue-50 text-blue-700 p-4 rounded-lg">
+                <% if (newsItems && newsItems.length > 0) { %>
+                    <p>
+                        <%= language==='en' ? `Search results for "${search}" ` : `「${search}」的搜尋結果` %>
+                    </p>
+                <% } else { %>
+                    <p>
+                        <%= language==='en' ? `No results found for "${search}" ` : `沒有找到「${search}」的結果` %>
+                    </p>
+                <% } %>
             </div>
-            
-    <!-- News Grid -->
-    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-8 px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32" id="information">
-        <% if (newsItems && newsItems.length> 0) { %>
-            <% newsItems.forEach(function(item) { %>
-            <!-- News Card 1 -->
-            <a href="<%= item.url %>" target="_blank" class="block">
-                <div class="overflow-hidden">
-                    <img src="<%= item.imageUrl %>" alt="<%= language === 'tw' ? item.title_tw : item.title_en %>" class="w-full h-60 object-cover rounded-2xl border-b-4 border-custom-yellow">
-                    <div class="py-4">
-                        <div class="flex justify-between items-center">
-                            <span class="<%= item.category.id === 1 ? 'bg-custom-lightblue' : 'bg-custom-lightgreen' %> text-black text-xs px-2 py-1 rounded"><%= language === 'tw' ? item.category.name_tw : item.category.name_en %></span>
-                            <p class="text-gray-500 text-sm">
-                                <%= new Date(item.publishedDate).toLocaleDateString(language==='tw' ? 'zh-TW' : 'en-US' ) %>
-                            </p>
+        </div>
+    <% } %>
+    
+    <!-- News Grid Sections by Category -->
+    <% categories.forEach(function(category, index) { %>
+        <section id="<%= category.id %>" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-8 px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 <%= index === 0 ? '' : 'hidden' %> news-section">
+            <% const categoryNewsItems = newsItems.filter(item => item.category.id === category.id); %>
+            <% if (categoryNewsItems && categoryNewsItems.length > 0) { %>
+                <% categoryNewsItems.forEach(function(item) { %>
+                    <!-- News Card -->
+                    <a href="<%= item.url %>" target="_blank" class="block news-card">
+                        <div class="overflow-hidden">
+                            <img src="<%= item.imageUrl %>" alt="<%= language === 'tw' ? item.title_tw : item.title_en %>" class="w-full h-60 object-cover rounded-2xl border-b-4 border-custom-yellow">
+                            <div class="py-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="<%= item.category.id === 1 ? 'bg-custom-lightblue' : 'bg-custom-lightgreen' %> text-black text-xs px-2 py-1 rounded category-tag"><%= language === 'tw' ? item.category.name_tw : item.category.name_en %></span>
+                                    <p class="text-gray-500 text-sm">
+                                        <%= new Date(item.publishedDate).toLocaleDateString(language==='tw' ? 'zh-TW' : 'en-US' ) %>
+                                    </p>
+                                </div>
+                                <p class="mt-2 line-clamp-2 news-title"><%= language === 'tw' ? item.title_tw : item.title_en %></p>
+                            </div>
                         </div>
-                        <p class="mt-2 line-clamp-2"><%= language === 'tw' ? item.title_tw : item.title_en %></p>
-                    </div>
+                    </a>
+                <% }) %>
+            <% } else { %>
+                <div class="col-span-full text-center py-8">
+                    <p><%= language === 'tw' ? '此分類中没有消息' : 'No news in this category' %></p>
                 </div>
-            </a>
-            <% }) %>
-        <% } %>
-    </section>
+            <% } %>
+        </section>
+    <% }); %>
 
     <!-- Pagination -->
-    <% if (totalPages> 1) { %>
+    <% if (totalPages > 1) { %>
     <div class="mb-16 flex justify-center">
         <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-            <% if (currentPage> 1) { %>
+            <% if (currentPage > 1) { %>
                 <a href="?page=<%= currentPage - 1 %><%= search ? '&search=' + search : '' %>"
                     class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                     <%= language==='tw' ? '上一頁' : 'Previous' %>
                 </a>
-                <% } %>
+            <% } %>
 
-                    <% for(let i=1; i <=totalPages; i++) { %>
-                        <a href="?page=<%= i %><%= search ? '&search=' + search : '' %>"
-                            class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium <%= currentPage === i ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:bg-gray-50' %>">
-                            <%= i %>
-                        </a>
-                        <% } %>
+            <% for(let i=1; i <=totalPages; i++) { %>
+                <a href="?page=<%= i %><%= search ? '&search=' + search : '' %>"
+                    class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium <%= currentPage === i ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:bg-gray-50' %>">
+                    <%= i %>
+                </a>
+            <% } %>
 
-                            <% if (currentPage < totalPages) { %>
-                                <a href="?page=<%= currentPage + 1 %><%= search ? '&search=' + search : '' %>"
-                                    class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                    <%= language==='tw' ? '下一頁' : 'Next' %>
-                                </a>
-                                <% } %>
+            <% if (currentPage < totalPages) { %>
+                <a href="?page=<%= currentPage + 1 %><%= search ? '&search=' + search : '' %>"
+                    class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    <%= language==='tw' ? '下一頁' : 'Next' %>
+                </a>
+            <% } %>
         </nav>
     </div>
     <% } %>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get all section elements
+        const sections = document.querySelectorAll('.news-section');
+        // Get search form
+        const searchForm = document.getElementById('searchForm');
+        // Get clear search button if it exists
+        const clearSearchBtn = document.getElementById('clearSearch');
+        
+        // Check if search query exists in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('search');
+        
+        if (searchQuery) {
+            // If search is active, show all sections for client-side filtering
+            sections.forEach(section => {
+                section.classList.remove('hidden');
+            });
+            
+            // Client-side search implementation
+            performClientSearch(searchQuery);
+        } else {
+            // Default show first tab content, hide others
+            sections.forEach((section, index) => {
+                if (index === 0) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+        }
+        
+        // Add form submit event for client-side search
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const searchInput = document.getElementById('search');
+                const query = searchInput.value.trim();
+                
+                if (query) {
+                    // Show all sections for searching
+                    sections.forEach(section => {
+                        section.classList.remove('hidden');
+                    });
+                    
+                    performClientSearch(query);
+                    
+                    // Update URL with search parameter (optional)
+                    const newUrl = new URL(window.location);
+                    newUrl.searchParams.set('search', query);
+                    window.history.pushState({}, '', newUrl);
+                    
+                    // Add clear button if it doesn't exist
+                    if (!clearSearchBtn) {
+                        const clearBtn = document.createElement('a');
+                        clearBtn.id = 'clearSearch';
+                        clearBtn.href = '#';
+                        clearBtn.className = 'absolute right-12 bottom-2 text-gray-400 hover:text-gray-600';
+                        clearBtn.innerHTML = `
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        `;
+                        searchForm.appendChild(clearBtn);
+                        
+                        // Add event listener to clear button
+                        clearBtn.addEventListener('click', clearSearch);
+                    }
+                    
+                    // Show search result notification
+                    const resultCount = document.querySelectorAll('.news-card:not(.hidden)').length;
+                    const searchNotification = document.createElement('div');
+                    searchNotification.className = 'px-6 mb-8 sm:px-16 sm:mb-16 lg:px-32';
+                    searchNotification.innerHTML = `
+                        <div class="bg-blue-50 text-blue-700 p-4 rounded-lg">
+                            <p>${resultCount > 0 
+                                ? (window.language === 'en' 
+                                    ? `Search results for "${query}"` 
+                                    : `「${query}」的搜尋結果`) 
+                                : (window.language === 'en' 
+                                    ? `No results found for "${query}"` 
+                                    : `沒有找到「${query}」的結果`)}
+                            </p>
+                        </div>
+                    `;
+                    
+                    // Insert notification after search form
+                    const existingNotification = document.querySelector('.px-6.mb-8.sm\\:px-16.sm\\:mb-16.lg\\:px-32');
+                    if (existingNotification) {
+                        existingNotification.parentNode.replaceChild(searchNotification, existingNotification);
+                    } else {
+                        searchForm.parentNode.insertAdjacentElement('afterend', searchNotification);
+                    }
+                }
+            });
+        }
+        
+        // Add clear search functionality
+        if (clearSearchBtn) {
+            clearSearchBtn.addEventListener('click', clearSearch);
+        }
+        
+        // Function to clear search
+        function clearSearch(e) {
+            e.preventDefault();
+            
+            // Clear search input
+            const searchInput = document.getElementById('search');
+            searchInput.value = '';
+            
+            // Remove search params from URL
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.delete('search');
+            window.history.pushState({}, '', newUrl);
+            
+            // Show only first category, hide others
+            sections.forEach((section, index) => {
+                if (index === 0) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+            
+            // Show all news cards
+            document.querySelectorAll('.news-card').forEach(card => {
+                card.classList.remove('hidden');
+            });
+            
+            // Remove search notification if exists
+            const searchNotification = document.querySelector('.px-6.mb-8.sm\\:px-16.sm\\:mb-16.lg\\:px-32');
+            if (searchNotification) {
+                searchNotification.remove();
+            }
+            
+            // Remove clear button
+            if (this) this.remove();
+        }
+        
+        // Client-side search function
+        function performClientSearch(query) {
+            query = query.toLowerCase();
+            
+            // Get all news cards
+            const newsCards = document.querySelectorAll('.news-card');
+            let matchCount = 0;
+            
+            newsCards.forEach(card => {
+                const title = card.querySelector('.news-title').textContent.toLowerCase();
+                const category = card.querySelector('.category-tag').textContent.toLowerCase();
+                
+                if (title.includes(query) || category.includes(query)) {
+                    card.classList.remove('hidden');
+                    highlightText(card, query);
+                    matchCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            
+            // Store language for client-side use
+            window.language = '<%= language %>';
+            
+            return matchCount;
+        }
+        
+        // Function to highlight search terms
+        function highlightText(container, query) {
+            const titleElement = container.querySelector('.news-title');
+            const categoryElement = container.querySelector('.category-tag');
+            
+            if (!query || !titleElement || !categoryElement) return;
+            
+            // Escape special regex characters
+            const escapeRegExp = (string) => {
+                return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            };
+            
+            const escapedQuery = escapeRegExp(query);
+            
+            // Highlight title text
+            const titleText = titleElement.textContent;
+            if (titleText.toLowerCase().includes(query.toLowerCase())) {
+                const regex = new RegExp(`(${escapedQuery})`, 'gi');
+                titleElement.innerHTML = titleText.replace(regex, '<span class="bg-yellow-200">$1</span>');
+            }
+            
+            // Highlight category text
+            const categoryText = categoryElement.textContent;
+            if (categoryText.toLowerCase().includes(query.toLowerCase())) {
+                const regex = new RegExp(`(${escapedQuery})`, 'gi');
+                categoryElement.innerHTML = categoryText.replace(regex, '<span class="bg-yellow-200">$1</span>');
+            }
+        }
+    });
+    
+    // Function to switch category tabs
+    function switchCategory(tab, categoryId) {
+        // Hide all sections
+        document.querySelectorAll('.news-section').forEach(section => {
+            section.classList.add('hidden');
+        });
+        
+        // Show selected section
+        const selectedSection = document.getElementById(categoryId);
+        if (selectedSection) {
+            selectedSection.classList.remove('hidden');
+        }
+        
+        // Update tab styles
+        document.querySelectorAll('.subtitle').forEach(t => {
+            t.classList.remove('active');
+        });
+        
+        // Add active class to clicked tab
+        tab.classList.add('active');
+        
+        // Remove search query from URL when switching tabs
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.delete('search');
+        window.history.pushState({}, '', newUrl);
+        
+        // Clear search input
+        document.getElementById('search').value = '';
+        
+        // Show all news cards in the selected category
+        selectedSection.querySelectorAll('.news-card').forEach(card => {
+            card.classList.remove('hidden');
+        });
+        
+        // Remove search notification if exists
+        const searchNotification = document.querySelector('.px-6.mb-8.sm\\:px-16.sm\\:mb-16.lg\\:px-32 .bg-blue-50');
+        if (searchNotification) {
+            searchNotification.parentElement.remove();
+        }
+        
+        // Remove clear search button if exists
+        const clearSearchBtn = document.getElementById('clearSearch');
+        if (clearSearchBtn) {
+            clearSearchBtn.remove();
+        }
+    }
+</script>
+
+<style>
+    /* Style for active tab */
+    .subtitle.active {
+        background-color: #FFC107;
+        color: #000;
+        font-weight: bold;
+    }
+    
+    /* Additional styles for search highlighting */
+    .bg-yellow-200 {
+        background-color: #fef08a;
+    }
+</style>
