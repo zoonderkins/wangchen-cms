@@ -84,7 +84,7 @@ router.get('/:language', async (req, res, next) => {
                     isActive: true
                 },
                 orderBy: {
-                    createdAt: 'desc'
+                    order: 'asc'
                 },
                 take: 4 // Limit to 4 banners
             }),
@@ -296,7 +296,7 @@ router.get(['/', '/en', '/tw'], async (req, res) => {
                 isActive: true
             },
             orderBy: {
-                createdAt: 'desc'
+                order: 'asc'
             },
             take: 5
         });
