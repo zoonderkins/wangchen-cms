@@ -2,12 +2,12 @@
     
     <% if (items && items.length> 0) { %>
         <% items.forEach(function(item) { %>
-            <section id="<%= item.title_en %>" class="px-6 py-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-                <h4 class="text-left mb-8">
+            <section id="<%= item.title_en %>" class="px-6 py-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-16">
+                <h4 class="text-left mb-4">
                     <%= currentLanguage==='en' ? item.title_en : item.title_tw %>
                 </h4>
                 <% if (item.type==='plain_text' ) { %>
-                    <div class="w-full  mb-8">
+                    <div class="w-full ">
                         <div class="prose max-w-none quill-content">
                             <div class="ql-container ql-snow" style="border: none;">
                                 <div class="ql-editor quill-content-wrapper" <% if ((currentLanguage==='en' &&
@@ -51,7 +51,7 @@
             </section>
 
             <!-- Divider -->
-            <div class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
+            <div class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-16">
                 <hr class="border-t-2 border-gray-200">
             </div>
             <% }); %>
