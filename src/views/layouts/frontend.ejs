@@ -140,6 +140,7 @@
                     <!-- Mobile Menu Button -->
                     <button class="lg:hidden w-10 h-10 flex items-center justify-center"
                         onclick="document.getElementById('nav-menu').classList.toggle('hidden')" type="button">
+                        <span class="hidden"><%= currentLanguage==='en' ? 'Menu' : '選單' %></span>
                         <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             alt="<%= currentLanguage==='en' ? 'Menu' : '選單' %>">
                             <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" />

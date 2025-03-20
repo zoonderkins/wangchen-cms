@@ -54,7 +54,8 @@
                         <div class="flex flex-col sm:flex-row">
                             <!-- 手機版下拉選單 -->
                             <div class="block w-full sm:hidden mb-6 p-2 relative rounded-xl border">
-                                <select id="platform-select" class="w-full  text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none">
+                                <label for="categorySelect" class="hidden"><%= currentLanguage==='en' ? "Industry menu" : "產業選單" %></label>
+                                <select id="categorySelect" name="categorySelect" class="w-full  text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none">
                                     <% category.platforms.forEach(function(platform) { %>
                                         <% if (platform.type==='partners' ) { %>
                                             <option value="<%= platform.title_en %>" selected>
