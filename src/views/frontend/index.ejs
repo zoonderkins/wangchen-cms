@@ -52,11 +52,17 @@
     <% } %>
     <div class="absolute bottom-0 w-full h-full bg-white" id="splideLoader"></div>
     <div class="absolute bottom-0 w-full flex flex-col sm:flex-row justify-center">
-        <button class="max-w-xl px-3 py-2 mx-10 sm:px-12 sm:py-3 sm:mx-8 sm:w-1/2 mb-2 sm:mb-0 banner-button-yellow">
+        <button class="max-w-xl px-3 py-2 mx-10 sm:px-12 sm:py-3 sm:mx-8 sm:w-1/2 mb-2 sm:mb-0 banner-button banner-button-yellow flex items-center justify-center">
             <%= currentLanguage==='en' ? 'Nationwide On-Site Services' : '全區進駐服務' %>
+            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
         </button>
-        <button class="max-w-xl px-3 py-2 mx-10 sm:px-12 sm:py-3 sm:mx-8 sm:w-1/2 banner-button-lightgreen ">
+        <button class="max-w-xl px-3 py-2 mx-10 sm:px-12 sm:py-3 sm:mx-8 sm:w-1/2 banner-button banner-button-lightgreen flex items-center justify-center">
             <%= currentLanguage==='en' ? 'Industry Promotion Cooperation' : '產業推廣合作' %>
+            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
         </button>
     </div>
 </section>
@@ -67,7 +73,8 @@
         <section class="bg-promotion bg-center bg-cover py-12 md:py-24 px-8 md:px-16 lg:px-24">
             <div class="flex flex-col lg:flex-row items-center mb-16">
                 <div class="w-full lg:w-1/2 mb-0">
-                    <h2 class="mb-4 text-center lg:text-left"><%= currentLanguage==='en' ? item.title_en : item.title_tw %></h2>
+                    <!-- <h2 class="mb-4 text-center lg:text-left"><%= currentLanguage==='en' ? item.title_en : item.title_tw %></h2> -->
+                    <h2 class="mb-4 text-center lg:text-left">關於大南方新矽谷<br>推動方案</h2>
                     <div class="gradient-line w-24 h-2 mx-auto lg:mx-0 mb-12"></div>
                 </div>
                 <div class="w-full lg:w-1/2 flex justify-center">
@@ -91,9 +98,7 @@
                     <% item.images.forEach(function(image) { %>
                         <% if (image.url) { %>
                             <a href="<%= image.url %>" target="_blank" rel="noopener noreferrer" class="flex justify-center">
-                                    <div class="w-[90%] md:w-full rounded-2xl transform transition-transform hover:-translate-y-1 cursor-pointer">
-                                        <img src="<%= image.path %>" alt="<%= image.alt || (currentLanguage === 'en' ? item.title_en : item.title_tw) %>" class="w-full">
-                                    </div>
+                                <img src="<%= image.path %>" alt="<%= image.alt || (currentLanguage === 'en' ? item.title_en : item.title_tw) %>" class="w-full rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1 promotion-link">
                             </a>
                         <% } %>
                     <% }); %>
@@ -138,6 +143,9 @@
                             </a>
                         </div>
                     <% }); %>
+                    <a href="/<%= currentLanguage %>/news" class="underline">
+                        <%= currentLanguage==='en' ? 'More' : '更多' %>
+                    </a>
                 </div>
             </div>
         </div>

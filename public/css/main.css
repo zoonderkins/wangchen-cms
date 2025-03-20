@@ -228,6 +228,13 @@ main {
     background-color: #E6EAEB;
     color: var(--color-custom-blue);
 }
+.banner-button:hover svg {
+    transform: translateX(4px);
+    transition: transform 0.3s ease;
+}
+.promotion-link:hover {
+    filter: hue-rotate(-90deg)
+}
 
 /* Tablet breakpoint */
 @media (min-width: 640px) {
