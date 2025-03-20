@@ -35,14 +35,14 @@
                 </div>
             </div>
 
-            <h2 class="h4text-left my-12"><%= currentLanguage==='en' ? 'Requirement' : '需求' %></h2>
+            <h2 class="h4 text-left my-12"><%= currentLanguage==='en' ? 'Requirement' : '需求' %></h2>
             
             <label for="categoryId" class=""><%= currentLanguage==='en' ? 'Requirements category' : '需求分類' %><span class="text-red-700">*</span></label>
             <div class="p-2 mt-4 mb-4 relative rounded-xl border">
                 <select class="w-full  text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none"
                     id="categoryId" name="categoryId" required>
                     <option value="">
-                        <%= currentLanguage==='en' ? '-- Select Category --' : '-- 選擇類別 --' %>
+                        <%= currentLanguage==='en' ? 'Select Category' : '選擇類別' %>
                       </option>
                       <% categories.forEach(function(category) { %>
                         <option value="<%= category.id %>" <%=typeof formData !=='undefined' &&
