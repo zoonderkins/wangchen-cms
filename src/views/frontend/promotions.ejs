@@ -7,21 +7,11 @@
             <a href="#platform" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow active">
                 <%= currentLanguage==='en' ? 'Taiwan Smart System Integrated Manufacturing Platform' : '臺灣智慧系統整合製造平台' %>
             </a>
-            <a href="#datacenter" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow">
-                <%= currentLanguage==='en' ? 'AI Computing Data Center Construction' : 'AI運算資料中心建置' %>
-            </a>
-            <a href="#health" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow">
-                <%= currentLanguage==='en' ? 'Smart Healthcare Industry Innovation Park' : '智慧健康產業創新園區' %>
-            </a>
-            <a href="#green" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow">
-                <%= currentLanguage==='en' ? 'Net-Zero Green Energy Demonstration Zone' : '淨零綠能示範場域' %>
-            </a>
-            <a href="#security" class="subtitle px-6 py-2 rounded-full min-w-max custom-button-yellow">
-                <%= currentLanguage==='en' ? 'Cybersecurity and Smart Technology Zone' : '資安暨智慧科技專區' %>
-            </a>
-            <a href="#forest" class="subtitle px-6 py-2 rounded-full min-w-max custom-button-yellow">
-                <%= currentLanguage==='en' ? 'Smart Rainforest Industry Regeneration' : '智慧雨林產業創生' %>
-            </a>
+            <% categories.forEach(category=> { %>
+                <a href="#<%= category.slug %>" class="subtitle px-6 py-2 rounded-full mr-4 min-w-max custom-button-yellow">
+                    <%= getContent(category, 'name' ) %>
+                </a>
+            <% }); %>
         </nav>
         <!-- 左箭頭按鈕 -->
         <button id="scroll-left"
@@ -43,495 +33,283 @@
 
     <!-- Divider -->
     <div class="w-screen relative" style="left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
-        <hr class="border-t-2 border-gray-200 mb-16">
+        <hr class="border-t-2 border-gray-200 mb-12">
     </div>
 
     <!-- Sample Promotion embed platform -->
 
     <!-- Aboutplatform -->
     <section id="platform" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-        <div class="max-w-6xl mx-auto">
-            <h1 class="text-3xl font-bold mb-8 text-center">
-              <%= currentLanguage==='en' ? 'Manufacturing Platform' : '製造平台' %>
-            </h1>
-      
-            <% if (platformsByCategory && platformsByCategory.length> 0) { %>
-              <div class="space-y-16">
-                <% platformsByCategory.forEach(function(category) { %>
-                  <% if (category.platforms && category.platforms.length> 0) { %>
-                    <section class="mb-12">
-                      <h2 class="text-2xl font-semibold mb-6 pb-2 border-b-2 border-gray-200">
-                        <%= currentLanguage==='en' ? category.name_en : category.name_tw %>
-                      </h2>
-      
-                      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <% if (platformsByCategory && platformsByCategory.length> 0) { %>
+            <% platformsByCategory.forEach(function(category) { %>
+                <% if (category.platforms && category.platforms.length> 0) { %>
+
+                    <!-- Partner filter -->
+                    <% if (category.name_en.includes("artner")) { %>
+                        <h4 class="mb-4 ">
+                            <%= currentLanguage==='en' ? 'Partners' : '合作伙伴' %>
+                        </h4>
+                        
+                        <!-- Partners Type -->
+                        <div class="flex flex-col sm:flex-row">
+                            <!-- 手機版下拉選單 -->
+                            <div class="block w-full sm:hidden mb-6 p-2 relative rounded-xl border">
+                                <select id="platform-select" class="w-full  text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none">
+                                    <% category.platforms.forEach(function(platform) { %>
+                                        <% if (platform.type==='partners' ) { %>
+                                            <option value="<%= platform.title_en %>" selected>
+                                                <%= currentLanguage==='en' ? platform.title_en : platform.title_tw %>
+                                            </option>
+                                        <% } %>
+                                    <% }); %>
+                                </select>
+                                <!-- 自定義下拉箭頭 -->
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <!-- 左側選單 (Desktop) -->
+                            <div class="hidden sm:block sm:w-3/12 mr-6">
+                                <ul class="">
+                                    <% category.platforms.forEach(function(platform) { %>
+                                        <% if (platform.type==='partners' ) { %>
+                                            <li class="">
+                                                <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
+                                                    <%= currentLanguage==='en' ? platform.title_en : platform.title_tw %>
+                                                </button>
+                                            </li>
+                                        <% } %>
+                                    <% }); %>
+                                </ul>
+                            </div>
+                            
+                            <!-- 主內容區 -->
+                            <div class="w-full sm:w-9/12 bg-white border-2 rounded-xl border-gray-100 p-4 mb-6 min-h-full">
+                                <!-- 頂部標籤頁 -->
+                                <div class="flex justify-center">
+                                    <button class="companyTab px-4 py-2 border-b-2 border-custom-blue text-custom-blue font-medium">
+                                        <%= currentLanguage==='en' ? 'Suppliers' : '供應商' %>
+                                    </button>
+                                    <button class="companyTab px-4 py-2 border-b-2 border-gray-100 text-gray-500">
+                                        <%= currentLanguage==='en' ? 'Buyers' : '需求商' %>
+                                    </button>
+                                </div>
+                                <% category.platforms.forEach(function(platform, platformIndex) { %>
+                                    <% if (platform.type === 'partners') { %>
+                                        <% 
+                                        let partnersData = platform.parsedPartnersData || { 
+                                            suppliers: { companies_en: [], companies_tw: [] }, 
+                                            buyers: { companies_en: [], companies_tw: [] } 
+                                        }; 
+                                        
+                                        if (!partnersData) { 
+                                            try { 
+                                                if (platform.partnersData) {
+                                                    partnersData = JSON.parse(platform.partnersData); 
+                                                } 
+                                            } catch (e) { 
+                                                console.error('Error parsing partners data:', e); 
+                                                partnersData = {
+                                                    suppliers: { companies_en: [], companies_tw: [] }, 
+                                                    buyers: { companies_en: [], companies_tw: [] } 
+                                                }; 
+                                            } 
+                                        } 
+                                        
+                                        const suppliersCompanies = currentLanguage === 'en' 
+                                            ? (partnersData.suppliers?.companies_en || []) 
+                                            : (partnersData.suppliers?.companies_tw || []); 
+                                        
+                                        const buyersCompanies = currentLanguage === 'en' 
+                                            ? (partnersData.buyers?.companies_en || []) 
+                                            : (partnersData.buyers?.companies_tw || []); 
+                                        
+                                        const hasSuppliers = suppliersCompanies.length > 0;
+                                        const hasBuyers = buyersCompanies.length > 0;
+                                        %>
+                                        <div class="companyList">
+                                            <% if (hasSuppliers) { %>
+                                                <!-- 供應商列表 -->
+                                                <div class="supplierList py-6 grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4">
+                                                    <!-- 供應商卡片 -->
+                                                    <% suppliersCompanies.forEach(function(company) { %>
+                                                        <div class="partner-card h-full flex items-center justify-center">
+                                                            <p class="text-center"><%= company %></p>
+                                                        </div>
+                                                    <% }); %>
+                                                </div>
+                                            <% } %>
+                                            <% if (hasBuyers) { %>
+                                                <!-- 需求商列表 -->
+                                                <div class="demanderList py-6 grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4 hidden">
+                                                    <!-- 需求商卡片 -->
+                                                    <% buyersCompanies.forEach(function(company) { %>
+                                                        <div class="partner-card h-full flex items-center justify-center">
+                                                            <p class="text-center"><%= company %></p>
+                                                        </div>
+                                                    <% }); %>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    <% } %>
+                                <% }); %>
+                            </div>
+                        </div>
+                        
+                        
+
+                    <!-- Without Partner filter -->
+                    <% } else {%>
                         <% category.platforms.forEach(function(platform) { %>
-                          <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                            <div class="p-6">
-                              <h3 class="text-xl font-semibold mb-4 text-gray-800">
-                                <%= currentLanguage==='en' ? platform.title_en : platform.title_tw %>
-                              </h3>
-      
-                              <% if (platform.type==='plain_text' ) { %>
+                            <!-- Plain_text Type -->
+                            <% if (platform.type==='plain_text' ) { %>
                                 <div class="prose max-w-none quill-content">
-                                  <div class="ql-container ql-snow" style="border: none;">
-                                    <div class="ql-editor quill-content-wrapper" <% if ((currentLanguage==='en' && platform._content_en_is_delta) ||
-                                      (currentLanguage==='tw' && platform._content_tw_is_delta)) { %>
-                                      data-is-delta="true"
-                                      <% } %>
-                                        id="quill-content-<%= platform.id %>-<%= currentLanguage %>">
-                                            <%- currentLanguage==='en' ? platform.content_en : platform.content_tw %>
+                                    <div class="ql-container ql-snow" style="border: none;">
+                                        <div class="ql-editor quill-content-wrapper" 
+                                            <% if ((currentLanguage==='en' && platform._content_en_is_delta) || (currentLanguage==='tw' && platform._content_tw_is_delta)) { %>
+                                                data-is-delta="true"
+                                            <% } %>
+                                            id="quill-content-<%= platform.id %>-<%= currentLanguage %>">
+                                                <%- currentLanguage==='en' ? platform.content_en : platform.content_tw %>
+                                        </div>
                                     </div>
-                                  </div>
                                 </div>
                                 <% if (platform.imagePath) { %>
-                                  <div class="mt-4">
+                                    <div class="mt-4">
                                     <img src="<%= platform.imagePath %>"
-                                      alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
-                                      class="w-full h-auto rounded-lg shadow-sm">
-                                  </div>
-                                  <% } %>
-      
-                                    <% } else if (platform.type==='image' ) { %>
-                                      <% if (platform.imagePath) { %>
-                                        <div class="mb-4">
-                                          <img src="<%= platform.imagePath %>"
-                                            alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
-                                            class="w-full h-auto rounded-lg shadow-sm">
-                                        </div>
-                                        <div class="text-gray-700 quill-content">
-                                          <div class="ql-container ql-snow" style="border: none;">
+                                        alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
+                                        class="w-full h-auto rounded-lg shadow-sm">
+                                    </div>
+                                <% } %>
+
+                            <!-- Image Type -->
+                            <% } else if (platform.type==='image' ) { %>
+                                <% if (platform.imagePath) { %>
+                                    <h3 class="text-xl font-semibold mb-4 text-gray-800">
+                                        <%= currentLanguage==='en' ? platform.title_en : platform.title_tw %>
+                                    </h3>
+                                    <div class="mb-4">
+                                        <img src="<%= platform.imagePath %>"
+                                        alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
+                                        class="w-full h-auto rounded-lg shadow-sm">
+                                    </div>
+                                    <div class="text-gray-700 quill-content">
+                                        <div class="ql-container ql-snow" style="border: none;">
                                             <div class="ql-editor">
-                                              <%- currentLanguage==='en' ? platform.content_en : platform.content_tw %>
+                                                <%= currentLanguage==='en' ? platform.content_en : platform.content_tw %>
                                             </div>
-                                          </div>
                                         </div>
-                                        <% } else { %>
-                                          <div class="bg-gray-100 p-4 rounded-lg text-center text-gray-500">
-                                            <%= currentLanguage==='en' ? 'Image not available' : '圖片不可用' %>
-                                          </div>
-                                          <% } %>
-      
-                                            <% } else if (platform.type==='attachment_only' ) { %>
-                                              <% if (platform.imagePath) { %>
-                                                <div class="mb-4">
-                                                  <img src="<%= platform.imagePath %>"
-                                                    alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
-                                                    class="w-full h-auto rounded-lg shadow-sm">
-                                                </div>
-                                                <% } %>
-      
-                                                  <% if (platform.attachments && platform.attachments.length> 0) { %>
-                                                    <div class="mt-4">
-                                                      <h4 class="font-medium mb-2">
-                                                        <%= currentLanguage==='en' ? 'Downloads' : '下載' %>
-                                                      </h4>
-                                                      <div class="space-y-2">
-                                                        <% platform.attachments.forEach(function(attachment) { %>
-                                                          <a href="<%= attachment.path %>" download
-                                                            class="flex items-center p-2 hover:bg-gray-50 rounded-md group">
-                                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                              class="h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                                                              fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                              <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2"
-                                                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                            </svg>
-                                                            <span
-                                                              class="ml-2 text-sm text-gray-600 group-hover:text-gray-900">
-                                                              <%= attachment.originalName %>
+                                    </div>
+                                <% } else { %>
+                                    <div class="bg-gray-100 p-4 rounded-lg text-center text-gray-500">
+                                        <%= currentLanguage==='en' ? 'Image not available' : '圖片不可用' %>
+                                    </div>
+                                <% } %>
+
+                            <!-- Attachment Type -->
+                            <% } else if (platform.type==='attachment_only' ) { %>
+                                <h4 class="mb-4 ">
+                                    <%= currentLanguage==='en' ? 'Downloads' : '檔案下載' %>
+                                </h4>
+                                <% if (platform.imagePath) { %>
+                                    <div class="mb-4">
+                                        <img src="<%= platform.imagePath %>"
+                                        alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
+                                        class="w-full h-auto rounded-lg shadow-sm">
+                                    </div>
+                                <% } %>
+                                <% if (platform.attachments && platform.attachments.length> 0) { %>
+                                    <div class="mt-4">
+                                        <div class="space-y-2">
+                                            <% platform.attachments.forEach(function(attachment) { %>
+                                                <div class="bg-gray-100 rounded-2xl">
+                                                    <div class="flex items-center justify-between px-6 py-2">
+                                                        <!-- 標題部分 -->
+                                                        <p class="">
+                                                            <%= currentLanguage==='en' ? attachment.title_en : attachment.title_tw %>
+                                                        </p>
+                                                        
+                                                        <!-- 下載按鈕部分 -->
+                                                        <a href="<%= attachment.path %>" download class="inline-flex items-center px-0 sm:px-5 py-0">
+                                                            <img src="/images/desktop/downloadcloud.png" alt="下載雲" class="h-8 mr-0 sm:mr-2 object-contain">
+                                                            <span class="hidden sm:block">
+                                                                <%= currentLanguage==='en' ? 'File Download' : '檔案下載' %>
                                                             </span>
-                                                            <span class="ml-auto text-xs text-gray-400">
-                                                              <%= Math.round(attachment.size / 1024) %> KB
-                                                            </span>
-                                                          </a>
-                                                          <% }); %>
-                                                      </div>
+                                                        </a>
                                                     </div>
-                                                    <% } else { %>
-                                                      <div class="bg-gray-100 p-4 rounded-lg text-center text-gray-500">
-                                                        <%= currentLanguage==='en' ? 'No attachments available' : '沒有可用的附件' %>
-                                                      </div>
-                                                      <% } %>
-      
-                                                        <% } else if (platform.type==='partners' ) { %>
-                                                          <% let partnersData=platform.parsedPartnersData || { suppliers: {
-                                                            companies_en: [], companies_tw: [] }, buyers: { companies_en: [],
-                                                            companies_tw: [] } }; if (!partnersData) { try { if
-                                                            (platform.partnersData) {
-                                                            partnersData=JSON.parse(platform.partnersData); } } catch (e) {
-                                                            console.error('Error parsing partners data:', e); partnersData={
-                                                            suppliers: { companies_en: [], companies_tw: [] }, buyers: {
-                                                            companies_en: [], companies_tw: [] } }; } } const
-                                                            suppliersCompanies=currentLanguage==='en' ?
-                                                            (partnersData.suppliers?.companies_en || []) :
-                                                            (partnersData.suppliers?.companies_tw || []); const
-                                                            buyersCompanies=currentLanguage==='en' ?
-                                                            (partnersData.buyers?.companies_en || []) :
-                                                            (partnersData.buyers?.companies_tw || []); const
-                                                            hasSuppliers=suppliersCompanies.length> 0;
-                                                            const hasBuyers = buyersCompanies.length > 0;
-                                                            %>
-      
-                                                            <% if (platform.imagePath) { %>
-                                                              <div class="mb-5">
-                                                                <img src="<%= platform.imagePath %>"
-                                                                  alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
-                                                                  class="w-full h-auto rounded-lg shadow-sm object-cover">
-                                                              </div>
-                                                              <% } %>
-      
-                                                                <% if (hasSuppliers) { %>
-                                                                  <div class="mb-6">
-                                                                    <div class="flex items-center mb-3">
-                                                                      <span
-                                                                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                                                                        <%= currentLanguage==='en' ? 'Suppliers' : '供應商' %>
-                                                                      </span>
-                                                                    </div>
-      
-                                                                    <div class="bg-blue-50 p-4 rounded-lg">
-                                                                      <h4
-                                                                        class="text-md font-medium mb-3 text-gray-700 flex items-center">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                                          class="h-5 w-5 mr-2 text-blue-500" fill="none"
-                                                                          viewBox="0 0 24 24" stroke="currentColor">
-                                                                          <path stroke-linecap="round" stroke-linejoin="round"
-                                                                            stroke-width="2"
-                                                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                                                        </svg>
-                                                                        <%= currentLanguage==='en' ? 'Companies' : '公司' %>
-                                                                      </h4>
-                                                                      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                                                        <% suppliersCompanies.forEach(function(company) { %>
-                                                                          <div
-                                                                            class="flex items-center p-2 bg-white rounded shadow-sm">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                                              class="h-4 w-4 text-blue-400 mr-2" fill="none"
-                                                                              viewBox="0 0 24 24" stroke="currentColor">
-                                                                              <path stroke-linecap="round"
-                                                                                stroke-linejoin="round" stroke-width="2"
-                                                                                d="M9 5l7 7-7 7" />
-                                                                            </svg>
-                                                                            <span class="text-gray-700">
-                                                                              <%= company %>
-                                                                            </span>
-                                                                          </div>
-                                                                          <% }); %>
-                                                                      </div>
-                                                                    </div>
-                                                                  </div>
-                                                                  <% } %>
-      
-                                                                    <% if (hasBuyers) { %>
-                                                                      <div class="mb-6">
-                                                                        <div class="flex items-center mb-3">
-                                                                          <span
-                                                                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                                                            <%= currentLanguage==='en' ? 'Buyers' : '需求商' %>
-                                                                          </span>
-                                                                        </div>
-      
-                                                                        <div class="bg-green-50 p-4 rounded-lg">
-                                                                          <h4
-                                                                            class="text-md font-medium mb-3 text-gray-700 flex items-center">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                                              class="h-5 w-5 mr-2 text-green-500" fill="none"
-                                                                              viewBox="0 0 24 24" stroke="currentColor">
-                                                                              <path stroke-linecap="round"
-                                                                                stroke-linejoin="round" stroke-width="2"
-                                                                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                                                            </svg>
-                                                                            <%= currentLanguage==='en' ? 'Companies' : '公司' %>
-                                                                          </h4>
-                                                                          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                                                            <% buyersCompanies.forEach(function(company) { %>
-                                                                              <div
-                                                                                class="flex items-center p-2 bg-white rounded shadow-sm">
-                                                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                                                  class="h-4 w-4 text-green-400 mr-2"
-                                                                                  fill="none" viewBox="0 0 24 24"
-                                                                                  stroke="currentColor">
-                                                                                  <path stroke-linecap="round"
-                                                                                    stroke-linejoin="round" stroke-width="2"
-                                                                                    d="M9 5l7 7-7 7" />
-                                                                                </svg>
-                                                                                <span class="text-gray-700">
-                                                                                  <%= company %>
-                                                                                </span>
-                                                                              </div>
-                                                                              <% }); %>
-                                                                          </div>
-                                                                        </div>
-                                                                      </div>
-                                                                      <% } %>
-      
-                                                                        <% if (!hasSuppliers && !hasBuyers) { %>
-                                                                          <div
-                                                                            class="mt-4 bg-gray-50 p-4 rounded-lg text-center text-gray-500">
-                                                                            <%= currentLanguage==='en' ? 'No companies listed'
-                                                                              : '沒有列出公司' %>
-                                                                          </div>
-                                                                          <% } %>
-      
-                                                                            <% } %>
-      
-                                                                              <% if (platform.url) { %>
-                                                                                <div class="mt-6">
-                                                                                  <a href="<%= platform.url %>"
-                                                                                    target="_blank" rel="noopener noreferrer"
-                                                                                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
-                                                                                    <%= currentLanguage==='en'
-                                                                                      ? 'Visit Website' : '訪問網站' %>
-                                                                                      <svg xmlns="http://www.w3.org/2000/svg"
-                                                                                        class="h-4 w-4 ml-2" fill="none"
-                                                                                        viewBox="0 0 24 24"
-                                                                                        stroke="currentColor">
-                                                                                        <path stroke-linecap="round"
-                                                                                          stroke-linejoin="round"
-                                                                                          stroke-width="2"
-                                                                                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                                                                      </svg>
-                                                                                  </a>
-                                                                                </div>
-                                                                                <% } %>
-      
-                                                                                  <% if (platform.type !=='attachment_only' &&
-                                                                                    platform.attachments &&
-                                                                                    platform.attachments.length> 0)
-                                                                                    {
-                                                                                    %>
-                                                                                    <div class="mt-6 border-t pt-4">
-                                                                                      <h4 class="font-medium mb-2">
-                                                                                        <%= currentLanguage==='en'
-                                                                                          ? 'Downloads' : '下載' %>
-                                                                                      </h4>
-                                                                                      <div class="space-y-2">
-                                                                                        <% platform.attachments.forEach(function(attachment)
-                                                                                          { %>
-                                                                                          <a href="<%= attachment.path %>"
-                                                                                            download
-                                                                                            class="flex items-center p-2 hover:bg-gray-50 rounded-md group">
-                                                                                            <svg
-                                                                                              xmlns="http://www.w3.org/2000/svg"
-                                                                                              class="h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                                                                                              fill="none" viewBox="0 0 24 24"
-                                                                                              stroke="currentColor">
-                                                                                              <path stroke-linecap="round"
-                                                                                                stroke-linejoin="round"
-                                                                                                stroke-width="2"
-                                                                                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                                                            </svg>
-                                                                                            <span
-                                                                                              class="ml-2 text-sm text-gray-600 group-hover:text-gray-900">
-                                                                                              <%= attachment.originalName %>
-                                                                                            </span>
-                                                                                            <span
-                                                                                              class="ml-auto text-xs text-gray-400">
-                                                                                              <%= Math.round(attachment.size /
-                                                                                                1024) %> KB
-                                                                                            </span>
-                                                                                          </a>
-                                                                                          <% }); %>
-                                                                                      </div>
-                                                                                    </div>
-                                                                                    <% } %>
-                            </div>
-                          </div>
-                          <% }); %>
-                      </div>
-                    </section>
+                                                </div>
+                                            <% }); %>
+                                        </div>
+                                    </div>
+                                <% } else { %>
+                                    <div class="bg-gray-100 p-4 rounded-lg text-center text-gray-500">
+                                        <%= currentLanguage==='en' ? 'No attachments available' : '沒有可用的附件' %>
+                                    </div>
+                                <% } %>
+                            <% } %>
+                        <% }); %>
                     <% } %>
-                      <% }); %>
-              </div>
-              <% } else { %>
-                <div class="bg-white rounded-lg shadow-md p-8 text-center">
-                  <p class="text-gray-500">
-                    <%= currentLanguage==='en' ? 'No platform content available yet.' : '尚無平台內容。' %>
-                  </p>
+
+
+                <% } %>
+            <% }); %>
+        <% } else { %>
+            <div class="bg-white rounded-lg shadow-md p-8 text-center">
+                <p class="text-gray-500">
+                <%= currentLanguage==='en' ? 'No platform content available yet.' : '尚無平台內容。' %>
+                </p>
+            </div>
+        <% } %>
+    </section>
+
+    <!-- Promotion sections -->
+    <% if (items && items.length> 0) { %>
+        <% items.forEach(item=> { %>
+            <section id="<%= item.category.slug %>" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
+                <h4 class="mb-8">
+                    <%= language==='en' ? item.title_en : item.title_tw %>
+                </h4>
+                <!-- Hero Image -->
+                <% if (item.imagePath) { %>
+                <div class="relative rounded-3xl overflow-hidden mb-8">
+                    <img src="/<%= item.imagePath %>" alt="<%= language==='en' ? item.title_en : item.title_tw %>"
+                        class="w-full h-64 md:h-96 object-cover">
                 </div>
                 <% } %>
-          </div>
-    </section>
+                <!-- Description and CTA in flex layout -->
+                <div class="flex flex-col">
+                    <!-- Description on left - 8/12 width on desktop -->
+                    <div class="w-full mb-6 promotion-content">
+                        <% const content=language==='en' ? item.content_en : item.content_tw; %>
+                        <div class="prose max-w-none quill-content">
+                            <div class="ql-container ql-snow" style="border: none;">
+                                <div class="ql-editor">
+                                    <%- content %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- CTA Button on right - 4/12 width on desktop -->
+                    <% if (item.url) { %>
+                    <div class="w-full min-w-max  flex justify-center">
+                        <a href="<%= item.url %>" target="_blank" rel="noopener noreferrer"
+                            class="no-underline inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
+                            <span><%= language==='en' ? "Enter" : "進入" %><%= language==='en' ? item.title_en : item.title_tw %></span>
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </a>
+                    </div>
+                    <% } %>
+                </div>
+            </section>
+        <% }); %>
+    <% } %>
 
-    <!-- datacenter -->
-    <section id="datacenter" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-        <h4 class="mb-8">
-            <%= currentLanguage==='en' ? 'AI Computing Data Center Construction' : 'AI運算資料中心建置' %>
-        </h4>
-        <!-- Hero Image -->
-        <div class="relative rounded-3xl overflow-hidden mb-8">
-            <img src="../images/desktop/promotion_ai.jpg" alt="Green Innovation"
-                class="w-full h-64 md:h-96 object-cover">
-        </div>
-        <!-- Description and CTA in flex layout -->
-        <div class="flex flex-col lg:flex-row lg:space-x-6">
-            <!-- Description on left - 8/12 width on desktop -->
-            <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
-                <p class="">
-                    本推動方案將建設數位基礎環境，提供大南方產業生態系所需的高品質與高安全運算資源與協作環境，並提供運算資源挹注新創與企業。
-                    <br>
-                    本中心規劃引進高速運算主機，滿足AI運算對資料與算力的高度需求，並打造新世代智慧節能IDC機房。機房採用綠能設施，如燃氣發電機、釩液流儲能系統與太陽能發電系統，建構智慧防災微電網，進一步降低PUE能耗，以實現節能減碳與淨零排放的永續發展目標。
-                    <br>
-                    AI運算資料中心將成為國內AI發展的重要基礎設施，推動產業創新與科技應用，加速智慧化時代的來臨。
-                </p>
-            </div>
-
-            <!-- CTA Button on right - 4/12 width on desktop -->
-            <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
-                <a href="#" target="_blank"
-                    class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
-                    <span>進入AI運算資料中心建置</span>
-                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- health -->
-    <section id="health" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-        <h4 class="mb-8">
-            <%= currentLanguage==='en' ? 'Smart Healthcare Industry Innovation Park' : '智慧健康產業創新園區' %>
-        </h4>
-        <!-- Hero Image -->
-        <div class="relative rounded-3xl overflow-hidden mb-8">
-            <img src="../images/desktop/promotion_health.jpg" alt="Green Innovation"
-                class="w-full h-64 md:h-96 object-cover">
-        </div>
-        <!-- Description and CTA in flex layout -->
-        <div class="flex flex-col lg:flex-row lg:space-x-6">
-            <!-- Description on left - 8/12 width on desktop -->
-            <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
-                <p class="">
-                    本推動方案以臨床需求為核心，發展智慧醫療關鍵技術，結合AI、資通訊與醫療科技，聚焦數位醫療、病理管理與健康照護三大研究主題。透過創新應用，推動智慧醫療與健康照護的發展，提升醫療資源運用效率，促進偏鄉健康平權，提升國人健康生活品質。
-                    <br>
-                    本方案以智慧醫療與數位健康為雙軸核心，串聯醫療場域與技術團隊，促成醫院（BIO）與企業（ICT）共組聯盟，建立以人為中心的醫療服務平台，研發智慧醫療解決方案。同時，透過醫療服務的延伸，從醫院端拓展至社區與居家端，促成診所、照護機構、醫院及企業跨領域合作，共同推動以家為中心的數位健康科技發展。
-                    <br>
-                    智慧健康產業創新園區將為台灣智慧醫療與數位健康產業打造創新基地，加速技術發展與應用，促進醫療科技產業升級，實現更全面的健康照護服務。
-                </p>
-            </div>
-
-            <!-- CTA Button on right - 4/12 width on desktop -->
-            <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
-                <a href="#" target="_blank"
-                    class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
-                    <span>進入智慧健康產業創新園區</span>
-                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- green -->
-    <section id="green" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-        <h4 class="mb-8">
-            <%= currentLanguage==='en' ? 'Net-Zero Green Energy Demonstration Zone' : '淨零綠能示範場域' %>
-        </h4>
-        <!-- Hero Image -->
-        <div class="relative rounded-3xl overflow-hidden mb-8">
-            <img src="../images/desktop/promotionbg.png" alt="Green Innovation"
-                class="w-full h-64 md:h-96 object-cover">
-        </div>
-        <!-- Description and CTA in flex layout -->
-        <div class="flex flex-col lg:flex-row lg:space-x-6">
-            <!-- Description on left - 8/12 width on desktop -->
-            <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
-                <p class="">
-                    本推動方案以沙崙綠能科技示範場域為基地，整合多元綠能科技與淨零永續技術，建構上、中、下游完整綠能產業鏈，提供技術與產品測試驗證服務，加速綠能科技商業化落地。同時，鏈結周邊半導體S廊帶，應用擴散Living
-                    Lab實證場域綠能亮點，提升綠能與淨零技術普及應用。此外，亦推動化合物半導體元件與模組設計應用於電力電子系統保護裝置，實際導入儲能系統測試與驗證，提升儲能系統穩定性與安全性。
-                    <br>
-                    本方案亦涵蓋高效能氨製氫、低碳燃料電池技術，推動氫/氨能源應用，並透過區域能源整合調度進行技術驗證。進一步應用 AI
-                    深度強化學習方法，建構建築智慧能源管理系統，優化分散式能源及用電負載管理，提升能源供應效益，以支援未來智慧能源的發展。
-                </p>
-            </div>
-
-            <!-- CTA Button on right - 4/12 width on desktop -->
-            <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
-                <a href="https://www.sgetds.org.tw" target="_blank"
-                    class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
-                    <span>進入淨零綠能示範場域</span>
-                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- security -->
-    <section id="security" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-        <h4 class="mb-8">
-            <%= currentLanguage==='en' ? 'Cybersecurity and Smart Technology Zone' : '資安暨智慧科技專區' %>
-        </h4>
-        <!-- Hero Image -->
-        <div class="relative rounded-3xl overflow-hidden mb-8">
-            <img src="../images/desktop/promotionbg.png" alt="Green Innovation"
-                class="w-full h-64 md:h-96 object-cover">
-        </div>
-        <!-- Description and CTA in flex layout -->
-        <div class="flex flex-col lg:flex-row lg:space-x-6">
-            <!-- Description on left - 8/12 width on desktop -->
-            <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
-                <p class="">
-                    本推動方案整合智慧科技應用，強化研發能量與國際鏈結，推動AI技術與智慧設施的建置，涵蓋監控、建築管理、保全、能源管理等多元應用，進一步優化招商服務與工作環境，打造智慧科技創新發展基地。
-                    <br>
-                    在智慧能源領域，專區將研發高再生能源比例的電網控制技術，建立智慧微電網管理系統，並運用區塊鏈技術打造虛擬電廠交易平台，以提升電能交易的安全性與透明度。
-                    <br>
-                    面對國際自動駕駛產業發展趨緩及國內沙盒創新實驗測試需求減少，本專區將聚焦人才培育擴展智慧載具技術之學研合作，以場域情境特色推動科普教育推廣轉型規劃，活化運用場域，並扣合沙崙AI產業專區發展，跨部會研商規劃分散式低碳電源與儲能系統設置空間，提供彈性模組化能源。
-                </p>
-            </div>
-
-            <!-- CTA Button on right - 4/12 width on desktop -->
-            <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
-                <a href="https://stb.stpi.narl.org.tw" target="_blank"
-                    class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
-                    <span>進入資安暨智慧科技專區</span>
-                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- forest -->
-    <section id="forest" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-        <h4 class="mb-8">
-            <%= currentLanguage==='en' ? 'Smart Rainforest Industry Regeneration' : '智慧雨林產業創生' %>
-        </h4>
-        <!-- Hero Image -->
-        <div class="relative rounded-3xl overflow-hidden mb-8">
-            <img src="../images/desktop/promotion_forest.jpg" alt="Green Innovation"
-                class="w-full h-64 md:h-96 object-cover">
-        </div>
-        <!-- Description and CTA in flex layout -->
-        <div class="flex flex-col lg:flex-row lg:space-x-6">
-            <!-- Description on left - 8/12 width on desktop -->
-            <div class="w-full lg:w-8/12 mb-6 lg:mb-0">
-                <p class="">
-                    本推動方案將透過政府跨部會的合作，推動各行各業數位轉型、AI化及人才培育，提升整體產業競爭力，並促進區域經濟均衡發展。同時，協助在地大專校院對接產業需求，支持在地產業發展，促進區域經濟增長，提升大專校院競爭力。
-                    <br>
-                    透過專業制度專才培訓、國家及算力與資料庫、以及綠能等資源導入應用，在南部地區發展重點產業，包含金屬加工、車用零組件、餐飲、健康醫療等，結合示範驗證，將南部地區打造成為全產業之AI科技前進基地。
-                </p>
-            </div>
-
-            <!-- CTA Button on right - 4/12 width on desktop -->
-            <div class="w-full min-w-max lg:w-4/12 flex justify-center lg:justify-end items-start">
-                <a href="#" target="_blank"
-                    class="inline-flex items-center px-6 py-3 border rounded-3xl custom-button-green">
-                    <span>進入智慧雨林產業創生</span>
-                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a>
-            </div>
-        </div>
-    </section>
-
+<%- contentFor('scripts') %>
     <script>
         // 等待DOM完全加載
         document.addEventListener('DOMContentLoaded', function () {
@@ -629,6 +407,80 @@
             // 視窗調整大小時檢查
             window.addEventListener('resize', checkScrollButtons);
 
+            ///////////////////////////////////////////////////////////
+
+            // 產業切換功能
+            const categoryTabs = document.querySelectorAll('.categoryTab');
+            const companyLists = document.querySelectorAll('.companyList');
+
+                // 初始化 - 只顯示第一個類別的 companyList
+            if (companyLists.length > 0) {
+                // 隱藏所有 companyList
+                companyLists.forEach((list, index) => {
+                    if (index === 0) {
+                        list.classList.remove('hidden'); // 顯示第一個
+                    } else {
+                        list.classList.add('hidden');// 隱藏其他
+                    }
+                });
+                
+                // 設定第一個 categoryTab 為活動狀態
+                if (categoryTabs.length > 0) {
+                    categoryTabs[0].classList.add('border-custom-blue', 'border-l-4');
+                    categoryTabs[0].classList.remove('text-gray-500');
+                }
+            }
+
+            categoryTabs.forEach((categoryTab, tabIndex) => {
+                categoryTab.addEventListener('click', function() {
+                    // 移除所有標籤的活動狀態
+                    categoryTabs.forEach(t => {
+                        t.classList.remove('border-custom-blue', 'border-l-4');
+                        t.classList.add('text-gray-500');
+                    });
+                    
+                    // 設置當前標籤為活動狀態
+                    this.classList.remove('text-gray-500');
+                    this.classList.add('border-custom-blue', 'border-l-4');
+                    
+                    // 隱藏所有 companyList，只顯示對應的那一個
+                    companyLists.forEach((list, listIndex) => {
+                        if (listIndex === tabIndex) {
+                            list.style.display = 'block'; // 顯示當前選中的類別
+                        } else {
+                            list.style.display = 'none'; // 隱藏其他類別
+                        }
+                    });
+                });
+            });
+
+            ///////////////////////////////////////////////////////////
+
+            // 公司切換功能
+            const companyTabs = document.querySelectorAll('.companyTab');
+            const supplierLists = document.querySelectorAll('.supplierList');
+            const demanderLists = document.querySelectorAll('.demanderList');
+
+            companyTabs.forEach((companyTab, index) => {
+                companyTab.addEventListener('click', function() {
+                    companyTabs.forEach(tab => {
+                        // 切換標籤樣式
+                        tab.classList.toggle('border-custom-blue', tab === this);
+                        tab.classList.toggle('text-custom-blue', tab === this);
+                        tab.classList.toggle('text-gray-500', tab !== this);
+                        tab.classList.toggle('border-gray-100', tab !== this);
+                    });
+                    // 切換內容顯示
+                    const isSupplierTab = index === 0;
+                    supplierLists.forEach((list, index) => {
+                        list.classList.toggle('hidden', !isSupplierTab);
+                    });
+                    demanderLists.forEach((list, index) => {
+                        list.classList.toggle('hidden', isSupplierTab);
+                    });
+                });
+            });
+            
             ///////////////////////////////////////////////////////////
 
         });
