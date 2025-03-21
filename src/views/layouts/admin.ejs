@@ -165,6 +165,60 @@
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <ul class="mt-2 dropdown-content" id="dropdown-pages">
+                            <li>
+                                <a href="/admin/about"
+                                    class="block px-4 py-2 text-neutral-300 hover:bg-neutral-700 hover:text-white rounded-md">
+                                    <i class="fas fa-info-circle mr-2"></i> 關於我們
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/admin/promotions/items"
+                                    class="block px-4 py-2 text-neutral-300 hover:bg-neutral-700 hover:text-white rounded-md">
+                                    <i class="fas fa-bullhorn mr-2"></i> 推動方案
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/admin/news/items"
+                                    class="block px-4 py-2 text-neutral-300 hover:bg-neutral-700 hover:text-white rounded-md">
+                                    <i class="fas fa-newspaper mr-2"></i> 最新消息
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/admin/downloads"
+                                    class="block px-4 py-2 text-neutral-300 hover:bg-neutral-700 hover:text-white rounded-md">
+                                    <i class="fas fa-download mr-2"></i> 下載專區
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/admin/faq/items"
+                                    class="block px-4 py-2 text-neutral-300 hover:bg-neutral-700 hover:text-white rounded-md">
+                                    <i class="fas fa-question-circle mr-2"></i> 常見問題
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/admin/contact"
+                                    class="block px-4 py-2 text-neutral-300 hover:bg-neutral-700 hover:text-white rounded-md">
+                                    <i class="fas fa-envelope mr-2"></i> 聯絡我們
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                    class="block px-4 py-2 text-neutral-300 hover:bg-neutral-700 hover:text-white rounded-md">
+                                    <i class="fas fa-file-alt mr-2"></i> 網站安全政策
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                    class="block px-4 py-2 text-neutral-300 hover:bg-neutral-700 hover:text-white rounded-md">
+                                    <i class="fas fa-file-alt mr-2"></i> 隱私權政策
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                    class="block px-4 py-2 text-neutral-300 hover:bg-neutral-700 hover:text-white rounded-md">
+                                    <i class="fas fa-file-alt mr-2"></i> 政府網站資料開放宣告
+                                </a>
+                            </li>
                             <% if (user.role && user.role==='super_admin' ) { %>
                                 <li>
                                     <a href="/admin/pages"
@@ -172,61 +226,7 @@
                                         <i class="fas fa-file-alt mr-2"></i> 頁面管理
                                     </a>
                                 </li>
-                                <% } %>
-                                    <li>
-                                        <a href="/admin/about"
-                                            class="block px-4 py-2 text-neutral-300 hover:bg-neutral-700 hover:text-white rounded-md">
-                                            <i class="fas fa-info-circle mr-2"></i> 關於我們
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/admin/downloads"
-                                            class="block px-4 py-2 text-neutral-300 hover:bg-neutral-700 hover:text-white rounded-md">
-                                            <i class="fas fa-download mr-2"></i> 下載專區
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/admin/news/items"
-                                            class="block px-4 py-2 text-neutral-300 hover:bg-neutral-700 hover:text-white rounded-md">
-                                            <i class="fas fa-newspaper mr-2"></i> 最新消息
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/admin/promotions/items"
-                                            class="block px-4 py-2 text-neutral-300 hover:bg-neutral-700 hover:text-white rounded-md">
-                                            <i class="fas fa-bullhorn mr-2"></i> 推動方案
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/admin/faq/items"
-                                            class="block px-4 py-2 text-neutral-300 hover:bg-neutral-700 hover:text-white rounded-md">
-                                            <i class="fas fa-question-circle mr-2"></i> 常見問題
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/admin/contact"
-                                            class="block px-4 py-2 text-neutral-300 hover:bg-neutral-700 hover:text-white rounded-md">
-                                            <i class="fas fa-envelope mr-2"></i> 聯絡我們
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 text-neutral-300 hover:bg-neutral-700 hover:text-white rounded-md">
-                                            <i class="fas fa-envelope mr-2"></i> 網站安全政策
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 text-neutral-300 hover:bg-neutral-700 hover:text-white rounded-md">
-                                            <i class="fas fa-envelope mr-2"></i> 隱私權政策
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="block px-4 py-2 text-neutral-300 hover:bg-neutral-700 hover:text-white rounded-md">
-                                            <i class="fas fa-envelope mr-2"></i> 政府網站資料開放宣告
-                                        </a>
-                                    </li>
+                            <% } %>
                         </ul>
                     </li>
 
