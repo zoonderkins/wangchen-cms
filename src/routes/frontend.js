@@ -86,7 +86,7 @@ router.get('/:language', async (req, res, next) => {
                 orderBy: {
                     order: 'asc'
                 },
-                take: 4 // Limit to 4 banners
+                take: 12 // Limit to 12 banners
             }),
             prisma.page.findMany({
                 where: {

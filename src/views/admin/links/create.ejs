@@ -8,23 +8,10 @@
     <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
       <form action="/admin/links" method="POST" enctype="multipart/form-data">
         <!-- Language Tabs -->
-        <%- include('../../partials/admin-language-switcher', { title: '內容語言' , activeTab: 'en' }) %>
-
-          <!-- English Content -->
-          <div class="language-content language-content-en">
-            <!-- Title (English) -->
-            <div class="mb-4">
-              <label class="block text-sm font-medium text-gray-700" for="title_en">
-                標題 (英文) <span class="text-red-500">*</span>
-              </label>
-              <input
-                class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                type="text" id="title_en" name="title_en" placeholder="請輸入連結標題（英文）" required />
-            </div>
-          </div>
+        <%- include('../../partials/admin-language-switcher', { title: '內容語言' , activeTab: 'tw' }) %>
 
           <!-- Traditional Chinese Content -->
-          <div class="language-content language-content-tw hidden">
+          <div class="language-content language-content-tw">
             <!-- Title (Traditional Chinese) -->
             <div class="mb-4">
               <label class="block text-sm font-medium text-gray-700" for="title_tw">
@@ -33,6 +20,19 @@
               <input
                 class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                 type="text" id="title_tw" name="title_tw" placeholder="請輸入連結標題（中文）" required />
+            </div>
+          </div>
+
+          <!-- English Content -->
+          <div class="language-content language-content-en hidden">
+            <!-- Title (English) -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700" for="title_en">
+                標題 (英文) <span class="text-red-500">*</span>
+              </label>
+              <input
+                class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                type="text" id="title_en" name="title_en" placeholder="請輸入連結標題（英文）" required />
             </div>
           </div>
 

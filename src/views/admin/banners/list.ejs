@@ -92,16 +92,24 @@
                                 <td class="px-6 py-4">
                                     <div class="text-sm font-medium text-neutral-900">
                                         <div class="mb-1">
-                                            <span class="text-xs text-neutral-500">EN:</span>
-                                            <%= banner.title_en %>
-                                        </div>
-                                        <div>
                                             <span class="text-xs text-neutral-500">中:</span>
                                             <%= banner.title_tw %>
+                                        </div>
+                                        <div>
+                                            <span class="text-xs text-neutral-500">EN:</span>
+                                            <%= banner.title_en %>
                                         </div>
                                     </div>
                                     <% if (banner.description_en || banner.description_tw) { %>
                                         <div class="text-sm text-neutral-500 truncate max-w-xs mt-1">
+                                            <% if (banner.description_tw) { %>
+                                                <div class="text-xs">
+                                                    <span class="text-neutral-400">中:</span>
+                                                    <%= banner.description_tw.length> 30 ?
+                                                        banner.description_tw.substring(0, 30) + '...' :
+                                                        banner.description_tw %>
+                                                </div>
+                                            <% } %>
                                             <% if (banner.description_en) { %>
                                                 <div class="text-xs">
                                                     <span class="text-neutral-400">EN:</span>
@@ -109,17 +117,9 @@
                                                         banner.description_en.substring(0, 30) + '...' :
                                                         banner.description_en %>
                                                 </div>
-                                                <% } %>
-                                                    <% if (banner.description_tw) { %>
-                                                        <div class="text-xs">
-                                                            <span class="text-neutral-400">中:</span>
-                                                            <%= banner.description_tw.length> 30 ?
-                                                                banner.description_tw.substring(0, 30) + '...' :
-                                                                banner.description_tw %>
-                                                        </div>
-                                                        <% } %>
+                                            <% } %>
                                         </div>
-                                        <% } %>
+                                    <% } %>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
                                     <% if (banner.url) { %>

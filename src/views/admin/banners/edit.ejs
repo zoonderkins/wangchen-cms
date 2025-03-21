@@ -57,10 +57,35 @@
                                         enctype="multipart/form-data">
                                         <!-- Language Tabs -->
                                         <%- include('../../partials/admin-language-switcher', { title: '內容語言' ,
-                                            activeTab: 'en' }) %>
+                                            activeTab: 'tw' }) %>
+
+                                            <!-- Traditional Chinese Content -->
+                                            <div class="language-content language-content-tw">
+                                                <div class="mb-4">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                                                        for="title_tw">
+                                                        標題 (中文) <span class="text-red-500">*</span>
+                                                    </label>
+                                                    <input
+                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                        id="title_tw" name="title_tw" type="text"
+                                                        value="<%= banner.title_tw %>" placeholder="請輸入橫幅標題" required>
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                                                        for="description_tw">
+                                                        描述 (中文)
+                                                    </label>
+                                                    <textarea
+                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                        id="description_tw" name="description_tw" rows="3"
+                                                        placeholder="請輸入橫幅描述"><%= banner.description_tw || '' %></textarea>
+                                                </div>
+                                            </div>
 
                                             <!-- English Content -->
-                                            <div class="language-content language-content-en">
+                                            <div class="language-content language-content-en hidden">
                                                 <div class="mb-4">
                                                     <label class="block text-gray-700 text-sm font-bold mb-2"
                                                         for="title_en">
@@ -82,31 +107,6 @@
                                                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                                         id="description_en" name="description_en" rows="3"
                                                         placeholder="Enter banner description in English"><%= banner.description_en || '' %></textarea>
-                                                </div>
-                                            </div>
-
-                                            <!-- Traditional Chinese Content -->
-                                            <div class="language-content language-content-tw hidden">
-                                                <div class="mb-4">
-                                                    <label class="block text-gray-700 text-sm font-bold mb-2"
-                                                        for="title_tw">
-                                                        標題 (中文) <span class="text-red-500">*</span>
-                                                    </label>
-                                                    <input
-                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                        id="title_tw" name="title_tw" type="text"
-                                                        value="<%= banner.title_tw %>" placeholder="請輸入橫幅標題" required>
-                                                </div>
-
-                                                <div class="mb-4">
-                                                    <label class="block text-gray-700 text-sm font-bold mb-2"
-                                                        for="description_tw">
-                                                        描述 (中文)
-                                                    </label>
-                                                    <textarea
-                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                        id="description_tw" name="description_tw" rows="3"
-                                                        placeholder="請輸入橫幅描述"><%= banner.description_tw || '' %></textarea>
                                                 </div>
                                             </div>
 
