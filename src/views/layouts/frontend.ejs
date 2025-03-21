@@ -80,10 +80,6 @@
     <header class="fixed top-0 left-0 w-full bg-white shadow-sm z-50">
         <nav class="px-4 py-3">
             <div class="flex items-center justify-between">
-                <!-- Logo -->
-                <a href="/<%= currentLanguage %>" class="flex items-center">
-                    <img src="/images/desktop/logo-STSVPO_v2.png" alt="大南方新矽谷推動辦公室頁首標誌" class="h-8 lg:h-8">
-                </a>
                 <!-- New logo -->
                 <% if (siteSettings) { %>
                     <a href="/<%= currentLanguage %>">
@@ -102,9 +98,11 @@
                                                         class="max-h-12">
                         </picture>
                     </a>
-                    <% } else { %>
-                        <a href="/<%= currentLanguage %>"> </a>
-                        <% } %>
+                <% } else { %>
+                    <a href="/<%= currentLanguage %>" class="flex items-center">
+                        <img src="/images/desktop/logo-STSVPO_v2.png" alt="大南方新矽谷推動辦公室頁首標誌" class="h-8 lg:h-8">
+                    </a>
+                <% } %>
                 <div class="flex">
                     <!-- Combined Navigation Links -->
                     <div id="nav-menu"

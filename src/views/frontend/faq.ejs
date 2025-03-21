@@ -41,6 +41,7 @@
                                 class="w-full px-4 py-4 border rounded-xl"
                                 value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
                             <button class="absolute right-3 bottom-4" type="submit">
+                                <span class="hidden"><%= currentLanguage === 'en' ? 'Search' : '搜尋' %></span>
                                 <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                     alt="<%= currentLanguage==='en' ? 'search' : '搜尋' %>">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -50,7 +51,9 @@
                             <% if (typeof searchQuery !=='undefined' && searchQuery) { %>
                                 <a href="/<%=currentLanguage%>/faq"
                                     class="absolute right-12 bottom-4 text-gray-400 hover:text-gray-600">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <span class="hidden"><%= currentLanguage === 'en' ? 'Clear' : '清除' %></span>
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                        alt="<%= language === 'en' ? 'Clear' : '清除' %>">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M6 18L18 6M6 6l12 12" />
                                     </svg>

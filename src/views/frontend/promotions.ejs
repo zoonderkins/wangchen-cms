@@ -16,6 +16,7 @@
         <!-- 左箭頭按鈕 -->
         <button id="scroll-left"
             class="absolute left-0 sm:left-10 z-10 px-2 py-2 text-gray-600 bg-white rounded-full shadow-md hover:bg-gray-100 focus:outline-none">
+            <span class="hidden"><%= currentLanguage==='en' ? 'Left Arrow' : '左箭頭' %></span>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor" alt="<%= currentLanguage==='en' ? 'Left Arrow' : '左箭頭' %>">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -24,6 +25,7 @@
         <!-- 右箭頭按鈕 -->
         <button id="scroll-right"
             class="absolute right-0 sm:right-10 z-10 px-2 py-2 text-gray-600 bg-white rounded-full shadow-md hover:bg-gray-100 focus:outline-none">
+            <span class="hidden"><%= currentLanguage==='en' ? 'Right Arrow' : '右箭頭' %></span>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor" alt="<%= currentLanguage==='en' ? 'Right Arrow' : '右箭頭' %>">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
