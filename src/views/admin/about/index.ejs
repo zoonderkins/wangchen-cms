@@ -15,8 +15,8 @@
             <thead>
               <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
                 <th class="py-3 px-6 text-left">順序</th>
-                <th class="py-3 px-6 text-left">標題 (英)</th>
                 <th class="py-3 px-6 text-left">標題 (中)</th>
+                <th class="py-3 px-6 text-left">標題 (英)</th>
                 <th class="py-3 px-6 text-left">類型</th>
                 <th class="py-3 px-6 text-left">建立日期</th>
                 <th class="py-3 px-6 text-center">操作</th>
@@ -29,10 +29,10 @@
                     <%= item.order %>
                   </td>
                   <td class="py-3 px-6 text-left">
-                    <%= item.title_en %>
+                    <%= item.title_tw %>
                   </td>
                   <td class="py-3 px-6 text-left">
-                    <%= item.title_tw %>
+                    <%= item.title_en %>
                   </td>
                   <td class="py-3 px-6 text-left">
                     <% if (item.type==='plain_text' ) { %>

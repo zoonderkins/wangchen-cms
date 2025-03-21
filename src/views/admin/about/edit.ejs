@@ -12,20 +12,20 @@
       <form action="/admin/about/<%= item.id %>" method="POST" enctype="multipart/form-data" id="aboutForm">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="title_en">
-              標題（英文） <span class="text-red-500">*</span>
-            </label>
-            <input
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="title_en" name="title_en" type="text" value="<%= item.title_en %>" required>
-          </div>
-          <div>
             <label class="block text-gray-700 text-sm font-bold mb-2" for="title_tw">
               標題（中文） <span class="text-red-500">*</span>
             </label>
             <input
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="title_tw" name="title_tw" type="text" value="<%= item.title_tw %>" required>
+          </div>
+          <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="title_en">
+              標題（英文） <span class="text-red-500">*</span>
+            </label>
+            <input
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="title_en" name="title_en" type="text" value="<%= item.title_en %>" required>
           </div>
         </div>
 
@@ -39,12 +39,12 @@
             <option value="">選擇類型</option>
             <option value="plain_text" <%=item.type==='plain_text' ? 'selected' : '' %>>編輯器</option>
             <option value="image" <%=item.type==='image' ? 'selected' : '' %>>圖片</option>
-            <option value="bullet_points" <%=item.type==='bullet_points' ? 'selected' : '' %>>項目符號</option>
+            <!-- <option value="bullet_points" <%=item.type==='bullet_points' ? 'selected' : '' %>>項目符號</option> -->
           </select>
           <p class="text-gray-600 text-xs italic mt-1">
             編輯器：簡單文字內容<br>
             圖片：上傳圖片，可選擇添加說明<br>
-            項目符號：項目列表（每行一個）
+            <!-- 項目符號：項目列表（每行一個） -->
           </p>
         </div>
 
@@ -178,19 +178,19 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="editor_en">
-              內容（英文） <span class="text-red-500">*</span>
-            </label>
-            <div id="editor_en" class="h-64 mt-1"></div>
-            <input type="hidden" name="content_en" id="content_en" value="<%= item.content_en %>">
-            <p class="text-gray-600 text-xs italic mt-1">對於項目符號，使用工具列中的項目符號按鈕。</p>
-          </div>
-          <div>
             <label class="block text-gray-700 text-sm font-bold mb-2" for="editor_tw">
               內容（中文） <span class="text-red-500">*</span>
             </label>
             <div id="editor_tw" class="h-64 mt-1"></div>
             <input type="hidden" name="content_tw" id="content_tw" value="<%= item.content_tw %>">
+            <p class="text-gray-600 text-xs italic mt-1">對於項目符號，使用工具列中的項目符號按鈕。</p>
+          </div>
+          <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="editor_en">
+              內容（英文） <span class="text-red-500">*</span>
+            </label>
+            <div id="editor_en" class="h-64 mt-1"></div>
+            <input type="hidden" name="content_en" id="content_en" value="<%= item.content_en %>">
             <p class="text-gray-600 text-xs italic mt-1">對於項目符號，使用工具列中的項目符號按鈕。</p>
           </div>
         </div>
