@@ -2,7 +2,7 @@
 
   <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold">推動項目</h1>
+      <h1 class="text-3xl font-bold">推動方案項目</h1>
       <a href="/admin/promotions/items/create"
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         <i class="fas fa-plus mr-2"></i> 新增項目
@@ -91,10 +91,10 @@
                         <% } %>
                           <div>
                             <p class="font-semibold">
-                              <%= item.title_en %>
+                              <%= item.title_tw %>
                             </p>
                             <p class="text-xs text-gray-600">
-                              <%= item.title_tw %>
+                              <%= item.title_en %>
                             </p>
                           </div>
                     </div>
@@ -165,7 +165,7 @@
                   <% } else { %>
                     <tr>
                       <td colspan="5" class="px-4 py-3 text-center text-gray-500">
-                        尚未找到任何推動項目。<a href="/admin/promotions/items/create"
+                        尚未找到任何推動方案項目。<a href="/admin/promotions/items/create"
                           class="text-purple-600 hover:underline">立即建立一個</a>。
                       </td>
                     </tr>
