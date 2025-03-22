@@ -14,38 +14,6 @@
             <!-- Category Form -->
             <div class="bg-white shadow rounded-lg p-6">
                 <form action="/admin/downloads/categories" method="POST">
-                    <!-- English Content -->
-                    <div class="mb-6 pb-4 border-b border-gray-200">
-                        <div class="flex items-center mb-4">
-                            <i class="fas fa-language mr-2 text-gray-600"></i>
-                            <h3 class="text-lg font-medium text-gray-700">English Content</h3>
-                        </div>
-
-                        <!-- Name (English) -->
-                        <div class="mb-4">
-                            <label for="name_en" class="block text-sm font-medium text-gray-700 mb-2">
-                                Category Name (English) <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                id="name_en" name="name_en" required placeholder="e.g., Documents" />
-                            <p class="mt-1 text-xs text-gray-500">Enter the English name for this category</p>
-                        </div>
-
-                        <!-- Description (English) -->
-                        <div class="mb-4">
-                            <label for="description_en" class="block text-sm font-medium text-gray-700 mb-2">
-                                Description (English)
-                            </label>
-                            <textarea
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                id="description_en" name="description_en" rows="3"
-                                placeholder="Brief description of this category"></textarea>
-                            <p class="mt-1 text-xs text-gray-500">Optional: Provide a short description for this
-                                category</p>
-                        </div>
-                    </div>
-
                     <!-- Traditional Chinese Content -->
                     <div class="mb-6 pb-4 border-b border-gray-200">
                         <div class="flex items-center mb-4">
@@ -72,6 +40,37 @@
                             <textarea
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                                 id="description_tw" name="description_tw" rows="3" placeholder="此類別的簡短描述"></textarea>
+                            <p class="mt-1 text-xs text-gray-500">選填：提供此類別的簡短描述</p>
+                        </div>
+                    </div>
+
+                    <!-- English Content -->
+                    <div class="mb-6 pb-4 border-b border-gray-200">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-language mr-2 text-gray-600"></i>
+                            <h3 class="text-lg font-medium text-gray-700">英文內容</h3>
+                        </div>
+
+                        <!-- Name (English) -->
+                        <div class="mb-4">
+                            <label for="name_en" class="block text-sm font-medium text-gray-700 mb-2">
+                                類別名稱 (英文) <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                id="name_en" name="name_en" required placeholder="例如：Documents" />
+                            <p class="mt-1 text-xs text-gray-500">輸入此類別的英文名稱</p>
+                        </div>
+
+                        <!-- Description (English) -->
+                        <div class="mb-4">
+                            <label for="description_en" class="block text-sm font-medium text-gray-700 mb-2">
+                                描述 (英文)
+                            </label>
+                            <textarea
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                id="description_en" name="description_en" rows="3"
+                                placeholder="此類別的簡短描述"></textarea>
                             <p class="mt-1 text-xs text-gray-500">選填：提供此類別的簡短描述</p>
                         </div>
                     </div>
