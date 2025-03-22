@@ -312,7 +312,7 @@ exports.renderCreateItem = async (req, res) => {
         });
         
         res.render('admin/promotions/items/form', {
-            title: 'Create Promotion Item',
+            title: '新增推動方案項目',
             item: null,
             categories
         });

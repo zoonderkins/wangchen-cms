@@ -23,7 +23,7 @@
             </div>
             <div>
               <label class="block text-gray-700 text-sm font-bold mb-2" for="title_tw">
-                標題 (繁體中文) <span class="text-red-500">*</span>
+                標題 (中文) <span class="text-red-500">*</span>
               </label>
               <input
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -77,7 +77,7 @@
             <div>
               <div class="content-field" id="content_tw_field">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="editor_tw">
-                  內容 (繁體中文) <span class="text-red-500 content-required">*</span>
+                  內容 (中文) <span class="text-red-500 content-required">*</span>
                 </label>
                 <div id="editor_tw" class="h-64 mt-1"></div>
                 <input type="hidden" name="content_tw" id="content_tw" value="<%= item.content_tw %>">
@@ -101,7 +101,7 @@
                 </div>
                 <div>
                   <label class="block text-gray-700 text-sm font-bold mb-2" for="suppliers_tw">
-                    供應商列表 (繁體中文)
+                    供應商列表 (中文)
                   </label>
                   <textarea
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -125,7 +125,7 @@
                 </div>
                 <div>
                   <label class="block text-gray-700 text-sm font-bold mb-2" for="buyers_tw">
-                    需求商列表 (繁體中文)
+                    需求商列表 (中文)
                   </label>
                   <textarea
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -369,7 +369,7 @@
 
           // Update content labels to show they're optional
           document.querySelector('label[for="editor_en"]').innerHTML = '內容 (英文)';
-          document.querySelector('label[for="editor_tw"]').innerHTML = '內容 (繁體中文)';
+          document.querySelector('label[for="editor_tw"]').innerHTML = '內容 (中文)';
 
           // Hide required marks for content
           contentRequiredMarks.forEach(mark => mark.style.display = 'none');
@@ -433,7 +433,7 @@
           document.querySelector('label[for="editor_en"]').innerHTML =
             '內容 (英文) <span class="text-red-500 content-required">*</span>';
           document.querySelector('label[for="editor_tw"]').innerHTML =
-            '內容 (繁體中文) <span class="text-red-500 content-required">*</span>';
+            '內容 (中文) <span class="text-red-500 content-required">*</span>';
 
           // Hide the entire attachment container - multiple approaches for better compatibility
           // 1. Find by heading

@@ -23,7 +23,7 @@
                                     <button type="button"
                                         class="py-2 px-4 text-center border-b-2 border-transparent text-gray-500 font-medium text-sm leading-5 hover:text-gray-700 hover:border-gray-300 focus:outline-none language-tab"
                                         data-language="tw">
-                                        繁體中文
+                                        中文
                                     </button>
                                 </div>
                             </div>
@@ -31,11 +31,11 @@
                             <form action="/admin/faq/items/<%= item.id %>" method="POST">
                                 <!-- Title - English -->
                                 <div class="mb-4 language-content en">
-                                    <label class="block text-sm font-medium text-gray-700" for="title_en">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="title_en">
                                         問題/標題 (英文) <span class="text-red-500">*</span>
                                     </label>
                                     <input
-                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         type="text" id="title_en" name="title_en"
                                         placeholder="Enter the FAQ question or title in English" required
                                         value="<%= item.title_en %>" />
@@ -43,22 +43,22 @@
 
                                 <!-- Title - Traditional Chinese -->
                                 <div class="mb-4 language-content tw hidden">
-                                    <label class="block text-sm font-medium text-gray-700" for="title_tw">
-                                        問題/標題 (繁體中文) <span class="text-red-500">*</span>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="title_tw">
+                                        問題/標題 (中文) <span class="text-red-500">*</span>
                                     </label>
                                     <input
-                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                        type="text" id="title_tw" name="title_tw" placeholder="請輸入常見問題的問題或標題（繁體中文）"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        type="text" id="title_tw" name="title_tw" placeholder="請輸入常見問題的問題或標題（中文）"
                                         required value="<%= item.title_tw %>" />
                                 </div>
 
                                 <!-- Category -->
                                 <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-700" for="categoryId">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="categoryId">
                                         分類 <span class="text-red-500">*</span>
                                     </label>
                                     <select
-                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="categoryId" name="categoryId" required>
                                         <option value="">選擇分類</option>
                                         <% categories.forEach(function(category) { %>
@@ -71,7 +71,7 @@
 
                                 <!-- Content - English -->
                                 <div class="mb-4 language-content en">
-                                    <label class="block text-sm font-medium text-gray-700" for="content_en">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="content_en">
                                         答案/內容 (英文) <span class="text-red-500">*</span>
                                     </label>
                                     <div id="editor-container-en" class="h-64 mt-1"></div>
@@ -81,8 +81,8 @@
 
                                 <!-- Content - Traditional Chinese -->
                                 <div class="mb-4 language-content tw hidden">
-                                    <label class="block text-sm font-medium text-gray-700" for="content_tw">
-                                        答案/內容 (繁體中文) <span class="text-red-500">*</span>
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="content_tw">
+                                        答案/內容 (中文) <span class="text-red-500">*</span>
                                     </label>
                                     <div id="editor-container-tw" class="h-64 mt-1"></div>
                                     <input type="hidden" name="content_tw" id="content_tw"
@@ -91,22 +91,22 @@
 
                                 <!-- Order -->
                                 <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-700" for="order">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="order">
                                         顯示順序
                                     </label>
                                     <input
-                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         type="number" id="order" name="order" placeholder="輸入顯示順序（較小的數字會先顯示）"
                                         value="<%= item.order %>" />
                                 </div>
 
                                 <!-- Status -->
                                 <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-700" for="status">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="status">
                                         狀態
                                     </label>
                                     <select
-                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="status" name="status">
                                         <option value="draft" <%=item.status==='draft' ? 'selected' : '' %>>草稿</option>
                                         <option value="published" <%=item.status==='published' ? 'selected' : '' %>>已發布
@@ -159,7 +159,7 @@
                 modules: {
                     toolbar: toolbarOptions
                 },
-                placeholder: '在此輸入繁體中文答案內容...'
+                placeholder: '在此輸入中文答案內容...'
             });
 
             // Try to load existing English content

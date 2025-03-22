@@ -1,106 +1,116 @@
 <%- contentFor('body') %>
 
-    <div class="container px-6 mx-auto grid">
-        <div class="flex justify-between items-center my-6">
-            <h2 class="text-2xl font-semibold text-gray-700">
-                常見問題分類
-            </h2>
-            <a href="/admin/faq/items" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <i class="fas fa-list mr-2"></i> 返回項目列表
-            </a>
-        </div>
-
-        <!-- CTA -->
-        <div
-            class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-purple-100 bg-purple-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold">常見問題分類管理</h1>
             <div class="flex items-center">
-                <span>管理常見問題分類，以便組織您的常見問題項目。</span>
+                <a href="/admin/faq"
+                    class="bg-white hover:bg-gray-100 text-blue-500 border border-blue-500 font-bold py-2 px-4 rounded mr-2">
+                    <i class="fas fa-arrow-left mr-2"></i> 返回常見問題
+                </a>
+                <a href="/admin/faq/categories/create"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    <i class="fas fa-plus mr-2"></i> 新增類別
+                </a>
             </div>
-            <a href="/admin/faq/categories/create"
-                class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-800 border border-transparent rounded-lg active:bg-purple-900 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                <i class="fas fa-plus mr-2"></i> 新增分類
-            </a>
         </div>
 
+        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
 
-        <!-- Categories Table -->
-        <div class="w-full overflow-hidden rounded-lg shadow-xs">
-            <div class="w-full overflow-x-auto">
-                <table class="w-full whitespace-no-wrap">
-                    <thead>
-                        <tr
-                            class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b bg-gray-50">
-                            <th class="px-4 py-3">名稱</th>
-                            <th class="px-4 py-3">網址代碼</th>
-                            <th class="px-4 py-3">項目數</th>
-                            <th class="px-4 py-3">排序</th>
-                            <th class="px-4 py-3">操作</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y">
-                        <% if(categories.length> 0) { %>
+
+            <% if(categories.length > 0) { %>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white" id="dataTable">
+                        <thead>
+                            <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
+                                <th class="py-3 px-6 text-left">順序</th>
+                                <th class="py-3 px-6 text-left">名稱 (英)</th>
+                                <th class="py-3 px-6 text-left">名稱 (中)</th>
+                                <th class="py-3 px-6 text-left">網址代碼</th>
+                                <th class="py-3 px-6 text-left">項目數</th>
+                                <th class="py-3 px-6 text-center">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-600 text-sm">
                             <% categories.forEach(function(category) { %>
-                                <tr class="text-gray-700">
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center text-sm">
-                                            <div>
-                                                <p class="font-semibold">
-                                                    <%= category.name_en %>
-                                                </p>
-                                                <p class="text-xs text-gray-500">
-                                                    <%= category.name_tw %>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3 text-sm">
-                                        <%= category.slug %>
-                                    </td>
-                                    <td class="px-4 py-3 text-sm">
-                                        <%= category._count.faqItems %>
-                                    </td>
-                                    <td class="px-4 py-3 text-sm">
+                                <tr class="border-b border-gray-200 hover:bg-gray-50">
+                                    <td class="py-3 px-6 text-left">
                                         <%= category.order %>
                                     </td>
-                                    <td class="px-4 py-3 text-sm">
-                                        <div class="flex items-center space-x-4 text-sm">
+                                    <td class="py-3 px-6 text-left">
+                                        <%= category.name_en %>
+                                    </td>
+                                    <td class="py-3 px-6 text-left">
+                                        <%= category.name_tw %>
+                                    </td>
+                                    <td class="py-3 px-6 text-left">
+                                        <%= category.slug %>
+                                    </td>
+                                    <td class="py-3 px-6 text-left">
+                                        <%= category._count.faqItems %>
+                                    </td>
+                                    <td class="py-3 px-6 text-center">
+                                        <div class="flex item-center justify-center">
                                             <a href="/admin/faq/categories/edit/<%= category.id %>"
-                                                class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg focus:outline-none focus:shadow-outline-gray"
-                                                aria-label="編輯">
-                                                <svg class="w-5 h-5" aria-hidden="true" fill="currentColor"
-                                                    viewBox="0 0 20 20">
-                                                    <path
-                                                        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z">
-                                                    </path>
-                                                </svg>
+                                                class="text-blue-600 hover:text-blue-900 mx-1">
+                                                <i class="fas fa-edit"></i>
                                             </a>
-                                            <form action="/admin/faq/categories/<%= category.id %>/delete" method="POST"
-                                                onsubmit="return confirm('您確定要刪除此分類嗎？這將同時刪除此分類中的所有項目。');">
-                                                <button type="submit"
-                                                    class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg focus:outline-none focus:shadow-outline-gray"
-                                                    aria-label="刪除">
-                                                    <svg class="w-5 h-5" aria-hidden="true" fill="currentColor"
-                                                        viewBox="0 0 20 20">
-                                                        <path fill-rule="evenodd"
-                                                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                                            clip-rule="evenodd"></path>
-                                                    </svg>
-                                                </button>
-                                            </form>
+                                            <button class="text-red-600 hover:text-red-900 mx-1"
+                                                onclick="document.getElementById('deleteModal<%= category.id %>').classList.remove('hidden')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
-                                <% }); %>
-                                    <% } else { %>
-                                        <tr class="text-gray-700">
-                                            <td colspan="5" class="px-4 py-3 text-sm text-center">
-                                                尚未找到任何分類。<a href="/admin/faq/categories/create"
-                                                    class="text-purple-600 hover:underline">立即建立一個</a>。
-                                            </td>
-                                        </tr>
-                                        <% } %>
-                    </tbody>
-                </table>
-            </div>
+
+                                <!-- Delete Modal -->
+                                <div id="deleteModal<%= category.id %>"
+                                    class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+                                    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                                        <div class="mt-3 text-center">
+                                            <h3 class="text-lg leading-6 font-medium text-gray-900">確認刪除</h3>
+                                            <div class="mt-2 px-7 py-3">
+                                                <p class="text-sm text-gray-500">
+                                                    您確定要刪除分類「<%= category.name_en %>」嗎？這將同時刪除該類別下的所有項目。
+                                                </p>
+                                            </div>
+                                            <div class="flex justify-end mt-4">
+                                                <button type="button"
+                                                    class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2"
+                                                    onclick="document.getElementById('deleteModal<%= category.id %>').classList.add('hidden')">
+                                                    取消
+                                                </button>
+                                                <form action="/admin/faq/categories/<%= category.id %>/delete" method="POST" class="inline">
+                                                    <button type="submit"
+                                                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                                        刪除
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } else { %>
+                <div class="text-center py-8">
+                    <p class="text-gray-500 mb-4">未找到任何常見問題類別。</p>
+                    <a href="/admin/faq/categories/create"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <i class="fas fa-plus mr-2"></i> 新增第一個類別
+                    </a>
+                </div>
+            <% } %>
         </div>
     </div>
+
+<%- contentFor('script') %>
+<script>
+    $(document).ready(function () {
+        $('#dataTable').DataTable({
+            "order": [[0, "asc"]]
+        });
+    });
+</script>

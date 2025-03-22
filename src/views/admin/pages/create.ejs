@@ -43,7 +43,7 @@
                                                 class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:border-gray-300"
                                                 id="chinese-tab" data-tabs-target="#chinese" type="button" role="tab"
                                                 aria-controls="chinese" aria-selected="false">
-                                                繁體中文
+                                                中文
                                             </button>
                                         </li>
                                     </ul>
@@ -53,22 +53,22 @@
                                 <div id="english" role="tabpanel" aria-labelledby="english-tab">
                                     <!-- English Title -->
                                     <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-700" for="title_en">
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="title_en">
                                             頁面標題 (英文) <span class="text-red-500">*</span>
                                         </label>
                                         <input
-                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                             type="text" id="title_en" name="title_en" placeholder="輸入頁面標題" required>
                                     </div>
 
                                     <!-- English Content -->
                                     <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-700" for="editor_en">
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="editor_en">
                                             頁面內容 (英文) <span class="text-red-500">*</span>
                                         </label>
                                         <!-- Quill editor container -->
                                         <div id="editor_en"
-                                            class="block w-full mt-1 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            class="border rounded w-full focus:outline-none focus:shadow-outline"
                                             style="min-height: 300px;"></div>
 
                                         <!-- Hidden input to store content -->
@@ -80,22 +80,22 @@
                                 <div id="chinese" class="hidden" role="tabpanel" aria-labelledby="chinese-tab">
                                     <!-- Chinese Title -->
                                     <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-700" for="title_tw">
-                                            頁面標題 (繁體中文) <span class="text-red-500">*</span>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="title_tw">
+                                            頁面標題 (中文) <span class="text-red-500">*</span>
                                         </label>
                                         <input
-                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                             type="text" id="title_tw" name="title_tw" placeholder="輸入頁面標題" required>
                                     </div>
 
                                     <!-- Chinese Content -->
                                     <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-700" for="editor_tw">
-                                            頁面內容 (繁體中文) <span class="text-red-500">*</span>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="editor_tw">
+                                            頁面內容 (中文) <span class="text-red-500">*</span>
                                         </label>
                                         <!-- Quill editor container -->
                                         <div id="editor_tw"
-                                            class="block w-full mt-1 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            class="border rounded w-full focus:outline-none focus:shadow-outline"
                                             style="min-height: 300px;"></div>
 
                                         <!-- Hidden input to store content -->
@@ -106,11 +106,11 @@
                                 <!-- Common Fields (Not Language Specific) -->
                                 <!-- Attachments -->
                                 <div class="mb-4 mt-6 pt-4 border-t border-gray-200">
-                                    <label class="block text-sm font-medium text-gray-700" for="attachments">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="attachments">
                                         附件
                                     </label>
                                     <input
-                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         type="file" id="attachments" name="attachments" multiple>
                                     <p class="mt-1 text-xs text-gray-500">
                                         允許的檔案類型：JPG、PNG、PDF、Word、Excel、MP4。每個檔案最大 50MB。
@@ -119,15 +119,18 @@
 
                                 <!-- Status -->
                                 <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-700" for="status">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="status">
                                         狀態 <span class="text-red-500">*</span>
                                     </label>
                                     <select
-                                        class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="status" name="status" required>
                                         <option value="draft">草稿</option>
                                         <option value="published">已發布</option>
+                                        <option value="archived">已封存</option>
+                                        <option value="pending">待審核</option>
                                     </select>
+                                    <p class="mt-1 text-xs text-gray-500">選擇頁面的發布狀態</p>
                                 </div>
 
                                 <!-- Navigation Settings -->
@@ -143,11 +146,11 @@
                                     </div>
 
                                     <div class="ml-6">
-                                        <label class="block text-sm font-medium text-gray-700" for="navigationOrder">
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="navigationOrder">
                                             導航順序
                                         </label>
                                         <input
-                                            class="block w-32 mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            class="shadow appearance-none border rounded w-32 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                             type="number" id="navigationOrder" name="navigationOrder" min="0"
                                             placeholder="順序">
                                         <p class="mt-1 text-xs text-gray-500">
