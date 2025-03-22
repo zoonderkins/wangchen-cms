@@ -25,6 +25,22 @@ exports.listItems = async (req, res) => {
                 attachments: {
                     where: {
                         deletedAt: null
+                    },
+                    select: {
+                        id: true,
+                        filename: true,
+                        originalName: true,
+                        mimeType: true,
+                        size: true,
+                        path: true,
+                        title_en: true,
+                        title_tw: true,
+                        description_en: true,
+                        description_tw: true,
+                        attachment_name_en: true,
+                        attachment_name_tw: true,
+                        createdAt: true,
+                        updatedAt: true
                     }
                 }
             }
@@ -211,9 +227,15 @@ exports.createItem = async (req, res) => {
             logger.info(`Processing ${req.files.attachments.length} attachments`);
             
             try {
-                const attachmentPromises = req.files.attachments.map(file => {
+                const attachmentPromises = req.files.attachments.map((file, index) => {
                     console.log(`Processing attachment: ${file.originalname}, size: ${file.size}, type: ${file.mimetype}`);
                     logger.info(`Processing attachment: ${file.originalname}, size: ${file.size}, type: ${file.mimetype}`);
+                    
+                    // Get custom attachment names if provided
+                    const attachmentNameEn = req.body[`new_attachment_name_en_${index}`] || null;
+                    const attachmentNameTw = req.body[`new_attachment_name_tw_${index}`] || null;
+                    
+                    console.log(`Custom attachment names - EN: ${attachmentNameEn}, TW: ${attachmentNameTw}`);
                     
                     return prisma.platformAttachment.create({
                         data: {
@@ -222,7 +244,9 @@ exports.createItem = async (req, res) => {
                             mimeType: file.mimetype,
                             size: file.size,
                             path: `/uploads/platform/attachments/${file.filename}`,
-                            platformId: platform.id
+                            platformId: platform.id,
+                            attachment_name_en: attachmentNameEn,
+                            attachment_name_tw: attachmentNameTw
                         }
                     });
                 });
@@ -293,6 +317,22 @@ exports.renderEditItem = async (req, res) => {
                 attachments: {
                     where: {
                         deletedAt: null
+                    },
+                    select: {
+                        id: true,
+                        filename: true,
+                        originalName: true,
+                        mimeType: true,
+                        size: true,
+                        path: true,
+                        title_en: true,
+                        title_tw: true,
+                        description_en: true,
+                        description_tw: true,
+                        attachment_name_en: true,
+                        attachment_name_tw: true,
+                        createdAt: true,
+                        updatedAt: true
                     }
                 }
             }
@@ -348,6 +388,22 @@ exports.renderEditItem = async (req, res) => {
                     where: {
                         platformId: parsedId,
                         deletedAt: null
+                    },
+                    select: {
+                        id: true,
+                        filename: true,
+                        originalName: true,
+                        mimeType: true,
+                        size: true,
+                        path: true,
+                        title_en: true,
+                        title_tw: true,
+                        description_en: true,
+                        description_tw: true,
+                        attachment_name_en: true,
+                        attachment_name_tw: true,
+                        createdAt: true,
+                        updatedAt: true
                     }
                 });
                 
@@ -495,6 +551,22 @@ exports.updateItem = async (req, res) => {
                 attachments: {
                     where: {
                         deletedAt: null
+                    },
+                    select: {
+                        id: true,
+                        filename: true,
+                        originalName: true,
+                        mimeType: true,
+                        size: true,
+                        path: true,
+                        title_en: true,
+                        title_tw: true,
+                        description_en: true,
+                        description_tw: true,
+                        attachment_name_en: true,
+                        attachment_name_tw: true,
+                        createdAt: true,
+                        updatedAt: true
                     }
                 }
             }
@@ -614,6 +686,40 @@ exports.updateItem = async (req, res) => {
             logger.info(`Update - Soft deleted ${attachmentIds.length} attachments in database`);
         }
         
+        // Update custom attachment names for existing attachments
+        if (existingItem.attachments) {
+            for (const attachment of existingItem.attachments) {
+                // Skip attachments that are being removed
+                if (removeAttachments && 
+                    (Array.isArray(removeAttachments) 
+                        ? removeAttachments.map(id => parseInt(id)).includes(attachment.id)
+                        : parseInt(removeAttachments) === attachment.id)) {
+                    continue;
+                }
+                
+                const attachmentNameEn = req.body[`attachment_name_en_${attachment.id}`];
+                const attachmentNameTw = req.body[`attachment_name_tw_${attachment.id}`];
+                
+                // Only update if values are provided and different from current values
+                if (attachmentNameEn !== undefined || attachmentNameTw !== undefined) {
+                    console.log(`Updating attachment ${attachment.id} names - EN: ${attachmentNameEn}, TW: ${attachmentNameTw}`);
+                    
+                    const updateData = {};
+                    if (attachmentNameEn !== undefined) {
+                        updateData.attachment_name_en = attachmentNameEn;
+                    }
+                    if (attachmentNameTw !== undefined) {
+                        updateData.attachment_name_tw = attachmentNameTw;
+                    }
+                    
+                    await prisma.platformAttachment.update({
+                        where: { id: attachment.id },
+                        data: updateData
+                    });
+                }
+            }
+        }
+        
         // Update the platform item
         // Set default values based on type
         let finalContentEn, finalContentTw, finalCategoryId;
@@ -706,6 +812,22 @@ exports.updateItem = async (req, res) => {
                 attachments: {
                     where: {
                         deletedAt: null
+                    },
+                    select: {
+                        id: true,
+                        filename: true,
+                        originalName: true,
+                        mimeType: true,
+                        size: true,
+                        path: true,
+                        title_en: true,
+                        title_tw: true,
+                        description_en: true,
+                        description_tw: true,
+                        attachment_name_en: true,
+                        attachment_name_tw: true,
+                        createdAt: true,
+                        updatedAt: true
                     }
                 }
             }
@@ -719,9 +841,15 @@ exports.updateItem = async (req, res) => {
             logger.info(`Update - Processing ${req.files.attachments.length} new attachments`);
             
             try {
-                const attachmentPromises = req.files.attachments.map(file => {
+                const attachmentPromises = req.files.attachments.map((file, index) => {
                     console.log(`Update - Processing attachment: ${file.originalname}, size: ${file.size}, type: ${file.mimetype}`);
                     logger.info(`Update - Processing attachment: ${file.originalname}, size: ${file.size}, type: ${file.mimetype}`);
+                    
+                    // Get custom attachment names if provided
+                    const attachmentNameEn = req.body[`new_attachment_name_en_${index}`] || null;
+                    const attachmentNameTw = req.body[`new_attachment_name_tw_${index}`] || null;
+                    
+                    console.log(`Custom attachment names - EN: ${attachmentNameEn}, TW: ${attachmentNameTw}`);
                     
                     return prisma.platformAttachment.create({
                         data: {
@@ -730,7 +858,9 @@ exports.updateItem = async (req, res) => {
                             mimeType: file.mimetype,
                             size: file.size,
                             path: `/uploads/platform/attachments/${file.filename}`,
-                            platformId: parsedId
+                            platformId: parsedId,
+                            attachment_name_en: attachmentNameEn,
+                            attachment_name_tw: attachmentNameTw
                         }
                     });
                 });
@@ -801,6 +931,22 @@ exports.deleteItem = async (req, res) => {
                 attachments: {
                     where: {
                         deletedAt: null
+                    },
+                    select: {
+                        id: true,
+                        filename: true,
+                        originalName: true,
+                        mimeType: true,
+                        size: true,
+                        path: true,
+                        title_en: true,
+                        title_tw: true,
+                        description_en: true,
+                        description_tw: true,
+                        attachment_name_en: true,
+                        attachment_name_tw: true,
+                        createdAt: true,
+                        updatedAt: true
                     }
                 }
             }
@@ -933,6 +1079,22 @@ exports.showPlatformPage = async (req, res) => {
                 attachments: {
                     where: {
                         deletedAt: null
+                    },
+                    select: {
+                        id: true,
+                        filename: true,
+                        originalName: true,
+                        mimeType: true,
+                        size: true,
+                        path: true,
+                        title_en: true,
+                        title_tw: true,
+                        description_en: true,
+                        description_tw: true,
+                        attachment_name_en: true,
+                        attachment_name_tw: true,
+                        createdAt: true,
+                        updatedAt: true
                     }
                 }
             }
@@ -1360,6 +1522,22 @@ exports.getPlatformItemById = async (req, res) => {
                 attachments: {
                     where: {
                         deletedAt: null
+                    },
+                    select: {
+                        id: true,
+                        filename: true,
+                        originalName: true,
+                        mimeType: true,
+                        size: true,
+                        path: true,
+                        title_en: true,
+                        title_tw: true,
+                        description_en: true,
+                        description_tw: true,
+                        attachment_name_en: true,
+                        attachment_name_tw: true,
+                        createdAt: true,
+                        updatedAt: true
                     }
                 }
             }

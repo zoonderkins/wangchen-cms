@@ -190,6 +190,11 @@
                   process.env.ALLOWED_ATTACHMENT_TYPES.toUpperCase()
                   : 'PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, ZIP, RAR' %>
             </p>
+            
+            <!-- Dynamic attachment name fields for new uploads -->
+            <div id="new-attachment-name-fields" class="mt-4">
+              <!-- Fields will be dynamically added here when files are selected -->
+            </div>
           </div>
 
           <!-- Additional Settings -->
@@ -451,6 +456,79 @@
         // Set default published date to today
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('publishedDate').value = today;
+
+        // Attachments input handler for dynamic name fields
+        const attachmentsInput = document.getElementById('attachments');
+        const nameFieldsContainer = document.getElementById('new-attachment-name-fields');
+        
+        attachmentsInput.addEventListener('change', function() {
+          // Clear previous fields
+          nameFieldsContainer.innerHTML = '';
+          
+          // Create fields for each selected file
+          for (let i = 0; i < this.files.length; i++) {
+            const file = this.files[i];
+            const fileIndex = i;
+            const fileId = `file-${Date.now()}-${fileIndex}`;
+            const fileName = file.name;
+            
+            // Create container div
+            const fileFieldset = document.createElement('fieldset');
+            fileFieldset.className = 'border border-gray-300 rounded p-3 mb-3';
+            
+            // Add legend with filename
+            const legend = document.createElement('legend');
+            legend.className = 'text-sm font-bold px-2';
+            legend.textContent = fileName;
+            fileFieldset.appendChild(legend);
+            
+            // Create grid layout
+            const grid = document.createElement('div');
+            grid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+            
+            // English name field
+            const engDiv = document.createElement('div');
+            const engLabel = document.createElement('label');
+            engLabel.className = 'block text-gray-700 text-sm font-bold mb-1';
+            engLabel.setAttribute('for', `new_attachment_name_en_${fileId}`);
+            engLabel.textContent = '附件名稱 (英文)';
+            
+            const engInput = document.createElement('input');
+            engInput.className = 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline';
+            engInput.id = `new_attachment_name_en_${fileId}`;
+            engInput.name = `new_attachment_name_en_${fileIndex}`;
+            engInput.type = 'text';
+            
+            engDiv.appendChild(engLabel);
+            engDiv.appendChild(engInput);
+            
+            // Chinese name field
+            const twDiv = document.createElement('div');
+            const twLabel = document.createElement('label');
+            twLabel.className = 'block text-gray-700 text-sm font-bold mb-1';
+            twLabel.setAttribute('for', `new_attachment_name_tw_${fileId}`);
+            twLabel.textContent = '附件名稱 (中文)';
+            
+            const twInput = document.createElement('input');
+            twInput.className = 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline';
+            twInput.id = `new_attachment_name_tw_${fileId}`;
+            twInput.name = `new_attachment_name_tw_${fileIndex}`;
+            twInput.type = 'text';
+            
+            twDiv.appendChild(twLabel);
+            twDiv.appendChild(twInput);
+            
+            // Add fields to grid
+            grid.appendChild(engDiv);
+            grid.appendChild(twDiv);
+            
+            // Add grid to fieldset
+            fileFieldset.appendChild(grid);
+            
+            // Add fieldset to container
+            nameFieldsContainer.appendChild(fileFieldset);
+          }
+        });
       });
     </script>
 

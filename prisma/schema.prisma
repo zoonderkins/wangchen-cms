@@ -508,21 +508,23 @@ model Platform {
 }
 
 model PlatformAttachment {
-  id             Int       @id @default(autoincrement())
-  filename       String
-  originalName   String
-  mimeType       String
-  size           Int
-  path           String
-  title_en       String?
-  title_tw       String?
-  description_en String?   @db.Text
-  description_tw String?   @db.Text
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  platformId     Int
-  deletedAt      DateTime?
-  platform       Platform  @relation(fields: [platformId], references: [id], onDelete: Cascade)
+  id                Int       @id @default(autoincrement())
+  filename          String
+  originalName      String
+  mimeType          String
+  size              Int
+  path              String
+  title_en          String?
+  title_tw          String?
+  description_en    String?   @db.Text
+  description_tw    String?   @db.Text
+  attachment_name_en String?
+  attachment_name_tw String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  platformId        Int
+  deletedAt         DateTime?
+  platform          Platform  @relation(fields: [platformId], references: [id], onDelete: Cascade)
 
   @@index([platformId], map: "PlatformAttachments_platformId_fkey")
   @@map("PlatformAttachments")

@@ -90,7 +90,12 @@
                                                       </svg>
                                                       <span
                                                         class="ml-2 text-sm text-gray-600 group-hover:text-gray-900">
-                                                        <%= attachment.originalName %>
+                                                                                                                <!-- 標題部分 -->
+                                                        <p class="">
+                                                            <%= currentLanguage==='en' 
+                                                                ? (attachment.attachment_name_en || attachment.originalName) 
+                                                                : (attachment.attachment_name_tw || attachment.originalName) %>
+                                                        </p>
                                                       </span>
                                                       <span class="ml-auto text-xs text-gray-400">
                                                         <%= Math.round(attachment.size / 1024) %> KB
@@ -275,7 +280,9 @@
                                                                                       </svg>
                                                                                       <span
                                                                                         class="ml-2 text-sm text-gray-600 group-hover:text-gray-900">
-                                                                                        <%= attachment.originalName %>
+                                                                                        <%= currentLanguage==='en' 
+                                                                                            ? (attachment.attachment_name_en || attachment.originalName) 
+                                                                                            : (attachment.attachment_name_tw || attachment.originalName) %>
                                                                                       </span>
                                                                                       <span
                                                                                         class="ml-auto text-xs text-gray-400">
