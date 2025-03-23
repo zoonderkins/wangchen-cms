@@ -2,15 +2,15 @@
 
     <div class="container mx-auto px-4 py-8">
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold">消息類別管理</h1>
+            <h1 class="text-3xl font-bold">最新消息分類管理</h1>
             <div class="flex items-center">
                 <a href="/admin/news/items"
                     class="bg-white hover:bg-gray-100 text-blue-500 border border-blue-500 font-bold py-2 px-4 rounded mr-2">
-                    <i class="fas fa-arrow-left mr-2"></i> 返回消息項目
+                    <i class="fas fa-arrow-left mr-2"></i> 返回最新消息項目
                 </a>
                 <a href="/admin/news/categories/create"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-plus mr-2"></i> 新增類別
+                    <i class="fas fa-plus mr-2"></i> 新增分類
                 </a>
             </div>
         </div>
@@ -22,8 +22,8 @@
                         <thead>
                             <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
                                 <th class="py-3 px-6 text-left">順序</th>
-                                <th class="py-3 px-6 text-left">名稱 (英)</th>
                                 <th class="py-3 px-6 text-left">名稱 (中)</th>
+                                <th class="py-3 px-6 text-left">名稱 (英)</th>
                                 <th class="py-3 px-6 text-left">網址代碼</th>
                                 <th class="py-3 px-6 text-left">項目數</th>
                                 <th class="py-3 px-6 text-center">操作</th>
@@ -36,10 +36,10 @@
                                         <%= category.order %>
                                     </td>
                                     <td class="py-3 px-6 text-left">
-                                        <%= category.name_en %>
+                                        <%= category.name_tw %>
                                     </td>
                                     <td class="py-3 px-6 text-left">
-                                        <%= category.name_tw %>
+                                        <%= category.name_en %>
                                     </td>
                                     <td class="py-3 px-6 text-left">
                                         <%= category.slug %>
@@ -69,7 +69,7 @@
                                             <h3 class="text-lg leading-6 font-medium text-gray-900">確認刪除</h3>
                                             <div class="mt-2 px-7 py-3">
                                                 <p class="text-sm text-gray-500">
-                                                    您確定要刪除分類「<%= category.name_en %>」嗎？這將同時刪除該類別下的所有消息項目。
+                                                    您確定要刪除分類「<%= category.name_en %>」嗎？這將同時刪除該分類下的所有最新消息項目。
                                                 </p>
                                             </div>
                                             <div class="flex justify-end mt-4">
@@ -94,10 +94,10 @@
                 </div>
                 <% } else { %>
                     <div class="text-center py-8">
-                        <p class="text-gray-500 mb-4">未找到任何消息類別。</p>
+                        <p class="text-gray-500 mb-4">未找到任何最新消息分類。</p>
                         <a href="/admin/news/categories/create"
                             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            <i class="fas fa-plus mr-2"></i> 新增第一個類別
+                            <i class="fas fa-plus mr-2"></i> 新增第一個分類
                         </a>
                     </div>
                     <% } %>

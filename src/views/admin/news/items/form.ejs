@@ -5,11 +5,11 @@
     <div class="container px-6 mx-auto grid">
         <div class="flex justify-between items-center my-6">
             <h2 class="text-2xl font-semibold text-gray-700">
-                <%= newsItem ? '編輯消息項目' : '建立消息項目' %>
+                <%= newsItem ? '編輯最新消息項目' : '建立最新消息項目' %>
             </h2>
             <a href="/admin/news/items"
                 class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-600 border border-transparent rounded-lg active:bg-gray-600 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray">
-                <i class="fas fa-arrow-left mr-2"></i> 返回消息項目列表
+                <i class="fas fa-arrow-left mr-2"></i> 返回最新消息項目列表
             </a>
         </div>
 
@@ -30,11 +30,11 @@
                             <div class="border-b border-gray-200">
                                 <nav class="-mb-px flex">
                                     <button type="button"
-                                        class="language-tab active-tab py-2 px-4 border-b-2 border-blue-500 font-medium text-sm leading-5 text-blue-600 focus:outline-none"
-                                        data-lang="en">中文</button>
+                                        class="language-tab py-2 px-4 border-b-2 font-medium text-sm leading-5 focus:outline-none border-blue-500 text-blue-600 hover:text-gray-700 hover:border-gray-300 active-tab"
+                                        data-lang="tw">中文</button>
                                     <button type="button"
-                                        class="language-tab py-2 px-4 border-b-2 border-transparent font-medium text-sm leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none"
-                                        data-lang="tw">英文</button>
+                                        class="language-tab py-2 px-4 border-b-2 font-medium text-sm leading-5 focus:outline-none border-transparent text-gray-500"
+                                        data-lang="en">英文</button>
                                 </nav>
                             </div>
                         </div>
@@ -67,45 +67,20 @@
                                     });
                                 });
 
-                                // 初始化 - 預設顯示英文內容
+                                // 初始化 - 預設顯示中文內容
                                 document.querySelectorAll('.language-content').forEach(el => {
-                                    if (!el.classList.contains('language-content-en')) {
+                                    if (!el.classList.contains('language-content-tw')) {
                                         el.classList.add('hidden');
                                     }
                                 });
                             });
                         </script>
 
-                        <!-- English Content -->
-                        <div class="language-content language-content-en">
-                            <!-- Title -->
-                            <div class="mb-6">
-                                <label for="title_en" class="block text-gray-700 text-sm font-bold mb-2">標題
-                                    (中文)</label>
-                                <input type="text" id="title_en" name="title_en"
-                                    value="<%= newsItem ? newsItem.title_en : '' %>" required
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                            </div>
-
-
-
-                            <!-- Summary -->
-                            <div class="mb-6">
-                                <label for="summary_en" class="block text-gray-700 text-sm font-bold mb-2">
-                                    摘要 (中文)
-                                    <span class="text-gray-500 text-xs">(選填)</span>
-                                </label>
-                                <textarea id="summary_en" name="summary_en" rows="3"
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"><%= newsItem ? newsItem.summary_en : '' %></textarea>
-                            </div>
-                        </div>
-
                         <!-- Traditional Chinese Content -->
-                        <div class="language-content language-content-tw hidden">
+                        <div class="language-content language-content-tw">
                             <!-- Title -->
                             <div class="mb-6">
-                                <label for="title_tw" class="block text-gray-700 text-sm font-bold mb-2">標題
-                                    (英文)</label>
+                                <label for="title_tw" class="block text-gray-700 text-sm font-bold mb-2">標題 (中文)</label>
                                 <input type="text" id="title_tw" name="title_tw"
                                     value="<%= newsItem ? newsItem.title_tw : '' %>"
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
@@ -116,11 +91,34 @@
                             <!-- Summary -->
                             <div class="mb-6">
                                 <label for="summary_tw" class="block text-gray-700 text-sm font-bold mb-2">
-                                    摘要 (英文)
+                                    摘要 (中文)
                                     <span class="text-gray-500 text-xs">(選填)</span>
                                 </label>
                                 <textarea id="summary_tw" name="summary_tw" rows="3"
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"><%= newsItem ? newsItem.summary_tw : '' %></textarea>
+                            </div>
+                        </div>
+
+                        <!-- English Content -->
+                        <div class="language-content language-content-en hidden">
+                            <!-- Title -->
+                            <div class="mb-6">
+                                <label for="title_en" class="block text-gray-700 text-sm font-bold mb-2">標題 (英文)</label>
+                                <input type="text" id="title_en" name="title_en"
+                                    value="<%= newsItem ? newsItem.title_en : '' %>" required
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+
+
+
+                            <!-- Summary -->
+                            <div class="mb-6">
+                                <label for="summary_en" class="block text-gray-700 text-sm font-bold mb-2">
+                                    摘要 (英文)
+                                    <span class="text-gray-500 text-xs">(選填)</span>
+                                </label>
+                                <textarea id="summary_en" name="summary_en" rows="3"
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"><%= newsItem ? newsItem.summary_en : '' %></textarea>
                             </div>
                         </div>
 
@@ -204,7 +202,7 @@
                             <div class="flex justify-end">
                                 <button type="submit"
                                     class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                                    <%= newsItem ? '更新' : '建立' %> 消息項目
+                                    <%= newsItem ? '更新' : '建立' %> 最新消息項目
                                 </button>
                             </div>
                         </div>
