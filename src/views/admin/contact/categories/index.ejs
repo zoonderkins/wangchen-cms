@@ -16,8 +16,8 @@
             <thead>
               <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
                 <th class="py-3 px-6 text-left">順序</th>
-                <th class="py-3 px-6 text-left">名稱 (英)</th>
-                <th class="py-3 px-6 text-left">名稱 (中)</th>
+                <th class="py-3 px-6 text-left">名稱 (中文)</th>
+                <th class="py-3 px-6 text-left">名稱 (英文)</th>
                 <th class="py-3 px-6 text-left">建立日期</th>
                 <th class="py-3 px-6 text-center">操作</th>
               </tr>
@@ -29,10 +29,10 @@
                     <%= category.order %>
                   </td>
                   <td class="py-3 px-6 text-left">
-                    <%= category.name_en %>
+                    <%= category.name_tw %>
                   </td>
                   <td class="py-3 px-6 text-left">
-                    <%= category.name_tw %>
+                    <%= category.name_en %>
                   </td>
                   <td class="py-3 px-6 text-left">
                     <%= new Date(category.createdAt).toLocaleDateString() %>

@@ -22,7 +22,7 @@
               <option value="">所有分類</option>
               <% categories.forEach(function(category) { %>
                 <option value="<%= category.id %>" <%=currentCategory==category.id ? 'selected' : '' %>>
-                  <%= category.name_en %> / <%= category.name_tw %>
+                  <%= category.name_tw %> / <%= category.name_en %>
                 </option>
                 <% }); %>
             </select>
@@ -80,7 +80,7 @@
                   </td>
                   <td class="py-3 px-6 text-left">
                     <% if (contact.category) { %>
-                      <%= contact.category.name_en %> / <%= contact.category.name_tw %>
+                      <%= contact.category.name_tw %> / <%= contact.category.name_en %>
                           <% } else { %>
                             <span class="text-gray-400">無</span>
                             <% } %>
