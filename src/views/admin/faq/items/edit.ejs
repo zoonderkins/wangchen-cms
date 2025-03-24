@@ -17,20 +17,32 @@
                                 <div class="flex border-b border-gray-200">
                                     <button type="button"
                                         class="py-2 px-4 text-center border-b-2 border-blue-500 text-blue-500 font-medium text-sm leading-5 focus:outline-none language-tab active"
-                                        data-language="en">
-                                        英文
+                                        data-language="tw">
+                                        中文
                                     </button>
                                     <button type="button"
                                         class="py-2 px-4 text-center border-b-2 border-transparent text-gray-500 font-medium text-sm leading-5 hover:text-gray-700 hover:border-gray-300 focus:outline-none language-tab"
-                                        data-language="tw">
-                                        中文
+                                        data-language="en">
+                                        英文
                                     </button>
                                 </div>
                             </div>
 
                             <form action="/admin/faq/items/<%= item.id %>" method="POST">
+                                
+                                <!-- Title - Traditional Chinese -->
+                                <div class="mb-4 language-content tw">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="title_tw">
+                                        問題/標題 (中文) <span class="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        type="text" id="title_tw" name="title_tw" placeholder="請輸入常見問題的問題或標題（中文）"
+                                        required value="<%= item.title_tw %>" />
+                                </div>
+                                
                                 <!-- Title - English -->
-                                <div class="mb-4 language-content en">
+                                <div class="mb-4 language-content en hidden">
                                     <label class="block text-gray-700 text-sm font-bold mb-2" for="title_en">
                                         問題/標題 (英文) <span class="text-red-500">*</span>
                                     </label>
@@ -39,17 +51,6 @@
                                         type="text" id="title_en" name="title_en"
                                         placeholder="Enter the FAQ question or title in English" required
                                         value="<%= item.title_en %>" />
-                                </div>
-
-                                <!-- Title - Traditional Chinese -->
-                                <div class="mb-4 language-content tw hidden">
-                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="title_tw">
-                                        問題/標題 (中文) <span class="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        type="text" id="title_tw" name="title_tw" placeholder="請輸入常見問題的問題或標題（中文）"
-                                        required value="<%= item.title_tw %>" />
                                 </div>
 
                                 <!-- Category -->

@@ -9,33 +9,10 @@
                             <form action="/admin/faq/items" method="POST" id="faqForm">
                                 <!-- Language Tabs -->
                                 <%- include('../../../partials/admin-language-switcher', { title: '內容語言' ,
-                                    activeTab: 'en' }) %>
-
-                                    <!-- English Content -->
-                                    <div class="language-content language-content-en">
-                                        <!-- Title (English) -->
-                                        <div class="mb-4">
-                                            <label class="block text-gray-700 text-sm font-bold mb-2" for="title_en">
-                                                Question/Title (English) <span class="text-red-500">*</span>
-                                            </label>
-                                            <input
-                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                type="text" id="title_en" name="title_en"
-                                                placeholder="Enter the FAQ question or title in English" required />
-                                        </div>
-
-                                        <!-- Content (English) -->
-                                        <div class="mb-4">
-                                            <label class="block text-gray-700 text-sm font-bold mb-2" for="editor_en">
-                                                Answer/Content (English) <span class="text-red-500">*</span>
-                                            </label>
-                                            <div id="editor_en" class="h-64 mt-1"></div>
-                                            <input type="hidden" name="content_en" id="content_en">
-                                        </div>
-                                    </div>
+                                    activeTab: 'tw' }) %>
 
                                     <!-- Traditional Chinese Content -->
-                                    <div class="language-content language-content-tw hidden">
+                                    <div class="language-content language-content-tw">
                                         <!-- Title (Traditional Chinese) -->
                                         <div class="mb-4">
                                             <label class="block text-gray-700 text-sm font-bold mb-2" for="title_tw">
@@ -54,6 +31,29 @@
                                             </label>
                                             <div id="editor_tw" class="h-64 mt-1"></div>
                                             <input type="hidden" name="content_tw" id="content_tw">
+                                        </div>
+                                    </div>
+
+                                    <!-- English Content -->
+                                    <div class="language-content language-content-en hidden">
+                                        <!-- Title (English) -->
+                                        <div class="mb-4">
+                                            <label class="block text-gray-700 text-sm font-bold mb-2" for="title_en">
+                                                Question/Title (English) <span class="text-red-500">*</span>
+                                            </label>
+                                            <input
+                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                type="text" id="title_en" name="title_en"
+                                                placeholder="Enter the FAQ question or title in English" required />
+                                        </div>
+
+                                        <!-- Content (English) -->
+                                        <div class="mb-4">
+                                            <label class="block text-gray-700 text-sm font-bold mb-2" for="editor_en">
+                                                Answer/Content (English) <span class="text-red-500">*</span>
+                                            </label>
+                                            <div id="editor_en" class="h-64 mt-1"></div>
+                                            <input type="hidden" name="content_en" id="content_en">
                                         </div>
                                     </div>
 

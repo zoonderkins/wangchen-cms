@@ -22,39 +22,14 @@
                             <form action="/admin/faq/categories" method="POST">
                                 <!-- Language Tabs -->
                                 <%- include('../../../partials/admin-language-switcher', { title: '內容語言' ,
-                                    activeTab: 'en' }) %>
-
-                                    <!-- English Content -->
-                                    <div class="language-content language-content-en">
-                                        <!-- Name (English) -->
-                                        <div class="mb-4">
-                                            <label class="block text-gray-700 text-sm font-bold mb-2" for="name_en">
-                                                Category Name (English) <span class="text-red-500">*</span>
-                                            </label>
-                                            <input
-                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                type="text" id="name_en" name="name_en" required
-                                                placeholder="e.g., Frequently Asked Questions" />
-                                        </div>
-
-                                        <!-- Description (English) -->
-                                        <div class="mb-4">
-                                            <label class="block text-gray-700 text-sm font-bold mb-2" for="description_en">
-                                                Description (English)
-                                            </label>
-                                            <textarea
-                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                id="description_en" name="description_en" rows="3"
-                                                placeholder="Brief description of this category"></textarea>
-                                        </div>
-                                    </div>
+                                    activeTab: 'tw' }) %>
 
                                     <!-- Traditional Chinese Content -->
-                                    <div class="language-content language-content-tw hidden">
+                                    <div class="language-content language-content-tw">
                                         <!-- Name (Traditional Chinese) -->
                                         <div class="mb-4">
                                             <label class="block text-gray-700 text-sm font-bold mb-2" for="name_tw">
-                                                類別名稱 (中文) <span class="text-red-500">*</span>
+                                                分類名稱 (中文) <span class="text-red-500">*</span>
                                             </label>
                                             <input
                                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -70,7 +45,32 @@
                                             <textarea
                                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                                 id="description_tw" name="description_tw" rows="3"
-                                                placeholder="此類別的簡短描述"></textarea>
+                                                placeholder="此分類的簡短描述"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <!-- English Content -->
+                                    <div class="language-content language-content-en hidden">
+                                        <!-- Name (English) -->
+                                        <div class="mb-4">
+                                            <label class="block text-gray-700 text-sm font-bold mb-2" for="name_en">
+                                                分類名稱 (英文) <span class="text-red-500">*</span>
+                                            </label>
+                                            <input
+                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                type="text" id="name_en" name="name_en" required
+                                                placeholder="e.g., Frequently Asked Questions" />
+                                        </div>
+
+                                        <!-- Description (English) -->
+                                        <div class="mb-4">
+                                            <label class="block text-gray-700 text-sm font-bold mb-2" for="description_en">
+                                                描述 (英文)
+                                            </label>
+                                            <textarea
+                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                id="description_en" name="description_en" rows="3"
+                                                placeholder="Brief description of this category"></textarea>
                                         </div>
                                     </div>
 

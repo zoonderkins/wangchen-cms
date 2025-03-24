@@ -22,20 +22,46 @@
                             <!-- Language Switcher -->
                             <div class="mb-6">
                                 <div class="flex items-center space-x-4">
-                                    <button type="button" id="lang-en"
-                                        class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                                        英文
-                                    </button>
                                     <button type="button" id="lang-tw"
-                                        class="px-3 py-1 text-sm font-medium leading-5 text-gray-700 transition-colors duration-150 bg-white border border-gray-300 rounded-md active:bg-gray-100 hover:bg-gray-100 focus:outline-none focus:shadow-outline-gray">
+                                        class="px-3 py-1 text-sm font-medium leading-5 transition-colors duration-150 border rounded-md active:bg-gray-100 focus:outline-none focus:shadow-outline-purple hover:bg-purple-700 text-white bg-purple-600 border-gray-300 ">
                                         中文
+                                    </button>
+                                    <button type="button" id="lang-en"
+                                        class="px-3 py-1 text-sm font-medium leading-5 transition-colors duration-150 border rounded-md active:bg-purple-600 focus:outline-none focus:shadow-outline-gray hover:bg-purple-700 text-gray-700 bg-white border-transparent ">
+                                        英文
                                     </button>
                                 </div>
                             </div>
 
                             <form action="/admin/faq/categories/<%= category.id %>" method="POST">
+
+                                <!-- Chinese Fields -->
+                                <div id="chinese-fields">
+                                    <!-- Name (Traditional Chinese) -->
+                                    <div class="mb-4">
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="name_tw">
+                                            分類名稱 (中文) <span class="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                            type="text" id="name_tw" name="name_tw" required
+                                            value="<%= category.name_tw %>" />
+                                    </div>
+
+                                    <!-- Description (Traditional Chinese) -->
+                                    <div class="mb-4">
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="description_tw">
+                                            描述 (中文)
+                                        </label>
+                                        <textarea
+                                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                            id="description_tw" name="description_tw"
+                                            rows="3"><%= category.description_tw || '' %></textarea>
+                                    </div>
+                                </div>
+
                                 <!-- English Fields -->
-                                <div id="english-fields">
+                                <div id="english-fields" class="hidden">
                                     <!-- Name (English) -->
                                     <div class="mb-4">
                                         <label class="block text-gray-700 text-sm font-bold mb-2" for="name_en">
@@ -59,30 +85,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Chinese Fields -->
-                                <div id="chinese-fields" style="display: none;">
-                                    <!-- Name (Traditional Chinese) -->
-                                    <div class="mb-4">
-                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="name_tw">
-                                            分類名稱 (中文) <span class="text-red-500">*</span>
-                                        </label>
-                                        <input
-                                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            type="text" id="name_tw" name="name_tw" required
-                                            value="<%= category.name_tw %>" />
-                                    </div>
-
-                                    <!-- Description (Traditional Chinese) -->
-                                    <div class="mb-4">
-                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="description_tw">
-                                            描述 (中文)
-                                        </label>
-                                        <textarea
-                                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            id="description_tw" name="description_tw"
-                                            rows="3"><%= category.description_tw || '' %></textarea>
-                                    </div>
-                                </div>
+                                
 
                                 <!-- Order -->
                                 <div class="mb-4">
