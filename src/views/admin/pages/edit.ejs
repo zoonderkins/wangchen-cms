@@ -35,54 +35,25 @@
                                         role="tablist">
                                         <li class="mr-2" role="presentation">
                                             <button
-                                                class="inline-block p-4 border-b-2 border-blue-600 rounded-t-lg active"
-                                                id="english-tab" data-tabs-target="#english" type="button" role="tab"
-                                                aria-controls="english" aria-selected="true">
-                                                英文
-                                            </button>
-                                        </li>
-                                        <li class="mr-2" role="presentation">
-                                            <button
-                                                class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:border-gray-300"
+                                                class="inline-block p-4 border-b-2 rounded-t-lg border-blue-600 active"
                                                 id="chinese-tab" data-tabs-target="#chinese" type="button" role="tab"
                                                 aria-controls="chinese" aria-selected="false">
                                                 中文
                                             </button>
                                         </li>
+                                        <li class="mr-2" role="presentation">
+                                            <button
+                                                class="inline-block p-4 border-b-2 rounded-t-lg border-transparent hover:border-gray-300"
+                                                id="english-tab" data-tabs-target="#english" type="button" role="tab"
+                                                aria-controls="english" aria-selected="true">
+                                                英文
+                                            </button>
+                                        </li>
                                     </ul>
                                 </div>
 
-                                <!-- English Content -->
-                                <div id="english" role="tabpanel" aria-labelledby="english-tab">
-                                    <!-- English Title -->
-                                    <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-700" for="title_en">
-                                            頁面標題 (英文) <span class="text-red-500">*</span>
-                                        </label>
-                                        <input
-                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                            type="text" id="title_en" name="title_en" value="<%= page.title_en %>"
-                                            placeholder="輸入頁面標題" required>
-                                    </div>
-
-                                    <!-- English Content -->
-                                    <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-700" for="editor_en">
-                                            頁面內容 (英文) <span class="text-red-500">*</span>
-                                        </label>
-                                        <!-- Quill editor container -->
-                                        <div id="editor_en"
-                                            class="block w-full mt-1 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                            style="min-height: 300px;"></div>
-
-                                        <!-- Hidden input to store content -->
-                                        <input type="hidden" name="content_en" id="content_en"
-                                            value="<%= page.content_en %>">
-                                    </div>
-                                </div>
-
                                 <!-- Traditional Chinese Content -->
-                                <div id="chinese" class="hidden" role="tabpanel" aria-labelledby="chinese-tab">
+                                <div id="chinese" class="" role="tabpanel" aria-labelledby="chinese-tab">
                                     <!-- Chinese Title -->
                                     <div class="mb-4">
                                         <label class="block text-sm font-medium text-gray-700" for="title_tw">
@@ -107,6 +78,35 @@
                                         <!-- Hidden input to store content -->
                                         <input type="hidden" name="content_tw" id="content_tw"
                                             value="<%= page.content_tw %>">
+                                    </div>
+                                </div>
+
+                                <!-- English Content -->
+                                <div id="english" class="hidden" role="tabpanel" aria-labelledby="english-tab">
+                                    <!-- English Title -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700" for="title_en">
+                                            頁面標題 (英文) <span class="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            type="text" id="title_en" name="title_en" value="<%= page.title_en %>"
+                                            placeholder="輸入頁面標題" required>
+                                    </div>
+
+                                    <!-- English Content -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700" for="editor_en">
+                                            頁面內容 (英文) <span class="text-red-500">*</span>
+                                        </label>
+                                        <!-- Quill editor container -->
+                                        <div id="editor_en"
+                                            class="block w-full mt-1 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            style="min-height: 300px;"></div>
+
+                                        <!-- Hidden input to store content -->
+                                        <input type="hidden" name="content_en" id="content_en"
+                                            value="<%= page.content_en %>">
                                     </div>
                                 </div>
 
