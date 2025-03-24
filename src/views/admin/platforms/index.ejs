@@ -2,7 +2,7 @@
 
   <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold">平台項目</h1>
+      <h1 class="text-3xl font-bold">製造平台項目</h1>
       <div>
         <a href="/admin/platforms/categories"
           class="bg-white hover:bg-gray-100 text-blue-500 border border-blue-500 font-bold py-2 px-4 rounded mr-2">
@@ -21,8 +21,8 @@
             <thead>
               <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
                 <th class="py-3 px-6 text-left">ID</th>
-                <th class="py-3 px-6 text-left">標題 (英)</th>
-                <th class="py-3 px-6 text-left">標題 (中)</th>
+                <th class="py-3 px-6 text-left">標題 (中文)</th>
+                <th class="py-3 px-6 text-left">標題 (英文)</th>
                 <th class="py-3 px-6 text-left">分類</th>
                 <th class="py-3 px-6 text-left">類型</th>
                 <th class="py-3 px-6 text-left">狀態</th>
@@ -38,10 +38,10 @@
                     <%= item.id %>
                   </td>
                   <td class="py-3 px-6 text-left">
-                    <%= item.title_en %>
+                    <%= item.title_tw %>
                   </td>
                   <td class="py-3 px-6 text-left">
-                    <%= item.title_tw %>
+                    <%= item.title_en %>
                   </td>
                   <td class="py-3 px-6 text-left">
                     <%= item.category ? item.category.name_en : '無' %>
@@ -123,7 +123,7 @@
   <% } else { %>
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
       <div class="text-center py-5">
-        <p class="text-gray-500">未找到平台項目。建立您的第一個項目！</p>
+        <p class="text-gray-500">未找到製造平台項目。建立您的第一個項目！</p>
       </div>
     </div>
     <% } %>

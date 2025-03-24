@@ -2,14 +2,14 @@
 
   <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold">平台分類</h1>
+      <h1 class="text-3xl font-bold">製造平台分類</h1>
       <div class="flex">
         <a href="/admin/platforms/categories/create"
           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
           <i class="fas fa-plus mr-2"></i> 新增分類
         </a>
         <a href="/admin/platforms" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-          <i class="fas fa-arrow-left mr-2"></i> 返回平台項目
+          <i class="fas fa-arrow-left mr-2"></i> 返回製造平台項目
         </a>
       </div>
     </div>
@@ -21,10 +21,10 @@
             <thead>
               <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
                 <th class="py-3 px-6 text-left">排序</th>
-                <th class="py-3 px-6 text-left">名稱 (英文)</th>
                 <th class="py-3 px-6 text-left">名稱 (中文)</th>
-                <th class="py-3 px-6 text-left">描述 (英文)</th>
+                <th class="py-3 px-6 text-left">名稱 (英文)</th>
                 <th class="py-3 px-6 text-left">描述 (中文)</th>
+                <th class="py-3 px-6 text-left">描述 (英文)</th>
                 <th class="py-3 px-6 text-left">項目數</th>
                 <th class="py-3 px-6 text-center">操作</th>
               </tr>
@@ -36,16 +36,16 @@
                     <%= category.order %>
                   </td>
                   <td class="py-3 px-6 text-left">
-                    <%= category.name_en %>
-                  </td>
-                  <td class="py-3 px-6 text-left">
                     <%= category.name_tw %>
                   </td>
                   <td class="py-3 px-6 text-left">
-                    <%= category.description_en || '-' %>
+                    <%= category.name_en %>
                   </td>
                   <td class="py-3 px-6 text-left">
                     <%= category.description_tw || '-' %>
+                  </td>
+                  <td class="py-3 px-6 text-left">
+                    <%= category.description_en || '-' %>
                   </td>
                   <td class="py-3 px-6 text-left">
                     <span class="bg-blue-200 text-blue-800 py-1 px-3 rounded-full text-xs">
@@ -107,7 +107,7 @@
         </div>
         <% } else { %>
           <div class="text-center py-8">
-            <p class="text-gray-500 mb-4">尚未建立任何平台分類。</p>
+            <p class="text-gray-500 mb-4">尚未建立任何製造平台分類。</p>
             <a href="/admin/platforms/categories/create"
               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
               <i class="fas fa-plus mr-2"></i> 新增第一個分類

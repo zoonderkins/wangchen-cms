@@ -2,7 +2,7 @@
 
   <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold">建立平台項目</h1>
+      <h1 class="text-3xl font-bold">建立製造平台項目</h1>
       <a href="/admin/platforms" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
         <i class="fas fa-arrow-left mr-2"></i> 返回列表
       </a>
@@ -14,14 +14,6 @@
           <!-- Basic Information -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label class="block text-gray-700 text-sm font-bold mb-2" for="title_en">
-                標題 (英文) <span class="text-red-500">*</span>
-              </label>
-              <input
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="title_en" name="title_en" type="text" required>
-            </div>
-            <div>
               <label class="block text-gray-700 text-sm font-bold mb-2" for="title_tw">
                 標題 (中文) <span class="text-red-500">*</span>
               </label>
@@ -29,18 +21,26 @@
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="title_tw" name="title_tw" type="text" required>
             </div>
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="title_en">
+                標題 (英文) <span class="text-red-500">*</span>
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="title_en" name="title_en" type="text" required>
+            </div>
           </div>
 
           <!-- Category and Type Selection -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label class="block text-gray-700 text-sm font-bold mb-2" for="categoryId">
-                類別 <span class="text-red-500 category-required">*</span>
+                分類 <span class="text-red-500 category-required">*</span>
               </label>
               <select
                 class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="categoryId" name="categoryId" required>
-                <option value="">選擇類別</option>
+                <option value="">選擇分類</option>
                 <% categories.forEach(function(category) { %>
                   <option value="<%= category.id %>">
                     <%= category.name_en %> / <%= category.name_tw %>
@@ -66,21 +66,21 @@
           <!-- Content Fields -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <div class="content-field" id="content_en_field">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="editor_en">
-                  內容 (英文) <span class="text-red-500 content-required">*</span>
-                </label>
-                <div id="editor_en" class="h-64 mt-1"></div>
-                <input type="hidden" name="content_en" id="content_en">
-              </div>
-            </div>
-            <div>
               <div class="content-field" id="content_tw_field">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="editor_tw">
                   內容 (中文) <span class="text-red-500 content-required">*</span>
                 </label>
                 <div id="editor_tw" class="h-64 mt-1"></div>
                 <input type="hidden" name="content_tw" id="content_tw">
+              </div>
+            </div>
+            <div>
+              <div class="content-field" id="content_en_field">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="editor_en">
+                  內容 (英文) <span class="text-red-500 content-required">*</span>
+                </label>
+                <div id="editor_en" class="h-64 mt-1"></div>
+                <input type="hidden" name="content_en" id="content_en">
               </div>
             </div>
           </div>
@@ -91,21 +91,21 @@
               <h3 class="text-xl font-bold mb-4 text-blue-800">供應商 (Suppliers)</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label class="block text-gray-700 text-sm font-bold mb-2" for="suppliers_en">
-                    供應商列表 (英文)
-                  </label>
-                  <textarea
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="suppliers_en" name="suppliers_en" rows="5"></textarea>
-                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
-                </div>
-                <div>
                   <label class="block text-gray-700 text-sm font-bold mb-2" for="suppliers_tw">
                     供應商列表 (中文)
                   </label>
                   <textarea
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     id="suppliers_tw" name="suppliers_tw" rows="5"></textarea>
+                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
+                </div>
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="suppliers_en">
+                    供應商列表 (英文)
+                  </label>
+                  <textarea
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="suppliers_en" name="suppliers_en" rows="5"></textarea>
                   <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
                 </div>
               </div>
@@ -115,21 +115,21 @@
               <h3 class="text-xl font-bold mb-4 text-green-800">需求商 (Buyers)</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label class="block text-gray-700 text-sm font-bold mb-2" for="buyers_en">
-                    需求商列表 (英文)
-                  </label>
-                  <textarea
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="buyers_en" name="buyers_en" rows="5"></textarea>
-                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
-                </div>
-                <div>
                   <label class="block text-gray-700 text-sm font-bold mb-2" for="buyers_tw">
                     需求商列表 (中文)
                   </label>
                   <textarea
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     id="buyers_tw" name="buyers_tw" rows="5"></textarea>
+                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
+                </div>
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="buyers_en">
+                    需求商列表 (英文)
+                  </label>
+                  <textarea
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="buyers_en" name="buyers_en" rows="5"></textarea>
                   <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
                 </div>
               </div>
