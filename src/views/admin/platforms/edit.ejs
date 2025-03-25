@@ -179,7 +179,7 @@
                       <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         id="image" name="image" type="file" accept="image/*">
-                      <p class="text-gray-600 text-xs italic mt-1">最大尺寸：<%= process.env.MAX_IMAGE_SIZE ?
+                      <p class="text-gray-600 text-xs italic mt-1">建議尺寸：1200x500像素。最大檔案大小：<%= process.env.MAX_IMAGE_SIZE ?
                           (process.env.MAX_IMAGE_SIZE / (1024 * 1024)).toFixed(0) : 5 %>MB。支援格式：<%=
                             process.env.ALLOWED_IMAGE_TYPES ? process.env.ALLOWED_IMAGE_TYPES.toUpperCase()
                             : 'JPG, PNG, GIF, WebP' %>
