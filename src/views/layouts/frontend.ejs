@@ -224,14 +224,14 @@
                             <%= currentLanguage==='en' ? `Total Views: ${totalVisitCount || 0}` : `總瀏覽人次： ${totalVisitCount || 0}` %>
                     </p>
                     <p class="mb-0">
-                        <a href="security.html">
+                        <a href="/<%= currentLanguage %>/page/website-security-policy">
                             <%= currentLanguage==='en' ? 'Website Security Policy' : '網站安全政策' %>
                         </a>　|　
-                        <a href="privacy.html">
+                        <a href="/<%= currentLanguage %>/page/privacy-policy">
                             <%= currentLanguage==='en' ? 'Privacy Policy' : '隱私權政策' %>
                         </a>　|　
-                        <a href="opneinfo.html">
-                            <%= currentLanguage==='en' ? 'Government Website Open Data Declaration' : '政府網站資料開放宣告'
+                        <a href="/<%= currentLanguage %>/page/government-open-data-declaration">
+                            <%= currentLanguage==='en' ? 'Government Open Data Declaration' : '政府網站資料開放宣告'
                                 %>
                         </a>
                     </p>
