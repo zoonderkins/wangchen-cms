@@ -47,12 +47,12 @@ exports.listItems = async (req, res) => {
         });
         
         // Log item types for debugging
-        console.log('Platform items types:', items.map(item => ({
+        console.log('平台項目類型:', items.map(item => ({
             id: item.id,
             title: item.title_en,
             type: item.type
         })));
-        logger.info(`Platform items count: ${items.length}`);
+        logger.info(`平台項目數量: ${items.length}`);
         
         const categories = await prisma.platformCategory.findMany({
             where: {
@@ -69,8 +69,8 @@ exports.listItems = async (req, res) => {
             categories
         });
     } catch (error) {
-        logger.error('Error listing platform items:', error);
-        req.flash('error_msg', `Failed to load platform items: ${error.message}`);
+        logger.error('列出平台項目時發生錯誤:', error);
+        req.flash('error_msg', `無法加載平台項目: ${error.message}`);
         res.redirect('/admin/dashboard');
     }
 };
@@ -92,8 +92,8 @@ exports.renderCreateItem = async (req, res) => {
             categories
         });
     } catch (error) {
-        logger.error('Error loading categories:', error);
-        req.flash('error_msg', `Failed to load categories: ${error.message}`);
+        logger.error('加載分類時發生錯誤:', error);
+        req.flash('error_msg', `無法加載分類: ${error.message}`);
         res.redirect('/admin/platforms');
     }
 };
@@ -111,10 +111,10 @@ exports.createItem = async (req, res) => {
         let imagePath = null;
         if (req.files && req.files.image && req.files.image.length > 0) {
             imagePath = `/uploads/platform/${req.files.image[0].filename}`;
-            console.log('Image uploaded:', req.files.image[0].filename);
-            console.log('Image path:', imagePath);
-            logger.info(`Image uploaded: ${req.files.image[0].filename}`);
-            logger.info(`Image path: ${imagePath}`);
+            console.log('圖片已上傳:', req.files.image[0].filename);
+            console.log('圖片路徑:', imagePath);
+            logger.info(`圖片已上傳: ${req.files.image[0].filename}`);
+            logger.info(`圖片路徑: ${imagePath}`);
         }
         
         // Generate slug from English title with timestamp to ensure uniqueness
@@ -132,8 +132,8 @@ exports.createItem = async (req, res) => {
         }
             
         // Log the generated slug
-        console.log('Generated slug:', slug);
-        logger.info(`Generated slug: ${slug}`);
+        console.log('生成的網址別名:', slug);
+        logger.info(`生成的網址別名: ${slug}`);
         
         // Set default values based on type
         let finalContentEn, finalContentTw, finalCategoryId;
@@ -166,8 +166,8 @@ exports.createItem = async (req, res) => {
         let partnersData = null;
         
         if (isPartners) {
-            console.log('Creating a partners type item');
-            logger.info('Creating a partners type item');
+            console.log('正在創建夥伴類型項目');
+            logger.info('正在創建夥伴類型項目');
             
             // Get supplier and buyer company lists from request
             const suppliers_en = req.body.suppliers_en || '';
@@ -175,15 +175,15 @@ exports.createItem = async (req, res) => {
             const buyers_en = req.body.buyers_en || '';
             const buyers_tw = req.body.buyers_tw || '';
             
-            console.log('Suppliers EN:', suppliers_en);
-            console.log('Suppliers TW:', suppliers_tw);
-            console.log('Buyers EN:', buyers_en);
-            console.log('Buyers TW:', buyers_tw);
+            console.log('供應商 EN:', suppliers_en);
+            console.log('供應商 TW:', suppliers_tw);
+            console.log('買家 EN:', buyers_en);
+            console.log('買家 TW:', buyers_tw);
             
-            logger.info(`Suppliers EN: ${suppliers_en}`);
-            logger.info(`Suppliers TW: ${suppliers_tw}`);
-            logger.info(`Buyers EN: ${buyers_en}`);
-            logger.info(`Buyers TW: ${buyers_tw}`);
+            logger.info(`供應商 EN: ${suppliers_en}`);
+            logger.info(`供應商 TW: ${suppliers_tw}`);
+            logger.info(`買家 EN: ${buyers_en}`);
+            logger.info(`買家 TW: ${buyers_tw}`);
             
             // Store both supplier and buyer company lists in a JSON field
             partnersData = {
@@ -197,8 +197,8 @@ exports.createItem = async (req, res) => {
                 }
             };
             
-            console.log('Partners data:', partnersData);
-            logger.info(`Partners data: ${JSON.stringify(partnersData)}`);
+            console.log('夥伴數據:', partnersData);
+            logger.info(`夥伴數據: ${JSON.stringify(partnersData)}`);
         }
         
         // Create the platform item
@@ -223,19 +223,19 @@ exports.createItem = async (req, res) => {
         
         // Handle attachments if any
         if (req.files && req.files.attachments && req.files.attachments.length > 0) {
-            console.log(`Processing ${req.files.attachments.length} attachments`);
-            logger.info(`Processing ${req.files.attachments.length} attachments`);
+            console.log(`正在處理 ${req.files.attachments.length} 個附件`);
+            logger.info(`正在處理 ${req.files.attachments.length} 個附件`);
             
             try {
                 const attachmentPromises = req.files.attachments.map((file, index) => {
-                    console.log(`Processing attachment: ${file.originalname}, size: ${file.size}, type: ${file.mimetype}`);
-                    logger.info(`Processing attachment: ${file.originalname}, size: ${file.size}, type: ${file.mimetype}`);
+                    console.log(`處理附件: ${file.originalname}, 大小: ${file.size}, 類型: ${file.mimetype}`);
+                    logger.info(`處理附件: ${file.originalname}, 大小: ${file.size}, 類型: ${file.mimetype}`);
                     
                     // Get custom attachment names if provided
                     const attachmentNameEn = req.body[`new_attachment_name_en_${index}`] || null;
                     const attachmentNameTw = req.body[`new_attachment_name_tw_${index}`] || null;
                     
-                    console.log(`Custom attachment names - EN: ${attachmentNameEn}, TW: ${attachmentNameTw}`);
+                    console.log(`自定義附件名稱 - EN: ${attachmentNameEn}, TW: ${attachmentNameTw}`);
                     
                     return prisma.platformAttachment.create({
                         data: {
@@ -252,11 +252,11 @@ exports.createItem = async (req, res) => {
                 });
                 
                 await Promise.all(attachmentPromises);
-                console.log('All attachments processed successfully');
-                logger.info('All attachments processed successfully');
+                console.log('所有附件處理成功');
+                logger.info('所有附件處理成功');
             } catch (attachmentError) {
-                console.error('Error processing attachments:', attachmentError);
-                logger.error(`Error processing attachments: ${attachmentError.message}`);
+                console.error('處理附件時出錯:', attachmentError);
+                logger.error(`處理附件時出錯: ${attachmentError.message}`);
                 // Continue with the response even if attachments fail
             }
         }
@@ -264,8 +264,8 @@ exports.createItem = async (req, res) => {
         req.flash('success_msg', 'Platform item created successfully');
         res.redirect('/admin/platforms');
     } catch (error) {
-        logger.error('Error creating platform item:', error);
-        req.flash('error_msg', `Failed to create platform item: ${error.message}`);
+        logger.error('創建平台項目時出錯:', error);
+        req.flash('error_msg', `無法創建平台項目: ${error.message}`);
         res.redirect('/admin/platforms/create');
     }
 };
@@ -281,32 +281,32 @@ exports.renderEditItem = async (req, res) => {
         }
         
         // Log the ID for debugging
-        console.log('Platform item ID:', id, 'Type:', typeof id);
-        logger.info(`Platform item ID: ${id}, Type: ${typeof id}`);
+        console.log('平台項目 ID:', id, '類型:', typeof id);
+        logger.info(`平台項目 ID: ${id}, 類型: ${typeof id}`);
         
         // Try to parse the ID
         let parsedId;
         try {
             parsedId = parseInt(id, 10);
-            console.log('Parsed ID:', parsedId, 'Type:', typeof parsedId, 'isNaN:', isNaN(parsedId));
-            logger.info(`Parsed ID: ${parsedId}, Type: ${typeof parsedId}, isNaN: ${isNaN(parsedId)}`);
+            console.log('解析後 ID:', parsedId, '類型:', typeof parsedId, '是否為NaN:', isNaN(parsedId));
+            logger.info(`解析後 ID: ${parsedId}, 類型: ${typeof parsedId}, 是否為NaN: ${isNaN(parsedId)}`);
         } catch (error) {
-            console.error('Error parsing ID:', error);
-            logger.error(`Error parsing ID: ${error.message}`);
-            req.flash('error_msg', 'Invalid platform item ID format');
+            console.error('解析 ID 時出錯:', error);
+            logger.error(`解析 ID 時出錯: ${error.message}`);
+            req.flash('error_msg', '無效的平台項目 ID 格式');
             return res.redirect('/admin/platforms');
         }
         
         if (isNaN(parsedId)) {
-            console.log('ID is not a number, redirecting');
-            logger.warn(`ID is not a number: ${id}`);
-            req.flash('error_msg', 'Invalid platform item ID');
+            console.log('ID 不是數字，重定向中');
+            logger.warn(`ID 不是數字: ${id}`);
+            req.flash('error_msg', '無效的平台項目 ID');
             return res.redirect('/admin/platforms');
         }
         
         // Use findFirst instead of findUnique
-        console.log('Finding platform item with ID:', parsedId);
-        logger.info(`Finding platform item with ID: ${parsedId}`);
+        console.log('正在查找 ID 為:', parsedId, '的平台項目');
+        logger.info(`正在查找 ID 為: ${parsedId} 的平台項目`);
         
         const item = await prisma.platform.findFirst({
             where: {
@@ -339,36 +339,36 @@ exports.renderEditItem = async (req, res) => {
         });
         
         if (!item) {
-            console.log('Platform item not found with ID:', parsedId);
-            logger.warn(`Platform item not found with ID: ${parsedId}`);
-            req.flash('error_msg', 'Platform item not found');
+            console.log('平台項目未找到，ID:', parsedId);
+            logger.warn(`平台項目未找到，ID: ${parsedId}`);
+            req.flash('error_msg', '平台項目未找到');
             return res.redirect('/admin/platforms');
         }
         
-        console.log('Platform item found:', item.id, item.title_en);
-        logger.info(`Platform item found: ${item.id}, ${item.title_en}`);
+        console.log('找到平台項目:', item.id, item.title_en);
+        logger.info(`找到平台項目: ${item.id}, ${item.title_en}`);
         
         // Log image path for debugging
-        console.log('Image path:', item.imagePath);
-        logger.info(`Image path: ${item.imagePath || 'none'}`);
+        console.log('圖片路徑:', item.imagePath);
+        logger.info(`圖片路徑: ${item.imagePath || '無'}`);
         
         // Check if the image file exists
         if (item.imagePath) {
             const imagePath = path.join(__dirname, '../../public', item.imagePath);
             try {
                 const exists = fs.existsSync(imagePath);
-                console.log('Image file exists:', exists, imagePath);
-                logger.info(`Image file exists: ${exists}, ${imagePath}`);
+                console.log('圖片文件存在:', exists, imagePath);
+                logger.info(`圖片文件存在: ${exists}, ${imagePath}`);
             } catch (err) {
-                console.error('Error checking if image file exists:', err);
-                logger.error(`Error checking if image file exists: ${err.message}`);
+                console.error('檢查圖片文件是否存在時出錯:', err);
+                logger.error(`檢查圖片文件是否存在時出錯: ${err.message}`);
             }
         }
         
         // Log attachments for debugging
-        console.log('Attachments:', item.attachments ? item.attachments.length : 0);
+        console.log('附件:', item.attachments ? item.attachments.length : 0);
         if (item.attachments && item.attachments.length > 0) {
-            console.log('Attachment details:', item.attachments.map(a => ({
+            console.log('附件詳情:', item.attachments.map(a => ({
                 id: a.id,
                 filename: a.filename,
                 originalName: a.originalName,
@@ -377,13 +377,13 @@ exports.renderEditItem = async (req, res) => {
                 mimeType: a.mimeType
             })));
         } else {
-            console.log('No attachments found for this item. Checking if attachments were included in the query...');
-            console.log('Item object keys:', Object.keys(item));
-            console.log('Item type:', item.type);
+            console.log('此項目沒有找到附件。檢查附件是否包含在查詢中...');
+            console.log('項目對象鍵:', Object.keys(item));
+            console.log('項目類型:', item.type);
             
             // If this is an attachment_only type but no attachments were found, query for them directly
             if (item.type === 'attachment_only') {
-                console.log('This is an attachment_only item. Querying for attachments directly...');
+                console.log('這是一個僅附件類型的項目。直接查詢附件...');
                 const attachments = await prisma.platformAttachment.findMany({
                     where: {
                         platformId: parsedId,
@@ -407,9 +407,9 @@ exports.renderEditItem = async (req, res) => {
                     }
                 });
                 
-                console.log('Direct query found attachments:', attachments.length);
+                console.log('直接查詢找到的附件:', attachments.length);
                 if (attachments.length > 0) {
-                    console.log('Attachment details from direct query:', attachments.map(a => ({
+                    console.log('直接查詢的附件詳情:', attachments.map(a => ({
                         id: a.id,
                         filename: a.filename,
                         originalName: a.originalName
@@ -420,7 +420,7 @@ exports.renderEditItem = async (req, res) => {
                 }
             }
         }
-        logger.info(`Attachments count: ${item.attachments ? item.attachments.length : 0}`);
+        logger.info(`附件數量: ${item.attachments ? item.attachments.length : 0}`);
         
         const categories = await prisma.platformCategory.findMany({
             where: {
@@ -439,8 +439,8 @@ exports.renderEditItem = async (req, res) => {
         if (item.type === 'partners' && item.partnersData) {
             try {
                 const partnersData = JSON.parse(item.partnersData);
-                console.log('Parsed partners data:', partnersData);
-                logger.info(`Parsed partners data: ${item.partnersData}`);
+                console.log('解析的夥伴數據:', partnersData);
+                logger.info(`解析的夥伴數據: ${item.partnersData}`);
                 
                 // Extract supplier and buyer company lists
                 if (partnersData.suppliers) {
@@ -463,8 +463,8 @@ exports.renderEditItem = async (req, res) => {
                         : '';
                 }
             } catch (e) {
-                console.error('Error parsing partners data:', e);
-                logger.error(`Error parsing partners data: ${e.message}`);
+                console.error('解析夥伴數據時出錯:', e);
+                logger.error(`解析夥伴數據時出錯: ${e.message}`);
                 
                 // Initialize empty fields if parsing fails
                 item.suppliers_en = '';
@@ -484,12 +484,12 @@ exports.renderEditItem = async (req, res) => {
             categories
         });
         
-        console.log('Edit platform item form rendered successfully');
-        logger.info('Edit platform item form rendered successfully');
+        console.log('編輯平台項目表單成功渲染');
+        logger.info('編輯平台項目表單成功渲染');
     } catch (error) {
-        console.error('Error rendering edit platform item form:', error);
-        logger.error('Error rendering edit platform item form:', error);
-        req.flash('error_msg', `Failed to load platform item: ${error.message}`);
+        console.error('渲染編輯平台項目表單時出錯:', error);
+        logger.error('渲染編輯平台項目表單時出錯:', error);
+        req.flash('error_msg', `無法加載平台項目: ${error.message}`);
         res.redirect('/admin/platforms');
     }
 };
@@ -505,26 +505,26 @@ exports.updateItem = async (req, res) => {
         }
         
         // Log the ID for debugging
-        console.log('Update - Platform item ID:', id, 'Type:', typeof id);
-        logger.info(`Update - Platform item ID: ${id}, Type: ${typeof id}`);
+        console.log('更新 - 平台項目 ID:', id, '類型:', typeof id);
+        logger.info(`更新 - 平台項目 ID: ${id}, 類型: ${typeof id}`);
         
         // Try to parse the ID
         let parsedId;
         try {
             parsedId = parseInt(id, 10);
-            console.log('Update - Parsed ID:', parsedId, 'Type:', typeof parsedId, 'isNaN:', isNaN(parsedId));
-            logger.info(`Update - Parsed ID: ${parsedId}, Type: ${typeof parsedId}, isNaN: ${isNaN(parsedId)}`);
+            console.log('更新 - 解析後 ID:', parsedId, '類型:', typeof parsedId, '是否為NaN:', isNaN(parsedId));
+            logger.info(`更新 - 解析後 ID: ${parsedId}, 類型: ${typeof parsedId}, 是否為NaN: ${isNaN(parsedId)}`);
         } catch (error) {
-            console.error('Update - Error parsing ID:', error);
-            logger.error(`Update - Error parsing ID: ${error.message}`);
-            req.flash('error_msg', 'Invalid platform item ID format');
+            console.error('更新 - 解析 ID 時出錯:', error);
+            logger.error(`更新 - 解析 ID 時出錯: ${error.message}`);
+            req.flash('error_msg', '無效的平台項目 ID 格式');
             return res.redirect('/admin/platforms');
         }
         
         if (isNaN(parsedId)) {
-            console.log('Update - ID is not a number, redirecting');
-            logger.warn(`Update - ID is not a number: ${id}`);
-            req.flash('error_msg', 'Invalid platform item ID');
+            console.log('更新 - ID 不是數字，重定向中');
+            logger.warn(`更新 - ID 不是數字: ${id}`);
+            req.flash('error_msg', '無效的平台項目 ID');
             return res.redirect('/admin/platforms');
         }
         
@@ -535,12 +535,12 @@ exports.updateItem = async (req, res) => {
         } = req.body;
         
         // Log the status for debugging
-        console.log('Update - Status:', status);
-        logger.info(`Update - Status: ${status}`);
+        console.log('更新 - 狀態:', status);
+        logger.info(`更新 - 狀態: ${status}`);
         
         // Use findFirst instead of findUnique
-        console.log('Update - Finding platform item with ID:', parsedId);
-        logger.info(`Update - Finding platform item with ID: ${parsedId}`);
+        console.log('更新 - 正在查找 ID 為:', parsedId, '的平台項目');
+        logger.info(`更新 - 正在查找 ID 為: ${parsedId} 的平台項目`);
         
         const existingItem = await prisma.platform.findFirst({
             where: {
@@ -573,39 +573,39 @@ exports.updateItem = async (req, res) => {
         });
         
         if (!existingItem) {
-            console.log('Update - Platform item not found with ID:', parsedId);
-            logger.warn(`Update - Platform item not found with ID: ${parsedId}`);
-            req.flash('error_msg', 'Platform item not found');
+            console.log('更新 - 平台項目未找到，ID:', parsedId);
+            logger.warn(`更新 - 平台項目未找到，ID: ${parsedId}`);
+            req.flash('error_msg', '平台項目未找到');
             return res.redirect('/admin/platforms');
         }
         
-        console.log('Update - Platform item found:', existingItem.id, existingItem.title_en);
-        logger.info(`Update - Platform item found: ${existingItem.id}, ${existingItem.title_en}`);
+        console.log('更新 - 平台項目已找到:', existingItem.id, existingItem.title_en);
+        logger.info(`更新 - 平台項目已找到: ${existingItem.id}, ${existingItem.title_en}`);
         
         // Log existing attachments
-        console.log('Update - Existing attachments:', existingItem.attachments ? existingItem.attachments.length : 0);
+        console.log('更新 - 現有附件:', existingItem.attachments ? existingItem.attachments.length : 0);
         if (existingItem.attachments && existingItem.attachments.length > 0) {
-            console.log('Update - Attachment details:', existingItem.attachments.map(a => ({
+            console.log('更新 - 附件詳情:', existingItem.attachments.map(a => ({
                 id: a.id,
                 filename: a.filename,
                 originalName: a.originalName
             })));
         }
-        logger.info(`Update - Existing attachments count: ${existingItem.attachments ? existingItem.attachments.length : 0}`);
+        logger.info(`更新 - 現有附件數量: ${existingItem.attachments ? existingItem.attachments.length : 0}`);
         
         // Log request files
-        console.log('Update - Request files:', req.files ? Object.keys(req.files) : 'none');
+        console.log('更新 - 請求文件:', req.files ? Object.keys(req.files) : '無');
         if (req.files && req.files.attachments) {
-            console.log('Update - New attachments in request:', req.files.attachments.length);
+            console.log('更新 - 請求中的新附件:', req.files.attachments.length);
         }
-        logger.info(`Update - Request files: ${req.files ? JSON.stringify(Object.keys(req.files)) : 'none'}`);
+        logger.info(`更新 - 請求文件: ${req.files ? JSON.stringify(Object.keys(req.files)) : '無'}`);
         
         // Handle image upload or removal
         let imagePath = existingItem.imagePath;
         
         // Log image path for debugging
-        console.log('Update - Current image path:', imagePath);
-        logger.info(`Update - Current image path: ${imagePath || 'none'}`);
+        console.log('更新 - 當前圖片路徑:', imagePath);
+        logger.info(`更新 - 當前圖片路徑: ${imagePath || '無'}`);
         
         if (removeImage === 'true') {
             // Only remove the image if explicitly requested
@@ -613,11 +613,11 @@ exports.updateItem = async (req, res) => {
                 const filePath = path.join(__dirname, '../../public', existingItem.imagePath);
                 try {
                     await unlinkAsync(filePath);
-                    console.log('Update - Image removed:', existingItem.imagePath);
-                    logger.info(`Update - Image removed: ${existingItem.imagePath}`);
+                    console.log('更新 - 圖片已移除:', existingItem.imagePath);
+                    logger.info(`更新 - 圖片已移除: ${existingItem.imagePath}`);
                 } catch (err) {
-                    console.error('Update - Failed to delete image file:', err);
-                    logger.error(`Update - Failed to delete image file: ${err.message}`);
+                    console.error('更新 - 刪除圖片文件失敗:', err);
+                    logger.error(`更新 - 刪除圖片文件失敗: ${err.message}`);
                 }
                 imagePath = null;
             }
@@ -625,26 +625,26 @@ exports.updateItem = async (req, res) => {
         
         // Handle new image upload
         if (req.files && req.files.image && req.files.image.length > 0) {
-            console.log('Update - New image uploaded:', req.files.image[0].filename);
-            logger.info(`Update - New image uploaded: ${req.files.image[0].filename}`);
+            console.log('更新 - 新圖片已上傳:', req.files.image[0].filename);
+            logger.info(`更新 - 新圖片已上傳: ${req.files.image[0].filename}`);
             
             // Delete old image if exists
             if (existingItem.imagePath) {
                 const oldFilePath = path.join(__dirname, '../../public', existingItem.imagePath);
                 try {
                     await unlinkAsync(oldFilePath);
-                    console.log('Update - Old image deleted:', existingItem.imagePath);
-                    logger.info(`Update - Old image deleted: ${existingItem.imagePath}`);
+                    console.log('更新 - 舊圖片已刪除:', existingItem.imagePath);
+                    logger.info(`更新 - 舊圖片已刪除: ${existingItem.imagePath}`);
                 } catch (err) {
-                    console.error('Update - Failed to delete old image file:', err);
-                    logger.error(`Update - Failed to delete old image file: ${err.message}`);
+                    console.error('更新 - 刪除舊圖片文件失敗:', err);
+                    logger.error(`更新 - 刪除舊圖片文件失敗: ${err.message}`);
                 }
             }
             
             // Set new image path
             imagePath = `/uploads/platform/${req.files.image[0].filename}`;
-            console.log('Update - New image path:', imagePath);
-            logger.info(`Update - New image path: ${imagePath}`);
+            console.log('更新 - 新圖片路徑:', imagePath);
+            logger.info(`更新 - 新圖片路徑: ${imagePath}`);
         }
         
         // Handle attachment removals if specified
@@ -662,11 +662,11 @@ exports.updateItem = async (req, res) => {
                 const filePath = path.join(__dirname, '../../public', attachment.path);
                 try {
                     await unlinkAsync(filePath);
-                    console.log('Update - Attachment file deleted:', attachment.path);
-                    logger.info(`Update - Attachment file deleted: ${attachment.path}`);
+                    console.log('更新 - 附件文件已刪除:', attachment.path);
+                    logger.info(`更新 - 附件文件已刪除: ${attachment.path}`);
                 } catch (err) {
-                    console.error('Update - Failed to delete attachment file:', err);
-                    logger.error(`Update - Failed to delete attachment file: ${err.message}`);
+                    console.error('更新 - 刪除附件文件失敗:', err);
+                    logger.error(`更新 - 刪除附件文件失敗: ${err.message}`);
                 }
             }
             
@@ -682,8 +682,8 @@ exports.updateItem = async (req, res) => {
                 }
             });
             
-            console.log(`Update - Soft deleted ${attachmentIds.length} attachments in database`);
-            logger.info(`Update - Soft deleted ${attachmentIds.length} attachments in database`);
+            console.log(`更新 - 已在數據庫中軟刪除 ${attachmentIds.length} 個附件`);
+            logger.info(`更新 - 已在數據庫中軟刪除 ${attachmentIds.length} 個附件`);
         }
         
         // Update custom attachment names for existing attachments
@@ -702,7 +702,7 @@ exports.updateItem = async (req, res) => {
                 
                 // Only update if values are provided and different from current values
                 if (attachmentNameEn !== undefined || attachmentNameTw !== undefined) {
-                    console.log(`Updating attachment ${attachment.id} names - EN: ${attachmentNameEn}, TW: ${attachmentNameTw}`);
+                    console.log(`更新附件 ${attachment.id} 名稱 - EN: ${attachmentNameEn}, TW: ${attachmentNameTw}`);
                     
                     const updateData = {};
                     if (attachmentNameEn !== undefined) {
@@ -752,8 +752,8 @@ exports.updateItem = async (req, res) => {
         let partnersData = null;
         
         if (isPartners) {
-            console.log('Updating a partners type item');
-            logger.info('Updating a partners type item');
+            console.log('更新夥伴類型項目');
+            logger.info('更新夥伴類型項目');
             
             // Get supplier and buyer company lists from request
             const suppliers_en = req.body.suppliers_en || '';
@@ -761,15 +761,15 @@ exports.updateItem = async (req, res) => {
             const buyers_en = req.body.buyers_en || '';
             const buyers_tw = req.body.buyers_tw || '';
             
-            console.log('Suppliers EN:', suppliers_en);
-            console.log('Suppliers TW:', suppliers_tw);
-            console.log('Buyers EN:', buyers_en);
-            console.log('Buyers TW:', buyers_tw);
+            console.log('供應商 EN:', suppliers_en);
+            console.log('供應商 TW:', suppliers_tw);
+            console.log('買家 EN:', buyers_en);
+            console.log('買家 TW:', buyers_tw);
             
-            logger.info(`Suppliers EN: ${suppliers_en}`);
-            logger.info(`Suppliers TW: ${suppliers_tw}`);
-            logger.info(`Buyers EN: ${buyers_en}`);
-            logger.info(`Buyers TW: ${buyers_tw}`);
+            logger.info(`供應商 EN: ${suppliers_en}`);
+            logger.info(`供應商 TW: ${suppliers_tw}`);
+            logger.info(`買家 EN: ${buyers_en}`);
+            logger.info(`買家 TW: ${buyers_tw}`);
             
             // Store both supplier and buyer company lists in a JSON field
             partnersData = {
@@ -783,8 +783,8 @@ exports.updateItem = async (req, res) => {
                 }
             };
             
-            console.log('Partners data:', partnersData);
-            logger.info(`Partners data: ${JSON.stringify(partnersData)}`);
+            console.log('夥伴數據:', partnersData);
+            logger.info(`夥伴數據: ${JSON.stringify(partnersData)}`);
         }
         
         await prisma.platform.update({
@@ -832,24 +832,24 @@ exports.updateItem = async (req, res) => {
                 }
             }
         });
-        console.log('Update - Updated item status:', updatedItem.status);
-        logger.info(`Update - Updated item status: ${updatedItem.status}`);
+        console.log('更新 - 已更新項目狀態:', updatedItem.status);
+        logger.info(`更新 - 已更新項目狀態: ${updatedItem.status}`);
         
         // Handle new attachments if any
         if (req.files && req.files.attachments && req.files.attachments.length > 0) {
-            console.log(`Update - Processing ${req.files.attachments.length} new attachments`);
-            logger.info(`Update - Processing ${req.files.attachments.length} new attachments`);
+            console.log(`更新 - 正在處理 ${req.files.attachments.length} 個新附件`);
+            logger.info(`更新 - 正在處理 ${req.files.attachments.length} 個新附件`);
             
             try {
                 const attachmentPromises = req.files.attachments.map((file, index) => {
-                    console.log(`Update - Processing attachment: ${file.originalname}, size: ${file.size}, type: ${file.mimetype}`);
-                    logger.info(`Update - Processing attachment: ${file.originalname}, size: ${file.size}, type: ${file.mimetype}`);
+                    console.log(`更新 - 處理附件: ${file.originalname}, 大小: ${file.size}, 類型: ${file.mimetype}`);
+                    logger.info(`更新 - 處理附件: ${file.originalname}, 大小: ${file.size}, 類型: ${file.mimetype}`);
                     
                     // Get custom attachment names if provided
                     const attachmentNameEn = req.body[`new_attachment_name_en_${index}`] || null;
                     const attachmentNameTw = req.body[`new_attachment_name_tw_${index}`] || null;
                     
-                    console.log(`Custom attachment names - EN: ${attachmentNameEn}, TW: ${attachmentNameTw}`);
+                    console.log(`自定義附件名稱 - EN: ${attachmentNameEn}, TW: ${attachmentNameTw}`);
                     
                     return prisma.platformAttachment.create({
                         data: {
@@ -866,20 +866,20 @@ exports.updateItem = async (req, res) => {
                 });
                 
                 await Promise.all(attachmentPromises);
-                console.log('Update - All attachments processed successfully');
-                logger.info('Update - All attachments processed successfully');
+                console.log('更新 - 所有附件處理成功');
+                logger.info('更新 - 所有附件處理成功');
             } catch (attachmentError) {
-                console.error('Update - Error processing attachments:', attachmentError);
-                logger.error(`Update - Error processing attachments: ${attachmentError.message}`);
+                console.error('更新 - 處理附件時出錯:', attachmentError);
+                logger.error(`更新 - 處理附件時出錯: ${attachmentError.message}`);
                 // Continue with the response even if attachments fail
             }
         }
         
-        req.flash('success_msg', 'Platform item updated successfully');
+        req.flash('success_msg', '平台項目更新成功');
         res.redirect('/admin/platforms');
     } catch (error) {
-        logger.error('Error updating platform item:', error);
-        req.flash('error_msg', `Failed to update platform item: ${error.message}`);
+        logger.error('更新平台項目時出錯:', error);
+        req.flash('error_msg', `無法更新平台項目: ${error.message}`);
         res.redirect(`/admin/platforms/edit/${req.params.id}`);
     }
 };
@@ -1045,8 +1045,8 @@ exports.showPlatformPage = async (req, res) => {
         // Get language from URL path parameter first, then from req.language, default to 'tw'
         const language = req.params.language || req.language || 'tw';
         
-        console.log('Platform page language:', language);
-        logger.info(`Platform page language: ${language}`);
+        console.log('平台頁面語言:', language);
+        logger.info(`平台頁面語言: ${language}`);
         
         const pageTitle = language === 'tw' ? '製造平台' : 'Manufacturing Platform';
         
@@ -1101,7 +1101,7 @@ exports.showPlatformPage = async (req, res) => {
         });
         
         // Log platform types and attachment counts for debugging
-        console.log('Platform items for frontend:', platforms.map(item => ({
+        console.log('前端平台項目:', platforms.map(item => ({
             id: item.id,
             title: item.title_en,
             type: item.type,
@@ -1111,7 +1111,7 @@ exports.showPlatformPage = async (req, res) => {
         
         // Check specifically for attachment_only type items
         const attachmentOnlyItems = platforms.filter(p => p.type === 'attachment_only');
-        console.log(`Found ${attachmentOnlyItems.length} attachment_only items:`, 
+        console.log(`找到 ${attachmentOnlyItems.length} 個僅附件類型項目:`, 
             attachmentOnlyItems.map(item => ({
                 id: item.id,
                 title: item.title_en,
@@ -1122,7 +1122,7 @@ exports.showPlatformPage = async (req, res) => {
         
         // Check for uncategorized items
         const uncategorizedItems = platforms.filter(p => p.categoryId === null);
-        console.log(`Found ${uncategorizedItems.length} uncategorized items:`, 
+        console.log(`找到 ${uncategorizedItems.length} 個未分類項目:`, 
             uncategorizedItems.map(item => ({
                 id: item.id,
                 title: item.title_en,

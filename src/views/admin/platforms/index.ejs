@@ -53,9 +53,7 @@
                         <span class="bg-green-200 text-green-800 py-1 px-3 rounded-full text-xs">圖片</span>
                         <% } else if (item.type==='attachment_only' ) { %>
                           <span class="bg-purple-200 text-purple-800 py-1 px-3 rounded-full text-xs">僅附件</span>
-                          <% } else if (item.type==='partners' ) { %>
-                            <span class="bg-yellow-200 text-yellow-800 py-1 px-3 rounded-full text-xs">合作夥伴</span>
-                            <% } else { %>
+                          <% } else { %>
                               <span class="bg-gray-200 text-gray-800 py-1 px-3 rounded-full text-xs">
                                 <%= item.type || '未知' %>
                               </span>

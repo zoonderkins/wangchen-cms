@@ -522,7 +522,13 @@ exports.getPartnersForHomepage = async (req, res, next) => {
                             .map(line => line.trim())
                             .filter(line => line);
                         
-                        suppliers = [...suppliers, ...supplierLines];
+                        // Sanitize each line to ensure it's valid for JSON
+                        const sanitizedLines = supplierLines.map(line => 
+                            // Replace any characters that might break JSON
+                            line.replace(/[\u0000-\u001F\u007F-\u009F\u2000-\u200F\u2028-\u202F]/g, '')
+                        );
+                        
+                        suppliers = [...suppliers, ...sanitizedLines];
                     }
                 }
             });
@@ -537,7 +543,13 @@ exports.getPartnersForHomepage = async (req, res, next) => {
                             .map(line => line.trim())
                             .filter(line => line);
                         
-                        buyers = [...buyers, ...buyerLines];
+                        // Sanitize each line to ensure it's valid for JSON
+                        const sanitizedLines = buyerLines.map(line => 
+                            // Replace any characters that might break JSON
+                            line.replace(/[\u0000-\u001F\u007F-\u009F\u2000-\u200F\u2028-\u202F]/g, '')
+                        );
+                        
+                        buyers = [...buyers, ...sanitizedLines];
                     }
                 }
             });
@@ -568,8 +580,25 @@ exports.getPartnersForHomepage = async (req, res, next) => {
             console.log(`    Buyers: ${partnersByCategory[categoryId].buyers.length} items`);
         }
         
+        // Sanitize the data by cycling through JSON stringify/parse to ensure it's valid JSON
+        // This prevents any unterminated strings or invalid characters
+        let sanitizedPartnersByCategory;
+        try {
+            // Convert to JSON string and back to ensure it's valid
+            const jsonString = JSON.stringify(partnersByCategory);
+            sanitizedPartnersByCategory = JSON.parse(jsonString);
+            
+            // Test that the result is valid
+            JSON.stringify(sanitizedPartnersByCategory);
+            logger.info('Partners data successfully sanitized for JSON output');
+        } catch (jsonError) {
+            logger.error(`Error sanitizing partners data: ${jsonError.message}`, { error: jsonError.stack });
+            // Fallback to empty object if there's a problem
+            sanitizedPartnersByCategory = {};
+        }
+        
         // Set the data for the view
-        res.locals.partnersByCategory = partnersByCategory;
+        res.locals.partnersByCategory = sanitizedPartnersByCategory;
         
         // Continue to the next middleware or route handler
         next();
@@ -629,7 +658,13 @@ exports.getPartnersForPromotions = async (req, res, next) => {
                             .map(line => line.trim())
                             .filter(line => line);
                         
-                        suppliers = [...suppliers, ...supplierLines];
+                        // Sanitize each line to ensure it's valid for JSON
+                        const sanitizedLines = supplierLines.map(line => 
+                            // Replace any characters that might break JSON
+                            line.replace(/[\u0000-\u001F\u007F-\u009F\u2000-\u200F\u2028-\u202F]/g, '')
+                        );
+                        
+                        suppliers = [...suppliers, ...sanitizedLines];
                     }
                 }
             });
@@ -644,7 +679,13 @@ exports.getPartnersForPromotions = async (req, res, next) => {
                             .map(line => line.trim())
                             .filter(line => line);
                         
-                        buyers = [...buyers, ...buyerLines];
+                        // Sanitize each line to ensure it's valid for JSON
+                        const sanitizedLines = buyerLines.map(line => 
+                            // Replace any characters that might break JSON
+                            line.replace(/[\u0000-\u001F\u007F-\u009F\u2000-\u200F\u2028-\u202F]/g, '')
+                        );
+                        
+                        buyers = [...buyers, ...sanitizedLines];
                     }
                 }
             });
@@ -652,12 +693,9 @@ exports.getPartnersForPromotions = async (req, res, next) => {
             // Only add categories that have suppliers or buyers
             if (suppliers.length > 0 || buyers.length > 0) {
                 // Create a formatted platform-like object for compatibility with the existing template
-                platforms.push({
-                    id: `partner-${category.id}`,
-                    type: 'partners',
-                    title_en: category.name_en,
-                    title_tw: category.name_tw,
-                    partnersData: JSON.stringify({
+                try {
+                    // Create partnersData structure first, to validate
+                    const partnersDataObj = {
                         suppliers: {
                             companies_en: language === 'en' ? suppliers : [],
                             companies_tw: language === 'tw' ? suppliers : []
@@ -666,19 +704,38 @@ exports.getPartnersForPromotions = async (req, res, next) => {
                             companies_en: language === 'en' ? buyers : [],
                             companies_tw: language === 'tw' ? buyers : []
                         }
-                    }),
-                    parsedPartnersData: {
-                        suppliers: {
-                            companies_en: language === 'en' ? suppliers : [],
-                            companies_tw: language === 'tw' ? suppliers : []
-                        },
-                        buyers: {
-                            companies_en: language === 'en' ? buyers : [],
-                            companies_tw: language === 'tw' ? buyers : []
-                        }
-                    }
-                });
+                    };
+                    
+                    // Validate by converting to JSON and back
+                    const partnersDataStr = JSON.stringify(partnersDataObj);
+                    const validatedPartnersData = JSON.parse(partnersDataStr);
+                    
+                    platforms.push({
+                        id: `partner-${category.id}`,
+                        type: 'partners',
+                        title_en: category.name_en,
+                        title_tw: category.name_tw,
+                        partnersData: partnersDataStr,
+                        parsedPartnersData: validatedPartnersData
+                    });
+                } catch (jsonError) {
+                    logger.error(`Error creating JSON for category ${category.id}: ${jsonError.message}`);
+                    // Skip this category if there's a JSON error
+                    continue;
+                }
             }
+        }
+        
+        // Test the entire platforms array by converting to JSON and back
+        let sanitizedPlatforms;
+        try {
+            const jsonString = JSON.stringify(platforms);
+            sanitizedPlatforms = JSON.parse(jsonString);
+            logger.info('Partners platforms data successfully sanitized for JSON output');
+        } catch (jsonError) {
+            logger.error(`Error sanitizing platforms data: ${jsonError.message}`, { error: jsonError.stack });
+            // Fallback to empty array if there's a problem
+            sanitizedPlatforms = [];
         }
         
         // Add partner categories to a single partnerCategory object
@@ -686,7 +743,7 @@ exports.getPartnersForPromotions = async (req, res, next) => {
             id: 'partners',
             name_en: 'Partners',
             name_tw: '合作伙伴',
-            platforms: platforms
+            platforms: sanitizedPlatforms
         }];
         
         // Continue to the next middleware or route handler

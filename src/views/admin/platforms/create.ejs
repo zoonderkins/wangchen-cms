@@ -58,7 +58,6 @@
                 <option value="plain_text">編輯器</option>
                 <option value="image">圖片與說明</option>
                 <option value="attachment_only">僅附件</option>
-                <option value="partners">合作夥伴</option>
               </select>
             </div>
           </div>
@@ -81,57 +80,6 @@
                 </label>
                 <div id="editor_en" class="h-64 mt-1"></div>
                 <input type="hidden" name="content_en" id="content_en">
-              </div>
-            </div>
-          </div>
-
-          <!-- Partners Fields (only visible for partners type) -->
-          <div id="partners-fields-section" class="hidden">
-            <div class="bg-blue-50 p-4 rounded-lg mb-6">
-              <h3 class="text-xl font-bold mb-4 text-blue-800">供應商 (Suppliers)</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label class="block text-gray-700 text-sm font-bold mb-2" for="suppliers_tw">
-                    供應商列表 (中文)
-                  </label>
-                  <textarea
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="suppliers_tw" name="suppliers_tw" rows="5"></textarea>
-                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
-                </div>
-                <div>
-                  <label class="block text-gray-700 text-sm font-bold mb-2" for="suppliers_en">
-                    供應商列表 (英文)
-                  </label>
-                  <textarea
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="suppliers_en" name="suppliers_en" rows="5"></textarea>
-                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-green-50 p-4 rounded-lg mb-6">
-              <h3 class="text-xl font-bold mb-4 text-green-800">需求商 (Buyers)</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label class="block text-gray-700 text-sm font-bold mb-2" for="buyers_tw">
-                    需求商列表 (中文)
-                  </label>
-                  <textarea
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="buyers_tw" name="buyers_tw" rows="5"></textarea>
-                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
-                </div>
-                <div>
-                  <label class="block text-gray-700 text-sm font-bold mb-2" for="buyers_en">
-                    需求商列表 (英文)
-                  </label>
-                  <textarea
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="buyers_en" name="buyers_en" rows="5"></textarea>
-                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
-                </div>
               </div>
             </div>
           </div>
@@ -242,7 +190,6 @@
         const categoryRequiredMarks = document.querySelectorAll('.category-required');
         const attachmentsSection = document.getElementById('attachments-section');
         const attachmentRequired = document.getElementById('attachment-required');
-        const partnersFieldsSection = document.getElementById('partners-fields-section');
 
         // Image and URL sections
         const imageUploadSection = document.getElementById('image-upload-section');
@@ -261,9 +208,6 @@
         if (urlSection) urlSection.style.display = 'block';
         if (attachmentsSection) attachmentsSection.style.display = 'block';
         contentFieldsSection.style.display = 'grid';
-
-        // Hide partners sections by default
-        partnersFieldsSection.classList.add('hidden');
 
         if (type === 'image') {
           console.log('Handling image with caption type');
@@ -329,41 +273,6 @@
           if (!attachmentsSection.querySelector('h3')) {
             attachmentsSection.insertBefore(heading, attachmentsSection.firstChild);
           }
-        }
-        else if (type === 'partners') {
-          console.log('Handling partners type');
-          // Hide content fields
-          contentFieldsSection.style.display = 'none';
-
-          // Make content fields not required
-          contentEnField.required = false;
-          contentTwField.required = false;
-          categoryField.required = true;
-
-          // Make attachments optional
-          document.getElementById('attachments').required = false;
-
-          // Hide required marks for content, show for category
-          contentRequiredMarks.forEach(mark => mark.style.display = 'none');
-          categoryRequiredMarks.forEach(mark => mark.style.display = 'inline');
-
-          // Hide required mark for attachments and remove highlighting
-          attachmentRequired.classList.add('hidden');
-          attachmentsSection.classList.remove('border-2', 'border-blue-300', 'p-4', 'rounded-lg');
-
-          // Remove the heading if it exists
-          const heading = attachmentsSection.querySelector('h3');
-          if (heading) {
-            attachmentsSection.removeChild(heading);
-          }
-
-          // Show partners fields section
-          partnersFieldsSection.classList.remove('hidden');
-
-          // Hide image, URL, and attachments sections
-          if (imageUploadSection) imageUploadSection.style.display = 'none';
-          if (urlSection) urlSection.style.display = 'none';
-          attachmentsSection.style.display = 'none';
         }
         else if (type === 'plain_text') {
           console.log('Handling plain text type');
@@ -605,14 +514,6 @@
                 // Using LongText field now, so we can store much more content
                 $('#content_en').val(truncateContent(htmlEn));
                 $('#content_tw').val(truncateContent(htmlTw));
-              } else if (type === 'partners') {
-                // For partners type, set empty content if not provided
-                if (!$('#content_en').val()) {
-                  $('#content_en').val(' ');
-                }
-                if (!$('#content_tw').val()) {
-                  $('#content_tw').val(' ');
-                }
               }
 
               return true;

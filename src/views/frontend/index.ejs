@@ -159,7 +159,7 @@
 <!-- Partners Section -->
 <section class="bg-partner bg-no-repeat bg-cover bg-bottom sm:bg-cover sm:bg-center px-6 py-12 sm:px-16 sm:py-20 lg:px-56 lg:py-28" id="partners">
     <!-- Partner Data Container - Moved before the scripts -->
-    <div id="partnersDataContainer" data-partners='<%- JSON.stringify(partnersByCategory || {}) %>' data-language="<%= currentLanguage %>"></div>
+    <div id="partnersDataContainer" style="display:none;" data-partners='<%- JSON.stringify(partnersByCategory || {}).replace(/'/g, "&#39;") %>' data-language="<%= currentLanguage %>"></div>
     
     <h3 class="mb-4 sm:mb-8 text-center"><span class="text-white"><%= currentLanguage==='en' ? 'Taiwan Smart System Integrated Manufacturing Platform' : '臺灣智慧系統整合製造平台' %></span><br class="lg:hidden"><span class="text-custom-yellow"><%= currentLanguage==='en' ? 'Partners' : '合作伙伴' %></span></h3>
     <div class="flex flex-col sm:flex-row">
@@ -322,17 +322,24 @@
         }
 
         // Partners data from server
-        let partnersData;
+        let partnersData = {};
         try {
-            partnersData = JSON.parse(partnersDataContainer.getAttribute('data-partners') || '{}');
+            const partnersDataStr = partnersDataContainer.getAttribute('data-partners');
+            if (!partnersDataStr) {
+                console.warn('No partners data found');
+                partnersData = {};
+            } else {
+                partnersData = JSON.parse(partnersDataStr);
+            }
         } catch (error) {
             console.error('Error parsing partners data:', error);
+            console.error('Error at position:', error.message.match(/position (\d+)/)?.[1] || 'unknown');
             partnersData = {};
         }
         const currentLanguage = partnersDataContainer.getAttribute('data-language') || 'en';
         
         // Debug: Log the partners data
-        console.log('Partners data loaded:', partnersData);
+        console.log('Partners data loaded successfully');
         console.log('Current language:', currentLanguage);
         
         // ====== UI Elements ======
