@@ -9,22 +9,22 @@ const initScheduler = () => {
     // Reset visit counter at midnight (00:00) every day
     cron.schedule('0 0 * * *', async () => {
         try {
-            logger.info('Resetting daily visit counter...');
+            logger.info('Creating new daily visit counter...');
             
             // Get the current counter
             const counter = await prisma.visitCounter.findFirst();
             
             if (counter) {
-                // Reset the counter to 0
-                await prisma.visitCounter.update({
-                    where: { id: counter.id },
-                    data: { 
-                        count: 0,
-                        updatedAt: new Date()
+                // Create a new history entry for today with 0 today's count
+                await prisma.visitCounterHistory.create({
+                    data: {
+                        count: counter.count,
+                        todayCount: 0,
+                        lastReset: new Date()
                     }
                 });
                 
-                logger.info(`Visit counter reset to 0.`);
+                logger.info(`Created new daily visit counter with today's count: 0`);
             } else {
                 // Create a new counter if it doesn't exist
                 await prisma.visitCounter.create({
@@ -33,7 +33,17 @@ const initScheduler = () => {
                         updatedAt: new Date()
                     }
                 });
-                logger.info('Created new visit counter.');
+                
+                // Create a new history entry
+                await prisma.visitCounterHistory.create({
+                    data: {
+                        count: 0,
+                        todayCount: 0,
+                        lastReset: new Date()
+                    }
+                });
+                
+                logger.info('Created new visit counter and history.');
             }
         } catch (error) {
             logger.error('Error resetting visit counter:', error);

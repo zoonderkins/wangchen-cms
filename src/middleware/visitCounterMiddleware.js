@@ -25,41 +25,53 @@ const trackVisits = async (req, res, next) => {
         if (!req.session.counted) {
             // Find or create the counter
             let counter = await prisma.visitCounter.findFirst();
+            let history = await prisma.visitCounterHistory.findFirst({
+                orderBy: { createdAt: 'desc' }
+            });
+            
+            const now = new Date();
             
             if (!counter) {
                 // Create a new counter if it doesn't exist
                 counter = await prisma.visitCounter.create({
                     data: {
                         count: 1,
-                        todayCount: 1,
-                        lastReset: new Date()
+                        updatedAt: now
                     }
                 });
                 logger.info(`Visit counter created with initial count: ${counter.count}`);
             } else {
-                // Check if we need to reset the daily counter
-                const now = new Date();
-                const lastReset = new Date(counter.lastReset);
-                const shouldReset = 
-                    now.getDate() !== lastReset.getDate() || 
-                    now.getMonth() !== lastReset.getMonth() || 
-                    now.getFullYear() !== lastReset.getFullYear();
-                
-                // Increment the counters
+                // Increment the main counter
                 counter = await prisma.visitCounter.update({
                     where: { id: counter.id },
                     data: {
-                        count: { increment: 1 },
-                        todayCount: shouldReset ? 1 : { increment: 1 },
-                        lastReset: shouldReset ? now : undefined
+                        count: { increment: 1 }
                     }
                 });
-                
-                if (shouldReset) {
-                    logger.info(`Daily visit counter reset to 1`);
-                }
-                
-                logger.debug(`Total visits: ${counter.count}, Today's visits: ${counter.todayCount}`);
+                logger.debug(`Total visits incremented to: ${counter.count}`);
+            }
+            
+            // Check if we need to create or update today's history
+            if (!history || shouldResetDaily(history.lastReset)) {
+                // Create new history entry for today
+                history = await prisma.visitCounterHistory.create({
+                    data: {
+                        count: counter.count,
+                        todayCount: 1,
+                        lastReset: now
+                    }
+                });
+                logger.info(`Visit counter history created for new day with today's count: 1`);
+            } else {
+                // Increment today's count
+                history = await prisma.visitCounterHistory.update({
+                    where: { id: history.id },
+                    data: {
+                        count: counter.count,
+                        todayCount: { increment: 1 }
+                    }
+                });
+                logger.debug(`Today's visits incremented to: ${history.todayCount}`);
             }
             
             // Mark this session as counted
@@ -67,12 +79,22 @@ const trackVisits = async (req, res, next) => {
         }
 
         // Get the current counts for display
-        const counter = await prisma.visitCounter.findFirst();
+        const [counter, history] = await Promise.all([
+            prisma.visitCounter.findFirst(),
+            prisma.visitCounterHistory.findFirst({
+                orderBy: { createdAt: 'desc' }
+            })
+        ]);
+        
         if (counter) {
             res.locals.totalVisitCount = counter.count;
-            res.locals.todayVisitCount = counter.todayCount;
         } else {
             res.locals.totalVisitCount = 0;
+        }
+        
+        if (history) {
+            res.locals.todayVisitCount = history.todayCount;
+        } else {
             res.locals.todayVisitCount = 0;
         }
         
@@ -83,5 +105,20 @@ const trackVisits = async (req, res, next) => {
         next();
     }
 };
+
+/**
+ * Check if we need to reset the daily counter
+ * @param {Date} lastReset - Last time the counter was reset
+ * @returns {boolean}
+ */
+function shouldResetDaily(lastReset) {
+    const now = new Date();
+    const last = new Date(lastReset);
+    return (
+        now.getDate() !== last.getDate() || 
+        now.getMonth() !== last.getMonth() || 
+        now.getFullYear() !== last.getFullYear()
+    );
+}
 
 module.exports = { trackVisits };

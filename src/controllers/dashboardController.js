@@ -19,7 +19,9 @@ exports.renderDashboard = async (req, res) => {
             recentPages,
             recentFaqItems,
             recentDownloads,
-            recentFrontpageItems
+            recentFrontpageItems,
+            visitorCounter,
+            visitorHistory
         ] = await Promise.all([
             prisma.article.count(),
             prisma.media.count(),
@@ -112,6 +114,10 @@ exports.renderDashboard = async (req, res) => {
                         }
                     }
                 }
+            }),
+            prisma.visitCounter.findFirst(),
+            prisma.visitCounterHistory.findFirst({
+                orderBy: { createdAt: 'desc' }
             })
         ]);
 
@@ -152,7 +158,9 @@ exports.renderDashboard = async (req, res) => {
                 faqCategories: faqCategoryCount,
                 faqItems: faqItemCount,
                 downloads: downloadCount,
-                frontpageItems: frontpageItemCount
+                frontpageItems: frontpageItemCount,
+                visitors: visitorHistory?.todayCount || 0,
+                totalVisitors: visitorCounter?.count || 0
             },
             recentArticles: processedRecentArticles,
             recentPages,
