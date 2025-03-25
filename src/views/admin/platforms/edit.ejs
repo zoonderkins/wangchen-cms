@@ -136,21 +136,6 @@
             </div>
           </div>
 
-          <!-- Partners Sub-Type Selection (only visible for partners type) -->
-          <div id="partners-subtype-section" class="mb-4 hidden">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="partners_subtype">
-              夥伴類型 <span class="text-red-500">*</span>
-            </label>
-            <select
-              class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="partners_subtype" name="partners_subtype">
-              <option value="supplier" <%=item.partners_subtype==='supplier' ? 'selected' : '' %>>供應商 (Supplier)
-              </option>
-              <option value="buyer" <%=item.partners_subtype==='buyer' ? 'selected' : '' %>>需求商 (Buyer)</option>
-            </select>
-            <p class="text-gray-600 text-xs italic mt-1">選擇這些是供應商還是需求商</p>
-          </div>
-
           <!-- Current Image -->
           <% /* Debug info for image path */ %>
             <% console.log('Image path in template:', item.imagePath); %>
@@ -356,7 +341,6 @@
         const categoryField = document.getElementById('categoryId');
         const contentRequiredMarks = document.querySelectorAll('.content-required');
         const categoryRequiredMarks = document.querySelectorAll('.category-required');
-        const partnersSubtypeSection = document.getElementById('partners-subtype-section');
         const partnersFieldsSection = document.getElementById('partners-fields-section');
 
         // Image, URL, and attachments sections
@@ -385,7 +369,6 @@
         if (addNewAttachmentsSection) addNewAttachmentsSection.style.display = 'block';
 
         // Hide partners sections by default
-        partnersSubtypeSection.classList.add('hidden');
         partnersFieldsSection.classList.add('hidden');
 
         // Handle specific types

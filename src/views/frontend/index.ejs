@@ -158,33 +158,39 @@
 
 <!-- Partners Section -->
 <section class="bg-partner bg-no-repeat bg-cover bg-bottom sm:bg-cover sm:bg-center px-6 py-12 sm:px-16 sm:py-20 lg:px-56 lg:py-28" id="partners">
+    <!-- Partner Data Container - Moved before the scripts -->
+    <div id="partnersDataContainer" data-partners='<%- JSON.stringify(partnersByCategory || {}) %>' data-language="<%= currentLanguage %>"></div>
+    
     <h3 class="mb-4 sm:mb-8 text-center"><span class="text-white"><%= currentLanguage==='en' ? 'Taiwan Smart System Integrated Manufacturing Platform' : '臺灣智慧系統整合製造平台' %></span><br class="lg:hidden"><span class="text-custom-yellow"><%= currentLanguage==='en' ? 'Partners' : '合作伙伴' %></span></h3>
     <div class="flex flex-col sm:flex-row">
         <!-- 手機版下拉選單 -->
         <div class="block w-full sm:hidden mb-6 p-2 relative rounded-xl border">
             <label for="categorySelect" class="hidden"><%= currentLanguage==='en' ? "Industry menu" : "產業選單" %></label>
-            <select id="categorySelect" name="categorySelect" class="w-full  text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none">
-                <option value="metal" selected>
-                    <%= currentLanguage==='en' ? 'Metal Processing' : '金屬加工' %>
-                </option>
-                <option value="plastic">
-                    <%= currentLanguage==='en' ? 'Smart Footwear' : '智慧鞋業' %>
-                </option>
-                <option value="shoes">
-                    <%= currentLanguage==='en' ? 'Smart Healthcare' : '智慧健康' %>
-                </option>
-                <option value="health">
-                    <%= currentLanguage==='en' ? 'Food & Hospitality' : '餐飲/住宿' %>
-                </option>
-                <option value="hospitality">
-                    <%= currentLanguage==='en' ? 'Semiconductor' : '半導體' %>
-                </option>
-                <option value="retail">
-                    <%= currentLanguage==='en' ? 'Smart manufacturing' : '智慧製造' %>
-                </option>
-                <option value="retail">
-                    <%= currentLanguage==='en' ? 'Smart energy' : '智慧能源' %>
-                </option>
+            <select id="categorySelect" name="categorySelect" class="w-full text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none">
+                <% 
+                // Get all categories that have suppliers or buyers
+                const activeCategories = Object.keys(partnersByCategory)
+                    .filter(key => partnersByCategory[key].suppliers.length > 0 || partnersByCategory[key].buyers.length > 0)
+                    .map(key => partnersByCategory[key].category);
+                
+                // Sort by name
+                activeCategories.sort((a, b) => {
+                    const nameA = currentLanguage === 'en' ? a.name_en : a.name_tw;
+                    const nameB = currentLanguage === 'en' ? b.name_en : b.name_tw;
+                    return nameA.localeCompare(nameB);
+                });
+                
+                // Set first one as default if exists
+                const firstCategoryId = activeCategories.length > 0 ? activeCategories[0].id : null;
+                %>
+                
+                <% activeCategories.forEach((category, index) => { 
+                    const catName = currentLanguage === 'en' ? category.name_en : category.name_tw;
+                %>
+                    <option value="<%= category.id %>" <%= index === 0 ? 'selected' : '' %>>
+                        <%= catName %>
+                    </option>
+                <% }); %>
             </select>
             <!-- 自定義下拉箭頭 -->
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
@@ -197,42 +203,16 @@
         <!-- 左側選單 (Desktop) -->
         <div class="hidden sm:block sm:w-3/12 mr-6">
             <ul class="">
-                <li class="">
-                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 border-l-4 border-custom-yellow" type="button">
-                        <%= currentLanguage==='en' ? 'Metal Processing' : '金屬加工' %>
-                    </button>
-                </li>
-                <li class="">
-                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                        <%= currentLanguage==='en' ? 'Smart Footwear' : '智慧鞋業' %>
-                    </button>
-                </li>
-                <li class="">
-                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                        <%= currentLanguage==='en' ? 'Smart Healthcare' : '智慧健康' %>
-                    </button>
-                </li>
-                <li class="">
-                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                        <%= currentLanguage==='en' ? 'Food & Hospitality' : '餐飲/住宿' %>
-                    </button>
-                </li>
-                
-                <li class="">
-                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                        <%= currentLanguage==='en' ? 'Semiconductor' : '半導體' %>
-                    </button>
-                </li>
-                <li class="">
-                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                        <%= currentLanguage==='en' ? 'Smart manufacturing' : '智慧製造' %>
-                    </button>
-                </li>
-                <li class="">
-                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                        <%= currentLanguage==='en' ? 'Smart energy' : '智慧能源' %>
-                    </button>
-                </li>
+                <% activeCategories.forEach((category, index) => { 
+                    const catName = currentLanguage === 'en' ? category.name_en : category.name_tw;
+                %>
+                    <li class="">
+                        <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 <%= index === 0 ? 'border-l-4 border-custom-yellow' : 'text-gray-500' %>" 
+                                type="button" data-category="<%= category.id %>">
+                            <%= catName %>
+                        </button>
+                    </li>
+                <% }); %>
             </ul>
         </div>
 
@@ -248,32 +228,20 @@
                         <%= currentLanguage==='en' ? 'Buyers' : '需求商' %></button>
                 </div>
 
-                <!-- 供應商列表 -->
-                <div class="supplierList py-6 grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4">
-                    <!-- 供應商卡片 -->
-                    <div class="partner-card h-full flex items-center justify-center">
-                        <p class="text-center">廣杰精機股份有限公司</p>
+                <% activeCategories.forEach((category, index) => { %>
+                    <!-- <%= category.name_en %> 類別 -->
+                    <div class="categoryContent <%= index === 0 ? '' : 'hidden' %>" data-category="<%= category.id %>">
+                        <!-- 供應商列表 -->
+                        <div class="supplierList py-6 grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4">
+                            <!-- 供應商卡片容器 (動態加載) -->
+                        </div>
+                        
+                        <!-- 需求商列表 -->
+                        <div class="demanderList py-6 hidden grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4">
+                            <!-- 需求商卡片容器 (動態加載) -->
+                        </div>
                     </div>
-                    <div class="partner-card h-full flex items-center justify-center">
-                        <p class="text-center">艾肯林科技股份有限公司</p>
-                    </div>
-                    <div class="partner-card h-full flex items-center justify-center">
-                        <p class="text-center">怡邦精密有限公司</p>
-                    </div>
-                    <div class="partner-card h-full flex items-center justify-center">
-                        <p class="text-center">達明機器人股份有限公司</p>
-                    </div>
-                    <div class="partner-card h-full flex items-center justify-center">
-                        <p class="text-center">帆宣系統科技股份有限公司</p>
-                    </div>
-                    <!-- 需求商列表 -->
-                    <div class="demanderList py-6 hidden grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4">
-                        <!-- 需求商卡片 -->
-                        <!-- <div class="partner-card h-full flex items-center justify-center">
-                            <p class="text-center">需求商卡片</p>
-                        </div> -->
-                    </div>
-                </div>
+                <% }); %>
             </div>
         </div>
     </div>
@@ -335,45 +303,231 @@
 
         /////////////////////////////////////////////////////
 
-        // 簡單的標籤切換功能
-        const categoryTabs = document.querySelectorAll('.categoryTab');
-        const companyTabs = document.querySelectorAll('.companyTab');
-        const supplierList = document.querySelector('.supplierList');
-        const demanderList = document.querySelector('.demanderList');
+        // Note: The category and company tab functionality is now handled in the dedicated
+        // Partners Section JavaScript block below to avoid duplicate event listeners
         
-        categoryTabs.forEach(categoryTab => {
-            categoryTab.addEventListener('click', function() {
-                // 移除所有標籤的活動狀態
-                categoryTabs.forEach(t => {
-                    t.classList.remove('border-custom-yellow', 'border-l-4');
-                    t.classList.add('text-gray-500');
-                });
-                
-                // 設置當前標籤為活動狀態
-                this.classList.remove('text-gray-500');
-                this.classList.add('border-custom-yellow', 'border-l-4');
-            });
-        });
-        companyTabs.forEach((companyTab, index) => {
-            companyTab.addEventListener('click', function() {
-                companyTabs.forEach(tab => {
-                    // 切換標籤樣式
-                    tab.classList.toggle('border-custom-yellow', tab === this);
-                    tab.classList.toggle('text-custom-blue', tab === this);
-                    tab.classList.toggle('text-gray-500', tab !== this);
-                    tab.classList.toggle('border-gray-100', tab !== this);
-                });
-                // 切換內容顯示
-                const isSupplierTab = index === 0;
-                supplierList.classList.toggle('grid', isSupplierTab);
-                supplierList.classList.toggle('hidden', !isSupplierTab);
-                demanderList.classList.toggle('grid', !isSupplierTab);
-                demanderList.classList.toggle('hidden', isSupplierTab);
-            });
-        });
-
         /////////////////////////////////////////////////////
 
+    });
+</script>
 
+<!-- Partners Section JavaScript and Data Population Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if the partners data container exists
+        const partnersDataContainer = document.getElementById('partnersDataContainer');
+        if (!partnersDataContainer) {
+            console.warn('Partners data container not found');
+            return;
+        }
+
+        // Partners data from server
+        let partnersData;
+        try {
+            partnersData = JSON.parse(partnersDataContainer.getAttribute('data-partners') || '{}');
+        } catch (error) {
+            console.error('Error parsing partners data:', error);
+            partnersData = {};
+        }
+        const currentLanguage = partnersDataContainer.getAttribute('data-language') || 'en';
+        
+        // Debug: Log the partners data
+        console.log('Partners data loaded:', partnersData);
+        console.log('Current language:', currentLanguage);
+        
+        // ====== UI Elements ======
+        // 行業別選單和標籤
+        const categorySelect = document.getElementById('categorySelect');
+        const categoryTabs = document.querySelectorAll('.categoryTab');
+        const categoryContents = document.querySelectorAll('.categoryContent');
+        const companyTabs = document.querySelectorAll('.companyTab');
+        
+        // 手機版下拉選單切換行業
+        if (categorySelect) {
+            categorySelect.addEventListener('change', function() {
+                const selectedCategory = String(this.value);
+                
+                // 隱藏所有內容
+                categoryContents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+                
+                // 顯示選中的內容
+                const targetContent = document.querySelector(`.categoryContent[data-category="${selectedCategory}"]`);
+                if (targetContent) {
+                    targetContent.classList.remove('hidden');
+                }
+                
+                // 更新 Desktop 選單的選中狀態
+                categoryTabs.forEach(tab => {
+                    const tabCategory = tab.getAttribute('data-category');
+                    if (tabCategory === selectedCategory) {
+                        tab.classList.add('border-custom-yellow', 'border-l-4');
+                        tab.classList.remove('text-gray-500');
+                    } else {
+                        tab.classList.add('text-gray-500');
+                        tab.classList.remove('border-custom-yellow', 'border-l-4');
+                    }
+                });
+            });
+        }
+        
+        // Desktop 版標籤切換行業
+        if (categoryTabs && categoryTabs.length > 0) {
+            categoryTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const selectedCategory = String(this.getAttribute('data-category') || '');
+                    
+                    // 隱藏所有內容
+                    categoryContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    
+                    // 顯示選中的內容
+                    const targetContent = document.querySelector(`.categoryContent[data-category="${selectedCategory}"]`);
+                    if (targetContent) {
+                        targetContent.classList.remove('hidden');
+                    }
+                    
+                    // 更新標籤樣式
+                    categoryTabs.forEach(tab => {
+                        if (tab === this) {
+                            tab.classList.add('border-custom-yellow', 'border-l-4');
+                            tab.classList.remove('text-gray-500');
+                        } else {
+                            tab.classList.add('text-gray-500');
+                            tab.classList.remove('border-custom-yellow', 'border-l-4');
+                        }
+                    });
+                    
+                    // 同步手機版下拉選單
+                    if (categorySelect) {
+                        categorySelect.value = selectedCategory;
+                    }
+                });
+            });
+        }
+        
+        // 供應商/需求商標籤切換
+        if (companyTabs && companyTabs.length >= 2) {
+            // 初始化狀態 - 確保第一個標籤被選中
+            companyTabs[0].classList.add('border-custom-yellow', 'text-custom-blue');
+            companyTabs[0].classList.remove('border-gray-100', 'text-gray-500');
+            companyTabs[1].classList.add('border-gray-100', 'text-gray-500');
+            companyTabs[1].classList.remove('border-custom-yellow', 'text-custom-blue');
+            
+            // 供應商標籤點擊事件
+            companyTabs[0].addEventListener('click', function() {
+                // 更新標籤樣式
+                this.classList.add('border-custom-yellow', 'text-custom-blue');
+                this.classList.remove('border-gray-100', 'text-gray-500');
+                companyTabs[1].classList.add('border-gray-100', 'text-gray-500');
+                companyTabs[1].classList.remove('border-custom-yellow', 'text-custom-blue');
+                
+                // 顯示所有供應商列表，隱藏所有需求商列表
+                document.querySelectorAll('.supplierList').forEach(list => {
+                    list.classList.remove('hidden');
+                    list.classList.add('grid');
+                });
+                document.querySelectorAll('.demanderList').forEach(list => {
+                    list.classList.add('hidden');
+                    list.classList.remove('grid');
+                });
+            });
+            
+            // 需求商標籤點擊事件
+            companyTabs[1].addEventListener('click', function() {
+                // 更新標籤樣式
+                this.classList.add('border-custom-yellow', 'text-custom-blue');
+                this.classList.remove('border-gray-100', 'text-gray-500');
+                companyTabs[0].classList.add('border-gray-100', 'text-gray-500');
+                companyTabs[0].classList.remove('border-custom-yellow', 'text-custom-blue');
+                
+                // 隱藏所有供應商列表，顯示所有需求商列表
+                document.querySelectorAll('.supplierList').forEach(list => {
+                    list.classList.add('hidden');
+                    list.classList.remove('grid');
+                });
+                document.querySelectorAll('.demanderList').forEach(list => {
+                    list.classList.remove('hidden');
+                    list.classList.add('grid');
+                });
+            });
+        }
+        
+        // ===== Data Population =====
+        // Helper to create a company card element
+        function createCompanyCard(companyName) {
+            const card = document.createElement('div');
+            card.className = 'flex items-center p-2 bg-gray-50 rounded shadow-sm hover:bg-gray-100 transition-colors';
+            card.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                <span class="text-gray-700 text-sm">${companyName}</span>
+            `;
+            return card;
+        }
+
+        // Populate each category content area with suppliers and buyers
+        Object.keys(partnersData).forEach(categoryIdRaw => {
+            const categoryId = String(categoryIdRaw); // Ensure categoryId is a string
+            const categoryData = partnersData[categoryIdRaw];
+            if (!categoryData || !categoryData.category) return;
+            
+            // Debug: Log each category being processed
+            console.log(`Processing category ID: ${categoryId}`, categoryData);
+            
+            // Find the content containers for this category
+            const categoryContent = document.querySelector(`.categoryContent[data-category="${categoryId}"]`);
+            if (!categoryContent) {
+                console.warn(`No container found for category ID: ${categoryId}`);
+                return;
+            }
+            
+            // Get supplier and buyer lists
+            const supplierList = categoryContent.querySelector('.supplierList');
+            const buyerList = categoryContent.querySelector('.demanderList');
+            
+            // Populate supplier list
+            if (supplierList) {
+                supplierList.innerHTML = '';
+                if (categoryData.suppliers && categoryData.suppliers.length > 0) {
+                    console.log(`Found ${categoryData.suppliers.length} suppliers for category ${categoryId}`);
+                    categoryData.suppliers.forEach(company => {
+                        if (company && company.trim()) {
+                            supplierList.appendChild(createCompanyCard(company));
+                        }
+                    });
+                } else {
+                    // If no suppliers, show a message
+                    console.log(`No suppliers for category ${categoryId}`);
+                    const message = document.createElement('div');
+                    message.className = 'col-span-2 p-4 text-center text-gray-500';
+                    message.textContent = currentLanguage === "en" ? "No suppliers available" : "沒有可用的供應商";
+                    supplierList.appendChild(message);
+                }
+            }
+            
+            // Populate buyer list
+            if (buyerList) {
+                buyerList.innerHTML = '';
+                if (categoryData.buyers && categoryData.buyers.length > 0) {
+                    console.log(`Found ${categoryData.buyers.length} buyers for category ${categoryId}`);
+                    categoryData.buyers.forEach(company => {
+                        if (company && company.trim()) {
+                            buyerList.appendChild(createCompanyCard(company));
+                        }
+                    });
+                } else {
+                    // If no buyers, show a message
+                    console.log(`No buyers for category ${categoryId}`);
+                    const message = document.createElement('div');
+                    message.className = 'col-span-2 p-4 text-center text-gray-500';
+                    message.textContent = currentLanguage === "en" ? "No buyers available" : "沒有可用的需求商";
+                    buyerList.appendChild(message);
+                }
+            }
+        });
     });
 </script>
