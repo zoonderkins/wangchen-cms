@@ -1,0 +1,225 @@
+<%- contentFor('body') %>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">建立合作夥伴項目</h1>
+      <a href="/admin/partners" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+        <i class="fas fa-arrow-left mr-2"></i> 返回列表
+      </a>
+    </div>
+
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <div class="mb-4">
+        <form id="createPartnerForm" action="/admin/partners" method="POST">
+          <!-- Hidden default values for debugging -->
+          <input type="hidden" name="_test" value="test">
+          
+          <!-- Basic Information -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="title_tw">
+                標題 (中文)
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="title_tw" name="title_tw" type="text" value="<%= locals.formData ? formData.title_tw : '' %>">
+              <div class="text-xs text-gray-600">(例: 合作夥伴標題)</div>
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="title_en">
+                標題 (英文)
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="title_en" name="title_en" type="text" value="<%= locals.formData ? formData.title_en : '' %>">
+              <div class="text-xs text-gray-600">(Ex: Partner Title)</div>
+            </div>
+          </div>
+
+          <!-- Category and URL -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="categoryId">
+                分類
+              </label>
+              <select
+                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="categoryId" name="categoryId">
+                <option value="">選擇分類</option>
+                <% categories.forEach(function(category) { %>
+                  <option value="<%= category.id %>" <%= locals.formData && formData.categoryId == category.id ? 'selected' : '' %>>
+                    <%= category.name_en %> / <%= category.name_tw %>
+                  </option>
+                  <% }); %>
+              </select>
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="url">
+                外部連結
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="url" name="url" type="url" value="<%= locals.formData && formData.url ? formData.url : '' %>">
+              <p class="text-gray-600 text-xs italic mt-1">選填：連結到外部網站</p>
+            </div>
+          </div>
+
+          <!-- Partners Fields -->
+          <div id="partners-fields-section">
+            <div class="bg-blue-50 p-4 rounded-lg mb-6">
+              <h3 class="text-xl font-bold mb-4 text-blue-800">供應商 (Suppliers)</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="suppliers_tw">
+                    供應商列表 (中文)
+                  </label>
+                  <textarea
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="suppliers_tw" name="suppliers_tw" rows="5"><%= locals.formData && formData.suppliers_tw ? formData.suppliers_tw : '' %></textarea>
+                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
+                </div>
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="suppliers_en">
+                    供應商列表 (英文)
+                  </label>
+                  <textarea
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="suppliers_en" name="suppliers_en" rows="5"><%= locals.formData && formData.suppliers_en ? formData.suppliers_en : '' %></textarea>
+                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-green-50 p-4 rounded-lg mb-6">
+              <h3 class="text-xl font-bold mb-4 text-green-800">需求商 (Buyers)</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="buyers_tw">
+                    需求商列表 (中文)
+                  </label>
+                  <textarea
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="buyers_tw" name="buyers_tw" rows="5"><%= locals.formData && formData.buyers_tw ? formData.buyers_tw : '' %></textarea>
+                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
+                </div>
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="buyers_en">
+                    需求商列表 (英文)
+                  </label>
+                  <textarea
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="buyers_en" name="buyers_en" rows="5"><%= locals.formData && formData.buyers_en ? formData.buyers_en : '' %></textarea>
+                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional Settings -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="order">
+                顯示順序
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="order" name="order" type="number" value="<%= locals.formData && formData.order ? formData.order : '0' %>">
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="status">
+                狀態
+              </label>
+              <select
+                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="status" name="status">
+                <option value="draft" <%= locals.formData && formData.status === 'draft' ? 'selected' : '' %>>草稿</option>
+                <option value="published" <%= locals.formData && formData.status === 'published' ? 'selected' : '' %>>已發布</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="publishedDate">
+                發布日期
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="publishedDate" name="publishedDate" type="date" value="<%= locals.formData && formData.publishedDate ? formData.publishedDate : '' %>">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end">
+            <button type="reset" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2">
+              重置
+            </button>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              建立合作夥伴項目
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <%- contentFor('scripts') %>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Set default published date to today if not already set
+        if (!document.getElementById('publishedDate').value) {
+          const today = new Date().toISOString().split('T')[0];
+          document.getElementById('publishedDate').value = today;
+        }
+        
+        // Add form submit event listener to log submission
+        const form = document.getElementById('createPartnerForm');
+        form.addEventListener('submit', function(e) {
+          // Log the submission event
+          console.log('Form submit event triggered');
+          
+          // Check form validity
+          console.log('Form is valid:', form.checkValidity());
+          
+          // Inspect form HTML
+          console.log('Form HTML:', form.outerHTML);
+          console.log('Form action:', form.action);
+          console.log('Form method:', form.method);
+          console.log('Form enctype:', form.enctype);
+          
+          // Log all form data
+          const formData = new FormData(form);
+          const formDataObj = {};
+          formData.forEach((value, key) => {
+            formDataObj[key] = value;
+            console.log(`Form field: ${key} = ${value}`);
+          });
+          
+          console.log('Form data being submitted:', formDataObj);
+          console.log('Form elements count:', form.elements.length);
+          
+          // Continue with form submission (don't prevent default)
+        });
+        
+        // Add a debug helper at the bottom of the page
+        const submitButton = form.querySelector('button[type="submit"]');
+        const debugButton = document.createElement('button');
+        debugButton.type = 'button';
+        debugButton.className = 'bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded ml-2';
+        debugButton.textContent = '填入測試數據';
+        debugButton.onclick = function() {
+          // Fill the form with test data
+          document.getElementById('title_tw').value = '測試合作夥伴' + Date.now();
+          document.getElementById('title_en').value = 'Test Partner ' + Date.now();
+          document.getElementById('categoryId').value = document.getElementById('categoryId').options[1]?.value || '';
+          document.getElementById('suppliers_tw').value = '測試供應商1\n測試供應商2';
+          document.getElementById('suppliers_en').value = 'Test Supplier 1\nTest Supplier 2';
+          document.getElementById('buyers_tw').value = '測試客戶1\n測試客戶2';
+          document.getElementById('buyers_en').value = 'Test Buyer 1\nTest Buyer 2';
+          document.getElementById('order').value = '0';
+          document.getElementById('status').value = 'draft';
+          
+          // Submit the form automatically after filling
+          // form.submit();
+        };
+        
+        submitButton.parentNode.appendChild(debugButton);
+      });
+    </script>
+</code_block_to_apply_changes_from> 

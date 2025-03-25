@@ -40,131 +40,14 @@
 
     <!-- Sample Promotion embed platform -->
 
-    <!-- Aboutplatform -->
+    <!-- About platform -->
     <section id="platform" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
         <% if (platformsByCategory && platformsByCategory.length> 0) { %>
             <% platformsByCategory.forEach(function(category) { %>
                 <% if (category.platforms && category.platforms.length> 0) { %>
 
-                    <!-- Partner filter -->
-                    <% if (category.name_en.includes("artner")) { %>
-                        <h4 class="h4 mb-4">
-                            <%= currentLanguage==='en' ? 'Partners' : '合作伙伴' %>
-                        </h4>
-                        
-                        <!-- Partners Type -->
-                        <div class="flex flex-col sm:flex-row">
-                            <!-- 手機版下拉選單 -->
-                            <div class="block w-full sm:hidden mb-6 p-2 relative rounded-xl border">
-                                <label for="categorySelect" class="hidden"><%= currentLanguage==='en' ? "Industry menu" : "產業選單" %></label>
-                                <select id="categorySelect" name="categorySelect" class="w-full  text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none">
-                                    <% category.platforms.forEach(function(platform) { %>
-                                        <% if (platform.type==='partners' ) { %>
-                                            <option value="<%= platform.title_en %>" selected>
-                                                <%= currentLanguage==='en' ? platform.title_en : platform.title_tw %>
-                                            </option>
-                                        <% } %>
-                                    <% }); %>
-                                </select>
-                                <!-- 自定義下拉箭頭 -->
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                            <!-- 左側選單 (Desktop) -->
-                            <div class="hidden sm:block sm:w-3/12 mr-6">
-                                <ul class="">
-                                    <% category.platforms.forEach(function(platform) { %>
-                                        <% if (platform.type==='partners' ) { %>
-                                            <li class="">
-                                                <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
-                                                    <%= currentLanguage==='en' ? platform.title_en : platform.title_tw %>
-                                                </button>
-                                            </li>
-                                        <% } %>
-                                    <% }); %>
-                                </ul>
-                            </div>
-                            
-                            <!-- 主內容區 -->
-                            <div class="w-full sm:w-9/12 bg-white border-2 rounded-xl border-gray-100 p-4 mb-8 sm:mb-0 min-h-full">
-                                <!-- 頂部標籤頁 -->
-                                <div class="flex justify-center">
-                                    <button class="companyTab px-4 py-2 border-b-2 border-custom-blue text-custom-blue font-medium">
-                                        <%= currentLanguage==='en' ? 'Suppliers' : '供應商' %>
-                                    </button>
-                                    <button class="companyTab px-4 py-2 border-b-2 border-gray-100 text-gray-500">
-                                        <%= currentLanguage==='en' ? 'Buyers' : '需求商' %>
-                                    </button>
-                                </div>
-                                <% category.platforms.forEach(function(platform, platformIndex) { %>
-                                    <% if (platform.type === 'partners') { %>
-                                        <% 
-                                        let partnersData = platform.parsedPartnersData || { 
-                                            suppliers: { companies_en: [], companies_tw: [] }, 
-                                            buyers: { companies_en: [], companies_tw: [] } 
-                                        }; 
-                                        
-                                        if (!partnersData) { 
-                                            try { 
-                                                if (platform.partnersData) {
-                                                    partnersData = JSON.parse(platform.partnersData); 
-                                                } 
-                                            } catch (e) { 
-                                                console.error('Error parsing partners data:', e); 
-                                                partnersData = {
-                                                    suppliers: { companies_en: [], companies_tw: [] }, 
-                                                    buyers: { companies_en: [], companies_tw: [] } 
-                                                }; 
-                                            } 
-                                        } 
-                                        
-                                        const suppliersCompanies = currentLanguage === 'en' 
-                                            ? (partnersData.suppliers?.companies_en || []) 
-                                            : (partnersData.suppliers?.companies_tw || []); 
-                                        
-                                        const buyersCompanies = currentLanguage === 'en' 
-                                            ? (partnersData.buyers?.companies_en || []) 
-                                            : (partnersData.buyers?.companies_tw || []); 
-                                        
-                                        const hasSuppliers = suppliersCompanies.length > 0;
-                                        const hasBuyers = buyersCompanies.length > 0;
-                                        %>
-                                        <div class="companyList">
-                                            <% if (hasSuppliers) { %>
-                                                <!-- 供應商列表 -->
-                                                <div class="supplierList py-6 grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4">
-                                                    <!-- 供應商卡片 -->
-                                                    <% suppliersCompanies.forEach(function(company) { %>
-                                                        <div class="partner-card h-full flex items-center justify-center">
-                                                            <p class="text-center"><%= company %></p>
-                                                        </div>
-                                                    <% }); %>
-                                                </div>
-                                            <% } %>
-                                            <% if (hasBuyers) { %>
-                                                <!-- 需求商列表 -->
-                                                <div class="demanderList py-6 grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4 hidden">
-                                                    <!-- 需求商卡片 -->
-                                                    <% buyersCompanies.forEach(function(company) { %>
-                                                        <div class="partner-card h-full flex items-center justify-center">
-                                                            <p class="text-center"><%= company %></p>
-                                                        </div>
-                                                    <% }); %>
-                                                </div>
-                                            <% } %>
-                                        </div>
-                                    <% } %>
-                                <% }); %>
-                            </div>
-                        </div>
-                        
-                        
-
-                    <!-- Without Partner filter -->
-                    <% } else {%>
+                    <!-- Non-Partner Content -->
+                    <% if (!category.name_en.includes("artner")) { %>
                         <% category.platforms.forEach(function(platform) { %>
                             <!-- Plain_text Type -->
                             <% if (platform.type==='plain_text' ) { %>
@@ -201,74 +84,111 @@
                                         alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
                                         class="w-full h-auto rounded-lg">
                                     </div>
-                                    <div class="text-gray-700 quill-content">
-                                        <div class="ql-container ql-snow" style="border: none;">
-                                            <div class="ql-editor">
-                                                <%= currentLanguage==='en' ? platform.content_en : platform.content_tw %>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <% } else { %>
-                                    <div class="bg-gray-100 p-4 rounded-lg text-center text-gray-500">
-                                        <%= currentLanguage==='en' ? 'Image not available' : '圖片不可用' %>
-                                    </div>
-                                <% } %>
-
-                            <!-- Attachment Type -->
-                            <% } else if (platform.type==='attachment_only' ) { %>
-                                <h4 class="h4 mb-4">
-                                    <%= currentLanguage==='en' ? platform.title_en : platform.title_tw %>
-                                </h4>
-                                <% if (platform.imagePath) { %>
-                                    <div class="mb-4">
-                                        <img src="<%= platform.imagePath %>"
-                                        alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
-                                        class="w-full h-auto rounded-lg">
-                                    </div>
-                                <% } %>
-                                <% if (platform.attachments && platform.attachments.length> 0) { %>
-                                    <div class="mt-4">
-                                        <div class="space-y-2">
-                                            <% platform.attachments.forEach(function(attachment) { %>
-                                                <div class="bg-gray-100 rounded-2xl">
-                                                    <div class="flex items-center justify-between px-6 py-2">
-                                                        <!-- 標題部分 -->
-                                                        <p class="">
-                                                            <%= currentLanguage==='en' 
-                                                                ? (attachment.attachment_name_en || attachment.originalName) 
-                                                                : (attachment.attachment_name_tw || attachment.originalName) %>
-                                                        </p>
-                                                        
-                                                        <!-- 下載按鈕部分 -->
-                                                        <a href="<%= attachment.path %>" download class="inline-flex items-center px-0 sm:px-5 py-0">
-                                                            <img src="/images/desktop/downloadcloud.png" alt="下載雲" class="h-8 mr-0 sm:mr-2 object-contain">
-                                                            <span class="hidden sm:block">
-                                                                <%= currentLanguage==='en' ? 'File Download' : '檔案下載' %>
-                                                            </span>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            <% }); %>
-                                        </div>
-                                    </div>
-                                <% } else { %>
-                                    <div class="bg-gray-100 p-4 rounded-lg text-center text-gray-500">
-                                        <%= currentLanguage==='en' ? 'No attachments available' : '沒有可用的附件' %>
-                                    </div>
                                 <% } %>
                             <% } %>
                         <% }); %>
                     <% } %>
-
-
                 <% } %>
             <% }); %>
-        <% } else { %>
-            <div class="bg-white rounded-lg shadow-md p-8 text-center">
-                <p class="text-gray-500">
-                <%= currentLanguage==='en' ? 'No platform content available yet.' : '尚無平台內容。' %>
-                </p>
-            </div>
+        <% } %>
+
+        <!-- Partner Categories Section -->
+        <% if (partnerCategories && partnerCategories.length > 0) { %>
+            <% partnerCategories.forEach(function(category) { %>
+                <h4 class="h4 mb-4">
+                    <%= currentLanguage==='en' ? 'Partners' : '合作伙伴' %>
+                </h4>
+                
+                <!-- Partners Type -->
+                <div class="flex flex-col sm:flex-row">
+                    <!-- 手機版下拉選單 -->
+                    <div class="block w-full sm:hidden mb-6 p-2 relative rounded-xl border">
+                        <label for="categorySelect" class="hidden"><%= currentLanguage==='en' ? "Industry menu" : "產業選單" %></label>
+                        <select id="categorySelect" name="categorySelect" class="w-full text-gray-600 border-0 focus:ring-0 focus:outline-none py-2 pl-2 pr-10 appearance-none">
+                            <% category.platforms.forEach(function(platform) { %>
+                                <option value="<%= platform.title_en %>" selected>
+                                    <%= currentLanguage==='en' ? platform.title_en : platform.title_tw %>
+                                </option>
+                            <% }); %>
+                        </select>
+                        <!-- 自定義下拉箭頭 -->
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <!-- 左側選單 (Desktop) -->
+                    <div class="hidden sm:block sm:w-3/12 mr-6">
+                        <ul class="">
+                            <% category.platforms.forEach(function(platform) { %>
+                                <li class="">
+                                    <button class="categoryTab block px-3 py-2 mb-2 w-full lg:w-3/5 text-center bg-gray-100 text-gray-500" type="button">
+                                        <%= currentLanguage==='en' ? platform.title_en : platform.title_tw %>
+                                    </button>
+                                </li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                    
+                    <!-- 主內容區 -->
+                    <div class="w-full sm:w-9/12 bg-white border-2 rounded-xl border-gray-100 p-4 mb-8 sm:mb-0 min-h-full">
+                        <!-- 頂部標籤頁 -->
+                        <div class="flex justify-center">
+                            <button class="companyTab px-4 py-2 border-b-2 border-custom-blue text-custom-blue font-medium">
+                                <%= currentLanguage==='en' ? 'Suppliers' : '供應商' %>
+                            </button>
+                            <button class="companyTab px-4 py-2 border-b-2 border-gray-100 text-gray-500">
+                                <%= currentLanguage==='en' ? 'Buyers' : '需求商' %>
+                            </button>
+                        </div>
+                        <% category.platforms.forEach(function(platform) { %>
+                            <% 
+                            let partnersData = platform.parsedPartnersData || { 
+                                suppliers: { companies_en: [], companies_tw: [] }, 
+                                buyers: { companies_en: [], companies_tw: [] } 
+                            }; 
+                            
+                            // Get the right companies array based on language
+                            const suppliersCompanies = currentLanguage === 'en' 
+                                ? (partnersData.suppliers?.companies_en || []) 
+                                : (partnersData.suppliers?.companies_tw || []); 
+                            
+                            const buyersCompanies = currentLanguage === 'en' 
+                                ? (partnersData.buyers?.companies_en || []) 
+                                : (partnersData.buyers?.companies_tw || []); 
+                            
+                            const hasSuppliers = suppliersCompanies.length > 0;
+                            const hasBuyers = buyersCompanies.length > 0;
+                            %>
+                            <div class="companyList">
+                                <% if (hasSuppliers) { %>
+                                    <!-- 供應商列表 -->
+                                    <div class="supplierList py-6 grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4">
+                                        <!-- 供應商卡片 -->
+                                        <% suppliersCompanies.forEach(function(company) { %>
+                                            <div class="partner-card h-full flex items-center justify-center">
+                                                <p class="text-center"><%= company %></p>
+                                            </div>
+                                        <% }); %>
+                                    </div>
+                                <% } %>
+                                <% if (hasBuyers) { %>
+                                    <!-- 需求商列表 -->
+                                    <div class="demanderList py-6 grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-4 hidden">
+                                        <!-- 需求商卡片 -->
+                                        <% buyersCompanies.forEach(function(company) { %>
+                                            <div class="partner-card h-full flex items-center justify-center">
+                                                <p class="text-center"><%= company %></p>
+                                            </div>
+                                        <% }); %>
+                                    </div>
+                                <% } %>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+            <% }); %>
         <% } %>
     </section>
 

@@ -1,0 +1,170 @@
+<%- contentFor('body') %>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">編輯合作夥伴項目</h1>
+      <a href="/admin/partners" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+        <i class="fas fa-arrow-left mr-2"></i> 返回列表
+      </a>
+    </div>
+
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <div class="mb-4">
+        <form action="/admin/partners/<%= partner.id %>" method="POST">
+          <!-- Basic Information -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="title_tw">
+                標題 (中文) <span class="text-red-500">*</span>
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="title_tw" name="title_tw" type="text" value="<%= partner.title_tw %>" required>
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="title_en">
+                標題 (英文) <span class="text-red-500">*</span>
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="title_en" name="title_en" type="text" value="<%= partner.title_en %>" required>
+            </div>
+          </div>
+
+          <!-- Category and URL -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="categoryId">
+                分類 <span class="text-red-500">*</span>
+              </label>
+              <select
+                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="categoryId" name="categoryId" required>
+                <option value="">選擇分類</option>
+                <% categories.forEach(function(category) { %>
+                  <option value="<%= category.id %>" <%= partner.categoryId === category.id ? 'selected' : '' %>>
+                    <%= category.name_en %> / <%= category.name_tw %>
+                  </option>
+                  <% }); %>
+              </select>
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="url">
+                外部連結
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="url" name="url" type="url" value="<%= partner.url || '' %>">
+              <p class="text-gray-600 text-xs italic mt-1">選填：連結到外部網站</p>
+            </div>
+          </div>
+
+          <!-- Partners Fields -->
+          <div id="partners-fields-section">
+            <div class="bg-blue-50 p-4 rounded-lg mb-6">
+              <h3 class="text-xl font-bold mb-4 text-blue-800">供應商 (Suppliers)</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="suppliers_tw">
+                    供應商列表 (中文)
+                  </label>
+                  <textarea
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="suppliers_tw" name="suppliers_tw" rows="5"><%= partner.suppliers_tw || '' %></textarea>
+                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
+                </div>
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="suppliers_en">
+                    供應商列表 (英文)
+                  </label>
+                  <textarea
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="suppliers_en" name="suppliers_en" rows="5"><%= partner.suppliers_en || '' %></textarea>
+                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-green-50 p-4 rounded-lg mb-6">
+              <h3 class="text-xl font-bold mb-4 text-green-800">需求商 (Buyers)</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="buyers_tw">
+                    需求商列表 (中文)
+                  </label>
+                  <textarea
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="buyers_tw" name="buyers_tw" rows="5"><%= partner.buyers_tw || '' %></textarea>
+                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
+                </div>
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2" for="buyers_en">
+                    需求商列表 (英文)
+                  </label>
+                  <textarea
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="buyers_en" name="buyers_en" rows="5"><%= partner.buyers_en || '' %></textarea>
+                  <p class="text-gray-600 text-xs italic mt-1">每行輸入一個公司</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional Settings -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="order">
+                顯示順序
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="order" name="order" type="number" value="<%= partner.order || 0 %>">
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="status">
+                狀態 <span class="text-red-500">*</span>
+              </label>
+              <select
+                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="status" name="status" required>
+                <option value="draft" <%= partner.status === 'draft' ? 'selected' : '' %>>草稿</option>
+                <option value="published" <%= partner.status === 'published' ? 'selected' : '' %>>已發布</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="publishedDate">
+                發布日期 <span class="text-red-500">*</span>
+              </label>
+              <input
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="publishedDate" name="publishedDate" type="date" 
+                value="<%= new Date(partner.publishedDate).toISOString().split('T')[0] %>" required>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end">
+            <button type="reset" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2">
+              重置
+            </button>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              更新合作夥伴項目
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <%- contentFor('scripts') %>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Form reset handler
+        document.querySelector('button[type="reset"]').addEventListener('click', function(e) {
+          e.preventDefault();
+          if (confirm('確定要重置表單嗎？所有修改都將丟失。')) {
+            window.location.reload();
+          }
+        });
+      });
+    </script>
+</code_block_to_apply_changes_from> 

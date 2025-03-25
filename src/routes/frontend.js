@@ -8,6 +8,7 @@ const newsController = require('../controllers/newsController');
 const { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE } = require('../middleware/languageMiddleware');
 const frontendController = require('../controllers/frontendController');
 const platformController = require('../controllers/platformController');
+const partnerController = require('../controllers/partnerController');
 
 // Helper function to create clean excerpts
 function createExcerpt(content, maxLength = 200) {
@@ -59,7 +60,10 @@ router.get('/', (req, res, next) => {
 });
 
 // Prevent redirect loops for language routes
-router.get('/:language', async (req, res, next) => {
+router.get('/:language', 
+    // Use the partners controller middleware to load partner data
+    partnerController.getPartnersForHomepage,
+    async (req, res, next) => {
     try {
         const language = req.params.language;
         
@@ -128,156 +132,6 @@ router.get('/:language', async (req, res, next) => {
             take: 6
         });
 
-        // Get partner platform items
-        const partnerPlatforms = await prisma.platform.findMany({
-            where: {
-                type: 'partners',
-                status: 'published',
-                deletedAt: null
-            },
-            include: {
-                category: true
-            }
-        });
-
-        // Get platform categories for partners
-        const platformCategories = await prisma.platformCategory.findMany({
-            where: {
-                deletedAt: null
-            },
-            orderBy: {
-                order: 'asc'
-            }
-        });
-
-        // Process partners data for each platform item
-        const parsedPartnerPlatforms = partnerPlatforms.map(platform => {
-            const result = { ...platform };
-            if (platform.partnersData) {
-                try {
-                    result.parsedPartnersData = JSON.parse(platform.partnersData);
-                    // Ensure the data structure is valid
-                    if (!result.parsedPartnersData.suppliers) {
-                        result.parsedPartnersData.suppliers = { companies_en: [], companies_tw: [] };
-                    }
-                    if (!result.parsedPartnersData.buyers) {
-                        result.parsedPartnersData.buyers = { companies_en: [], companies_tw: [] };
-                    }
-                    // Ensure arrays exist even if they're not in the parsed data
-                    if (!result.parsedPartnersData.suppliers.companies_en) {
-                        result.parsedPartnersData.suppliers.companies_en = [];
-                    }
-                    if (!result.parsedPartnersData.suppliers.companies_tw) {
-                        result.parsedPartnersData.suppliers.companies_tw = [];
-                    }
-                    if (!result.parsedPartnersData.buyers.companies_en) {
-                        result.parsedPartnersData.buyers.companies_en = [];
-                    }
-                    if (!result.parsedPartnersData.buyers.companies_tw) {
-                        result.parsedPartnersData.buyers.companies_tw = [];
-                    }
-                } catch (error) {
-                    console.error('Error parsing partners data:', error);
-                    result.parsedPartnersData = { 
-                        suppliers: {
-                            companies_en: [],
-                            companies_tw: []
-                        },
-                        buyers: {
-                            companies_en: [],
-                            companies_tw: []
-                        }
-                    };
-                }
-            } else {
-                // Initialize with empty data if no partners data exists
-                result.parsedPartnersData = { 
-                    suppliers: {
-                        companies_en: [],
-                        companies_tw: []
-                    },
-                    buyers: {
-                        companies_en: [],
-                        companies_tw: []
-                    }
-                };
-            }
-            return result;
-        });
-
-        // Initialize partners by category structure with actual category ids
-        const partnersByCategory = {};
-        
-        // Initialize the structure with all categories
-        platformCategories.forEach(category => {
-            partnersByCategory[category.id] = {
-                category: category,
-                suppliers: [],
-                buyers: []
-            };
-        });
-
-        // Add a fallback for uncategorized items
-        partnersByCategory['uncategorized'] = {
-            category: {
-                id: 'uncategorized',
-                name_en: 'Uncategorized',
-                name_tw: '未分類'
-            },
-            suppliers: [],
-            buyers: []
-        };
-
-        // Assign partners to the correct category based on categoryId
-        parsedPartnerPlatforms.forEach(platform => {
-            if (!platform.parsedPartnersData) return;
-            
-            // Determine category key based on platform's category
-            const categoryKey = platform.categoryId || 'uncategorized';
-            
-            // Get suppliers and buyers based on language and clean the data
-            const suppliers = currentLanguage === 'en' ? 
-                platform.parsedPartnersData.suppliers.companies_en : 
-                platform.parsedPartnersData.suppliers.companies_tw;
-                
-            const buyers = currentLanguage === 'en' ? 
-                platform.parsedPartnersData.buyers.companies_en : 
-                platform.parsedPartnersData.buyers.companies_tw;
-            
-            // Clean up supplier and buyer data by removing whitespace, newlines, and carriage returns
-            const cleanedSuppliers = suppliers ? suppliers.map(s => s.replace(/[\r\n]+/g, '').trim()).filter(Boolean) : [];
-            const cleanedBuyers = buyers ? buyers.map(b => b.replace(/[\r\n]+/g, '').trim()).filter(Boolean) : [];
-            
-            // Add to the appropriate category
-            if (partnersByCategory[categoryKey]) {
-                if (cleanedSuppliers.length) {
-                    partnersByCategory[categoryKey].suppliers = [
-                        ...partnersByCategory[categoryKey].suppliers,
-                        ...cleanedSuppliers
-                    ];
-                }
-                
-                if (cleanedBuyers.length) {
-                    partnersByCategory[categoryKey].buyers = [
-                        ...partnersByCategory[categoryKey].buyers,
-                        ...cleanedBuyers
-                    ];
-                }
-            }
-        });
-
-        // Debug: Log the partners data structure
-        console.log('Partners by category data:', partnersByCategory);
-        console.log('Platform categories count:', platformCategories.length);
-        console.log('Partner platforms count:', partnerPlatforms.length);
-        
-        // Check if any categories have supplier or buyer data
-        const categoriesWithData = Object.keys(partnersByCategory).filter(key => 
-            (partnersByCategory[key].suppliers && partnersByCategory[key].suppliers.length > 0) || 
-            (partnersByCategory[key].buyers && partnersByCategory[key].buyers.length > 0)
-        );
-        console.log('Categories with partner data:', categoriesWithData);
-
         // Process news items for the selected language
         const processedNews = latestNews.map(item => {
             const titleField = `title_${currentLanguage}`;
@@ -327,7 +181,7 @@ router.get('/:language', async (req, res, next) => {
             latestNews: processedNews,
             currentLanguage: currentLanguage,
             getContent: getContent,
-            partnersByCategory: partnersByCategory,
+            // partnersByCategory is set by partnerController.getPartnersForHomepage middleware
             layout: 'layouts/frontend'
         });
     } catch (error) {
@@ -1040,7 +894,7 @@ router.get('/:language/news/:id', newsController.getNewsItemForFrontend);
 
 // Promotion routes
 const promotionController = require('../controllers/promotionController');
-router.get('/:language/promotions', promotionController.listPromotionsForFrontend);
+router.get('/:language/promotions', partnerController.getPartnersForPromotions, promotionController.listPromotionsForFrontend);
 router.get('/:language/promotions/:id', promotionController.getPromotionItemForFrontend);
 
 // About page route

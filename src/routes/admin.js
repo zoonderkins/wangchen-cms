@@ -32,6 +32,7 @@ const platformController = require('../controllers/platformController');
 const platformUpload = require('../middleware/platformImageUpload');
 const siteSettingsController = require('../controllers/siteSettingsController');
 const siteLogoUpload = require('../middleware/siteLogoUpload');
+const partnerController = require('../controllers/partnerController');
 
 // Import frontpage routes
 const frontpageRoutes = require('./admin/frontpage');
@@ -267,6 +268,21 @@ router.post('/platforms/:id', hasRole(['super_admin', 'admin']), platformUpload.
     { name: 'attachments', maxCount: 10 }
 ]), platformController.updateItem);
 router.post('/platforms/:id/delete', hasRole(['super_admin', 'admin']), platformController.deleteItem);
+
+// Partners Routes
+router.get('/partners', hasRole(['super_admin', 'admin']), partnerController.listItems);
+router.get('/partners/create', hasRole(['super_admin', 'admin']), partnerController.renderCreateItem);
+router.post('/partners', hasRole(['super_admin', 'admin']), express.urlencoded({ extended: true }), partnerController.createItem);
+router.get('/partners/categories', hasRole(['super_admin', 'admin']), partnerController.listCategories);
+router.get('/partners/categories/create', hasRole(['super_admin', 'admin']), partnerController.renderCreateCategory);
+router.post('/partners/categories', hasRole(['super_admin', 'admin']), partnerController.createCategory);
+router.get('/partners/categories/edit/:id', hasRole(['super_admin', 'admin']), partnerController.renderEditCategory);
+router.post('/partners/categories/:id', hasRole(['super_admin', 'admin']), partnerController.updateCategory);
+router.put('/partners/categories/:id', hasRole(['super_admin', 'admin']), partnerController.updateCategory);
+router.delete('/partners/categories/:id', hasRole(['super_admin', 'admin']), partnerController.deleteCategory);
+router.get('/partners/:id/edit', hasRole(['super_admin', 'admin']), partnerController.renderEditItem);
+router.post('/partners/:id', hasRole(['super_admin', 'admin']), express.urlencoded({ extended: true }), partnerController.updateItem);
+router.post('/partners/:id/delete', hasRole(['super_admin', 'admin']), partnerController.deleteItem);
 
 // Links Routes
 const { uploadLinkImage } = require('../middleware/linkImageUpload');

@@ -37,6 +37,19 @@ app.use(express.json({ limit: '200mb' }));
 app.use(express.urlencoded({ extended: true, limit: '200mb' }));
 app.use(cookieParser());
 
+// Debug middleware for form submissions
+app.use((req, res, next) => {
+    if (req.method === 'POST') {
+        console.log('\n==== DEBUG REQUEST BODY ====');
+        console.log('Request URL:', req.originalUrl);
+        console.log('Content-Type:', req.headers['content-type']);
+        console.log('Body empty:', !req.body || Object.keys(req.body).length === 0);
+        console.log('Body:', req.body);
+        logger.info(`POST request to ${req.originalUrl} with content-type: ${req.headers['content-type']} body-empty: ${!req.body || Object.keys(req.body).length === 0}`);
+    }
+    next();
+});
+
 // Serve static files - keep only one static file serving configuration
 app.use(express.static(path.join(__dirname, '../public')));
 

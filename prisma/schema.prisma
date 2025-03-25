@@ -31,6 +31,7 @@ model User {
   promotionItems      PromotionItem[]
   role                Role                 @relation(fields: [roleId], references: [id])
   articles            Article[]
+  partners            Partner[]
 
   @@index([roleId], map: "Users_roleId_fkey")
   @@map("Users")
@@ -628,4 +629,46 @@ enum Status {
   draft
   published
   archived
+}
+
+model PartnersCategory {
+  id             Int        @id @default(autoincrement())
+  name_en        String
+  name_tw        String
+  description_en String?
+  description_tw String?
+  slug           String     @unique
+  order          Int        @default(0)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  deletedAt      DateTime?
+  partners       Partner[]
+
+  @@map("PartnersCategories")
+}
+
+model Partner {
+  id            Int                @id @default(autoincrement())
+  title_en      String             @db.VarChar(255)
+  title_tw      String             @db.VarChar(255)
+  slug          String             @db.VarChar(255)
+  publishedDate DateTime           @default(now())
+  status        Status             @default(draft)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  deletedAt     DateTime?
+  categoryId    Int?
+  authorId      Int?
+  order         Int                @default(0)
+  url           String?            @db.VarChar(255)
+  suppliers_en  String?            @db.Text
+  suppliers_tw  String?            @db.Text
+  buyers_en     String?            @db.Text
+  buyers_tw     String?            @db.Text
+  author        User?              @relation(fields: [authorId], references: [id])
+  category      PartnersCategory?  @relation(fields: [categoryId], references: [id])
+
+  @@index([authorId], map: "Partners_authorId_fkey")
+  @@index([categoryId], map: "Partners_categoryId_fkey")
+  @@map("Partners")
 }
