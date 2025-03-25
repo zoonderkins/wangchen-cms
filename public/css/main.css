@@ -236,6 +236,22 @@ main {
     filter: hue-rotate(-90deg)
 }
 
+/* 自定義動畫 - 從左中移動到右上 */
+@keyframes moveDiagonal {
+    0% {
+        transform: translate(-150%, -75%) scale(0.8);
+        opacity: 0.5;
+    }
+    100% {
+        transform: translate(75%, -150%) scale(1);
+        opacity: 1;
+    }
+}
+  
+.animate-move-diagonal {
+    animation: moveDiagonal 4s ease-out infinite;
+}
+
 /* Tablet breakpoint */
 @media (min-width: 640px) {
     h1 {
