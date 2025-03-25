@@ -3,67 +3,20 @@
   <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-3xl font-bold">推動方案項目</h1>
-      <a href="/admin/promotions/items/create"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        <i class="fas fa-plus mr-2"></i> 新增項目
-      </a>
+      <div class="flex space-x-2">
+        <a href="/admin/promotions/categories"
+          class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+          <i class="fas fa-cog mr-2"></i> 管理分類
+        </a>
+        <a href="/admin/promotions/items/create"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <i class="fas fa-plus mr-2"></i> 新增項目
+        </a>
+      </div>
     </div>
 
     <!-- Search and Filter -->
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-      <form action="/admin/promotions/items" method="GET"
-        class="flex flex-col md:flex-row md:items-end md:space-x-4 mb-6">
-        <!-- Search -->
-        <div class="flex-1 mb-4 md:mb-0">
-          <label class="block text-sm font-medium text-gray-700 mb-2" for="search">
-            搜尋
-          </label>
-          <input
-            class="block w-full text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-input"
-            placeholder="依標題搜尋..." type="text" id="search" name="search" value="<%= search %>" />
-        </div>
-
-        <!-- Category Filter -->
-        <div class="flex-1 mb-4 md:mb-0">
-          <label class="block text-sm font-medium text-gray-700 mb-2" for="category">
-            分類
-          </label>
-          <select
-            class="block w-full text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-select"
-            id="category" name="category">
-            <option value="all" <%=selectedCategory==='all' ? 'selected' : '' %>>所有分類</option>
-            <% categories.forEach(category=> { %>
-              <option value="<%= category.id %>" <%=selectedCategory==category.id ? 'selected' : '' %>>
-                <%= category.name_en %>
-              </option>
-              <% }); %>
-          </select>
-        </div>
-
-        <!-- Status Filter -->
-        <div class="flex-1 mb-4 md:mb-0">
-          <label class="block text-sm font-medium text-gray-700 mb-2" for="status">
-            狀態
-          </label>
-          <select
-            class="block w-full text-sm border-gray-300 rounded-md focus:border-purple-400 focus:outline-none focus:shadow-outline-purple form-select"
-            id="status" name="status">
-            <option value="" <%=selectedStatus==='' ? 'selected' : '' %>>所有狀態</option>
-            <option value="draft" <%=selectedStatus==='draft' ? 'selected' : '' %>>草稿</option>
-            <option value="published" <%=selectedStatus==='published' ? 'selected' : '' %>>已發佈</option>
-            <option value="archived" <%=selectedStatus==='archived' ? 'selected' : '' %>>已封存</option>
-          </select>
-        </div>
-
-        <!-- Submit Button -->
-        <div class="flex-none">
-          <button type="submit"
-            class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-            篩選
-          </button>
-        </div>
-      </form>
-
       <!-- Items Table -->
       <div class="overflow-x-auto">
         <table class="min-w-full bg-white" id="dataTable">
@@ -184,21 +137,21 @@
           <nav aria-label="頁面導航">
             <ul class="inline-flex items-center">
               <li>
-                <a href="<%= pagination.currentPage > 1 ? `/admin/promotions/items?page=${pagination.currentPage - 1}&search=${search}&category=${selectedCategory}&status=${selectedStatus}` : '#' %>"
+                <a href="<%= pagination.currentPage > 1 ? `/admin/promotions/items?page=${pagination.currentPage - 1}` : '#' %>"
                   class="<%= pagination.currentPage > 1 ? 'px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple' : 'px-3 py-1 text-gray-400 cursor-not-allowed' %>">
                   上一頁
                 </a>
               </li>
               <% for (let i=1; i <=pagination.totalPages; i++) { %>
                 <li>
-                  <a href="/admin/promotions/items?page=<%= i %>&search=<%= search %>&category=<%= selectedCategory %>&status=<%= selectedStatus %>"
+                  <a href="/admin/promotions/items?page=<%= i %>"
                     class="<%= pagination.currentPage === i ? 'px-3 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none focus:shadow-outline-purple' : 'px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple' %>">
                     <%= i %>
                   </a>
                 </li>
                 <% } %>
                   <li>
-                    <a href="<%= pagination.currentPage < pagination.totalPages ? `/admin/promotions/items?page=${pagination.currentPage + 1}&search=${search}&category=${selectedCategory}&status=${selectedStatus}` : '#' %>"
+                    <a href="<%= pagination.currentPage < pagination.totalPages ? `/admin/promotions/items?page=${pagination.currentPage + 1}` : '#' %>"
                       class="<%= pagination.currentPage < pagination.totalPages ? 'px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple' : 'px-3 py-1 text-gray-400 cursor-not-allowed' %>">
                       下一頁
                     </a>
@@ -207,14 +160,6 @@
           </nav>
         </div>
         <% } %>
-
-          <!-- Manage Categories Button -->
-          <div class="mt-6 flex justify-end">
-            <a href="/admin/promotions/categories"
-              class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-              <i class="fas fa-cog mr-2"></i> 管理分類
-            </a>
-          </div>
     </div>
   </div>
 
