@@ -48,7 +48,7 @@
 
                     <!-- Partner filter -->
                     <% if (category.name_en.includes("artner")) { %>
-                        <h4 class="mb-4 ">
+                        <h4 class="h4 mb-4">
                             <%= currentLanguage==='en' ? 'Partners' : '合作伙伴' %>
                         </h4>
                         
@@ -89,7 +89,7 @@
                             </div>
                             
                             <!-- 主內容區 -->
-                            <div class="w-full sm:w-9/12 bg-white border-2 rounded-xl border-gray-100 p-4 mb-6 min-h-full">
+                            <div class="w-full sm:w-9/12 bg-white border-2 rounded-xl border-gray-100 p-4 mb-8 sm:mb-0 min-h-full">
                                 <!-- 頂部標籤頁 -->
                                 <div class="flex justify-center">
                                     <button class="companyTab px-4 py-2 border-b-2 border-custom-blue text-custom-blue font-medium">
@@ -168,6 +168,9 @@
                         <% category.platforms.forEach(function(platform) { %>
                             <!-- Plain_text Type -->
                             <% if (platform.type==='plain_text' ) { %>
+                                <h4 class="h4 mb-4">
+                                    <%= currentLanguage==='en' ? platform.title_en : platform.title_tw %>
+                                </h4>
                                 <div class="prose max-w-none quill-content">
                                     <div class="ql-container ql-snow" style="border: none;">
                                         <div class="ql-editor quill-content-wrapper" 
@@ -183,20 +186,20 @@
                                     <div class="mt-4">
                                     <img src="<%= platform.imagePath %>"
                                         alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
-                                        class="w-full h-auto rounded-lg shadow-sm">
+                                        class="w-full h-auto rounded-lg">
                                     </div>
                                 <% } %>
 
                             <!-- Image Type -->
                             <% } else if (platform.type==='image' ) { %>
                                 <% if (platform.imagePath) { %>
-                                    <h3 class="text-xl font-semibold mb-4 text-gray-800">
+                                    <h4 class="h4 mb-4">
                                         <%= currentLanguage==='en' ? platform.title_en : platform.title_tw %>
-                                    </h3>
+                                    </h4>
                                     <div class="mb-4">
                                         <img src="<%= platform.imagePath %>"
                                         alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
-                                        class="w-full h-auto rounded-lg shadow-sm">
+                                        class="w-full h-auto rounded-lg">
                                     </div>
                                     <div class="text-gray-700 quill-content">
                                         <div class="ql-container ql-snow" style="border: none;">
@@ -213,14 +216,14 @@
 
                             <!-- Attachment Type -->
                             <% } else if (platform.type==='attachment_only' ) { %>
-                                <h4 class="mb-4 ">
-                                    <%= currentLanguage==='en' ? 'Downloads' : '檔案下載' %>
+                                <h4 class="h4 mb-4">
+                                    <%= currentLanguage==='en' ? platform.title_en : platform.title_tw %>
                                 </h4>
                                 <% if (platform.imagePath) { %>
                                     <div class="mb-4">
                                         <img src="<%= platform.imagePath %>"
                                         alt="<%= currentLanguage === 'en' ? platform.title_en : platform.title_tw %>"
-                                        class="w-full h-auto rounded-lg shadow-sm">
+                                        class="w-full h-auto rounded-lg">
                                     </div>
                                 <% } %>
                                 <% if (platform.attachments && platform.attachments.length> 0) { %>
@@ -273,14 +276,14 @@
     <% if (items && items.length> 0) { %>
         <% items.forEach(item=> { %>
             <section id="<%= item.category.slug %>" class="px-6 pb-8 sm:px-16 sm:pb-16 lg:px-32 lg:pb-32">
-                <h4 class="mb-8">
+                <h4 class="h4 mb-8">
                     <%= language==='en' ? item.title_en : item.title_tw %>
                 </h4>
                 <!-- Hero Image -->
                 <% if (item.imagePath) { %>
-                <div class="relative rounded-3xl overflow-hidden mb-8">
+                <div class="mb-8">
                     <img src="/<%= item.imagePath %>" alt="<%= language==='en' ? item.title_en : item.title_tw %>"
-                        class="w-full h-64 md:h-96 object-cover">
+                        class="w-full h-auto rounded-lg">
                 </div>
                 <% } %>
                 <!-- Description and CTA in flex layout -->
