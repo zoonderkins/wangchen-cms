@@ -346,7 +346,7 @@ model NewsItem {
   deletedAt     DateTime?
   categoryId    Int
   authorId      Int
-  slug          String       @unique
+  slug          String
   author        User         @relation(fields: [authorId], references: [id])
   category      NewsCategory @relation(fields: [categoryId], references: [id])
 
@@ -396,23 +396,23 @@ model PromotionItem {
 }
 
 model AboutItem {
-  id             Int       @id @default(autoincrement())
-  title_en       String
-  title_tw       String
-  type           String
-  content_en     String    @db.LongText
-  content_tw     String    @db.LongText
-  imagePath      String?
+  id               Int       @id @default(autoincrement())
+  title_en         String
+  title_tw         String
+  type             String
+  content_en       String    @db.LongText
+  content_tw       String    @db.LongText
+  imagePath        String?
+  order            Int       @default(0)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
+  authorId         Int?
   imagePathDesktop String?
-  imagePathTablet  String?
   imagePathMobile  String?
-  order          Int       @default(0)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  deletedAt      DateTime?
-  authorId       Int?
-  author         User?     @relation(fields: [authorId], references: [id])
-  
+  imagePathTablet  String?
+  author           User?     @relation(fields: [authorId], references: [id])
+
   @@index([authorId], map: "AboutItems_authorId_fkey")
   @@map("AboutItems")
 }
@@ -508,23 +508,23 @@ model Platform {
 }
 
 model PlatformAttachment {
-  id                Int       @id @default(autoincrement())
-  filename          String
-  originalName      String
-  mimeType          String
-  size              Int
-  path              String
-  title_en          String?
-  title_tw          String?
-  description_en    String?   @db.Text
-  description_tw    String?   @db.Text
+  id                 Int       @id @default(autoincrement())
+  filename           String
+  originalName       String
+  mimeType           String
+  size               Int
+  path               String
+  title_en           String?
+  title_tw           String?
+  description_en     String?   @db.Text
+  description_tw     String?   @db.Text
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  platformId         Int
+  deletedAt          DateTime?
   attachment_name_en String?
   attachment_name_tw String?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-  platformId        Int
-  deletedAt         DateTime?
-  platform          Platform  @relation(fields: [platformId], references: [id], onDelete: Cascade)
+  platform           Platform  @relation(fields: [platformId], references: [id], onDelete: Cascade)
 
   @@index([platformId], map: "PlatformAttachments_platformId_fkey")
   @@map("PlatformAttachments")
@@ -571,11 +571,11 @@ model FrontpageImage {
   originalName String
   path         String
   order        Int           @default(0)
-  alt          String?
-  url          String?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   itemId       Int
+  alt          String?
+  url          String?
   item         FrontpageItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
 
   @@index([itemId], map: "FrontpageImages_itemId_fkey")
@@ -589,12 +589,12 @@ model VisitCounter {
 }
 
 model VisitCounterHistory {
-  id        Int      @id @default(autoincrement())
-  count     Int      @default(0)
-  todayCount Int     @default(0)
-  lastReset DateTime @default(now())
-  date      DateTime @default(now())
-  createdAt DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  count      Int      @default(0)
+  date       DateTime @default(now())
+  createdAt  DateTime @default(now())
+  lastReset  DateTime @default(now())
+  todayCount Int      @default(0)
 }
 
 model ArticleToMedia {
@@ -609,7 +609,7 @@ model ArticleToMedia {
 }
 
 model SiteSettings {
-  id                Int       @id @default(autoincrement())
+  id                Int      @id @default(autoincrement())
   site_name_en      String
   site_name_tw      String
   site_url          String
@@ -618,12 +618,11 @@ model SiteSettings {
   logo_mobile_path  String?
   logo_alt_en       String?
   logo_alt_tw       String?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   @@map("site_settings")
 }
-
 
 enum Status {
   draft
