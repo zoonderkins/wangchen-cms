@@ -19,9 +19,8 @@
                                             <tr
                                                 class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b bg-gray-50">
                                                 <th class="px-4 py-3">標題</th>
-                                                <th class="px-4 py-3">網址代碼</th>
+                                                <th class="px-4 py-3">網址英文</th>
                                                 <th class="px-4 py-3">狀態</th>
-                                                <th class="px-4 py-3">導航顯示</th>
                                                 <th class="px-4 py-3">附件</th>
                                                 <th class="px-4 py-3">作者</th>
                                                 <th class="px-4 py-3">建立日期</th>
@@ -68,24 +67,6 @@
                                                                     <% } %>
                                                     </td>
                                                     <td class="px-4 py-3 text-sm">
-                                                        <% if (page.showInNavigation) { %>
-                                                            <span
-                                                                class="px-2 py-1 font-semibold leading-tight text-blue-700 bg-blue-100 rounded-full">
-                                                                顯示
-                                                            </span>
-                                                            <% if (page.navigationOrder !==null) { %>
-                                                                <span class="text-xs text-gray-500">
-                                                                    (順序: <%= page.navigationOrder %>)
-                                                                </span>
-                                                                <% } %>
-                                                                    <% } else { %>
-                                                                        <span
-                                                                            class="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full">
-                                                                            隱藏
-                                                                        </span>
-                                                                        <% } %>
-                                                    </td>
-                                                    <td class="px-4 py-3 text-sm">
                                                         <%= page._count.attachments %>
                                                     </td>
                                                     <td class="px-4 py-3 text-sm">
@@ -96,7 +77,7 @@
                                                     </td>
                                                     <td class="px-4 py-3 text-sm">
                                                         <div class="flex items-center space-x-4 text-sm">
-                                                            <a href="/admin/pages/edit/<%= page.id %>"
+                                                            <a href="/admin/pages/edit/<%= page.slug %>"
                                                                 class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-blue-600 rounded-lg focus:outline-none focus:shadow-outline-gray"
                                                                 aria-label="編輯">
                                                                 <svg class="w-5 h-5" aria-hidden="true"

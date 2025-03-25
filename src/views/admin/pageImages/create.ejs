@@ -20,7 +20,7 @@
                         <option value="" disabled selected>選擇頁面</option>
                         <% pages.forEach(function(page) { %>
                             <option value="<%= page.name %>">
-                                <%= page.chineseName %>
+                                <%= page.chineseName %> / <%= page.englishName %>
                             </option>
                             <% }); %>
                     </select>

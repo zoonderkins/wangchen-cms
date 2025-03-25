@@ -30,35 +30,52 @@ exports.listPageImages = async (req, res) => {
 // Render create form
 exports.renderCreateForm = async (req, res) => {
     try {
-        // Get a list of all frontend view files
-        const viewsDir = path.join(process.cwd(), 'src', 'views', 'frontend');
-        const files = await fs.readdir(viewsDir);
-        
-        // Only accept about, contact,downloads,faq,news,promotions
-        const allowedPages = ['index', 'about', 'contact', 'downloads', 'faq', 'news', 'promotions'];
+        // Get all published pages from the database
+        const dbPages = await prisma.page.findMany({
+            where: {
+                status: 'published',
+                deletedAt: null
+            },
+            orderBy: {
+                title_tw: 'asc'
+            },
+            select: {
+                id: true,
+                title_tw: true,
+                title_en: true,
+                slug: true
+            }
+        });
 
-        // Add Chinese name to the directory
+        // Hardcoded pages
+        const allowedPages = ['index', 'about', 'contact', 'downloads', 'faq', 'news', 'promotions'];
         const chinesePages = ['首頁', '關於我們', '聯絡我們', '下載專區', '常見問題', '最新消息', '推動方案'];
 
-        const filteredPages = allowedPages.map((page, index) => ({
+        // Create hardcoded pages array
+        const hardcodedPages = allowedPages.map((page, index) => ({
             name: page,
-            chineseName: chinesePages[index]
+            chineseName: chinesePages[index],
+            englishName: '', // Hardcoded pages don't have English names
+            isHardcoded: true
         }));
 
-        const pages = filteredPages.map(page => ({
-            name: page.name,
-            chineseName: page.chineseName
+        // Transform database pages
+        const dbFormattedPages = dbPages.map(page => ({
+            name: page.slug,
+            chineseName: page.title_tw,
+            englishName: page.title_en,
+            isHardcoded: false
         }));
 
-        // const filteredPages = files.filter(file => allowedPages.includes(file.replace('.ejs', '')));
-
-        // Filter only .ejs files and remove the .ejs extension
-        // const pages = filteredPages.map(file => file.replace('.ejs', ''));
+        // Combine both arrays and sort by Chinese name
+        const allPages = [...hardcodedPages, ...dbFormattedPages].sort((a, b) => 
+            a.chineseName.localeCompare(b.chineseName, 'zh-TW')
+        );
 
         res.render('admin/pageImages/create', {
             title: '新增網頁橫幅',
             layout: 'layouts/admin',
-            pages
+            pages: allPages
         });
     } catch (error) {
         logger.error('Error rendering page image create form:', error);
@@ -263,36 +280,53 @@ exports.renderEditForm = async (req, res) => {
             return res.redirect('/admin/pageImages');
         }
         
-        // Get a list of all frontend view files
-        const viewsDir = path.join(process.cwd(), 'src', 'views', 'frontend');
-        const files = await fs.readdir(viewsDir);
+        // Get all published pages from the database
+        const dbPages = await prisma.page.findMany({
+            where: {
+                status: 'published',
+                deletedAt: null
+            },
+            orderBy: {
+                title_tw: 'asc'
+            },
+            select: {
+                id: true,
+                title_tw: true,
+                title_en: true,
+                slug: true
+            }
+        });
 
-                // Only accept about, contact,downloads,faq,news,promotions
+        // Hardcoded pages
         const allowedPages = ['index', 'about', 'contact', 'downloads', 'faq', 'news', 'promotions'];
-
-        // Add Chinese name to the directory
         const chinesePages = ['首頁', '關於我們', '聯絡我們', '下載專區', '常見問題', '最新消息', '推動方案'];
 
-        const filteredPages = allowedPages.map((page, index) => ({
+        // Create hardcoded pages array
+        const hardcodedPages = allowedPages.map((page, index) => ({
             name: page,
-            chineseName: chinesePages[index]
+            chineseName: chinesePages[index],
+            englishName: '', // Hardcoded pages don't have English names
+            isHardcoded: true
         }));
 
-        const pages = filteredPages.map(page => ({
-            name: page.name,
-            chineseName: page.chineseName
+        // Transform database pages
+        const dbFormattedPages = dbPages.map(page => ({
+            name: page.slug,
+            chineseName: page.title_tw,
+            englishName: page.title_en,
+            isHardcoded: false
         }));
-        
-        // // Filter only .ejs files and remove the .ejs extension
-        // const pages = files
-        //     .filter(file => file.endsWith('.ejs'))
-        //     .map(file => file.replace('.ejs', ''));
+
+        // Combine both arrays and sort by Chinese name
+        const allPages = [...hardcodedPages, ...dbFormattedPages].sort((a, b) => 
+            a.chineseName.localeCompare(b.chineseName, 'zh-TW')
+        );
         
         res.render('admin/pageImages/edit', {
             title: '編輯網頁橫幅',
             layout: 'layouts/admin',
             pageImage,
-            pages
+            pages: allPages
         });
     } catch (error) {
         logger.error('Error rendering page image edit form:', error);

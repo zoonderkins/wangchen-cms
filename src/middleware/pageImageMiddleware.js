@@ -1,6 +1,7 @@
 const prisma = require('../lib/prisma');
-const path = require('path');
 const logger = require('../config/logger');
+const path = require('path');
+const fs = require('fs').promises;
 
 /**
  * Middleware to fetch and attach page banner images to the response locals
@@ -22,6 +23,22 @@ const attachPageImage = async (req, res, next) => {
         if (currentPage === '') {
             currentPage = 'index';
         }
+
+        // Handle dynamic pages (e.g., /tw/page/slug)
+        if (currentPage === 'page') {
+            const slug = req.path.split('/').pop();
+            // Find the page by slug
+            const page = await prisma.page.findFirst({
+                where: {
+                    slug: slug,
+                    status: 'published',
+                    deletedAt: null
+                }
+            });
+            if (page) {
+                currentPage = page.slug;
+            }
+        }
         
         // Log for debugging
         logger.info(`Current page: ${currentPage}, full path: ${req.path}, looking for page image`);
@@ -39,8 +56,6 @@ const attachPageImage = async (req, res, next) => {
             logger.info(`Found page image for ${currentPage}: ${pageImage.path}`);
             
             // Add device detection for responsive images
-            // This is a simple implementation - for more advanced detection, 
-            // consider using a library like 'mobile-detect' or 'express-device'
             const userAgent = req.headers['user-agent'] || '';
             
             // Determine which image to use based on user agent

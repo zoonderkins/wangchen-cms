@@ -24,10 +24,9 @@
 
                         <!-- Page Edit Form -->
                         <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md">
-                            <form action="/admin/pages/<%= page.id %>" method="POST" enctype="multipart/form-data"
+                            <form action="/admin/pages/<%= page.slug %>" method="POST" enctype="multipart/form-data"
                                 id="pageForm">
-                                <!-- We can keep this for API clients, but it's not needed for our POST route now -->
-                                <!-- <input type="hidden" name="_method" value="PUT"> -->
+                                <input type="hidden" name="_method" value="PUT">
 
                                 <!-- Language Tabs -->
                                 <div class="mb-6 border-b border-gray-200">
@@ -56,23 +55,23 @@
                                 <div id="chinese" class="" role="tabpanel" aria-labelledby="chinese-tab">
                                     <!-- Chinese Title -->
                                     <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-700" for="title_tw">
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="title_tw">
                                             頁面標題 (中文) <span class="text-red-500">*</span>
                                         </label>
                                         <input
-                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                             type="text" id="title_tw" name="title_tw" value="<%= page.title_tw %>"
                                             placeholder="輸入頁面標題" required>
                                     </div>
 
                                     <!-- Chinese Content -->
                                     <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-700" for="editor_tw">
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="editor_tw">
                                             頁面內容 (中文) <span class="text-red-500">*</span>
                                         </label>
                                         <!-- Quill editor container -->
                                         <div id="editor_tw"
-                                            class="block w-full mt-1 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            class="border rounded w-full focus:outline-none focus:shadow-outline"
                                             style="min-height: 300px;"></div>
 
                                         <!-- Hidden input to store content -->
@@ -85,23 +84,23 @@
                                 <div id="english" class="hidden" role="tabpanel" aria-labelledby="english-tab">
                                     <!-- English Title -->
                                     <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-700" for="title_en">
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="title_en">
                                             頁面標題 (英文) <span class="text-red-500">*</span>
                                         </label>
                                         <input
-                                            class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                             type="text" id="title_en" name="title_en" value="<%= page.title_en %>"
                                             placeholder="輸入頁面標題" required>
                                     </div>
 
                                     <!-- English Content -->
                                     <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-700" for="editor_en">
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="editor_en">
                                             頁面內容 (英文) <span class="text-red-500">*</span>
                                         </label>
                                         <!-- Quill editor container -->
                                         <div id="editor_en"
-                                            class="block w-full mt-1 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                            class="border rounded w-full focus:outline-none focus:shadow-outline"
                                             style="min-height: 300px;"></div>
 
                                         <!-- Hidden input to store content -->
@@ -113,7 +112,7 @@
                                 <!-- Existing Attachments -->
                                 <% if (page.attachments && page.attachments.length> 0) { %>
                                     <div class="mb-4 mt-6 pt-4 border-t border-gray-200">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        <label class="block text-gray-700 text-sm font-bold mb-2">
                                             現有附件
                                         </label>
                                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -216,11 +215,11 @@
 
                                         <!-- New Attachments -->
                                         <div class="mb-4 mt-6 pt-4 border-t border-gray-200">
-                                            <label class="block text-sm font-medium text-gray-700" for="attachments">
+                                            <label class="block text-gray-700 text-sm font-bold mb-2" for="attachments">
                                                 添加新附件
                                             </label>
                                             <input
-                                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                                 type="file" id="attachments" name="attachments" multiple>
                                             <p class="mt-1 text-xs text-gray-500">
                                                 允許的檔案類型：JPG、PNG、PDF、Word、Excel、MP4。每個檔案最大 50MB。
@@ -229,11 +228,11 @@
 
                                         <!-- Status -->
                                         <div class="mb-4">
-                                            <label class="block text-sm font-medium text-gray-700" for="status">
+                                            <label class="block text-gray-700 text-sm font-bold mb-2" for="status">
                                                 狀態 <span class="text-red-500">*</span>
                                             </label>
                                             <select
-                                                class="block w-full mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                                 id="status" name="status" required>
                                                 <option value="draft" <%=page.status==='draft' ? 'selected' : '' %>
                                                     >草稿</option>
@@ -242,56 +241,25 @@
                                                 <option value="archived" <%=page.status==='archived' ? 'selected' : ''
                                                     %>>已封存</option>
                                             </select>
-                                        </div>
-
-                                        <!-- Navigation Settings -->
-                                        <div class="mb-4 p-4 bg-gray-50 rounded-lg">
-                                            <h3 class="text-lg font-medium text-gray-700 mb-2">導航設定</h3>
-
-                                            <div class="flex items-center mb-2">
-                                                <input type="checkbox" id="showInNavigation" name="showInNavigation"
-                                                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                                    <%=page.showInNavigation ? 'checked' : '' %>
-                                                >
-                                                <label class="ml-2 text-sm text-gray-700" for="showInNavigation">
-                                                    在網站導航中顯示
-                                                </label>
-                                            </div>
-
-                                            <div class="ml-6">
-                                                <label class="block text-sm font-medium text-gray-700"
-                                                    for="navigationOrder">
-                                                    導航順序
-                                                </label>
-                                                <input
-                                                    class="block w-32 mt-1 text-sm border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                                    type="number" id="navigationOrder" name="navigationOrder" min="0"
-                                                    value="<%= page.navigationOrder !== null ? page.navigationOrder : '' %>"
-                                                    placeholder="順序">
-                                                <p class="mt-1 text-xs text-gray-500">
-                                                    數字越小在導航中顯示越靠前。
-                                                </p>
-                                            </div>
+                                            <p class="mt-1 text-xs text-gray-500">選擇頁面的發布狀態</p>
                                         </div>
 
                                         <!-- Form Actions -->
-                                        <div class="flex items-center justify-between">
+                                        <div class="mt-6 flex justify-end space-x-2">
                                             <a href="/admin/pages"
-                                                class="px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition-colors duration-150 bg-white border border-gray-300 rounded-lg active:bg-gray-100 hover:bg-gray-50 focus:outline-none focus:shadow-outline-gray">
+                                                class="px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition-colors duration-150 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
                                                 取消
                                             </a>
-                                            <div class="flex space-x-2">
-                                                <% if (page.status==='published' ) { %>
-                                                    <a href="/page/<%= page.slug %>" target="_blank"
-                                                        class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-lg active:bg-green-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-green">
-                                                        查看頁面
-                                                    </a>
-                                                    <% } %>
-                                                        <button type="submit"
-                                                            class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue">
-                                                            更新頁面
-                                                        </button>
-                                            </div>
+                                            <% if (page.status==='published' ) { %>
+                                                <a href="/page/<%= page.slug %>" target="_blank"
+                                                    class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-600 border border-transparent rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                                                    查看頁面
+                                                </a>
+                                                <% } %>
+                                                    <button type="submit"
+                                                        class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                                        更新頁面
+                                                    </button>
                                         </div>
                             </form>
                         </div>
@@ -420,20 +388,28 @@
             document.getElementById('pageForm').addEventListener('submit', function (e) {
                 e.preventDefault();
 
-                // Add hidden field for editor mode
-                const editorModeInput = document.createElement('input');
-                editorModeInput.type = 'hidden';
-                editorModeInput.name = 'editorMode';
-                editorModeInput.value = 'editor';
-                this.appendChild(editorModeInput);
+                try {
+                    // Get Quill content
+                    const content_en = quill_en.getContents();
+                    const content_tw = quill_tw.getContents();
 
-                // Store Quill content as Delta JSON
-                document.getElementById('content_en').value = JSON.stringify(quill_en.getContents());
-                document.getElementById('content_tw').value = JSON.stringify(quill_tw.getContents());
+                    // Validate content
+                    if (!content_en || !content_tw) {
+                        alert('請確保中英文內容都已填寫');
+                        return;
+                    }
 
-                // Check content length before submission
-                if (checkContentLength()) {
-                    this.submit();
+                    // Store Quill content as Delta JSON
+                    document.getElementById('content_en').value = JSON.stringify(content_en);
+                    document.getElementById('content_tw').value = JSON.stringify(content_tw);
+
+                    // Check content length before submission
+                    if (checkContentLength()) {
+                        this.submit();
+                    }
+                } catch (error) {
+                    console.error('Error preparing form data:', error);
+                    alert('處理表單數據時發生錯誤，請重試');
                 }
             });
 

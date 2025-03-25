@@ -135,9 +135,9 @@ const pageImageUpload = require('../middleware/pageImageUpload');
 router.get('/pages', hasRole(['super_admin', 'admin']), pageController.listPages);
 router.get('/pages/create', hasRole(['super_admin', 'admin']), pageController.renderCreatePage);
 router.post('/pages', hasRole(['super_admin', 'admin']), pageAttachmentUpload, pageController.createPage);
-router.get('/pages/edit/:id', hasRole(['super_admin', 'admin']), pageController.renderEditPage);
-router.post('/pages/:id', hasRole(['super_admin', 'admin']), pageAttachmentUpload, pageController.updatePage);
-router.put('/pages/:id', hasRole(['super_admin', 'admin']), pageAttachmentUpload, pageController.updatePage);
+router.get('/pages/edit/:slug', hasRole(['super_admin', 'admin']), pageController.renderEditPage);
+router.post('/pages/:slug', hasRole(['super_admin', 'admin']), pageAttachmentUpload, pageController.updatePage);
+router.put('/pages/:slug', hasRole(['super_admin', 'admin']), pageAttachmentUpload, pageController.updatePage);
 router.post('/pages/:id/delete', hasRole(['super_admin', 'admin']), pageController.deletePage);
 router.delete('/pages/attachment/:attachmentId', hasRole(['super_admin', 'admin']), pageController.deleteAttachment);
 
