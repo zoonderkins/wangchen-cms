@@ -58,7 +58,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: codeql-sarif-${{ matrix.language }}
-        path: /github/workspace/results/${{ matrix.language }}.sarif
+        path: /home/runner/work/wangchen-cms/results/javascript.sarif
         if-no-files-found: warn        
     # - name: GitHub Security Report Action
     #   uses: peter-murray/github-security-report-action@v2
