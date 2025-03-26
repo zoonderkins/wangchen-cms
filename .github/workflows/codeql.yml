@@ -96,3 +96,5 @@ jobs:
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
+    - name: GitHub Security Report Action
+      uses: peter-murray/github-security-report-action@v2
