@@ -186,6 +186,11 @@ main {
     scroll-behavior: smooth;
 }
 
+/* custom quill */
+.ql-snow .ql-editor h4 {
+    font-size: 1.25rem;
+}
+
 /* custom bg */
 .gradient-line {
     width: 70px;  /* 或設定具體寬度，例如 200px */
@@ -297,6 +302,11 @@ main {
         width: 50vw;
     }
 
+    /* custom quill */
+    .ql-snow .ql-editor h4 {
+        font-size: 1.875rem;
+    }
+
     .bg-news {
         background-image: none;
     }
@@ -326,7 +336,7 @@ main {
         font-weight: 700;
     }
     h4, .h4 {
-        font-size: 1.75rem;
+        font-size: 1.875rem;
 
     }
     h5, .h5 {
@@ -351,6 +361,11 @@ main {
 
     .banner-title {
         width: 50vw;
+    }
+
+    /* custom quill */
+    .ql-snow .ql-editor h4 {
+        font-size: 1.875rem;
     }
 
     .bg-plan {
