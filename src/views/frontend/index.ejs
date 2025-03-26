@@ -24,8 +24,8 @@
                                         <img src="<%= banner.mediaPath %>" alt="<%= banner.title %>" class="w-full h-full object-cover">
                                     </picture>
                                 <% } else if (banner.mediaType==='video' ) { %>
-                                    <video id="video-<%= index %>" autoplay muted loop playsinline
-                                        class="w-full h-full object-cover">
+                                    <video id="video-<%= index %>" autoplay muted loop playsinline controls
+                                        class="w-full h-full object-cover" aria-label="介紹影片">
                                         <source src="<%= banner.mediaPath %>" type="video/mp4">
                                         Your browser does not support the video tag.
                                     </video>
@@ -78,7 +78,11 @@
                     <div class="gradient-line w-24 h-2 mx-auto lg:mx-0 mb-12"></div>
                 </div>
                 <div class="w-full lg:w-1/2 flex justify-center">
-                    <img class="img-shadow" src="/images/desktop/contentImg.jpg" alt="">
+                    <video autoplay muted loop playsinline controls class="w-full h-full object-cover img-shadow"
+                        poster="/images/desktop/contentImg.jpg" aria-label="推動方案影片">
+                        <source src="/images/desktop/hover_tutorial.mp4" type="video/mp4">
+                    </video>
+                    <!-- <img class="img-shadow" src="/images/desktop/contentImg.jpg" alt=""> -->
                 </div>
             </div>
             <div class="w-full">
