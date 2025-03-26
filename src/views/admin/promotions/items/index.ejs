@@ -22,18 +22,18 @@
         <table class="min-w-full bg-white" id="dataTable">
           <thead>
             <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
-              <th class="py-3 px-6 text-left">標題</th>
-              <th class="py-3 px-6 text-left">分類</th>
-              <th class="py-3 px-6 text-left">狀態</th>
-              <th class="py-3 px-6 text-left">發佈日期</th>
-              <th class="py-3 px-6 text-center">操作</th>
+              <th class="py-3 px-6 text-left whitespace-nowrap">標題</th>
+              <th class="py-3 px-6 text-left whitespace-nowrap">分類</th>
+              <th class="py-3 px-6 text-left whitespace-nowrap">狀態</th>
+              <th class="py-3 px-6 text-left whitespace-nowrap">發佈日期</th>
+              <th class="py-3 px-6 text-center whitespace-nowrap">操作</th>
             </tr>
           </thead>
           <tbody class="text-gray-600 text-sm">
             <% if (items.length> 0) { %>
               <% items.forEach(item=> { %>
                 <tr class="border-b border-gray-200 hover:bg-gray-50">
-                  <td class="px-6 py-3">
+                  <td class="px-6 py-3 whitespace-nowrap">
                     <div class="flex items-center text-sm">
                       <% if (item.imagePath) { %>
                         <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
@@ -52,10 +52,10 @@
                           </div>
                     </div>
                   </td>
-                  <td class="px-6 py-3 text-sm">
+                  <td class="px-6 py-3 whitespace-nowrap text-sm">
                     <%= item.category ? item.category.name_en : '未分類' %>
                   </td>
-                  <td class="px-6 py-3 text-sm">
+                  <td class="px-6 py-3 whitespace-nowrap text-sm">
                     <% if (item.status==='published' ) { %>
                       <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full">
                         已發佈
@@ -70,18 +70,18 @@
                           </span>
                           <% } %>
                   </td>
-                  <td class="px-6 py-3 text-sm">
+                  <td class="px-6 py-3 whitespace-nowrap text-sm">
                     <%= item.publishedDate ? new Date(item.publishedDate).toLocaleDateString() : '未設定' %>
                   </td>
-                  <td class="px-6 py-3 text-center">
+                  <td class="px-6 py-3 whitespace-nowrap text-center">
                     <div class="flex item-center justify-center">
                       <a href="/admin/promotions/items/edit/<%= item.id %>"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded mr-2">
-                        <i class="fas fa-edit"></i> 編輯
+                        class="text-blue-600 hover:text-blue-900 mr-2">
+                        <i class="fas fa-edit"></i>
                       </a>
-                      <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
+                      <button class="text-red-600 hover:text-red-900"
                         onclick="document.getElementById('deleteModal<%= item.id %>').classList.remove('hidden')">
-                        <i class="fas fa-trash"></i> 刪除
+                        <i class="fas fa-trash"></i>
                       </button>
                     </div>
                   </td>
@@ -117,7 +117,7 @@
                 <% }); %>
                   <% } else { %>
                     <tr>
-                      <td colspan="5" class="px-4 py-3 text-center text-gray-500">
+                      <td colspan="5" class="px-4 py-3 whitespace-nowrap text-center text-gray-500">
                         尚未找到任何推動方案項目。<a href="/admin/promotions/items/create"
                           class="text-purple-600 hover:underline">立即建立一個</a>。
                       </td>

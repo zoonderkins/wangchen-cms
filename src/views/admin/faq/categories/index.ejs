@@ -23,33 +23,33 @@
                     <table class="min-w-full bg-white" id="dataTable">
                         <thead>
                             <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
-                                <th class="py-3 px-6 text-left">順序</th>
-                                <th class="py-3 px-6 text-left">名稱 (中)</th>
-                                <th class="py-3 px-6 text-left">名稱 (英)</th>
-                                <th class="py-3 px-6 text-left">網址代碼</th>
-                                <th class="py-3 px-6 text-left">項目數</th>
-                                <th class="py-3 px-6 text-center">操作</th>
+                                <th class="py-3 px-6 text-left whitespace-nowrap">順序</th>
+                                <th class="py-3 px-6 text-left whitespace-nowrap">名稱 (中)</th>
+                                <th class="py-3 px-6 text-left whitespace-nowrap">名稱 (英)</th>
+                                <th class="py-3 px-6 text-left whitespace-nowrap">網址代碼</th>
+                                <th class="py-3 px-6 text-left whitespace-nowrap">項目數</th>
+                                <th class="py-3 px-6 text-center whitespace-nowrap">操作</th>
                             </tr>
                         </thead>
                         <tbody class="text-gray-600 text-sm">
                             <% categories.forEach(function(category) { %>
                                 <tr class="border-b border-gray-200 hover:bg-gray-50">
-                                    <td class="py-3 px-6 text-left">
+                                    <td class="py-3 px-6 text-left whitespace-nowrap">
                                         <%= category.order %>
                                     </td>
-                                    <td class="py-3 px-6 text-left">
+                                    <td class="py-3 px-6 text-left whitespace-nowrap">
                                         <%= category.name_tw %>
                                     </td>
-                                    <td class="py-3 px-6 text-left">
+                                    <td class="py-3 px-6 text-left whitespace-nowrap">
                                         <%= category.name_en %>
                                     </td>
-                                    <td class="py-3 px-6 text-left">
+                                    <td class="py-3 px-6 text-left whitespace-nowrap">
                                         <%= category.slug %>
                                     </td>
-                                    <td class="py-3 px-6 text-left">
+                                    <td class="py-3 px-6 text-left whitespace-nowrap">
                                         <%= category._count.faqItems %>
                                     </td>
-                                    <td class="py-3 px-6 text-center">
+                                    <td class="py-3 px-6 text-center whitespace-nowrap">
                                         <div class="flex item-center justify-center">
                                             <a href="/admin/faq/categories/edit/<%= category.id %>"
                                                 class="text-blue-600 hover:text-blue-900 mx-1">

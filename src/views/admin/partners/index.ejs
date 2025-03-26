@@ -20,45 +20,45 @@
           <table class="min-w-full bg-white" id="dataTable">
             <thead>
               <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
-                <th class="py-3 px-6 text-left">ID</th>
-                <th class="py-3 px-6 text-left">標題 (中文)</th>
-                <th class="py-3 px-6 text-left">標題 (英文)</th>
-                <th class="py-3 px-6 text-left">分類</th>
-                <th class="py-3 px-6 text-left">狀態</th>
-                <th class="py-3 px-6 text-left">順序</th>
-                <th class="py-3 px-6 text-left">建立者</th>
-                <th class="py-3 px-6 text-center">操作</th>
+                <th class="py-3 px-6 text-left whitespace-nowrap">ID</th>
+                <th class="py-3 px-6 text-left whitespace-nowrap">標題 (中文)</th>
+                <th class="py-3 px-6 text-left whitespace-nowrap">標題 (英文)</th>
+                <th class="py-3 px-6 text-left whitespace-nowrap">分類</th>
+                <th class="py-3 px-6 text-left whitespace-nowrap">狀態</th>
+                <th class="py-3 px-6 text-left whitespace-nowrap">順序</th>
+                <th class="py-3 px-6 text-left whitespace-nowrap">建立者</th>
+                <th class="py-3 px-6 text-center whitespace-nowrap">操作</th>
               </tr>
             </thead>
             <tbody class="text-gray-600 text-sm">
               <% partners.forEach(function(partner) { %>
                 <tr class="border-b border-gray-200 hover:bg-gray-50">
-                  <td class="py-3 px-6 text-left">
+                  <td class="py-3 px-6 text-left whitespace-nowrap">
                     <%= partner.id %>
                   </td>
-                  <td class="py-3 px-6 text-left">
+                  <td class="py-3 px-6 text-left whitespace-nowrap">
                     <%= partner.title_tw %>
                   </td>
-                  <td class="py-3 px-6 text-left">
+                  <td class="py-3 px-6 text-left whitespace-nowrap">
                     <%= partner.title_en %>
                   </td>
-                  <td class="py-3 px-6 text-left">
+                  <td class="py-3 px-6 text-left whitespace-nowrap">
                     <%= partner.category ? partner.category.name_tw : '無' %>
                   </td>
-                  <td class="py-3 px-6 text-left">
+                  <td class="py-3 px-6 text-left whitespace-nowrap">
                     <% if (partner.status === 'published') { %>
                       <span class="bg-green-200 text-green-800 py-1 px-3 rounded-full text-xs">已發布</span>
                     <% } else { %>
                       <span class="bg-yellow-200 text-yellow-800 py-1 px-3 rounded-full text-xs">草稿</span>
                     <% } %>
                   </td>
-                  <td class="py-3 px-6 text-left">
+                  <td class="py-3 px-6 text-left whitespace-nowrap">
                     <%= partner.order %>
                   </td>
-                  <td class="py-3 px-6 text-left">
+                  <td class="py-3 px-6 text-left whitespace-nowrap">
                     <%= partner.author ? partner.author.username : '未知' %>
                   </td>
-                  <td class="py-3 px-6 text-center">
+                  <td class="py-3 px-6 text-center whitespace-nowrap">
                     <div class="flex items-center justify-center">
                       <a href="/admin/partners/<%= partner.id %>/edit" class="text-blue-600 hover:text-blue-900 mx-1">
                         <i class="fas fa-edit"></i>

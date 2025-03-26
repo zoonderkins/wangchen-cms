@@ -58,34 +58,34 @@
           <table class="min-w-full bg-white" id="dataTable">
             <thead>
               <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
-                <th class="py-3 px-6 text-left">日期</th>
-                <th class="py-3 px-6 text-left">姓名</th>
-                <th class="py-3 px-6 text-left">電子郵件</th>
-                <th class="py-3 px-6 text-left">分類</th>
-                <th class="py-3 px-6 text-left">狀態</th>
-                <th class="py-3 px-6 text-center">操作</th>
+                <th class="py-3 px-6 text-left whitespace-nowrap">日期</th>
+                <th class="py-3 px-6 text-left whitespace-nowrap">姓名</th>
+                <th class="py-3 px-6 text-left whitespace-nowrap">電子郵件</th>
+                <th class="py-3 px-6 text-left whitespace-nowrap">分類</th>
+                <th class="py-3 px-6 text-left whitespace-nowrap">狀態</th>
+                <th class="py-3 px-6 text-center whitespace-nowrap">操作</th>
               </tr>
             </thead>
             <tbody class="text-gray-600 text-sm">
               <% contacts.forEach(function(contact) { %>
                 <tr class="border-b border-gray-200 hover:bg-gray-50">
-                  <td class="py-3 px-6 text-left">
+                  <td class="py-3 px-6 text-left whitespace-nowrap">
                     <%= new Date(contact.createdAt).toLocaleDateString() %>
                   </td>
-                  <td class="py-3 px-6 text-left">
+                  <td class="py-3 px-6 text-left whitespace-nowrap">
                     <%= contact.name %>
                   </td>
-                  <td class="py-3 px-6 text-left">
+                  <td class="py-3 px-6 text-left whitespace-nowrap">
                     <%= contact.email %>
                   </td>
-                  <td class="py-3 px-6 text-left">
+                  <td class="py-3 px-6 text-left whitespace-nowrap">
                     <% if (contact.category) { %>
                       <%= contact.category.name_tw %> / <%= contact.category.name_en %>
                           <% } else { %>
                             <span class="text-gray-400">無</span>
                             <% } %>
                   </td>
-                  <td class="py-3 px-6 text-left">
+                  <td class="py-3 px-6 text-left whitespace-nowrap">
                     <% if (contact.status==='pending' ) { %>
                       <span class="bg-yellow-200 text-yellow-800 py-1 px-3 rounded-full text-xs">待處理</span>
                       <% } else if (contact.status==='processed' ) { %>
@@ -94,7 +94,7 @@
                           <span class="bg-gray-200 text-gray-800 py-1 px-3 rounded-full text-xs">已封存</span>
                           <% } %>
                   </td>
-                  <td class="py-3 px-6 text-center">
+                  <td class="py-3 px-6 text-center whitespace-nowrap">
                     <div class="flex item-center justify-center">
                       <a href="/admin/contact/view/<%= contact.id %>"
                         class="text-blue-600 hover:text-blue-900 mx-1">

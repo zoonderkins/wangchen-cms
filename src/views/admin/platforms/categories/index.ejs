@@ -20,48 +20,48 @@
           <table class="min-w-full bg-white" id="dataTable">
             <thead>
               <tr class="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
-                <th class="py-3 px-6 text-left">排序</th>
-                <th class="py-3 px-6 text-left">名稱 (中文)</th>
-                <th class="py-3 px-6 text-left">名稱 (英文)</th>
-                <th class="py-3 px-6 text-left">描述 (中文)</th>
-                <th class="py-3 px-6 text-left">描述 (英文)</th>
-                <th class="py-3 px-6 text-left">項目數</th>
-                <th class="py-3 px-6 text-center">操作</th>
+                <th class="py-3 px-6 text-left whitespace-nowrap">排序</th>
+                <th class="py-3 px-6 text-left whitespace-nowrap">名稱 (中文)</th>
+                <th class="py-3 px-6 text-left whitespace-nowrap">名稱 (英文)</th>
+                <th class="py-3 px-6 text-left whitespace-nowrap">描述 (中文)</th>
+                <th class="py-3 px-6 text-left whitespace-nowrap">描述 (英文)</th>
+                <th class="py-3 px-6 text-left whitespace-nowrap">項目數</th>
+                <th class="py-3 px-6 text-center whitespace-nowrap">操作</th>
               </tr>
             </thead>
             <tbody class="text-gray-600 text-sm">
               <% categories.forEach(function(category) { %>
                 <tr class="border-b border-gray-200 hover:bg-gray-50">
-                  <td class="py-3 px-6 text-left">
+                  <td class="py-3 px-6 text-left whitespace-nowrap">
                     <%= category.order %>
                   </td>
-                  <td class="py-3 px-6 text-left">
+                  <td class="py-3 px-6 text-left whitespace-nowrap">
                     <%= category.name_tw %>
                   </td>
-                  <td class="py-3 px-6 text-left">
+                  <td class="py-3 px-6 text-left whitespace-nowrap">
                     <%= category.name_en %>
                   </td>
-                  <td class="py-3 px-6 text-left">
+                  <td class="py-3 px-6 text-left whitespace-nowrap">
                     <%= category.description_tw || '-' %>
                   </td>
-                  <td class="py-3 px-6 text-left">
+                  <td class="py-3 px-6 text-left whitespace-nowrap">
                     <%= category.description_en || '-' %>
                   </td>
-                  <td class="py-3 px-6 text-left">
+                  <td class="py-3 px-6 text-left whitespace-nowrap">
                     <span class="bg-blue-200 text-blue-800 py-1 px-3 rounded-full text-xs">
                       <%= category.platforms ? category.platforms.length : 0 %>
                     </span>
                   </td>
-                  <td class="py-3 px-6 text-center">
+                  <td class="py-3 px-6 text-center whitespace-nowrap">
                     <div class="flex item-center justify-center">
                       <a href="/admin/platforms/categories/edit/<%= category.id %>"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded mr-2">
-                        <i class="fas fa-edit"></i> 編輯
+                        class="text-blue-600 hover:text-blue-900 mr-4">
+                        <i class="fas fa-edit"></i>
                       </a>
                       <% if (!category.platforms || category.platforms.length===0) { %>
-                        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
+                        <button class="text-red-600 hover:text-red-900"
                           onclick="document.getElementById('deleteModal<%= category.id %>').classList.remove('hidden')">
-                          <i class="fas fa-trash"></i> 刪除
+                          <i class="fas fa-trash"></i>
                         </button>
                         <% } else { %>
                           <button
